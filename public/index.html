@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+    <title><%= webpackConfig.name %></title>
+    <link rel="stylesheet" href="./videoPlayer/css/video-js.css">
+    <!-- built files will be auto injected -->
+    <script src="./videoPlayer/js/jquery.min.js"></script>
+    <script src="./videoPlayer/js/video.js"></script>
+    <script>
+      videojs.options.flash.swf = "./videoPlayer/js/video-js.swf";//flash路径，有一些html播放不了的视频，就需要用到flash播放。这一句话要加在在videojs.js引入之后使用
+    </script>
+    <!--支持rtmp格式的视频-->
+    <script src="./videoPlayer/js/videojs-flash.min.js"></script>
+    <!--支持m3u8格式的视频，需要引入videojs-contrib-hls.js-->
+    <script src="./videoPlayer/js/videojs-contrib-hls.js"></script>
+    <!--支持flv格式的视频，需要引入flv.js、videojs-flvjs.js-->
+    <script src="./videoPlayer/js/flv.js"></script>
+    <script src="./videoPlayer/js/videojs-flvjs.js"></script>
+    <script src="./videoPlayer/js/videoPlay.js"></script>
+  </head>
+  <body>
+    <noscript>
+      <strong>We're sorry but <%= webpackConfig.name %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+    </noscript>
+    <div id="app"></div>
+  </body>
+</html>

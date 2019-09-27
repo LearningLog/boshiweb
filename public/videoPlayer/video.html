@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>播放器示例</title>
+    <link rel="stylesheet" href="css/video-js.css">
+</head>
+<body>
+<div id="video"></div>
+</body>
+<script src="js/jquery.min.js"></script>
+<script src="js/video.js"></script>
+<script>
+    videojs.options.flash.swf = "js/video-js.swf";//flash路径，有一些html播放不了的视频，就需要用到flash播放。这一句话要加在在videojs.js引入之后使用
+</script>
+<!--支持rtmp格式的视频-->
+<script src="js/videojs-flash.min.js"></script>
+<!--支持m3u8格式的视频，需要引入videojs-contrib-hls.js-->
+<script src="js/videojs-contrib-hls.js"></script>
+<!--支持flv格式的视频，需要引入flv.js、videojs-flvjs.js-->
+<script src="js/flv.js"></script>
+<script src="js/videojs-flvjs.js"></script>
+<script src="js/videoPlay.js"></script>
+<script>
+    $(function(){
+        //初始化方法
+       $("#video").videoPlayer({
+            id:"myVideo",//创建video id
+            control:true,//视频支持  音频不支持
+            autoPlay:false,
+            width:600,//视频音频的宽 最小宽度500
+            height:350,//视频的宽,音频设置无效
+            source:"http://oss.huayun.cdvcloud.com/WJSL/WJSL/54c6f9582a80fc1e70ff5575/dd1f5b0f031e424a86daa58e699fd570_13.flv",//播放源地址
+            title:"这里是标题",
+            thumbnailUrl:'image/thumbnail.jpg',//播放器缩略图
+            playType:"video",//可选值 视频：video 音频：audio
+             flvAudio:false,
+             shootingFlag:true,
+             clarityArr:[1,2,3],//清晰度切换
+        })
+    })
+
+</script>
+</html>
