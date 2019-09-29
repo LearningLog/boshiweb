@@ -55,7 +55,6 @@ const actions = {
       accessedRoutes.push({ path: '*', redirect: '/404', hidden: true })
       commit('SET_ROUTES', accessedRoutes)
       commit('SET_HOME_PATH', homePath)
-      commit('SET_HOME_PATH', homePath)
       resolve(accessedRoutes)
     })
   }

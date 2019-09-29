@@ -11,5 +11,6 @@ export function setToken(token) {
 }
 
 export function removeToken() {
+  Cookies.remove('homePath')
   return Cookies.remove(TokenKey)
 }

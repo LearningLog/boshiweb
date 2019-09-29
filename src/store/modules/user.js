@@ -92,6 +92,15 @@ const actions = {
             }
           ]
         }
+
+        // {
+        //   path: 'external-link',
+        //   children: [
+        //     {
+        //       path: 'https://panjiachen.github.io/vue-element-admin-site/#/'
+        //     }
+        //   ]
+        // }
       ] }
       resolve(data)
     })

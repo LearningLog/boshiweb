@@ -12,7 +12,9 @@ export default {
   },
   methods: {
     goHome() {
-      this.$router.push({ path: this.$store.getters.homePath })
+      debugger
+      // this.$router.push({ path: this.$store.getters.homePath })
+      this.$router.push({ path: '/nested/menu1/menu1-1' })
     }
   }
 }
