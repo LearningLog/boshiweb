@@ -28,6 +28,7 @@ router.beforeEach(async(to, from, next) => {
     } else {
       // determine whether the user has obtained his permission routes through getInfo
       const hasPermission = store.getters.permission_routes && store.getters.permission_routes.length > 0
+      console.log('hasPermission', hasPermission)
       if (hasPermission) { // 当有用户权限的时候，说明所有可访问路由已生成 如访问没权限的页面会自动进入404页面
         next()
       } else {

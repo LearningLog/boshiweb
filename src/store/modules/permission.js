@@ -28,6 +28,26 @@ export function filterAsyncRoutes(routes, responseRoutes) {
       }
     })
   })
+
+  // for (let i = 0, len = responseRoutes.length; i < len; i++) {
+  //   const item = responseRoutes[i]
+  //   for (let j = 0, len = routes.length; j < len; j++) {
+  //     const tmp = routes[j]
+  //     if (flag) {
+  //       homePath += tmp.path + '/'
+  //     }
+  //     if (item.path === tmp.path) {
+  //       if (item.children && item.children.length > 0) {
+  //         tmp.children = filterAsyncRoutes(tmp.children, item.children)
+  //       } else if (homePath.indexOf(tmp.path) > -1) {
+  //         flag = false
+  //         homePath = homePath.slice(0, homePath.length - 1)
+  //       }
+  //       res.push(tmp)
+  //     }
+  //   }
+  // }
+
   return res
 }
 
@@ -50,8 +70,8 @@ const mutations = {
 
 const actions = {
   generateRoutes({ commit }, responseRoutes) {
-    return new Promise(resolve => {
-      const accessedRoutes = filterAsyncRoutes(asyncRoutes, responseRoutes)
+    return new Promise(async resolve => {
+      const accessedRoutes = await filterAsyncRoutes(asyncRoutes, responseRoutes)
       accessedRoutes.push({ path: '*', redirect: '/404', hidden: true })
       commit('SET_ROUTES', accessedRoutes)
       commit('SET_HOME_PATH', homePath)

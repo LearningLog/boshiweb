@@ -18,6 +18,7 @@ import Layout from '@/layout'
  * redirect: noRedirect           如果设置为noRedirect，则在面包屑中不可以重定向（点击无效）
  * name:'router-name'             the name is used by <keep-alive> (must set!!!)
  * meta : {
+    roles: ['admin','editor']    设置该路由进入的权限，支持多个权限叠加
     title: 'title'               设置该路由在侧边栏和面包屑中展示的名字
     icon: 'svg-name'             设置该路由的图标
     breadcrumb: false            如果设置为false，则不会在breadcrumb面包屑中显示(default is true)
@@ -53,7 +54,7 @@ export const constantRoutes = [
   },
 
   {
-    path: '/door',
+    path: '/',
     component: () => import('@/views/door/index'),
     hidden: true
   },
@@ -64,17 +65,17 @@ export const constantRoutes = [
     hidden: true
   },
 
-  {
-    path: '/',
-    component: Layout,
-    redirect: '/dashboard',
-    children: [{
-      path: 'dashboard',
-      name: 'Dashboard',
-      component: () => import('@/views/dashboard/index'),
-      meta: { title: 'dashboard', icon: 'dashboard' }
-    }]
-  },
+  // {
+  //   path: '/',
+  //   component: Layout,
+  //   redirect: '/dashboard',
+  //   children: [{
+  //     path: 'dashboard',
+  //     name: 'Dashboard',
+  //     component: () => import('@/views/dashboard/index'),
+  //     meta: { title: 'dashboard', icon: 'dashboard' }
+  //   }]
+  // },
 
   {
     path: '/example',
