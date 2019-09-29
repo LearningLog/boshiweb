@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: 'CDV CLOUD',
+  title: '博识',
 
   /**
    * @type {boolean} true | false

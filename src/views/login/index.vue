@@ -77,12 +77,12 @@ export default {
     }
     return {
       loginForm: {
-        username: 'admin',
-        password: '111111'
+        username: '',
+        password: ''
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+        username: [{ required: true, trigger: 'blur', validator: '' }],
+        password: [{ required: true, trigger: 'blur', validator: '' }]
       },
       loading: false,
       passwordType: 'password',
@@ -113,6 +113,7 @@ export default {
         if (valid) {
           this.loading = true
           this.$store.dispatch('user/login', this.loginForm).then(() => {
+            debugger
             this.$router.push({ path: this.redirect || '/' })
             this.loading = false
           }).catch(() => {

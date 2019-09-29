@@ -31,10 +31,10 @@ import '@/permission' // permission control
  * 请在上线前注释掉此处！！！
  * 详情：https://panjiachen.gitee.io/vue-element-admin-site/zh/guide/essentials/mock-api.html，此版本为v4.2.1，
  */
-import { mockXHR } from '../mock'
-if (process.env.NODE_ENV === 'production') {
-  mockXHR()
-}
+// import { mockXHR } from '../mock'
+// if (process.env.NODE_ENV === 'production') {
+//   mockXHR()
+// }
 
 Vue.use(VueQriously)
 

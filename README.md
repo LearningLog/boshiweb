@@ -1,21 +1,20 @@
-# CDV CLOUD 3.0+
+# 博识 3.0
 
 ## 地址
 
-- 项目华为云[远程地址]()
+- 项目华为云[远程地址](https://devcloud.huaweicloud.com/codehub/project/ba9360bf9aa342d1858a86c11286fee1/codehub/563440/branch)
 
-- [3.0+ 测试环境]()
-- [3.0+ 正式环境]()
-- [视频云2.0+测试环境](https://testhwzb.yunshicloud.com/login.html)
-- [视频云2.0+正式环境](https://onair.yunshicloud.com/login.html)
+- [3.0 开发环境](http://t-bs.yunshicloud.com/)
+- [3.0 测试环境](http://t-bsd.yunshicloud.com/)
+- [3.0 正式环境](http://bs.yunshicloud.com/)
 
 ## 简介
 
-视频云的基础目标就是将公司的一些工具进行可视化，形成一整套操作媒体资源的SaaS，此外还有志衍生其他价值
+博士知识库
 
 ## 项目目标（价值）
 
-- 实现工具可视化
+- 实现博士知识库
 - 实现更加高级的产品设计，以及自定义页面设置，提供更好的用户体验
 - 开发低耦合、高容错、高复用的公用组件、公用方法，设定规范并在此过程中逐步修改并形成合理统一的前端开发规范及各种相关技术文档
 - 推动公司自己的UI框架开发
@@ -275,9 +274,3 @@ Modern browsers and Internet Explorer 10+.
 | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="IE / Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>IE / Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Safari |
 | --------- | --------- | --------- | --------- |
 | IE9, IE10, IE11, Edge| last 2 versions| last 2 versions| last 2 versions
-
-## License
-
-[MIT](https://github.com/PanJiaChen/vue-admin-template/blob/master/LICENSE) license.
-
-Copyright (c) 2017-present PanJiaChen

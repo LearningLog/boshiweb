@@ -1,7 +1,7 @@
 {
   "name": "vue-admin-template",
   "version": "4.2.1",
-  "description": "A CDV CLOUD with Element UI & axios & iconfont & permission control & lint",
+  "description": "A 博识 with Element UI & axios & iconfont & permission control & lint",
   "author": "Pan <panfree23@gmail.com>",
   "license": "MIT",
   "scripts": {
