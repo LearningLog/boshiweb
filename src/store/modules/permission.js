@@ -1,101 +1,24 @@
 import { asyncRoutes, constantRoutes } from '@/router'
 
 /**
- * Use meta.role to determine if the current user has permission
- * @param roles
- * @param route
- */
-function hasPermission(roles, route) {
-  if (route.meta && route.meta.roles) {
-    return roles.some(role => route.meta.roles.includes(role))
-  } else {
-    return true
-  }
-}
-
-/**
- * Filter asynchronous routing tables by recursion
+ * 根据后端返回的路由表对比前端路由表，返回对应路由表
  * @param routes asyncRoutes
- * @param roles
+ * @param responseRoutes
  */
-export function filterAsyncRoutes(routes, roles) {
-  // const router = [
-  //   {
-  //     path: '/nested',
-  //     redirect: '/nested/menu1',
-  //     name: 'Nested',
-  //     meta: {
-  //       title: 'Nested',
-  //       icon: 'nested'
-  //     },
-  //     children: [
-  //       {
-  //         path: 'menu1',
-  //         name: 'Menu1',
-  //         meta: { title: 'Menu1' },
-  //         children: [
-  //           {
-  //             path: 'menu1-1',
-  //             name: 'Menu1-1',
-  //             meta: { title: 'Menu1-1' }
-  //           },
-  //           {
-  //             path: 'menu1-2',
-  //             name: 'Menu1-2',
-  //             meta: { title: 'Menu1-2' },
-  //             children: [
-  //               {
-  //                 path: 'menu1-2-1',
-  //                 name: 'Menu1-2-1',
-  //                 meta: { title: 'Menu1-2-1' }
-  //               },
-  //               {
-  //                 path: 'menu1-2-2',
-  //                 name: 'Menu1-2-2',
-  //                 meta: { title: 'Menu1-2-2' }
-  //               }
-  //             ]
-  //           },
-  //           {
-  //             path: 'menu1-3',
-  //             name: 'Menu1-3',
-  //             meta: { title: 'Menu1-3' }
-  //           }
-  //         ]
-  //       },
-  //       {
-  //         path: 'menu2',
-  //         meta: { title: 'menu2' }
-  //       }
-  //     ]
-  //   },
-  //
-  //   {
-  //     path: 'external-link',
-  //     children: [
-  //       {
-  //         path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
-  //         meta: { title: 'External Link', icon: 'link' }
-  //       }
-  //     ]
-  //   },
-  //
-  //   // 404 page must be placed at the end !!!
-  //   { path: '*', redirect: '/404', hidden: true }
-  // ]
+export function filterAsyncRoutes(routes, responseRoutes) {
   const res = []
-
-  routes.forEach(route => {
-    const tmp = { ...route }
-    debugger
-    if (hasPermission(roles, tmp)) {
-      if (tmp.children) {
-        tmp.children = filterAsyncRoutes(tmp.children, roles)
+  responseRoutes.forEach(resRoute => {
+    const item = { ...resRoute }
+    routes.forEach(route => {
+      const tmp = { ...route }
+      if (item.path === tmp.path) {
+        if (item.children && item.children.length > 0) {
+          tmp.children = filterAsyncRoutes(tmp.children, item.children)
+        }
+        res.push(tmp)
       }
-      res.push(tmp)
-    }
+    })
   })
-
   return res
 }
 
@@ -112,15 +35,9 @@ const mutations = {
 }
 
 const actions = {
-  generateRoutes({ commit }, roles) {
+  generateRoutes({ commit }, responseRoutes) {
     return new Promise(resolve => {
-      // let accessedRoutes
-      // if (roles.includes('admin')) {
-      //   accessedRoutes = asyncRoutes || []
-      // } else {
-      //   accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
-      // }
-      const accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
+      const accessedRoutes = filterAsyncRoutes(asyncRoutes, responseRoutes)
       commit('SET_ROUTES', accessedRoutes)
       resolve(accessedRoutes)
     })

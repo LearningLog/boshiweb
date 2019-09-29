@@ -13,7 +13,7 @@ const whiteList = ['/login'] // 免登录白名单
 router.beforeEach(async(to, from, next) => {
   // start progress bar
   NProgress.start()
-debugger
+
   // set page title
   document.title = getPageTitle(to.meta.title)
 
@@ -26,22 +26,51 @@ debugger
       next({ path: '/' })
       NProgress.done()
     } else {
-      // determine whether the user has obtained his permission roles through getInfo
-      const hasRoles = store.getters.roles && store.getters.roles.length > 0
-      if (hasRoles) { // 当有用户权限的时候，说明所有可访问路由已生成 如访问没权限的页面会自动进入404页面
+      // determine whether the user has obtained his permission routes through getInfo
+      const hasPermission = store.getters.permission_routes && store.getters.permission_routes.length > 0
+      if (hasPermission) { // 当有用户权限的时候，说明所有可访问路由已生成 如访问没权限的页面会自动进入404页面
         next()
       } else {
         try {
           // get user info
-          // note: roles must be a object array! such as: ['admin'] or ,['developer','editor']
-          const { roles } = await store.dispatch('user/getInfo')
+          // note: responseRoutes must be a object array! such as:
+          // [
+          //   {
+          //     path: '/nested', // 组件路径
+          //     children: [ // 子菜单
+          //       {
+          //         path: 'menu1',
+          //         children: [
+          //           {
+          //             path: 'menu1-1'
+          //           },
+          //           {
+          //             path: 'menu1-2',
+          //             children: [
+          //               {
+          //                 path: 'menu1-2-1'
+          //               },
+          //               {
+          //                 path: 'menu1-2-2'
+          //               }
+          //             ]
+          //           },
+          //           {
+          //             path: 'menu1-3'
+          //           }
+          //         ]
+          //       }
+          //     ]
+          //   }
+          // ]
+          const { responseRoutes } = await store.dispatch('user/getInfo')
 
-          // generate accessible routes map based on roles
-          const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
-
+          // generate accessible routes map based on responseRoutes
+          const accessRoutes = await store.dispatch('permission/generateRoutes', responseRoutes)
+          debugger
           // dynamically add accessible routes
           router.addRoutes(accessRoutes)
-
+          debugger
           /**
            * 这里还有一个小hack的地方，就是router.addRoutes之后的next()可能会失效，因为可能next()的时候路由并没有完全add完成，好在查阅文档发现
            * "next('/') or next({ path: '/' }): redirect to a different location. The current navigation will be aborted and a new one will be started."

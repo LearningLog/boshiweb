@@ -6,8 +6,7 @@ const qs = require('querystring')
 const state = {
   token: getToken(),
   name: '',
-  avatar: '',
-  roles: []
+  avatar: ''
 }
 
 const mutations = {
@@ -19,9 +18,6 @@ const mutations = {
   },
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
-  },
-  SET_ROLES: (state, roles) => {
-    state.roles = roles
   }
 }
 
@@ -66,10 +62,37 @@ const actions = {
       //   reject(error)
       // })
 
-      commit('SET_ROLES', ['admin'])
       commit('SET_NAME', 'yanhukang')
       commit('SET_AVATAR', 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif')
-      const data = { roles: ['admin'] }
+      const data = { responseRoutes: [
+        {
+          path: '/nested', // 组件路径
+          children: [ // 子菜单
+            {
+              path: 'menu1',
+              children: [
+                {
+                  path: 'menu1-1'
+                },
+                {
+                  path: 'menu1-2',
+                  children: [
+                    {
+                      path: 'menu1-2-1'
+                    },
+                    {
+                      path: 'menu1-2-2'
+                    }
+                  ]
+                },
+                {
+                  path: 'menu1-3'
+                }
+              ]
+            }
+          ]
+        }
+      ] }
       resolve(data)
     })
   },
@@ -79,7 +102,6 @@ const actions = {
     return new Promise((resolve, reject) => {
       logout(state.token).then(() => {
         commit('SET_TOKEN', '')
-        commit('SET_ROLES', [])
         removeToken()
         resetRouter()
         resolve()
@@ -93,7 +115,6 @@ const actions = {
   resetToken({ commit }) {
     return new Promise(resolve => {
       commit('SET_TOKEN', '')
-      commit('SET_ROLES', [])
       removeToken()
       resolve()
     })
