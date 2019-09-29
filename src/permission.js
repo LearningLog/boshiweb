@@ -67,10 +67,10 @@ router.beforeEach(async(to, from, next) => {
 
           // generate accessible routes map based on responseRoutes
           const accessRoutes = await store.dispatch('permission/generateRoutes', responseRoutes)
-          debugger
+
           // dynamically add accessible routes
           router.addRoutes(accessRoutes)
-          debugger
+
           /**
            * 这里还有一个小hack的地方，就是router.addRoutes之后的next()可能会失效，因为可能next()的时候路由并没有完全add完成，好在查阅文档发现
            * "next('/') or next({ path: '/' }): redirect to a different location. The current navigation will be aborted and a new one will be started."
