@@ -64,6 +64,12 @@ const actions = {
 
       commit('SET_NAME', 'yanhukang')
       commit('SET_AVATAR', 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif')
+      const allButtonPermission = {
+        example: {
+          del: true,
+          add: false
+        }
+      }
       const data = { responseRoutes: [
         {
           path: '/nested', // 组件路径
@@ -72,7 +78,11 @@ const actions = {
               path: 'menu1',
               children: [
                 {
-                  path: 'menu1-1'
+                  path: 'menu1-1',
+                  buttonPermission: {
+                    del: true,
+                    add: false
+                  }
                 },
                 {
                   path: 'menu1-2',
@@ -101,7 +111,7 @@ const actions = {
             }
           ]
         }
-      ] }
+      ], allButtonPermission: allButtonPermission }
       resolve(data)
     })
   },

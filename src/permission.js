@@ -14,6 +14,8 @@ router.beforeEach(async(to, from, next) => {
   // start progress bar
   NProgress.start()
 
+
+
   // set page title
   document.title = getPageTitle(to.meta.title)
 
@@ -30,6 +32,8 @@ router.beforeEach(async(to, from, next) => {
       const hasPermission = store.getters.permission_routes && store.getters.permission_routes.length > 0
       console.log('hasPermission', hasPermission)
       if (hasPermission) { // 当有用户权限的时候，说明所有可访问路由已生成 如访问没权限的页面会自动进入404页面
+        const currentButtonPermission = JSON.parse(store.getters.allButtonPermission)[to.meta.btnPermissionId]
+        await store.dispatch('permission/setCurrentBtnMermission', currentButtonPermission)
         next()
       } else {
         try {
@@ -64,8 +68,12 @@ router.beforeEach(async(to, from, next) => {
           //     ]
           //   }
           // ]
-          const { responseRoutes } = await store.dispatch('user/getInfo')
-
+          const { responseRoutes, allButtonPermission } = await store.dispatch('user/getInfo')
+          // 设置全部按钮权限
+          await store.dispatch('permission/setAllCurrentBtnMermission', allButtonPermission)
+          const currentButtonPermission = JSON.parse(store.getters.allButtonPermission)[to.meta.btnPermissionId]
+          // 设置当前菜单下按钮权限
+          await store.dispatch('permission/setCurrentBtnMermission', currentButtonPermission)
           // generate accessible routes map based on responseRoutes
           const accessRoutes = await store.dispatch('permission/generateRoutes', responseRoutes)
 

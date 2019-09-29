@@ -6,6 +6,8 @@ const getters = {
   avatar: state => state.user.avatar,
   name: state => state.user.name,
   homePath: state => state.permission.homePath,
-  permission_routes: state => state.permission.routes // 当前登录对象拥有的所有权限
+  permission_routes: state => state.permission.routes, // 当前登录对象拥有的所有权限
+  allButtonPermission: state => state.permission.allButtonPermission,
+  currentButtonPermission: state => state.permission.currentButtonPermission
 }
 export default getters

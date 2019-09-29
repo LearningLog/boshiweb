@@ -131,7 +131,7 @@
     <el-tooltip placement="top" content="tooltip">
       <back-to-top :custom-style="myBackToTopStyle" :visibility-height="300" :back-position="0" transition-name="fade" />
     </el-tooltip>
-    <iframe src="//vjs.zencdn.net/v/oceans.mp4" frameborder="0"></iframe>
+    <iframe src="//vjs.zencdn.net/v/oceans.mp4" frameborder="0" />
     <Footer />
   </div>
 </template>
@@ -151,6 +151,10 @@ export default {
   components: { Tinymce, Footer, About, BackToTop },
   directives: {
     clipboard
+  },
+  created() {
+    debugger
+    this.btnPermission = JSON.parse(this.$store.getters.currentButtonPermission)
   },
   data() {
     return {
@@ -176,7 +180,8 @@ export default {
         'border-radius': '4px',
         'line-height': '45px', // 请保持与高度一致以垂直居中 Please keep consistent with height to center vertically
         background: '#e7eaf1'// 按钮的背景颜色 The background color of the button
-      }
+      },
+      btnPermission: {}
     }
   },
   beforeDestroy() {
@@ -200,49 +205,53 @@ export default {
       })
     },
     add() {
-      this.token = this.$Cookies.set('token', '1111', { expires: 1 })
+      // this.token = this.$Cookies.set('token', '1111', { expires: 1 })
       const a = 1
       console.log(a)
     },
     del() {
-      this.token = this.$Cookies.remove('token')
+      // this.token = this.$Cookies.remove('token')
     },
     get() {
-      this.token = this.$Cookies.get('token')
+      // this.token = this.$Cookies.get('token')
     },
     initVideo() {
-      $('#video').videoPlayer({
-        id: 'myVideo', // 创建video id
-        control: true, // 视频支持  音频不支持
-        autoPlay: false,
-        width: 600, // 视频音频的宽 最小宽度500
-        height: 350, // 视频的宽,音频设置无效
-        source: 'http://oss.huayun.cdvcloud.com/WJSL/WJSL/54c6f9582a80fc1e70ff5575/dd1f5b0f031e424a86daa58e699fd570_13.flv', // 播放源地址
-        // source: '//vjs.zencdn.net/v/oceans.mp4', // 播放源地址
-        // source: 'http://playertest.longtailvideo.com/adaptive/bipbop/gear4/prog_index.m3u8', // 播放源地址
-        title: '这里是标题',
-        // thumbnailUrl: 'https://matrimony001.100msh.net.cn/public/code/material/mp-7261-1554175849.jpg',
-        playType: 'video', // 可选值 视频：video 音频：audio
-        flvAudio: false,
-        shootingFlag: false
-        // clarityArr: [1, 2, 3]// 清晰度切换
+      $(function() {
+        $('#video').videoPlayer({
+          id: 'myVideo', // 创建video id
+          control: true, // 视频支持  音频不支持
+          autoPlay: false,
+          width: 600, // 视频音频的宽 最小宽度500
+          height: 350, // 视频的宽,音频设置无效
+          source: 'http://oss.huayun.cdvcloud.com/WJSL/WJSL/54c6f9582a80fc1e70ff5575/dd1f5b0f031e424a86daa58e699fd570_13.flv', // 播放源地址
+          // source: '//vjs.zencdn.net/v/oceans.mp4', // 播放源地址
+          // source: 'http://playertest.longtailvideo.com/adaptive/bipbop/gear4/prog_index.m3u8', // 播放源地址
+          title: '这里是标题',
+          // thumbnailUrl: 'https://matrimony001.100msh.net.cn/public/code/material/mp-7261-1554175849.jpg',
+          playType: 'video', // 可选值 视频：video 音频：audio
+          flvAudio: false,
+          shootingFlag: false
+          // clarityArr: [1, 2, 3]// 清晰度切换
+        })
       })
     },
     initVideo2() {
-      $('#video2').videoPlayer({
-        id: 'myVideo2', // 创建video id
-        control: true, // 视频支持  音频不支持
-        autoPlay: false,
-        width: 600, // 视频音频的宽 最小宽度500
-        height: 350, // 视频的宽,音频设置无效
-        source: 'http://oss.huayun.cdvcloud.com/WJSL/WJSL/54c6f9582a80fc1e70ff5575/dd1f5b0f031e424a86daa58e699fd570_13.flv', // 播放源地址
-        // source: 'http://playertest.longtailvideo.com/adaptive/bipbop/gear4/prog_index.m3u8', // 播放源地址
-        title: '这里是标题',
-        // thumbnailUrl: 'https://matrimony001.100msh.net.cn/public/code/material/mp-7261-1554175849.jpg',
-        playType: 'video', // 可选值 视频：video 音频：audio
-        flvAudio: false,
-        shootingFlag: false
-        // clarityArr: [1, 2, 3]// 清晰度切换
+      $(function() {
+        $('#video2').videoPlayer({
+          id: 'myVideo2', // 创建video id
+          control: true, // 视频支持  音频不支持
+          autoPlay: false,
+          width: 600, // 视频音频的宽 最小宽度500
+          height: 350, // 视频的宽,音频设置无效
+          source: 'http://oss.huayun.cdvcloud.com/WJSL/WJSL/54c6f9582a80fc1e70ff5575/dd1f5b0f031e424a86daa58e699fd570_13.flv', // 播放源地址
+          // source: 'http://playertest.longtailvideo.com/adaptive/bipbop/gear4/prog_index.m3u8', // 播放源地址
+          title: '这里是标题',
+          // thumbnailUrl: 'https://matrimony001.100msh.net.cn/public/code/material/mp-7261-1554175849.jpg',
+          playType: 'video', // 可选值 视频：video 音频：audio
+          flvAudio: false,
+          shootingFlag: false
+          // clarityArr: [1, 2, 3]// 清晰度切换
+        })
       })
     }
   }

@@ -24,6 +24,7 @@ export function filterAsyncRoutes(routes, responseRoutes) {
           flag = false
           homePath = homePath.slice(0, homePath.length - 1)
         }
+        tmp.buttonPermission = item.buttonPermission
         res.push(tmp)
       }
     })
@@ -54,7 +55,9 @@ export function filterAsyncRoutes(routes, responseRoutes) {
 const state = {
   routes: [],
   addRoutes: [],
-  homePath: Cookies.get('homePath') ? !!+Cookies.get('homePath') : ''
+  homePath: Cookies.get('homePath') ? !!+Cookies.get('homePath') : '',
+  allButtonPermission: Cookies.get('allButtonPermission') ? !!+JSON.parse(Cookies.get('allButtonPermission')) : '',
+  currentButtonPermission: Cookies.get('currentButtonPermission') ? !!+JSON.parse(Cookies.get('currentButtonPermission')) : ''
 }
 
 const mutations = {
@@ -65,6 +68,16 @@ const mutations = {
   SET_HOME_PATH: (state, path) => {
     state.homePath = path
     Cookies.set('homePath', path)
+  },
+
+  SET_ALL_CURRENT_BTN_PERMISSION: (state, allButtonPermission) => {
+    state.allButtonPermission = JSON.stringify(allButtonPermission)
+    Cookies.set('allButtonPermission', JSON.stringify(allButtonPermission))
+  },
+
+  SET_CURRENT_BTN_PERMISSION: (state, currentButtonPermission) => {
+    state.currentButtonPermission = JSON.stringify(currentButtonPermission)
+    Cookies.set('currentButtonPermission', JSON.stringify(currentButtonPermission))
   }
 }
 
@@ -77,6 +90,14 @@ const actions = {
       commit('SET_HOME_PATH', homePath)
       resolve(accessedRoutes)
     })
+  },
+
+  setAllCurrentBtnMermission({ commit }, allButtonPermission) {
+    commit('SET_ALL_CURRENT_BTN_PERMISSION', allButtonPermission)
+  },
+
+  setCurrentBtnMermission({ commit }, currentButtonPermission) {
+    commit('SET_CURRENT_BTN_PERMISSION', currentButtonPermission)
   }
 }
 

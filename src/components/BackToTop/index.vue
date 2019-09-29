@@ -70,7 +70,6 @@ export default {
       let i = 0
       this.isMoving = true
       this.interval = setInterval(() => {
-        debugger
         const next = Math.floor(this.easeInOutQuad(10 * i, start, -start, 500))
         if (next <= this.backPosition) {
           window.scrollTo(0, this.backPosition)

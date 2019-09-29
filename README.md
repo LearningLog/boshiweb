@@ -92,7 +92,7 @@
 - 使用 [babel-polyfill](https://www.babeljs.cn/docs/babel-polyfill) 处理IE低版本兼容
 - 使用 [ESLint](https://cn.eslint.org/) 代码规范校验工具
 - [ECMAScript 6](http://es6.ruanyifeng.com/)
-- 使用 [js-cookie]() 处理cookie
+- 使用 [js-cookie](https://www.npmjs.com/package/js-cookie) 处理cookie
 - normalize.css格式化css
 - 播放器使用公司自己封装的基于jquery的video.js + videojs-flash.js + videojs-contrib-hls.js + flv.js + videojs-flvjs.js
 - 使用 [Tinymce](https://www.tiny.cloud/docs/) 作为富文本编辑器
@@ -103,6 +103,7 @@
 - 使用 [Mock.js](https://github.com/nuysoft/Mock) 进行模拟请求数据
 - 使用 [nprogress](http://ricostacruz.com/nprogress/) 轻量的全局进度条控制
 - 使用 [vue-i18n](http://kazupon.github.io/vue-i18n/zh/) 实现国际化
+- 使用[iconfont字体图标](https://www.iconfont.cn/manage/index?spm=a313x.7781069.1998910419.11&manage_type=myprojects&projectId=1441544&keyword=)
 
 ## Build Setup
 

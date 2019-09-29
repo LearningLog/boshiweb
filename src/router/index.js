@@ -88,25 +88,25 @@ export const constantRoutes = [
         path: 'table',
         name: 'Table',
         component: () => import('@/views/table/index'),
-        meta: { title: 'Table', icon: 'table' }
+        meta: { title: 'Table', icon: 'table', btnPermissionId: 'example' }
       },
       {
         path: 'tree',
         name: 'Tree',
         component: () => import('@/views/tree/index'),
-        meta: { title: 'Tree', icon: 'tree' }
+        meta: { title: 'Tree', icon: 'tree', btnPermissionId: 'example' }
       },
       {
         path: 'hello-world',
         name: 'Hello-world',
         component: () => import('@/views/examples/hello-world'),
-        meta: { title: 'Hello World', icon: 'hello-world' }
+        meta: { title: 'Hello World', icon: 'hello-world', btnPermissionId: 'example' }
       },
       {
         path: 'vue-cropper',
         name: 'Vue-cropper',
         component: () => import('@/views/examples/vue-cropper'),
-        meta: { title: 'Vue Cropper', icon: 'vue-cropper' }
+        meta: { title: 'Vue Cropper', icon: 'vue-cropper', btnPermissionId: 'example' }
       }
     ]
   },

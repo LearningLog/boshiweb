@@ -4,7 +4,7 @@ import Cookies from 'js-cookie'
 import 'normalize.css/normalize.css' // A modern alternative to CSS resets
 
 import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
+import './styles/element-variables.scss'
 
 import '@/styles/index.scss' // global css
 import '@/assets/fonts/iconfont.css' // iconfont css
@@ -17,7 +17,6 @@ import i18n from './lang' // internationalization
 
 // 生成二维码
 import VueQriously from 'vue-qriously'
-Vue.prototype.$Cookies = Cookies
 
 import '@/icons' // icon
 import '@/permission' // permission control
