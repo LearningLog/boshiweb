@@ -91,7 +91,8 @@ const actions = {
               ]
             }
           ]
-        }
+        },
+        { path: '*', redirect: '/404', hidden: true }
       ] }
       resolve(data)
     })
