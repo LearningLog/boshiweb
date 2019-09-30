@@ -42,3 +42,54 @@
     display: block
   }
 }
+
+.el-time-panel__content:after, .el-time-panel__content:before {
+  margin-top: 0px!important;
+}
+.el-time-spinner__wrapper .el-scrollbar__wrap:not(.el-scrollbar__wrap--hidden-default) {
+  padding-top: 15px!important;
+}
+
+.el-table .el-table__header thead tr th {
+  background: #e2e6ed;
+  vertical-align: middle;
+  font-size: 16px;
+  color: #5f6269;
+  font-weight: 400;
+  padding: 6px 0;
+}
+
+.el-table__row.hover-row > td, .el-table__row.current-row > td {
+  color: #20C7B2;
+  background: #f1f5fd!important;
+}
+
+.el-table__row.hover-row > td .el-button, .el-table__row.current-row > td .el-button {
+  color: #20C7B2;
+  border-color: #20C7B2;
+  transition:all 0.5s;
+  -o-transition:all 0.5s;
+  -ms-transition:all 0.5s;
+  -moz-transition:all 0.5s;
+  -webkit-transition:all 0.5s;
+}
+
+.el-table__row.hover-row > td .el-button:hover, .el-table__row.current-row > td .el-button:hover {
+  color: #FFF;
+  border-color: #20C7B2;
+  background: #20C7B2;
+  transition:all 0.5s;
+  -o-transition:all 0.5s;
+  -ms-transition:all 0.5s;
+  -moz-transition:all 0.5s;
+  -webkit-transition:all 0.5s;
+}
+
+.el-dialog__headerbtn {
+  width: 26px;
+  height: 26px;
+  border-radius: 50% !important;
+}
+.el-dialog__headerbtn:hover {
+  background-color: #f5f7fa;
+}

@@ -16,7 +16,7 @@
       </div>
     </el-upload>
     <!-- vueCropper 剪裁图片实现-->
-    <el-dialog title="图片剪裁" :visible.sync="dialogVisible" append-to-body>
+    <el-dialog v-el-drag-dialog title="图片剪裁" :visible.sync="dialogVisible" append-to-body>
       <div class="cropper-content">
         <div class="cropper" style="text-align:center">
           <vueCropper
@@ -73,10 +73,12 @@
 
 <script>
 import { VueCropper } from 'vue-cropper'
+import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 export default {
   components: {
     VueCropper
   },
+  directives: { elDragDialog },
   data() {
     return {
       dialogVisible: true,
