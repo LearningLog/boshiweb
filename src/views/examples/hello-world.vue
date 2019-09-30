@@ -128,9 +128,6 @@
       <div>placeholder</div>
       <div>placeholder</div>
     </div>
-    <el-tooltip placement="top" content="tooltip">
-      <back-to-top :custom-style="myBackToTopStyle" :visibility-height="300" :back-position="0" transition-name="fade" />
-    </el-tooltip>
     <iframe src="//vjs.zencdn.net/v/oceans.mp4" frameborder="0" />
     <Footer />
   </div>
@@ -144,16 +141,14 @@ import clipboard from '@/directive/clipboard/index.js'
 import Tinymce from '@/components/Tinymce'
 import Footer from '@/components/Footer'
 import About from '@/components/About'
-import BackToTop from '@/components/BackToTop'
 const $ = window.$
 export default {
   name: 'HelloWorld',
-  components: { Tinymce, Footer, About, BackToTop },
+  components: { Tinymce, Footer, About },
   directives: {
     clipboard
   },
   created() {
-    debugger
     this.btnPermission = JSON.parse(this.$store.getters.currentButtonPermission)
   },
   data() {
@@ -172,15 +167,6 @@ export default {
       // toolbar: ['searchreplace bold italic underline strikethrough alignleft aligncenter alignright outdent indent  blockquote undo redo removeformat subscript superscript code codesample', 'hr bullist numlist link charmap preview anchor pagebreak insertdatetime table emoticons forecolor backcolor fullscreen fontsizeselect fontselect'],
       // plugins: ['advlist anchor autolink autosave code codesample colorpicker colorpicker contextmenu directionality emoticons fullscreen hr imagetools insertdatetime link lists nonbreaking noneditable pagebreak paste preview print save searchreplace spellchecker tabfocus table template textcolor textpattern visualblocks visualchars wordcount'],
       // customizable button style, show/hide critical point, return position
-      myBackToTopStyle: {
-        right: '50px',
-        bottom: '50px',
-        width: '40px',
-        height: '40px',
-        'border-radius': '4px',
-        'line-height': '45px', // 请保持与高度一致以垂直居中 Please keep consistent with height to center vertically
-        background: '#e7eaf1'// 按钮的背景颜色 The background color of the button
-      },
       btnPermission: {}
     }
   },
