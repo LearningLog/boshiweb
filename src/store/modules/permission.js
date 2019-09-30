@@ -65,6 +65,11 @@ const mutations = {
     state.addRoutes = routes
     state.routes = constantRoutes.concat(routes)
   },
+  CLEAR_ROUTER: (state) => {
+    state.addRoutes = []
+    state.routes = []
+  },
+
   SET_HOME_PATH: (state, path) => {
     state.homePath = path
     Cookies.set('homePath', path)
@@ -90,6 +95,10 @@ const actions = {
       commit('SET_HOME_PATH', homePath)
       resolve(accessedRoutes)
     })
+  },
+
+  clearPermissionRoutes({ commit }) {
+    commit('CLEAR_ROUTER')
   },
 
   setAllCurrentBtnMermission({ commit }, allButtonPermission) {

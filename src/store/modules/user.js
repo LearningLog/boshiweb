@@ -1,7 +1,18 @@
 import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
+import Cookies from 'js-cookie'
+import store from '../index'
 const qs = require('querystring')
+
+/**
+ * 退出登录，清除cookie
+ */
+export function clearCookie() {
+  Cookies.remove('homePath')
+  Cookies.remove('allButtonPermission')
+  Cookies.remove('currentButtonPermission')
+}
 
 const state = {
   token: getToken(),
@@ -121,8 +132,10 @@ const actions = {
     return new Promise((resolve, reject) => {
       logout(state.token).then(() => {
         commit('SET_TOKEN', '')
+        store.dispatch('permission/clearPermissionRoutes')
         removeToken()
         resetRouter()
+        clearCookie()
         resolve()
       }).catch(error => {
         reject(error)
