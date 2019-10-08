@@ -54,15 +54,10 @@ export const constantRoutes = [
     hidden: true
   },
 
-  // {
-  //   path: '/',
-  //   component: () => import('@/views/door/index'),
-  //   hidden: true
-  // },
-
   {
     path: '/',
     component: Layout1,
+    hidden: true,
     redirect: '/',
     children: [{
       path: '/',

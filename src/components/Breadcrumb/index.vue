@@ -1,23 +1,31 @@
 <template>
-  <el-breadcrumb class="app-breadcrumb" separator="/">
-    <transition-group name="breadcrumb">
-      <el-breadcrumb-item v-for="(item,index) in levelList" :key="item.path">
-        <!--如果当前路由记录设置为noRedirect，或者是最后一个路由记录，则不支持重定向-->
-        <span v-if="item.redirect==='noRedirect'||index==levelList.length-1" class="no-redirect">{{ item.meta.title }}</span>
-        <!--否则支持重定向-->
-        <a v-else @click.prevent="handleLink(item)">{{ item.meta.title }}</a>
-      </el-breadcrumb-item>
-    </transition-group>
-  </el-breadcrumb>
+  <div>
+    <i class="el-icon-back routerback" @click="routerback" />
+    <el-breadcrumb class="app-breadcrumb" separator="/">
+      <transition-group name="breadcrumb">
+        <el-breadcrumb-item v-for="(item,index) in levelList" :key="item.path">
+          <!--如果当前路由记录设置为noRedirect，或者是最后一个路由记录，则不支持重定向-->
+          <span v-if="item.redirect==='noRedirect'||index==levelList.length-1" class="no-redirect">{{ item.meta.title }}</span>
+          <!--否则支持重定向-->
+          <a v-else @click.prevent="handleLink(item)">{{ item.meta.title }}</a>
+        </el-breadcrumb-item>
+      </transition-group>
+    </el-breadcrumb>
+  </div>
+
 </template>
 
 <script>
 import pathToRegexp from 'path-to-regexp'
-
 export default {
   data() {
     return {
       levelList: null
+    }
+  },
+  computed: {
+    theme() {
+      return this.$store.state.settings.theme
     }
   },
   watch: {
@@ -37,6 +45,9 @@ export default {
     this.getBreadcrumb()
   },
   methods: {
+    routerback() {
+      this.$router.back(-1)
+    },
     getBreadcrumb() {
       // only show routes with meta.title
       const matched = this.$route.matched.filter(item => item.meta && item.meta.title)
@@ -74,6 +85,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  @import "~@/styles/theme.scss";
 .app-breadcrumb.el-breadcrumb {
   display: inline-block;
   font-size: 14px;
@@ -85,4 +97,14 @@ export default {
     cursor: text;
   }
 }
+  .routerback {
+    display: inline-block;
+    height: 50px;
+    line-height: 50px;
+    float: left;
+    cursor: pointer;
+  }
+  .routerback:hover {
+    color: $themeColor;
+  }
 </style>

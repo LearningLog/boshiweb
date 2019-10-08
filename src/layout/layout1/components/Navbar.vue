@@ -21,8 +21,13 @@
       </el-menu>
     </div>
     <div class="right-menu">
+      <div class="search">
+        <el-input v-model="searchVal" placeholder="请输入内容">
+          <el-button slot="append" icon="el-icon-search" />
+        </el-input>
+      </div>
       <help-center />
-      <user />
+      <user :style="customStyle" />
     </div>
   </div>
 </template>
@@ -48,28 +53,23 @@ export default {
       backstageManage: this.$store.getters.homePath,
       activeIndex: '1',
       title: '博识知识库',
-      logo: 'https://wpimg.wallstcn.com/69a1c46c-eb1c-4b46-8bd4-e9e686ef5251.png'
+      logo: 'https://wpimg.wallstcn.com/69a1c46c-eb1c-4b46-8bd4-e9e686ef5251.png',
+      customStyle: {
+        color: '#ffffff'
+      },
+      searchVal: ''
     }
   },
   methods: {
     handleSelect(key, keyPath) {
-      debugger
       console.log(key, keyPath)
       this.$router.push({ path: keyPath.join() })
-    },
-    toggleSideBar() {
-      this.$store.dispatch('app/toggleSideBar')
-    },
-    async logout() {
-      await this.$store.dispatch('user/logout')
-      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  @import "~@/styles/element-variables.scss";
 .navbar1 {
   height: 50px;
   overflow: hidden;
@@ -80,7 +80,7 @@ export default {
 
   & .logo {
     float: left;
-    margin-left: 20px;
+    margin-left: 30px;
 
     & .sidebar-logo {
       width: 32px;
@@ -103,13 +103,20 @@ export default {
   & .left-menu {
     float: left;
     margin-left: 20px;
-
   }
 
   .right-menu {
     float: right;
     height: 100%;
     line-height: 50px;
+
+    & .search {
+      width: 200px;
+      height: 50px;
+      line-height: 50px;
+      float: left;
+      margin-right: 20px;
+    }
 
     &:focus {
       outline: none;

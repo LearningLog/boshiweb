@@ -1,10 +1,11 @@
+@import "~@/styles/theme.scss";
 /**
 * I think element-ui's default theme color is too light for long-term use.
 * So I modified the default color and you can modify it to your liking.
 **/
 
 /* theme color */
-$--color-primary: #20c7b3;
+$--color-primary: $themeColor;
 $--color-success: #13ce66;
 $--color-warning: #FFBA00;
 $--color-danger: #ff4949;

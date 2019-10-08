@@ -1,23 +1,18 @@
 /*
-Error: File to import not found or unreadable: ~element-ui/packages/theme-chalk/src/index.
-        on line 25 of element-variables.scss
+Error: File to import not found or unreadable: ~@/styles/theme.scss.
+        on line 1 of element-variables.scss
         from line 2 of element-ui.scss
         from line 4 of index.scss
 
-20:   height: 100%;
-21:   box-sizing: border-box;
-22: }
-23: 
-24: #app {
-25:   height: 100%;
-26: }
-27: 
-28: *,
-29: *:before,
-30: *:after {
+1: @import './variables.scss';
+2: @import './mixin.scss';
+3: @import './transition.scss';
+4: @import './element-ui.scss';
+5: @import './sidebar.scss';
+6: @import './commonStyle.scss';
 
 Backtrace:
-element-variables.scss:25
+element-variables.scss:1
 element-ui.scss:2
 index.scss:4
 C:/Ruby25-x64/lib/ruby/gems/2.5.0/gems/sass-3.7.4/lib/sass/tree/import_node.rb:67:in `rescue in import'
@@ -88,4 +83,4 @@ C:/Ruby25-x64/bin/scss:23:in `<main>'
 body:before {
   white-space: pre;
   font-family: monospace;
-  content: "Error: File to import not found or unreadable: ~element-ui/packages/theme-chalk/src/index.\A         on line 25 of element-variables.scss\A         from line 2 of element-ui.scss\A         from line 4 of index.scss\A \A 20:   height: 100%;\A 21:   box-sizing: border-box;\A 22: }\A 23: \A 24: #app {\A 25:   height: 100%;\A 26: }\A 27: \A 28: *,\A 29: *:before,\A 30: *:after {"; }
+  content: "Error: File to import not found or unreadable: ~@/styles/theme.scss.\A         on line 1 of element-variables.scss\A         from line 2 of element-ui.scss\A         from line 4 of index.scss\A \A 1: @import './variables.scss';\A 2: @import './mixin.scss';\A 3: @import './transition.scss';\A 4: @import './element-ui.scss';\A 5: @import './sidebar.scss';\A 6: @import './commonStyle.scss';"; }

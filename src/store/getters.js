@@ -3,6 +3,7 @@ const getters = {
   language: state => state.app.language, // 语言国际化
   device: state => state.app.device,
   token: state => state.user.token,
+  logo: state => state.user.logo,
   avatar: state => state.user.avatar,
   name: state => state.user.name,
   homePath: state => state.permission.homePath,
