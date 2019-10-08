@@ -1,91 +1,76 @@
 <template>
-  <div class="login-container">
-    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
-
-      <div class="title-container">
-        <h3 class="title">{{ $t('login.title') }}</h3>
-        <!--<lang-select class="set-language" />-->
+  <div class="login-box">
+    <div class="login-bg">
+      <img src="@/assets/images/login-bg-pic.png">
+    </div>
+    <div class="login-cont">
+      <div class="fir-title">
+        <img src="@/assets/images/logo.png">
+        <h1 class="">欢迎登录博识知识库</h1>
       </div>
-
-      <el-form-item prop="username">
-        <span class="svg-container">
-          <i class="iconfont icon-zhucedengluyonghuming" />
-        </span>
-        <el-input
-          ref="username"
-          v-model="loginForm.username"
-          :placeholder="$t('login.username')"
-          name="username"
-          type="text"
-          tabindex="1"
-          auto-complete="on"
-        />
-      </el-form-item>
-
-      <el-form-item prop="password">
-        <span class="svg-container">
-          <i class="iconfont icon-zhucedenglumima" />
-        </span>
-        <el-input
-          :key="passwordType"
-          ref="password"
-          v-model="loginForm.password"
-          :type="passwordType"
-          :placeholder="$t('login.password')"
-          name="password"
-          tabindex="2"
-          auto-complete="on"
-          @keyup.enter.native="handleLogin"
-        />
-        <span class="show-pwd" @click="showPwd">
-          <!--<svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />-->
-          <i :class="passwordType === 'password' ? 'iconfont icon-yincangdaan' : 'iconfont icon-kejian'" />
-        </span>
-      </el-form-item>
-
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">{{ $t('login.logIn') }}</el-button>
-
-      <div class="tips">
-        <span style="margin-right:20px;">username: admin</span>
-        <span> password: any</span>
+      <div v-if="!forget_pwd_flag" class="normal-box">
+        <p class="sub-title">用户登录</p>
+        <p>
+          <span>
+            <i class="iconyonghuming" />
+          </span>
+          <el-input v-model="username" placeholder="请输入用户名或手机号" />
+        </p>
+        <p>
+          <span>
+            <i class="iconziyuanxhdpi" />
+          </span>
+          <el-input v-model="password" placeholder="请输入密码" />
+        </p>
+        <div class="clearfix">
+          <p class="fl"><el-checkbox v-model="agree_check">阅读并同意以下协议《服务协议》</el-checkbox></p>
+          <p class="fr forget-word" @click="foget_pwd_fn">忘记密码</p>
+        </div>
+        <div>
+          <el-button type="primary" class="log-big-btn">立即登录</el-button>
+        </div>
       </div>
-
-    </el-form>
+      <div v-if="forget_pwd_flag" class="normal-box forget-pass-box">
+        <div>
+          <p class="sub-title">重置密码</p>
+          <p>
+            <el-input v-model="forget_phone" placeholder="请输入手机号" />
+          </p>
+          <p class="sms-box">
+            <el-input v-model="forget_sms" placeholder="请输入短信验证码" />
+            <el-button class="forget-sendsms-btn">发送</el-button>
+          </p>
+          <p>
+            <el-input v-model="new_pwd" placeholder="请输入新密码(最少六位,数字+字母)" />
+          </p>
+          <p>
+            <el-input v-model="confirm_pwd" placeholder="请再次确认密码(最少六位,数字+字母)" />
+          </p>
+        </div>
+        <div>
+          <el-button type="primary"class="log-big-btn">重置后登录</el-button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import { validUsername } from '@/utils/validate'
-import LangSelect from '@/components/LangSelect'
 export default {
   name: 'Login',
-  components: { LangSelect },
   data() {
-    const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
-        callback(new Error(this.$t('login.enterUserName')))
-      } else {
-        callback()
-      }
-    }
-    const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
-        callback(new Error(this.$t('login.enterPasswordLess6')))
-      } else {
-        callback()
-      }
-    }
     return {
-      loginForm: {
-        username: '',
-        password: ''
-      },
-      loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: '' }],
-        password: [{ required: true, trigger: 'blur', validator: '' }]
-      },
+      username: '',
+      password: '',
+      logintype: 1,
+      agree_check: true,
       loading: false,
       passwordType: 'password',
+      forget_pwd_flag: false,
+      forget_phone: '',
+      forget_sms: '',
+      new_pwd: '',
+      confirm_pwd: '',
       redirect: undefined
     }
   },
@@ -98,6 +83,9 @@ export default {
     }
   },
   methods: {
+    foget_pwd_fn() {
+      this.forget_pwd_flag = true
+    },
     showPwd() {
       if (this.passwordType === 'password') {
         this.passwordType = ''
@@ -128,123 +116,102 @@ export default {
 }
 </script>
 
-<style lang="scss">
-/* 修复input 背景不协调 和光标变色 */
-/* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
-
-$bg:#283443;
-$light_gray:#fff;
-$cursor: #fff;
-
-@supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
-  .login-container .el-input input {
-    color: $cursor;
-  }
-}
-
-/* reset element-ui css */
-.login-container {
-  .el-input {
-    display: inline-block;
-    height: 47px;
-    width: 85%;
-
-    input {
-      background: transparent;
-      border: 0px;
-      -webkit-appearance: none;
-      border-radius: 0px;
-      padding: 12px 5px 12px 15px;
-      color: $light_gray;
-      height: 47px;
-      caret-color: $cursor;
-
-      &:-webkit-autofill {
-        box-shadow: 0 0 0px 1000px $bg inset !important;
-        -webkit-text-fill-color: $cursor !important;
-      }
-    }
-  }
-
-  .el-form-item {
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
-    color: #454545;
-  }
-}
-</style>
-
 <style lang="scss" scoped>
-$bg:#2d3a4b;
-$dark_gray:#889aa4;
-$light_gray:#eee;
-
-.login-container {
-  min-height: 100%;
-  width: 100%;
-  background-color: $bg;
-  overflow: hidden;
-
-  .login-form {
-    position: relative;
-    width: 520px;
-    max-width: 100%;
-    padding: 160px 35px 0;
-    margin: 0 auto;
-    overflow: hidden;
-  }
-
-  .tips {
-    font-size: 14px;
-    color: #fff;
-    margin-bottom: 10px;
-
-    span {
-      &:first-of-type {
-        margin-right: 16px;
-      }
+    @import "~@/styles/element-variables.scss";
+    @import "~@/styles/variables.scss";
+    /* 修复input 背景不协调 和光标变色 */
+    /* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
+    $fff: #fff;
+    @supports (-webkit-mask: none) and (not (cater-color: $fff)) {
+        .el-input input {
+            color: $fff;
+        }
     }
-  }
+    .login-box {
+        display: flex;
+        height: 100%;
+        width: 100%;
+        background-color: $fff;
+        color: $fontColor;
+        /*align-items: center;*/
+        overflow: hidden;
+        .login-bg{
+            flex: 1;
+            img{
+                display: block;
+                width: 100%;
+            }
+        }
+        .login-cont{
+            padding-top: 100px;
+            flex: 1;
+            .fir-title{
+                text-align: center;
+                margin-bottom: 50px;
+                img{
+                    width: 10%;
+                }
+                h1{
+                    margin: 0;
+                    font-size: 26px;
+                    font-weight: normal;
+                    margin-top: 2%;
+                }
+            }
+            .sub-title{
+                text-align: center;
+                font-size: 20px;
+                margin-bottom: 15px;
+            }
+            .normal-box{
+                width: 50%;
+                margin: 0 auto;
+                .forget-word{
+                    color: $actColor;
+                    font-size: 14px;
+                    cursor: pointer;
+                }
+                .log-normal-inp{
+                    height: 45px;
+                    line-height: 45px;
+                    padding: 0 5px;
+                }
+                .log-big-btn{
+                    width: 100%;
+                    height: 45px;
+                    line-height: 45px;
+                    color: $fff;
+                    font-size: 18px;
+                    padding: 0;
+                }
+            }
+            .forget-pass-box{
+                .sms-box{
+                    position: relative;
+                    .forget-sendsms-btn{
+                        color: $actColor;
+                        width: 80px;
+                        height: 100%;
+                        position: absolute;
+                        top: 0;
+                        right: 0;
+                        text-align: center;
+                        cursor: pointer;
+                        border: none;
+                        background: rgba(0,0,0,0);
+                        z-index: 10;
+                    }
+                }
+            }
 
-  .svg-container {
-    padding: 6px 5px 6px 15px;
-    color: $dark_gray;
-    vertical-align: middle;
-    width: 30px;
-    display: inline-block;
-  }
-
-  .title-container {
-    position: relative;
-
-    .title {
-      font-size: 26px;
-      color: $light_gray;
-      margin: 0px auto 40px auto;
-      text-align: center;
-      font-weight: bold;
+        }
     }
-
-    .set-language {
-      color: #fff;
-      position: absolute;
-      top: 3px;
-      font-size: 18px;
-      right: 0px;
-      cursor: pointer;
-      z-index: 999;
+    .login-box  .normal-box /deep/  .el-input--small .el-input__inner{
+        height: 45px;
+        line-height: 45px;
+        padding: 0 5px;
     }
-  }
-
-  .show-pwd {
-    position: absolute;
-    right: 10px;
-    top: 7px;
-    font-size: 16px;
-    color: $dark_gray;
-    cursor: pointer;
-    user-select: none;
-  }
-}
+    .login-box  .forget-pass-box .sms-box /deep/  .el-input--small .el-input__inner{
+        padding-right: 100px;
+    }
 </style>
