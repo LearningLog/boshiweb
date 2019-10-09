@@ -93,6 +93,9 @@ const actions = {
             },
             {
               path: 'tenantManage'
+            },
+            {
+              path: 'sourceFile'
             }
           ]
         },

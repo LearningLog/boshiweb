@@ -44,14 +44,14 @@ export default {
 </script>
 
 <style scoped>
-	.form {
-		width: 620px;
-	}
-	.el-form-item__content .el-input {
-		width: calc(100% - 120px);
-	}
-	#btnGroup {
-		width: 620px;
-		text-align: center;
-	}
+  .form {
+    width: 620px;
+  }
+  .el-form-item__content .el-input {
+    width: calc(100% - 120px);
+  }
+  #btnGroup {
+    width: 620px;
+    text-align: center;
+  }
 </style>

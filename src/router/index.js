@@ -162,29 +162,74 @@ export const asyncRoutes = [
       {
         path: 'tenantManage',
         name: 'tenantManage',
-        meta: { title: '租户管理', icon: '' },
         component: () => import('@/views/systemManage/tenantManage/index'),
+        redirect: '/systemManage/tenantManage/list',
+        meta: { title: '租户管理', icon: '', activeMenu: '/systemManage/tenantManage' },
         children: [
           {
-            path: 'add',
-            name: 'tenantAdd',
+            path: 'tenantadd',
+            component: () => import('@/views/systemManage/tenantManage/child/add.vue'),
+            name: 'Add',
             hidden: true,
-            component: () => import('@/views/systemManage/tenantManage/add'),
-            meta: { title: '新增租户', icon: '' }
+            meta: { title: '新增租户', icon: '', activeMenu: '/systemManage/tenantManage' }
           },
           {
             path: 'edit',
             name: 'tenantEdit',
             hidden: true,
-            component: () => import('@/views/systemManage/tenantManage/edit'),
-            meta: { title: '编辑租户', icon: '' }
+            component: () => import('@/views/systemManage/tenantManage/child/edit'),
+            meta: { title: '修改租户', icon: '', activeMenu: '/systemManage/tenantManage' }
           },
           {
             path: 'detail',
             name: 'tenantDetail',
             hidden: true,
-            component: () => import('@/views/systemManage/tenantManage/detail'),
-            meta: { title: '租户详情', icon: '' }
+            component: () => import('@/views/systemManage/tenantManage/child/detail'),
+            meta: { title: '租户详情', icon: '', activeMenu: '/systemManage/tenantManage' }
+          },
+          {
+            path: 'list',
+            name: 'tenantList',
+            hidden: true,
+            component: () => import('@/views/systemManage/tenantManage/child/list.vue'),
+            meta: { title: '租户列表', icon: '', activeMenu: '/systemManage/tenantManage' }
+          }
+        ]
+      },
+      {
+        path: 'sourceFile',
+        component: () => import('@/views/systemManage/sourceFile/index'),
+        redirect: '/systemManage/sourceFile/list',
+        name: 'sourceFile',
+        meta: { title: '文件来源', icon: '', activeMenu: '/systemManage/sourceFile' },
+        children: [
+          {
+            path: 'add',
+            component: () => import('@/views/systemManage/sourceFile/child/add.vue'),
+            name: 'sourceAdd',
+            hidden: true,
+            meta: { title: '新增文件来源', icon: '', activeMenu: '/systemManage/sourceFile' }
+          },
+          {
+            path: 'edit',
+            name: 'sourceEdit',
+            hidden: true,
+            component: () => import('@/views/systemManage/sourceFile/child/edit'),
+            meta: { title: '修改文件来源', icon: '', activeMenu: '/systemManage/sourceFile' }
+          },
+          {
+            path: 'detail',
+            name: 'sourceDetail',
+            hidden: true,
+            component: () => import('@/views/systemManage/sourceFile/child/detail'),
+            meta: { title: '文件来源详情', icon: '', activeMenu: '/systemManage/sourceFile' }
+          },
+          {
+            path: 'list',
+            name: 'sourceList',
+            hidden: true,
+            component: () => import('@/views/systemManage/sourceFile/child/list.vue'),
+            meta: { title: '文件来源列表', icon: '', activeMenu: '/systemManage/sourceFile' }
           }
         ]
       }
