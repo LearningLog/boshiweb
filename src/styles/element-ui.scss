@@ -1,5 +1,5 @@
 // cover some element-ui styles
-@import './element-variables.scss';
+
 
 .el-breadcrumb__inner,
 .el-breadcrumb__inner a {
@@ -61,13 +61,13 @@
 }
 
 .el-table__row.hover-row > td, .el-table__row.current-row > td {
-  color: $--color-primary;
+  color: $themeColor;
   background: #f1f5fd!important;
 }
 
 .el-table__row.hover-row > td .el-button, .el-table__row.current-row > td .el-button {
-  color: $--color-primary;
-  border-color: $--color-primary;
+  color: $themeColor;
+  border-color: $themeColor;
   transition:all 0.5s;
   -o-transition:all 0.5s;
   -ms-transition:all 0.5s;
@@ -77,8 +77,8 @@
 
 .el-table__row.hover-row > td .el-button:hover, .el-table__row.current-row > td .el-button:hover {
   color: #FFF;
-  border-color: $--color-primary;
-  background: $--color-primary;
+  border-color: $themeColor;
+  background: $themeColor;
   transition:all 0.5s;
   -o-transition:all 0.5s;
   -ms-transition:all 0.5s;
@@ -99,3 +99,9 @@
   height: 50px !important;
   line-height: 50px!important;
 }
+//#app .sidebar-container .el-submenu li.el-menu-item:hover {
+//  background-color: $themeColor!important;
+//}
+//#app .sidebar-container .el-submenu .el-menu-item.is-active {
+//  background-color: $themeColor!important;
+//}
