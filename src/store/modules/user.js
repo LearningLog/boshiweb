@@ -10,6 +10,8 @@ const qs = require('querystring')
  */
 export function clearCookie() {
   Cookies.remove('homePath')
+  Cookies.remove('systemHomePath')
+  Cookies.remove('backstageHomePath')
   Cookies.remove('allButtonPermission')
   Cookies.remove('currentButtonPermission')
   Cookies.remove('currentSystem')

@@ -74,14 +74,14 @@ export default {
           resetRouter()
           router.addRoutes(this.$store.state.permission.systemRoutes)
           await store.dispatch('permission/set_permission_routes', 1)
-          this.$router.push({ path: '/systemManage/menuManage/list' })
+          this.$router.push({ path: store.state.permission.systemHomePath })
           break
         case '/backstageManage':
           // 生成菜单前先初始化router
           resetRouter()
           router.addRoutes(this.$store.state.permission.backstageRoutes)
           await store.dispatch('permission/set_permission_routes', 2)
-          this.$router.push({ path: '/nested/menu1/menu1-1' })
+          this.$router.push({ path: store.state.permission.backstageHomePath })
           break
       }
     }

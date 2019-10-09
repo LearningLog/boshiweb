@@ -7,6 +7,7 @@ import Cookies from 'js-cookie'
  * @param responseRoutes
  */
 let homePath = ''
+let homePaths = ''
 let flag = true
 export function filterAsyncRoutes(routes, responseRoutes) {
   const res = []
@@ -22,10 +23,12 @@ export function filterAsyncRoutes(routes, responseRoutes) {
           tmp.children = filterAsyncRoutes(tmp.children, item.children)
         } else if (homePath.indexOf(tmp.path) > -1) {
           flag = false
-          homePath = homePath.slice(0, homePath.length - 1)
+          homePaths = homePath.slice(0, homePath.length - 1)
         }
         tmp.buttonPermission = item.buttonPermission
         res.push(tmp)
+      } else if (homePath) {
+        homePath = ''
       }
     })
   })
@@ -59,6 +62,8 @@ const state = {
   systemRoutes: [],
   backstageRoutes: [],
   homePath: Cookies.get('homePath') ? Cookies.get('homePath') : '',
+  systemHomePath: Cookies.get('systemHomePath') ? Cookies.get('systemHomePath') : '',
+  backstageHomePath: Cookies.get('backstageHomePath') ? Cookies.get('backstageHomePath') : '',
   allButtonPermission: Cookies.get('allButtonPermission') ? !!+JSON.parse(Cookies.get('allButtonPermission')) : '',
   currentButtonPermission: Cookies.get('currentButtonPermission') ? !!+JSON.parse(Cookies.get('currentButtonPermission')) : ''
 }
@@ -99,6 +104,16 @@ const mutations = {
     Cookies.set('homePath', path)
   },
 
+  SET_SYSTEM_HOME_PATH: (state, path) => {
+    state.systemHomePath = path
+    Cookies.set('systemHomePath', path)
+  },
+
+  SET_BACKSTAGE__HOME_PATH: (state, path) => {
+    state.backstageHomePath = path
+    Cookies.set('backstageHomePath', path)
+  },
+
   SET_ALL_CURRENT_BTN_PERMISSION: (state, allButtonPermission) => {
     state.allButtonPermission = JSON.stringify(allButtonPermission)
     Cookies.set('allButtonPermission', JSON.stringify(allButtonPermission))
@@ -115,13 +130,17 @@ const actions = {
     return new Promise(async resolve => {
       const { systemRoutes, backstageRoutes } = responseRoutes
       const accessedRoutes1 = await filterAsyncRoutes(asyncRoutes, systemRoutes)
+      commit('SET_SYSTEM_HOME_PATH', homePaths)
+      homePath = ''
+      flag = true
       const accessedRoutes2 = await filterAsyncRoutes(asyncRoutes, backstageRoutes)
+      commit('SET_BACKSTAGE__HOME_PATH', homePaths)
       accessedRoutes1.push({ path: '*', redirect: '/404', hidden: true })
       accessedRoutes2.push({ path: '*', redirect: '/404', hidden: true })
       commit('SET_SYSTEM_ROUTES', accessedRoutes1)
       commit('SET_BACKSTAGE_ROUTES', accessedRoutes2)
       commit('SET_ROUTES', accessedRoutes2)
-      commit('SET_HOME_PATH', homePath)
+
       resolve(accessedRoutes2)
     })
   },
