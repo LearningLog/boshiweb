@@ -42,3 +42,15 @@ export function regPwd(param) {
     return false
   }
 }
+/**
+ * @str {string} str
+ * @param {number} minLenth maxLength
+ * @returns {Boolean}
+ */
+export function strLength(str, minLenth, maxLength) {
+  if ((str.length > minLenth || str.length === minLenth) && (str.length < maxLength || str.length === maxLength)) {
+    return true
+  } else {
+    return false
+  }
+}
