@@ -75,13 +75,17 @@
       color: $subMenuActiveText !important;
     }
 
+    .el-submenu .el-menu-item.is-active {
+      background-color: $themeColor !important;
+    }
+
     & .nest-menu .el-submenu>.el-submenu__title,
     & .el-submenu .el-menu-item {
       min-width: $sideBarWidth !important;
       background-color: $subMenuBg !important;
 
       &:hover {
-        background-color: $subMenuHover !important;
+        background-color: $themeColor !important;
       }
     }
   }
@@ -207,3 +211,9 @@
     }
   }
 }
+//#app .sidebar-container .el-submenu li.el-menu-item:hover {
+//  background-color: $themeColor!important;
+//}
+//#app .sidebar-container .el-submenu .el-menu-item.is-active {
+//  background-color: $themeColor!important;
+//}

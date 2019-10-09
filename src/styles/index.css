@@ -1,38 +1,23 @@
 /*
 Error: File to import not found or unreadable: ~@/styles/theme.scss.
-        on line 1 of element-variables.scss
-        from line 2 of element-ui.scss
-        from line 4 of index.scss
+        on line 1 of commonStyle.scss
+        from line 7 of index.scss
 
 1: @import './variables.scss';
 2: @import './mixin.scss';
 3: @import './transition.scss';
 4: @import './element-ui.scss';
 5: @import './sidebar.scss';
-6: @import './commonStyle.scss';
+6: @import './theme.scss';
 
 Backtrace:
-element-variables.scss:1
-element-ui.scss:2
-index.scss:4
+commonStyle.scss:1
+index.scss:7
 C:/Ruby25-x64/lib/ruby/gems/2.5.0/gems/sass-3.7.4/lib/sass/tree/import_node.rb:67:in `rescue in import'
 C:/Ruby25-x64/lib/ruby/gems/2.5.0/gems/sass-3.7.4/lib/sass/tree/import_node.rb:44:in `import'
 C:/Ruby25-x64/lib/ruby/gems/2.5.0/gems/sass-3.7.4/lib/sass/tree/import_node.rb:28:in `imported_file'
 C:/Ruby25-x64/lib/ruby/gems/2.5.0/gems/sass-3.7.4/lib/sass/tree/import_node.rb:37:in `css_import?'
 C:/Ruby25-x64/lib/ruby/gems/2.5.0/gems/sass-3.7.4/lib/sass/tree/visitors/perform.rb:310:in `visit_import'
-C:/Ruby25-x64/lib/ruby/gems/2.5.0/gems/sass-3.7.4/lib/sass/tree/visitors/base.rb:36:in `visit'
-C:/Ruby25-x64/lib/ruby/gems/2.5.0/gems/sass-3.7.4/lib/sass/tree/visitors/perform.rb:158:in `block in visit'
-C:/Ruby25-x64/lib/ruby/gems/2.5.0/gems/sass-3.7.4/lib/sass/stack.rb:79:in `block in with_base'
-C:/Ruby25-x64/lib/ruby/gems/2.5.0/gems/sass-3.7.4/lib/sass/stack.rb:135:in `with_frame'
-C:/Ruby25-x64/lib/ruby/gems/2.5.0/gems/sass-3.7.4/lib/sass/stack.rb:79:in `with_base'
-C:/Ruby25-x64/lib/ruby/gems/2.5.0/gems/sass-3.7.4/lib/sass/tree/visitors/perform.rb:158:in `visit'
-C:/Ruby25-x64/lib/ruby/gems/2.5.0/gems/sass-3.7.4/lib/sass/tree/visitors/perform.rb:325:in `block (2 levels) in visit_import'
-C:/Ruby25-x64/lib/ruby/gems/2.5.0/gems/sass-3.7.4/lib/sass/tree/visitors/perform.rb:325:in `map'
-C:/Ruby25-x64/lib/ruby/gems/2.5.0/gems/sass-3.7.4/lib/sass/tree/visitors/perform.rb:325:in `block in visit_import'
-C:/Ruby25-x64/lib/ruby/gems/2.5.0/gems/sass-3.7.4/lib/sass/stack.rb:88:in `block in with_import'
-C:/Ruby25-x64/lib/ruby/gems/2.5.0/gems/sass-3.7.4/lib/sass/stack.rb:135:in `with_frame'
-C:/Ruby25-x64/lib/ruby/gems/2.5.0/gems/sass-3.7.4/lib/sass/stack.rb:88:in `with_import'
-C:/Ruby25-x64/lib/ruby/gems/2.5.0/gems/sass-3.7.4/lib/sass/tree/visitors/perform.rb:322:in `visit_import'
 C:/Ruby25-x64/lib/ruby/gems/2.5.0/gems/sass-3.7.4/lib/sass/tree/visitors/base.rb:36:in `visit'
 C:/Ruby25-x64/lib/ruby/gems/2.5.0/gems/sass-3.7.4/lib/sass/tree/visitors/perform.rb:158:in `block in visit'
 C:/Ruby25-x64/lib/ruby/gems/2.5.0/gems/sass-3.7.4/lib/sass/stack.rb:79:in `block in with_base'
@@ -83,4 +68,4 @@ C:/Ruby25-x64/bin/scss:23:in `<main>'
 body:before {
   white-space: pre;
   font-family: monospace;
-  content: "Error: File to import not found or unreadable: ~@/styles/theme.scss.\A         on line 1 of element-variables.scss\A         from line 2 of element-ui.scss\A         from line 4 of index.scss\A \A 1: @import './variables.scss';\A 2: @import './mixin.scss';\A 3: @import './transition.scss';\A 4: @import './element-ui.scss';\A 5: @import './sidebar.scss';\A 6: @import './commonStyle.scss';"; }
+  content: "Error: File to import not found or unreadable: ~@/styles/theme.scss.\A         on line 1 of commonStyle.scss\A         from line 7 of index.scss\A \A 1: @import './variables.scss';\A 2: @import './mixin.scss';\A 3: @import './transition.scss';\A 4: @import './element-ui.scss';\A 5: @import './sidebar.scss';\A 6: @import './theme.scss';"; }
