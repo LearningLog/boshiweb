@@ -2,13 +2,13 @@
   <div class="tenant-add">
     <el-form ref="form" :model="form" label-width="120px">
       <el-form-item class="required" label="租户名称">
-        <el-input v-model="form.customname" placeholder="请输入租户名称" /><span class="tip">请输入租户平台名称(长度2-64位字符)</span>
+        <el-input v-model="form.customname" placeholder="请输入租户名称" @blur="customname_blur_fn" /><span class="tip">请输入租户平台名称(长度2-64位字符)</span>
       </el-form-item>
       <el-form-item class="required" label="租户描述">
         <el-input v-model="form.desc" placeholder="请输入租户描述" /><span class="tip">请填写租户描述(长度1-100位字符)</span>
       </el-form-item>
       <el-form-item class="required" label="最大用户数">
-        <el-input v-model="form.userCount" placeholder="请输入最大用户数" /><span class="tip">租户最多创建用户数(自然数)</span>
+        <el-input v-model="form.userCount" v-input-filter:int placeholder="请输入最大用户数" /><span class="tip">租户最多创建用户数(自然数)</span>
       </el-form-item>
       <el-form-item class="required" label="租户状态">
         <el-radio-group v-model="form.resource">
@@ -177,13 +177,15 @@
 </template>
 
 <script>
+import { strLength } from '@/utils/validate'
+import inputFilter from '@/directive/input-filter'
 import { VueCropper } from 'vue-cropper'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 export default {
   components: {
     VueCropper
   },
-  directives: { elDragDialog },
+  directives: { elDragDialog, inputFilter },
   data() {
     return {
       form: {
@@ -226,6 +228,13 @@ export default {
   created() {
   },
   methods: {
+    customname_blur_fn() {
+      const customname = this.form.customname
+      const flag = strLength(customname, 2, 64)
+      if (!flag) {
+        this.$message.error('租户平台名称(长度2-64位字符)')
+      }
+    },
     // 开始截图
     startCrop() {
       this.$refs.cropper.startCrop()
