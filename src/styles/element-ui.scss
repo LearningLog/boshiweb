@@ -99,9 +99,9 @@
   height: 50px !important;
   line-height: 50px!important;
 }
-//#app .sidebar-container .el-submenu li.el-menu-item:hover {
-//  background-color: $themeColor!important;
-//}
-//#app .sidebar-container .el-submenu .el-menu-item.is-active {
-//  background-color: $themeColor!important;
-//}
+.el-table th > .cell {
+  text-align: center;
+}
+.el-table .cell {
+  text-align: center;
+}

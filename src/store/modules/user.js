@@ -82,6 +82,18 @@ const actions = {
       }
       const data = { responseRoutes: [
         {
+          path: '/systemManage', // 组件路径
+          children: [ // 子菜单
+            {
+              path: 'menuManage'
+            },
+            {
+              path: 'tenantManage'
+            }
+          ]
+        },
+
+        {
           path: '/nested', // 组件路径
           children: [ // 子菜单
             {
@@ -109,6 +121,9 @@ const actions = {
                   path: 'menu1-3'
                 }
               ]
+            },
+            {
+              path: 'menu2'
             }
           ]
         },

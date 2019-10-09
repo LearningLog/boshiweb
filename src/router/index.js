@@ -68,24 +68,6 @@ export const constantRoutes = [
   },
 
   {
-    path: '/404',
-    component: () => import('@/views/404'),
-    hidden: true
-  },
-
-  // {
-  //   path: '/',
-  //   component: Layout,
-  //   redirect: '/dashboard',
-  //   children: [{
-  //     path: 'dashboard',
-  //     name: 'Dashboard',
-  //     component: () => import('@/views/dashboard/index'),
-  //     meta: { title: 'dashboard', icon: 'dashboard' }
-  //   }]
-  // },
-
-  {
     path: '/example',
     component: Layout,
     redirect: '/example/table',
@@ -120,22 +102,87 @@ export const constantRoutes = [
   },
 
   {
-    path: '/form',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'Form',
-        component: () => import('@/views/form/index'),
-        meta: { title: 'Form', icon: 'form' }
-      }
-    ]
+    path: '/404',
+    component: () => import('@/views/404'),
+    hidden: true
   }
 ]
 
 // 异步挂载的路由
 // 动态需要根据权限加载的路由表
 export const asyncRoutes = [
+
+  {
+    path: '/systemManage',
+    component: Layout,
+    // redirect: '/systemManage/menuManage',
+    name: 'systemManage',
+    meta: {
+      title: '系统配置',
+      icon: 'nested'
+    },
+    children: [
+      {
+        path: 'menuManage',
+        name: 'menuManage',
+        meta: { title: '菜单管理', icon: '' },
+        component: () => import('@/views/systemManage/menuManage/index.vue'),
+        children: [
+          {
+            path: 'add',
+            name: 'menuAdd',
+            // hidden: true,
+            component: () => import('@/views/systemManage/menuManage/add.vue'),
+            meta: { title: '新增菜单', icon: '' }
+          },
+          {
+            path: 'edit',
+            name: 'menuEdit',
+            hidden: true,
+            component: () => import('@/views/systemManage/menuManage/edit'),
+            meta: { title: '编辑菜单', icon: '' }
+          },
+          {
+            path: 'detail',
+            name: 'menuDetail',
+            hidden: true,
+            component: () => import('@/views/systemManage/menuManage/detail'),
+            meta: { title: '菜单详情', icon: '' }
+          }
+        ]
+      },
+      {
+        path: 'tenantManage',
+        name: 'tenantManage',
+        meta: { title: '租户管理', icon: '' },
+        component: () => import('@/views/systemManage/tenantManage/index'),
+        children: [
+          {
+            path: 'add',
+            name: 'tenantAdd',
+            hidden: true,
+            component: () => import('@/views/systemManage/tenantManage/add'),
+            meta: { title: '新增租户', icon: '' }
+          },
+          {
+            path: 'edit',
+            name: 'tenantEdit',
+            hidden: true,
+            component: () => import('@/views/systemManage/tenantManage/edit'),
+            meta: { title: '编辑租户', icon: '' }
+          },
+          {
+            path: 'detail',
+            name: 'tenantDetail',
+            hidden: true,
+            component: () => import('@/views/systemManage/tenantManage/detail'),
+            meta: { title: '租户详情', icon: '' }
+          }
+        ]
+      }
+    ]
+  },
+
   {
     path: '/nested',
     component: Layout,
@@ -201,6 +248,19 @@ export const asyncRoutes = [
       {
         path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
         meta: { title: 'External Link', icon: 'link' }
+      }
+    ]
+  },
+
+  {
+    path: '/form',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'Form',
+        component: () => import('@/views/form/index'),
+        meta: { title: 'Form', icon: 'form' }
       }
     ]
   },

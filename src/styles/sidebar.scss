@@ -75,7 +75,7 @@
       color: $subMenuActiveText !important;
     }
 
-    .el-submenu .el-menu-item.is-active {
+    .el-submenu .is-active.el-menu-item {
       background-color: $themeColor !important;
     }
 
