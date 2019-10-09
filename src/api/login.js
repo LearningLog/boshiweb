@@ -7,6 +7,14 @@ export function firstLogin_sendsms(data) {
     data
   })
 }
+// 验证第一次登录验证码
+export function validate_first_sms(data) {
+  return request({
+    url: '/api/userApi/validatePhoneValidateSmsCode',
+    method: 'post',
+    data
+  })
+}
 // 忘记密码发送验证码
 export function forget_sendsms(data) {
   return request({

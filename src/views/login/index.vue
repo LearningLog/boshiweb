@@ -20,7 +20,7 @@
         </p>
         <p v-if="is_first" class="posire sms-box">
           <span class="iconfont iconduanxin" />
-          <el-input v-model.trim="first_sms" placeholder="请输入短信验证码" autocomplete="off" @keyup="first_sms_vali_fn"/>
+          <el-input v-model.trim="first_sms" v-input-filter:int placeholder="请输入短信验证码" autocomplete="off" @keyup.native="first_sms_vali_fn" />
           <el-button class="sendsms-btn" :disabled="first_dis" @click="first_sendsms_fn">{{ first_down }}</el-button>
         </p>
         <div class="clearfix">
@@ -36,11 +36,11 @@
           <p class="sub-title">重置密码</p>
           <p class="posire">
             <span class="iconfont iconyonghuming" />
-            <el-input v-model.trim="forget_phone" placeholder="请输入手机号" maxlength="11" autocomplete="off" />
+            <el-input v-model.trim="forget_phone" v-input-filter:int placeholder="请输入手机号" maxlength="11" autocomplete="off" />
           </p>
           <p class="posire sms-box">
             <span class="iconfont iconduanxin" />
-            <el-input v-model.trim="forget_sms" placeholder="请输入短信验证码" autocomplete="off" />
+            <el-input v-model.trim="forget_sms" v-input-filter:int placeholder="请输入短信验证码" autocomplete="off" />
             <el-button class="sendsms-btn" :disabled="forget_dis" @click="forget_sendsms_fn">{{ forget_down }}</el-button>
           </p>
           <p class="posire">
@@ -403,18 +403,18 @@
 </template>
 
 <script>
-import { firstLogin_sendsms, forget_sendsms, validate_forget_sms, forget_updatepwd } from '@/api/login'
+import { firstLogin_sendsms, validate_first_sms, forget_sendsms, validate_forget_sms, forget_updatepwd } from '@/api/login'
 import { regPhone, regPwd } from '@/utils/validate'
-
+import inputFilter from '@/directive/input-filter'
 export default {
   name: 'Login',
+  directives: { inputFilter },
   data() {
     return {
       username: '',
       password: '',
       logintype: 1,
       agree_check: true,
-      loading: false,
       is_first: false,
       YZ_id: '', // 第一次登录
       first_down: '60s',
@@ -479,23 +479,13 @@ export default {
       that.$store.dispatch('user/login', param).then((res) => {
         if (res.code === 0) {
           that.$router.push({ path: this.redirect || '/' })
-          that.loading = false
         }
         if (res.code === 5001) {
-          that.loading = false
           that.YZ_id = res.data
           that.show_first_fn()
         }
-        that.loading = false
       }).catch((res) => {
         console.log(res)
-        // debugger
-        // if (res.code === 5001) {
-        //   that.loading = false
-        //   that.YZ_id = res.data
-        //   that.show_first_fn()
-        // }
-        // that.loading = false
       })
     },
     show_first_fn() {
@@ -516,7 +506,8 @@ export default {
       param._id = that.YZ_id
       firstLogin_sendsms(param).then(res => {
         if (res.data.needValidate === false) {
-          that.$router.push({ path: this.redirect || '/' })
+          that.login_fn()
+          // that.$router.push({ path: this.redirect || '/' })
         } else if (res.data.needValidate === true) {
           that.first_countdown_fn()
           that.is_first = true
@@ -547,7 +538,21 @@ export default {
       }
     },
     first_sms_vali_fn() {
-
+      const that = this
+      const first_sms = that.first_sms
+      const param = {}
+      if (first_sms.length === 6) {
+        param._id = that.YZMDT._id
+        param.sms_token = that.YZMDT.sms_token
+        param.sms_code = that.first_sms
+        validate_first_sms(param).then(res => {
+          console.log('验证成功')
+          that.login_fn()
+          // that.$router.push({ path: this.redirect || '/' })
+        }).catch(error => {
+          console.log(error)
+        })
+      }
     },
     forget_sendsms_fn() {
       const that = this
@@ -640,23 +645,6 @@ export default {
         })
       }).catch(error => {
         console.log(error)
-      })
-    },
-
-    handleLogin() {
-      this.$refs.loginForm.validate(valid => {
-        if (valid) {
-          this.loading = true
-          this.$store.dispatch('user/login', this.loginForm).then(() => {
-            this.$router.push({ path: this.redirect || '/' })
-            this.loading = false
-          }).catch(() => {
-            this.loading = false
-          })
-        } else {
-          console.log('error submit!!')
-          return false
-        }
       })
     }
   }

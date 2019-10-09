@@ -41,9 +41,11 @@ const actions = {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
       login(qs.stringify({ username: username.trim(), password: password, logintype: 1 })).then(response => {
-        const { data } = response
-        commit('SET_TOKEN', data)
-        setToken(data)
+        if (response.code === 0) {
+          const { data } = response
+          commit('SET_TOKEN', data)
+          setToken(data)
+        }
         resolve(response)
       }).catch(error => {
         reject(error)
