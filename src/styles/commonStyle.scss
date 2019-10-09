@@ -57,6 +57,15 @@
 
 
 
+
+
+
+
+
+.hide {
+    display: none;
+}
+
 /*双伪元素清除浮动----------！！！！*/
 .clearfix:before, .clearfix:after {
     content: "";
