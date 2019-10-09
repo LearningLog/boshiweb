@@ -12,6 +12,7 @@ export function clearCookie() {
   Cookies.remove('homePath')
   Cookies.remove('allButtonPermission')
   Cookies.remove('currentButtonPermission')
+  Cookies.remove('currentSystem')
 }
 
 const state = {
@@ -82,7 +83,7 @@ const actions = {
           add: false
         }
       }
-      const data = { responseRoutes: [
+      const data = { systemRoutes: [
         {
           name: '系统设置',
           path: '/systemManage', // 组件路径
@@ -95,8 +96,9 @@ const actions = {
               path: 'tenantManage'
             }
           ]
-        },
-
+        }
+      ],
+      backstageRoutes: [
         {
           path: '/nested', // 组件路径
           children: [ // 子菜单

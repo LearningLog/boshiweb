@@ -55,15 +55,39 @@ export function filterAsyncRoutes(routes, responseRoutes) {
 const state = {
   routes: [],
   addRoutes: [],
-  homePath: Cookies.get('homePath') ? !!+Cookies.get('homePath') : '',
+  currentSystem: Cookies.get('currentSystem') ? Cookies.get('currentSystem') : '',
+  systemRoutes: [],
+  backstageRoutes: [],
+  homePath: Cookies.get('homePath') ? Cookies.get('homePath') : '',
   allButtonPermission: Cookies.get('allButtonPermission') ? !!+JSON.parse(Cookies.get('allButtonPermission')) : '',
   currentButtonPermission: Cookies.get('currentButtonPermission') ? !!+JSON.parse(Cookies.get('currentButtonPermission')) : ''
 }
 
 const mutations = {
+  // 设置权限路由
   SET_ROUTES: (state, routes) => {
-    state.addRoutes = routes
-    state.routes = constantRoutes.concat(routes)
+    if (state.currentSystem === 'systemManage' && state.systemRoutes.length > 0) {
+      state.addRoutes = state.systemRoutes
+      state.routes = constantRoutes.concat(state.systemRoutes)
+    } else if (state.currentSystem === 'backstageManage' && state.backstageRoutes.length > 0) {
+      state.addRoutes = state.backstageRoutes
+      state.routes = constantRoutes.concat(state.backstageRoutes)
+    } else {
+      state.addRoutes = routes
+      state.routes = constantRoutes.concat(routes)
+    }
+  },
+  // 设置系统管理路由
+  SET_SYSTEM_ROUTES: (state, routes) => {
+    state.systemRoutes = routes
+  },
+  // 设置后台管理路由
+  SET_BACKSTAGE_ROUTES: (state, routes) => {
+    state.backstageRoutes = routes
+  },
+  // 设置当前url是哪个系统
+  SET_CURRENT_SYSTEM: (state, type) => {
+    state.currentSystem = type
   },
   CLEAR_ROUTER: (state) => {
     state.addRoutes = []
@@ -89,12 +113,30 @@ const mutations = {
 const actions = {
   generateRoutes({ commit }, responseRoutes) {
     return new Promise(async resolve => {
-      const accessedRoutes = await filterAsyncRoutes(asyncRoutes, responseRoutes)
-      accessedRoutes.push({ path: '*', redirect: '/404', hidden: true })
-      commit('SET_ROUTES', accessedRoutes)
+      const { systemRoutes, backstageRoutes } = responseRoutes
+      const accessedRoutes1 = await filterAsyncRoutes(asyncRoutes, systemRoutes)
+      const accessedRoutes2 = await filterAsyncRoutes(asyncRoutes, backstageRoutes)
+      accessedRoutes1.push({ path: '*', redirect: '/404', hidden: true })
+      accessedRoutes2.push({ path: '*', redirect: '/404', hidden: true })
+      commit('SET_SYSTEM_ROUTES', accessedRoutes1)
+      commit('SET_BACKSTAGE_ROUTES', accessedRoutes2)
+      commit('SET_ROUTES', accessedRoutes2)
       commit('SET_HOME_PATH', homePath)
-      resolve(accessedRoutes)
+      resolve(accessedRoutes2)
     })
+  },
+
+  // 根据type设置路由及生成当前系统菜单
+  set_permission_routes({ commit }, type) {
+    if (type === 1) { // 系统管理
+      commit('SET_CURRENT_SYSTEM', 'systemManage')
+      Cookies.set('currentSystem', 'systemManage')
+      commit('SET_ROUTES', state.systemRoutes)
+    } else { // 后台管理
+      commit('SET_CURRENT_SYSTEM', 'backstageManage')
+      Cookies.set('currentSystem', 'backstageManage')
+      commit('SET_ROUTES', state.backstageRoutes)
+    }
   },
 
   clearPermissionRoutes({ commit }) {

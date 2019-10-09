@@ -14,10 +14,10 @@
         active-text-color="#ffd04b"
         @select="handleSelect"
       >
-        <el-menu-item index="1">首页</el-menu-item>
+        <el-menu-item index="/">首页</el-menu-item>
         <el-menu-item index="2">我的学习</el-menu-item>
-        <el-menu-item :index="systemManage">系统管理</el-menu-item>
-        <el-menu-item :index="backstageManage">后台管理</el-menu-item>
+        <el-menu-item index="/systemManage">系统管理</el-menu-item>
+        <el-menu-item index="/backstageManage">后台管理</el-menu-item>
       </el-menu>
     </div>
     <div class="right-menu">
@@ -36,6 +36,10 @@
 import { mapGetters } from 'vuex'
 import User from '@/components/User'
 import HelpCenter from '@/components/HelpCenter'
+import router from '@/router'
+import { resetRouter } from '@/router'
+import store from '@/store'
+import Cookies from 'js-cookie'
 
 export default {
   components: {
@@ -51,7 +55,7 @@ export default {
     return {
       systemManage: this.$store.getters.homePath,
       backstageManage: this.$store.getters.homePath,
-      activeIndex: '1',
+      activeIndex: '/',
       title: '博识知识库',
       logo: 'https://wpimg.wallstcn.com/69a1c46c-eb1c-4b46-8bd4-e9e686ef5251.png',
       customStyle: {
@@ -61,9 +65,25 @@ export default {
     }
   },
   methods: {
-    handleSelect(key, keyPath) {
-      console.log(key, keyPath)
-      this.$router.push({ path: keyPath.join() })
+    async handleSelect(key, keyPath) {
+      switch (key) {
+        case '/':
+          break
+        case '/systemManage':
+          // 生成菜单前先初始化router
+          resetRouter()
+          router.addRoutes(this.$store.state.permission.systemRoutes)
+          await store.dispatch('permission/set_permission_routes', 1)
+          this.$router.push({ path: '/systemManage/menuManage/list' })
+          break
+        case '/backstageManage':
+          // 生成菜单前先初始化router
+          resetRouter()
+          router.addRoutes(this.$store.state.permission.backstageRoutes)
+          await store.dispatch('permission/set_permission_routes', 2)
+          this.$router.push({ path: '/nested/menu1/menu1-1' })
+          break
+      }
     }
   }
 }
