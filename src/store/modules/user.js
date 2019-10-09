@@ -84,9 +84,11 @@ const actions = {
       }
       const data = { responseRoutes: [
         {
+          name: '系统设置',
           path: '/systemManage', // 组件路径
           children: [ // 子菜单
             {
+              name: '菜单管理',
               path: 'menuManage'
             },
             {

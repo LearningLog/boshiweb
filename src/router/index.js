@@ -115,7 +115,7 @@ export const asyncRoutes = [
   {
     path: '/systemManage',
     component: Layout,
-    // redirect: '/systemManage/menuManage',
+    redirect: '/systemManage/menuManage',
     name: 'systemManage',
     meta: {
       title: '系统配置',
@@ -124,30 +124,38 @@ export const asyncRoutes = [
     children: [
       {
         path: 'menuManage',
+        component: () => import('@/views/systemManage/menuManage/index'),
+        redirect: '/systemManage/menuManage/list',
         name: 'menuManage',
-        meta: { title: '菜单管理', icon: '' },
-        component: () => import('@/views/systemManage/menuManage/index.vue'),
+        meta: { title: '菜单管理', icon: '', activeMenu: '/systemManage/menuManage' },
         children: [
           {
             path: 'add',
+            component: () => import('@/views/systemManage/menuManage/child/add.vue'),
             name: 'menuAdd',
-            // hidden: true,
-            component: () => import('@/views/systemManage/menuManage/add.vue'),
-            meta: { title: '新增菜单', icon: '' }
+            hidden: true,
+            meta: { title: '新增菜单', icon: '', activeMenu: '/systemManage/menuManage' }
           },
           {
             path: 'edit',
             name: 'menuEdit',
             hidden: true,
-            component: () => import('@/views/systemManage/menuManage/edit'),
-            meta: { title: '编辑菜单', icon: '' }
+            component: () => import('@/views/systemManage/menuManage/child/edit'),
+            meta: { title: '编辑菜单', icon: '', activeMenu: '/systemManage/menuManage' }
           },
           {
             path: 'detail',
             name: 'menuDetail',
             hidden: true,
-            component: () => import('@/views/systemManage/menuManage/detail'),
-            meta: { title: '菜单详情', icon: '' }
+            component: () => import('@/views/systemManage/menuManage/child/detail'),
+            meta: { title: '菜单详情', icon: '', activeMenu: '/systemManage/menuManage' }
+          },
+          {
+            path: 'list',
+            name: 'menuList',
+            hidden: true,
+            component: () => import('@/views/systemManage/menuManage/child/list.vue'),
+            meta: { title: '菜单列表', icon: '', activeMenu: '/systemManage/menuManage' }
           }
         ]
       },
