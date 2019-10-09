@@ -5,7 +5,7 @@ Vue.use(Router)
 
 /* Layout */
 import Layout1 from '@/layout/layout1'
-import Layout from '@/layout'
+import Layout from '@/layout/layout2'
 
 /**
  * 注意: 菜单项sub-menu 仅在 route children.length >= 1 时显示
@@ -119,7 +119,7 @@ export const asyncRoutes = [
     name: 'systemManage',
     meta: {
       title: '系统配置',
-      icon: 'nested'
+      icon: 'iconxitong'
     },
     children: [
       {
