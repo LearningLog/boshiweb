@@ -14,8 +14,9 @@
         </el-radio-group>
       </el-form-item>
     </el-form>
-    <el-button type="primary" @click="onSubmit">确定</el-button>
-    <el-button>取消</el-button>
+    <div class="btn-box">
+      <el-button type="primary" @click="onSubmit">确定</el-button>
+    </div>
   </div>
 </template>
 

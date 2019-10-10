@@ -167,9 +167,9 @@ export const asyncRoutes = [
         meta: { title: '租户管理', icon: '', activeMenu: '/systemManage/tenantManage' },
         children: [
           {
-            path: 'tenantadd',
+            path: 'add',
             component: () => import('@/views/systemManage/tenantManage/child/add.vue'),
-            name: 'Add',
+            name: 'tenantEditAdd',
             hidden: true,
             meta: { title: '新增租户', icon: '', activeMenu: '/systemManage/tenantManage' }
           },
@@ -230,6 +230,43 @@ export const asyncRoutes = [
             hidden: true,
             component: () => import('@/views/systemManage/sourceFile/child/list.vue'),
             meta: { title: '文件来源列表', icon: '', activeMenu: '/systemManage/sourceFile' }
+          }
+        ]
+      },
+      {
+        path: 'permissionManage',
+        component: () => import('@/views/systemManage/permissionManage/index'),
+        redirect: '/systemManage/permissionManage/list',
+        name: 'sourceFile',
+        meta: { title: '权限管理', icon: '', activeMenu: '/systemManage/permissionManage' },
+        children: [
+          {
+            path: 'add',
+            component: () => import('@/views/systemManage/permissionManage/child/add.vue'),
+            name: 'sourceAdd',
+            hidden: true,
+            meta: { title: '新增权限', icon: '', activeMenu: '/systemManage/permissionManage' }
+          },
+          {
+            path: 'edit',
+            name: 'sourceEdit',
+            hidden: true,
+            component: () => import('@/views/systemManage/permissionManage/child/edit'),
+            meta: { title: '修改权限', icon: '', activeMenu: '/systemManage/permissionManage' }
+          },
+          {
+            path: 'detail',
+            name: 'sourceDetail',
+            hidden: true,
+            component: () => import('@/views/systemManage/permissionManage/child/detail'),
+            meta: { title: '权限详情', icon: '', activeMenu: '/systemManage/permissionManage' }
+          },
+          {
+            path: 'list',
+            name: 'sourceList',
+            hidden: true,
+            component: () => import('@/views/systemManage/permissionManage/child/list.vue'),
+            meta: { title: '权限管理列表', icon: '', activeMenu: '/systemManage/permissionManage' }
           }
         ]
       }
