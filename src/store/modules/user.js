@@ -8,7 +8,6 @@ const qs = require('querystring')
 import defaultSettings from '@/settings'
 
 const { logo_name } = defaultSettings
-debugger
 /**
  * 退出登录，清除cookie
  */
