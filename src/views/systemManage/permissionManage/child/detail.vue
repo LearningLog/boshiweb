@@ -1,24 +1,25 @@
 <template>
-  <div class="tenant-add">
+  <div class="det-box">
     <el-form ref="form" :model="form" label-width="120px">
-      <el-form-item  label="模块名称">
-        <p>{{form.modulename}}</p>
+      <el-form-item label="模块名称:">
+        <p class="item">{{ form.modulename }}</p>
       </el-form-item>
-      <el-form-item  label="权限名称">
-        <el-input v-model="form.permissionname" placeholder="请输入权限名称" @blur="name_blur_fn" /><span class="tip">权限名称,长度1-64位字符</span>
+      <el-form-item label="权限名称:">
+        <p class="item">{{ form.permissionname }}</p>
       </el-form-item>
-      <el-form-item  label="权限标识">
-        <el-input v-model="form.permissionmark" placeholder="请输入权限标识" @blur="mark_blur_fn" /><span class="tip">权限标识,长度1-64位字符</span>
+      <el-form-item label="权限标识:">
+        <p class="item">{{ form.permissionmark }}</p>
       </el-form-item>
-      <el-form-item  label="权限code">
-        <el-input v-model="form.permissioncode" placeholder="请输入权限code" @blur="code_blur_fn" /><span class="tip">权限code,长度1-64位字符</span>
+      <el-form-item label="权限code:">
+        <p class="item">{{ form.permissioncode }}</p>
       </el-form-item>
-      <el-form-item label="权限描述">
-        <el-input v-model="form.permissiondesc" placeholder="请输入权限描述" />
+      <el-form-item label="权限描述:">
+        <p class="item">{{ form.permissiondesc }}</p>
       </el-form-item>
     </el-form>
-    <el-button type="primary" @click="onSubmit">确定</el-button>
-    <el-button>取消</el-button>
+    <div class="btn-box">
+      <el-button type="primary" @click="onSubmit">确定</el-button>
+    </div>
   </div>
 </template>
 
@@ -33,18 +34,31 @@ export default {
         permissionmark: '',
         permissioncode: '',
         permissiondesc: ''
-      }
-
+      },
+      query_param: ''
     }
   },
   created(options) {
+    this.query_param = this.$route.query.ids
+    this.get_det()
   },
   methods: {
     get_det() {
-
+      const that = this
+      const param = {}
+      param._id = this.query_param
+      permission_det(param).then(res => {
+        that.form.modulename = res.data.permission.modulename ? res.data.permission.modulename : '--'
+        that.form.permissionname = res.data.permission.permissionname ? res.data.permission.permissionname : '--'
+        that.form.permissionmark = res.data.permission.permissionmark ? res.data.permission.permissionmark : '--'
+        that.form.permissioncode = res.data.permission.permissioncode ? res.data.permission.permissioncode : '--'
+        that.form.permissiondesc = res.data.permission.permissiondesc ? res.data.permission.permissiondesc : '--'
+      }).catch(error => {
+        console.log(error)
+      })
     },
     onSubmit() {
-
+      this.$router.push({ path: '/systemManage/permissionManage' })
     }
 
   }
@@ -53,5 +67,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .det-box{
+    .item{
+      font-size: 14px;
+      margin: 0 0 0 5px;
+    }
+    .btn-box{
+      margin-left: 120px;
+    }
+  }
 
 </style>

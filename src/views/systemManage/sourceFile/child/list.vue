@@ -89,9 +89,9 @@
         </template>
       </el-table-column>
     </el-table>
-    <div class="page-piliang">
-      <!--<el-button type="primary"><i class="iconfont iconshanchu" />批量删除</el-button>-->
-      <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="get_list" />
+    <div class="page-piliang" v-show="total>0">
+      <el-button type="primary"><i class="iconfont iconshanchu" />批量删除</el-button>
+      <pagination   :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="get_list" />
     </div>
 
   </div>
