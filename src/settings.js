@@ -6,7 +6,7 @@ module.exports = {
 
   logo_name: '博识知识库',
 
-  avatar: require('./assets/images/logo.png'),
+  avatar: require('./assets/images/avatar.png'),
 
   /**
    * @type {boolean} true | false
