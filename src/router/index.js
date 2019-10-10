@@ -167,9 +167,9 @@ export const asyncRoutes = [
         meta: { title: '租户管理', icon: '', activeMenu: '/systemManage/tenantManage' },
         children: [
           {
-            path: 'tenantadd',
+            path: 'add',
             component: () => import('@/views/systemManage/tenantManage/child/add.vue'),
-            name: 'Add',
+            name: 'tenantEditAdd',
             hidden: true,
             meta: { title: '新增租户', icon: '', activeMenu: '/systemManage/tenantManage' }
           },
