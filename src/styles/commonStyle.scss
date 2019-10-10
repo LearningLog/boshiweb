@@ -59,10 +59,17 @@
     margin-left: 4px;
 }
 .el-form .tip {
-    color: #B8B8B8;
-    margin-left: 10px;
+    color: #c0c4cc;
+    line-height: 20px;
+}
+.form-edit .form, .form-edit #btnGroup {
+    width: 600px;
+    margin: 0 auto;
 }
 
+.form-edit #btnGroup {
+    padding-left: 80px;
+}
 
 
 

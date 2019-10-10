@@ -18,7 +18,7 @@ export function clearCookie() {
   Cookies.remove('backstageHomePath')
   Cookies.remove('allButtonPermission')
   Cookies.remove('currentButtonPermission')
-  Cookies.remove('currentSystem')
+  // Cookies.remove('currentSystem')
 }
 
 const state = {
