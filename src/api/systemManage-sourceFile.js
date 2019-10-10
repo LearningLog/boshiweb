@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-// 获取文件来源列表
+// 列表
 export function source_file_list(data) {
   return request({
     url: '/sourceSystem/pageSourceSystem',
@@ -7,7 +7,7 @@ export function source_file_list(data) {
     data
   })
 }
-// 添加文件来源
+// 添加
 export function source_file_add(data) {
   return request({
     url: '/sourceSystem/addSourceSystem',
@@ -15,7 +15,7 @@ export function source_file_add(data) {
     data
   })
 }
-// 修改文件来源
+// 修改
 export function source_file_edit(data) {
   return request({
     url: '/sourceSystem/updateSourceSystem',
@@ -23,7 +23,7 @@ export function source_file_edit(data) {
     data
   })
 }
-// 删除文件来源
+// 删除
 export function source_file_delet(data) {
   return request({
     url: '/sourceSystem/deleteSourceSystem',
@@ -31,7 +31,7 @@ export function source_file_delet(data) {
     data
   })
 }
-// 更改文件来源状态
+// 更改
 export function source_file_status(data) {
   return request({
     url: '/sourceSystem/updateEnableStatus',
@@ -39,4 +39,3 @@ export function source_file_status(data) {
     data
   })
 }
-// 查看文件来源
