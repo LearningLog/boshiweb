@@ -9,8 +9,8 @@
       </el-form-item>
       <el-form-item label="是否启用">
         <el-radio-group v-model="form.enable_status">
-          <el-radio value="1" label="启用" />
-          <el-radio value="2" label="停用" />
+          <el-radio label="1" >启用</el-radio>
+          <el-radio label="2" >禁用</el-radio>
         </el-radio-group>
       </el-form-item>
     </el-form>
