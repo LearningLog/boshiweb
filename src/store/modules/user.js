@@ -99,6 +99,9 @@ const actions = {
             },
             {
               path: 'sourceFile'
+            },
+            {
+              path: 'permissionManage'
             }
           ]
         }
