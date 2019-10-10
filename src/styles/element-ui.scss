@@ -50,9 +50,25 @@
 .el-time-spinner__wrapper .el-scrollbar__wrap:not(.el-scrollbar__wrap--hidden-default) {
   padding-top: 15px!important;
 }
+.el-table .cell {
+  line-height: 30px;
+}
+.el-table .el-button--mini {
+  padding: 5px 9px;
+}
+.el-button + .el-button {
+  margin-left: 4px;
+}
+.el-table th.is-leaf, .el-table td {
+  border-right: 1px solid #E5E5E5!important;
+}
+
+.el-table--border td {
+  border-right: 1px solid #E5E5E5;
+}
 
 .el-table .el-table__header thead tr th {
-  background: #e2e6ed;
+  background: #F2F2F2;
   vertical-align: middle;
   font-size: 16px;
   color: #5f6269;

@@ -103,8 +103,11 @@ export default {
     line-height: 50px;
     float: left;
     cursor: pointer;
+    width: 20px;
+    text-align: center;
   }
   .routerback:hover {
     color: $themeColor;
+    background-color: #f9f9f9;
   }
 </style>

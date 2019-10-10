@@ -41,7 +41,7 @@
         </el-popover>
       </div>
       <div id="topBtn">
-        <el-button type="primary" @click="add"><i class="iconfont iconjia"></i>新增</el-button>
+        <el-button type="primary" @click="add"><i class="iconfont iconjia" />新增</el-button>
       </div>
       <el-table
         v-loading="listLoading"
@@ -73,7 +73,7 @@
         </el-table-column>
         <el-table-column class-name="status-col" label="路径" width="200" align="center" show-overflow-tooltip>
           <template slot-scope="scope">
-            <el-tag :type="scope.row.status | statusFilter">{{ scope.row.status }}</el-tag>
+            {{ scope.row.status }}
           </template>
         </el-table-column>
         <el-table-column align="center" show-overflow-tooltip prop="created_at" label="类型" width="200">
@@ -82,13 +82,13 @@
             <span>{{ scope.row.display_time }}</span>
           </template>
         </el-table-column>
-        <el-table-column class-name="status-col" label="操作" width="280" align="center" show-overflow-tooltip>
+        <el-table-column class-name="status-col" label="操作" width="240" align="center" show-overflow-tooltip>
           <template slot-scope="scope">
-            <el-button size="mini" @click="edit(scope.row.id)"><i class="iconfont iconxiugai"></i>修改</el-button>
-            <el-button size="mini" @click="del(scope.row.id)"><i class="iconfont iconxiugai"></i>删除</el-button>
+            <el-button size="mini" @click="edit(scope.row.id)"><i class="iconfont iconxiugai" />修改</el-button>
+            <el-button size="mini" @click="del(scope.row.id)"><i class="iconfont iconxiugai" />删除</el-button>
             <el-dropdown>
               <el-button size="mini">
-                <i class="iconfont icongengduo"></i>更多
+                <i class="iconfont icongengduo" />更多
               </el-button>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item>上移</el-dropdown-item>
@@ -235,15 +235,15 @@ export default {
     float: left;
     width:300px;
     height: 100vh;
-    margin-right: 10px;
+    margin-right: 20px;
     border:1px solid rgba(222, 222, 222, 1);
-
+    padding-left: 10px;
     & h4 {
       margin-left: 10px;
     }
   }
   .right {
-    width: calc(100% - 310px) !important;
+    width: calc(100% - 320px) !important;
     float: right;
   }
 </style>
