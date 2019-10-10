@@ -2,11 +2,11 @@ module.exports = {
 
   title: '博识',
 
-  logo: '',
+  // logo: require('./assets/images/logo.png'),
 
   logo_name: '博识知识库',
 
-  avatar: '',
+  // avatar: require('./assets/images/avatar.png'),
 
   /**
    * @type {boolean} true | false
