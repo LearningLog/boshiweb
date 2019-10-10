@@ -2,7 +2,7 @@
   <div class="navbar1">
     <div class="logo">
       <img :src="logo" class="sidebar-logo">
-      <h1 class="sidebar-title">{{ title }} </h1>
+      <h1 class="sidebar-title">{{ logo_name }} </h1>
     </div>
     <div class="left-menu">
       <el-menu
@@ -39,7 +39,6 @@ import HelpCenter from '@/components/HelpCenter'
 import router from '@/router'
 import { resetRouter } from '@/router'
 import store from '@/store'
-import Cookies from 'js-cookie'
 
 export default {
   components: {
@@ -48,7 +47,9 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'sidebar'
+      'sidebar',
+      'logo',
+      'logo_name'
     ])
   },
   data() {
@@ -56,8 +57,8 @@ export default {
       systemManage: this.$store.getters.homePath,
       backstageManage: this.$store.getters.homePath,
       activeIndex: '/',
-      title: '博识知识库',
-      logo: 'https://wpimg.wallstcn.com/69a1c46c-eb1c-4b46-8bd4-e9e686ef5251.png',
+      // title: '博识知识库',
+      // logo: 'https://wpimg.wallstcn.com/69a1c46c-eb1c-4b46-8bd4-e9e686ef5251.png',
       customStyle: {
         color: '#ffffff'
       },

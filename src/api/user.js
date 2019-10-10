@@ -8,11 +8,19 @@ export function login(data) {
   })
 }
 
-export function getInfo(token) {
+export function getInfo() {
   return request({
-    url: '/user/info',
-    method: 'get',
-    params: { token }
+    url: '/system/user/onloadByUser',
+    method: 'post',
+    data: {}
+  })
+}
+
+export function getMenuList() {
+  return request({
+    url: '/system/menuV2/initmenu',
+    method: 'post',
+    data: {}
   })
 }
 

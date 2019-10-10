@@ -230,13 +230,17 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
   .left {
     float: left;
     width:300px;
     height: 100vh;
     margin-right: 10px;
     border:1px solid rgba(222, 222, 222, 1);
+
+    & h4 {
+      margin-left: 10px;
+    }
   }
   .right {
     width: calc(100% - 310px) !important;
