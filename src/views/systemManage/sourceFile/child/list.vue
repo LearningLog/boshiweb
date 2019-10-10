@@ -50,15 +50,10 @@
       fit
       highlight-current-row
     >
-      <el-table-column
-        type="selection"
-        width="55"
-      />
-      <!--<el-table-column align="center" label="ID" width="60">-->
-      <!--<template slot-scope="scope">-->
-      <!--{{ scope.$index }}-->
-      <!--</template>-->
-      <!--</el-table-column>-->
+      <!--<el-table-column-->
+        <!--type="selection"-->
+        <!--width="55"-->
+      <!--/>-->
       <el-table-column align="center" label="名称" show-overflow-tooltip>
         <template slot-scope="scope">
           <span class="pointer" @click="detail(scope.row.id)">{{ scope.row.customname }}</span>
@@ -140,6 +135,12 @@ export default {
 
   },
   methods: {
+    topSearch(){
+
+    },
+    get_list(){
+
+    },
     add() {
       this.$router.push({ path: '/systemManage/sourceFile/add' })
     }

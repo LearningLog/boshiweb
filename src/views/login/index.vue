@@ -58,10 +58,13 @@
       </div>
     </div>
     <div />
-    <div v-if="show_agreement" class="agreement-box">
-      <div class="agreement-cont">
-        <h6 class="agree_title">服务协议<span class="iconfont  iconguanbi agree-close" @click="agree_close_fn" /></h6>
-        <div class="content">
+    <el-dialog
+        title="服务协议"
+        :visible.sync="show_agreement"
+        width="55%"
+        center
+        >
+        <div class="agreement-box">
           <p class="no_indent">
             <span class="bold_w">导言</span>
             <br>
@@ -394,11 +397,10 @@
               <span class="bold_w">十三、本协议自</span>2019年8月1日起实行，解释权归北京阳光云视科技有限公司。</span>
           </p>
         </div>
-        <div style="text-align: center;padding-top:10px;padding-bottom: 15px;">
-          <el-button type="primary" @click="agree_fn()">同意</el-button>
-        </div>
-      </div>
-    </div>
+        <span slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="agree_fn">同意</el-button>
+        </span>
+      </el-dialog>
   </div>
 </template>
 
@@ -445,9 +447,6 @@ export default {
   methods: {
     show_agreement_fn() {
       this.show_agreement = true
-    },
-    agree_close_fn() {
-      this.show_agreement = false
     },
     agree_fn() {
       this.agree_check = true
@@ -772,45 +771,8 @@ export default {
       margin-right: 5px;
     }
     .agreement-box{
-      position: fixed;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-      background: rgba(0,0,0,.6);
-      padding-top: 14%;
-      z-index: 100;
-      font-size: 14px;
-      .agreement-cont{
-        display: flex;
-        flex-flow: column;
-        width: 50%;
-        margin: 0 auto;
-        background: $fff;
-        border-radius: 5px;
-        padding: 0 10px;
-        height: 60%;
-        .agree_title {
-          flex-basis: 50px;
-          font-size: 16px;
-          line-height: 49px;
-          text-align: center;
-          border-bottom: 1px solid #e8e8e8;
-          margin: 0;
-          position: relative;
-          .agree-close{
-            position: absolute;
-            top: 5px;
-            left: auto;
-            right: 5px;
-            cursor: pointer;
-          }
-        }
-        .content{
-          flex: 1;
-          overflow-y: auto;
-        }
-
+      height: 600px;
+      overflow-y: auto;
         p {
           line-height: 30px;
           text-indent: 28px;
@@ -828,7 +790,6 @@ export default {
         .tc {
           text-align: center;
         }
-      }
 
     }
 </style>
