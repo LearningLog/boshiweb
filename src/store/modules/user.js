@@ -7,8 +7,8 @@ const qs = require('querystring')
 
 import defaultSettings from '@/settings'
 
-const { logo, logo_name, avatar } = defaultSettings
-
+const { logo_name } = defaultSettings
+debugger
 /**
  * 退出登录，清除cookie
  */
@@ -24,8 +24,8 @@ export function clearCookie() {
 const state = {
   token: getToken(),
   name: '',
-  avatar: avatar,
-  logo: logo,
+  avatar: '',
+  logo: '',
   logo_name: logo_name
 }
 

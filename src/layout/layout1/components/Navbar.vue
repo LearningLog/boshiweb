@@ -1,7 +1,7 @@
 <template>
   <div class="navbar1">
     <div class="logo">
-      <img :src="logo" class="sidebar-logo">
+      <img :src="logo ? logo : logo1" class="sidebar-logo">
       <h1 class="sidebar-title">{{ logo_name }} </h1>
     </div>
     <div class="left-menu">
@@ -39,6 +39,7 @@ import HelpCenter from '@/components/HelpCenter'
 import router from '@/router'
 import { resetRouter } from '@/router'
 import store from '@/store'
+import logo1 from '@/assets/images/logo.png'
 
 export default {
   components: {
@@ -62,7 +63,8 @@ export default {
       customStyle: {
         color: '#ffffff'
       },
-      searchVal: ''
+      searchVal: '',
+      logo1
     }
   },
   methods: {

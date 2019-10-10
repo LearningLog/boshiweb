@@ -1,7 +1,7 @@
 <template>
   <el-dropdown class="avatar-container" trigger="click">
     <div class="avatar-wrapper">
-      <img :src="avatar" class="user-avatar">
+      <img :src="avatar ? avatar : avatar1 " class="user-avatar">
       <i :style="customStyle" class="el-icon-caret-bottom" />
     </div>
     <el-dropdown-menu slot="dropdown" class="user-dropdown">
@@ -19,6 +19,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import avatar1 from '@/assets/images/avatar.png'
 export default {
   name: 'User',
   props: {
@@ -32,7 +33,9 @@ export default {
     }
   },
   data() {
-    return {}
+    return {
+      avatar1
+    }
   },
   computed: {
     ...mapGetters([
