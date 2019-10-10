@@ -1,5 +1,5 @@
 <template>
-  <div class="tenant-list-box">
+  <div class="list-box">
     <div id="topSearch">
       <el-input v-model="searchVal" placeholder="请输入权限名称">
         <el-button slot="append" type="primary" icon="el-icon-search" />
@@ -55,7 +55,7 @@
       <!--/>-->
       <el-table-column align="center" label="名称" show-overflow-tooltip>
         <template slot-scope="scope">
-          <span class="pointer" @click="detail(scope.row._id)">{{ scope.row.permissionname }}</span>
+          <span class="pointer" @click="go_detail(scope.row._id)">{{ scope.row.permissionname }}</span>
         </template>
       </el-table-column>
       <el-table-column label="模块" width="150" align="center" show-overflow-tooltip>
@@ -63,17 +63,17 @@
           <span>{{ scope.row.modulename }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="标识" width="110" align="center" show-overflow-tooltip>
+      <el-table-column label="标识" width="150" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           <span>{{ scope.row.permissionmark }}</span>
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="code" width="200" align="center" show-overflow-tooltip>
+      <el-table-column class-name="status-col" label="code" width="150" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.permissioncode }}
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="描述" width="200" align="center" show-overflow-tooltip>
+      <el-table-column class-name="status-col" label="描述" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.permissiondesc }}
         </template>
@@ -83,12 +83,12 @@
           {{ scope.row.permissionmenu }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="创建时间" width="200" show-overflow-tooltip>
+      <el-table-column align="center" label="创建时间" width="150" show-overflow-tooltip>
         <template slot-scope="scope">
           <span>{{ scope.row.createtime }}</span>
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="操作" width="280" align="center" show-overflow-tooltip>
+      <el-table-column class-name="status-col" label="操作" width="180" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-button size="mini" @click="go_edit_fn(scope.row._id)"><i class="iconfont iconxiugai" /><i />修改</el-button>
           <el-button size="mini" @click="delet_fn(scope.row._id)"><i class="iconfont iconshanchu" />删除</el-button>
@@ -113,7 +113,7 @@ export default {
       searchVal: '',
       searchObj: {
         module: null,
-        menu:'',
+        menu: '',
         start_time: null,
         end_time: null,
         status: null,
@@ -131,7 +131,7 @@ export default {
     }
   },
   created() {
-
+    this.get_list()
   },
   methods: {
     topSearch() {
@@ -146,7 +146,7 @@ export default {
       param.page = that.listQuery.page ? that.listQuery.page : 1
       permission_list(param).then(res => {
         that.list = res.data.page.list
-        that.total = res.data.page.total
+        that.total = res.data.page.totalCount
         that.page_count = res.data.page.pageCount
       }).catch(error => {
         console.log(error)
@@ -166,6 +166,9 @@ export default {
         console.log(error)
       })
     },
+    go_detail(in_ids) {
+      this.$router.push({ path: '/systemManage/permissionManage/detail', query: { ids: in_ids }})
+    },
     go_edit_fn(in_ids) {
       this.$router.push({ path: '/systemManage/permissionManage/edit', query: { ids: in_ids }})
     },
@@ -177,7 +180,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .tenant-list-box{
+  .list-box{
+    p{
+      margin: 0 0 0 5px !important;
+    }
     .page-piliang{
       padding-top: 15px;
     }
