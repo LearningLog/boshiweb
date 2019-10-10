@@ -5,7 +5,6 @@ import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
 import { getToken } from '@/utils/auth' // get token from cookie
 import getPageTitle from '@/utils/get-page-title'
-import Cookies from "js-cookie";
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
@@ -27,7 +26,6 @@ router.beforeEach(async(to, from, next) => {
       next({ path: '/' })
       NProgress.done()
     } else {
-      console.log(store.getters.permission_routes)
       // determine whether the user has obtained his permission routes through getInfo
       const hasPermission = store.getters.permission_routes && store.getters.permission_routes.length > 0
       if (hasPermission) { // 当有用户权限的时候，说明所有可访问路由已生成 如访问没权限的页面会自动进入404页面
@@ -78,7 +76,7 @@ router.beforeEach(async(to, from, next) => {
           // const accessRoutes = await store.dispatch('permission/generateRoutes', { systemRoutes, backstageRoutes })
           await store.dispatch('permission/generateRoutes', { systemRoutes, backstageRoutes })
 
-          // dynamically add accessible routes
+          // 动态添加可访问路由
           // router.addRoutes(accessRoutes)
 
           // 刷新浏览器是判断当前url所在的系统位置是 系统管理 还是 后台管理
