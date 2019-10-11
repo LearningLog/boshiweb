@@ -1,8 +1,8 @@
 <template>
   <div class="list-box">
     <div id="topSearch">
-      <el-input v-model="listQuery.name" placeholder="请输入文件名称" clearable @keyup.enter.native="topSearch">
-        <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
+      <el-input v-model="listQuery.newscategory_name" placeholder="请输入类别名称">
+        <el-button slot="append" type="primary" icon="el-icon-search" clearable />
       </el-input>
       <el-popover
         v-model="popoverVisible"
@@ -21,17 +21,13 @@
             <el-date-picker
               v-model="listQuery.time_range"
               type="daterange"
-              clearable
+              format="yyyy-MM-dd"
+              value-format="yyyy-MM-dd"
               range-separator="至"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
+              clearable
             />
-          </el-form-item>
-          <el-form-item label="状态">
-            <el-radio-group v-model="listQuery.enable_status" clearable>
-              <el-radio :label="1">生效</el-radio>
-              <el-radio :label="2">失效</el-radio>
-            </el-radio-group>
           </el-form-item>
         </el-form>
 
@@ -58,69 +54,60 @@
       <!--type="selection"-->
       <!--width="55"-->
       <!--/>-->
-      <el-table-column align="center" label="名称" show-overflow-tooltip>
+      <el-table-column align="center" label="类别" show-overflow-tooltip>
         <template slot-scope="scope">
-          <span>{{ scope.row.name }}</span>
+          <span class="pointer" @click="go_detail(scope.row._id)">{{ scope.row.newscategory_name }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="代码" width="220" align="center" show-overflow-tooltip>
+      <el-table-column label="描述" min-width="150" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
-          <span>{{ scope.row.code }}</span>
+          <span>{{ scope.row.newscategory_desc }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="状态" width="200" align="center" show-overflow-tooltip>
+      <el-table-column label="创建人" min-width="150" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
-          <span>{{ scope.row.status_txt }}</span>
+          <span>{{ scope.row.creater }}</span>
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="创建人" width="220" align="center" show-overflow-tooltip>
+      <el-table-column align="center" label="创建时间" min-width="150" show-overflow-tooltip>
         <template slot-scope="scope">
-          {{ scope.row.personalise }}
+          <span>{{ scope.row.createtime }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="创建时间" width="220" show-overflow-tooltip>
+      <el-table-column class-name="status-col" label="操作" min-width="180" align="center" fixed="right" show-overflow-tooltip>
         <template slot-scope="scope">
-          <span>{{ scope.row.c_time }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column class-name="status-col" label="操作" width="280" align="center" show-overflow-tooltip>
-        <template slot-scope="scope">
-          <el-button size="mini" @click="go_edit_fn(scope.row)"><i class="iconfont iconxiugai" /><i />修改</el-button>
-          <el-button v-if="scope.row.status_txt==='启用'" size="mini" @click="status_fn(scope.row._id,scope.row.status)"><i class="iconfont iconshixiao" />停用</el-button>
-          <el-button v-if="scope.row.status_txt==='停用'" size="mini" @click="status_fn(scope.row._id,scope.row.status)"><i class="iconfont iconshengxiao" />启用</el-button>
+          <el-button size="mini" @click="go_edit_fn(scope.row._id)"><i class="iconfont iconxiugai" /><i />网站管理</el-button>
+          <el-button size="mini" @click="go_edit_fn(scope.row._id)"><i class="iconfont iconxiugai" /><i />修改</el-button>
           <el-button size="mini" @click="delet_fn(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
-
         </template>
       </el-table-column>
     </el-table>
-    <div v-show="total>0" class="page-piliang">
+    <div class="page-piliang">
       <!--<el-button type="primary"><i class="iconfont iconshanchu" />批量删除</el-button>-->
-      <pagination :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="get_list" />
+      <pagination v-show="total>0" :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="get_list" />
     </div>
 
   </div>
 </template>
 
 <script>
-import { source_file_list, source_file_delet, source_file_status } from '@/api/systemManage-sourceFile.js'
+import { newscategory_list, newscategory_delet } from '@/api/systemManage-newsCategorry.js'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 export default {
   components: { Pagination },
   data() {
     return {
       listQuery: {
-        currentPage: 1,
-        pageSize: 10,
-        name: '',
+        newscategory_name: '',
         creater: '',
         time_range: null,
-        enable_status: ''
+        currentPage: 1,
+        pageSize: 10
       },
       list: null,
       listLoading: false,
       total: 0,
       page_count: 0,
-      status_map: { 1: '启用', 2: '停用' },
       popoverVisible: false
     }
   },
@@ -133,22 +120,14 @@ export default {
       this.get_list()
     },
     reset() {
-      this.listQuery.name = ''
+      this.listQuery.newscategory_name = ''
       this.listQuery.creater = ''
       this.listQuery.time_range = null
-      this.listQuery.enable_status = ''
     },
+    // 列表
     get_list() {
       const that = this
-      const status_map = that.status_map
-      // conditionParam: {}
-      // currentPage: 1
-      // endTime: "2019-10-11"
-      // keyTime: "c_time"
-      // pageSize: 10
-      // regexConditionParam: [{key: "name", value: "课件上传"}]
-      // sort: {_id: -1}
-      // startTime: "2019-10-10"
+      const param = {}
       let stime = ''
       let edtime = ''
       if (that.listQuery.time_range && that.listQuery.time_range[0]) {
@@ -157,18 +136,11 @@ export default {
       if (that.listQuery.time_range && that.listQuery.time_range[1]) {
         edtime = that.listQuery.edtime[1]
       }
-      const param = {}
-      param.name = that.listQuery.name ? that.listQuery.name : ''
-      param.creater = that.listQuery.creater ? that.listQuery.creater : ''
+      param.name = that.listQuery.newscategory_name ? that.listQuery.newscategory_name : ''
       param.startTime = stime
       param.endTime = edtime
-      param.status = that.listQuery.enable_status ? that.listQuery.enable_status : ''
       param.page = that.listQuery.page ? that.listQuery.page : 1
-      source_file_list(param).then(res => {
-        const dt = res.data.page.list
-        dt.forEach(item => {
-          item.status_txt = status_map[item.enable_status]
-        })
+      newscategory_list(param).then(res => {
         that.list = res.data.page.list
         that.total = res.data.page.totalCount
         that.page_count = res.data.page.pageCount
@@ -176,18 +148,17 @@ export default {
         console.log(error)
       })
     },
-    go_detail(in_ids) {
-      this.$router.push({ path: '/systemManage/sourceFile/detail', query: { ids: in_ids }})
-    },
+    // 删除
     delet_fn(row) {
-      this.$confirm('确定要删除【' + row.name + '】吗？', '提示', {
+      this.$confirm('确定要删除【' + row.newscategory_name + '】吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
         const param = {}
-        param.ids = row._id
-        source_file_delet(param).then(response => {
+        param.ids = []
+        param.ids.push(row._id)
+        newscategory_delet(param).then(response => {
           this.$message.success(response.message)
           if ((this.list.length - 1) === 0) { // 如果当前页数据已删完，则去往上一页
             this.listQuery.currentPage -= 1
@@ -196,35 +167,27 @@ export default {
         })
       }).catch(() => {})
     },
-    status_fn(in_ids, in_ststus) {
-      const that = this
-      const param = {}
-      param.ids = []
-      param.ids.push(in_ids)
-      param.enable_status = in_ststus
-      source_file_status(param).then(res => {
-        that.$message({
-          message: res.message,
-          type: 'success'
-        })
-        that.get_list()
-      }).catch(error => {
-        console.log(error)
-      })
+    // 查看 网站管理
+    go_detail(in_ids) {
+      this.$router.push({ path: '/systemManage/newsCategory/detail', query: { ids: in_ids }})
     },
-    go_edit_fn(data) {
-      const dt = data
-      this.$router.push({ path: '/systemManage/sourceFile/edit', query: { queryDt: dt }})
+    // 编辑
+    go_edit_fn(in_ids) {
+      this.$router.push({ path: '/systemManage/permissionManage/edit', query: { ids: in_ids }})
     },
+    // 添加
     add() {
-      this.$router.push({ path: '/systemManage/sourceFile/add' })
+      this.$router.push({ path: '/systemManage/permissionManage/add' })
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  .tenant-list-box{
+  .list-box{
+    p{
+      margin: 0 0 0 5px !important;
+    }
     .page-piliang{
       padding-top: 15px;
     }

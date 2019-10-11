@@ -1,7 +1,7 @@
 <template>
   <div class="list-box">
     <div id="topSearch">
-      <el-input v-model="listQuery.permissionname" placeholder="请输入权限名称">
+      <el-input v-model="listQuery.website_name" placeholder="请输入类别名称">
         <el-button slot="append" type="primary" icon="el-icon-search" clearable />
       </el-input>
       <el-popover
@@ -14,12 +14,6 @@
         popper-class="advancedSearch"
       >
         <el-form ref="form" :model="listQuery" label-width="80px">
-          <el-form-item label="模块">
-            <el-input v-model="listQuery.module" clearable />
-          </el-form-item>
-          <el-form-item label="菜单">
-            <el-input v-model="listQuery.menu" clearable />
-          </el-form-item>
           <el-form-item label="创建时间">
             <el-date-picker
               v-model="listQuery.time_range"
@@ -57,34 +51,14 @@
       <!--type="selection"-->
       <!--width="55"-->
       <!--/>-->
-      <el-table-column align="center" label="名称" show-overflow-tooltip>
+      <el-table-column align="center" label="类别" show-overflow-tooltip>
         <template slot-scope="scope">
-          <span class="pointer" @click="go_detail(scope.row._id)">{{ scope.row.permissionname }}</span>
+          <span class="pointer" @click="go_detail(scope.row._id)">{{ scope.row.website_name }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="模块" min-width="150" align="center" show-overflow-tooltip>
+      <el-table-column label="描述" min-width="150" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
-          <span>{{ scope.row.modulename }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="标识" min-width="150" align="center" show-overflow-tooltip>
-        <template slot-scope="scope">
-          <span>{{ scope.row.permissionmark }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column class-name="status-col" label="code" min-width="150" align="center" show-overflow-tooltip>
-        <template slot-scope="scope">
-          {{ scope.row.permissioncode }}
-        </template>
-      </el-table-column>
-      <el-table-column class-name="status-col" label="描述" align="center" show-overflow-tooltip>
-        <template slot-scope="scope">
-          {{ scope.row.permissiondesc }}
-        </template>
-      </el-table-column>
-      <el-table-column class-name="status-col" label="菜单" min-width="200" align="center" show-overflow-tooltip>
-        <template slot-scope="scope">
-          {{ scope.row.permissionmenu }}
+          <span>{{ scope.row.website_desc }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="创建时间" min-width="150" show-overflow-tooltip>
@@ -108,16 +82,14 @@
 </template>
 
 <script>
-import { permission_list, permission_delet } from '@/api/systemManage-permissionManage.js'
+import { net_list, net_delet } from '@/api/systemManage-newsCategorry.js'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 export default {
   components: { Pagination },
   data() {
     return {
       listQuery: {
-        permissionname: '',
-        menu: '',
-        module: '',
+        website_name: '',
         time_range: null,
         currentPage: 1,
         pageSize: 10
@@ -126,10 +98,12 @@ export default {
       listLoading: false,
       total: 0,
       page_count: 0,
-      popoverVisible: false
+      popoverVisible: false,
+      query_param: ''
     }
   },
   created() {
+    this.query_param = this.$route.query.ids
     this.get_list()
   },
   methods: {
@@ -138,9 +112,8 @@ export default {
       this.get_list()
     },
     reset() {
-      this.listQuery.permissionname = ''
-      this.listQuery.menu = ''
-      this.listQuery.module = ''
+      this.listQuery.website_name = ''
+      this.listQuery.creater = ''
       this.listQuery.time_range = null
     },
     // 列表
@@ -155,11 +128,12 @@ export default {
       if (that.listQuery.time_range && that.listQuery.time_range[1]) {
         edtime = that.listQuery.edtime[1]
       }
-      param.name = that.listQuery.permissionname ? that.listQuery.permissionname : ''
+      param.webcategoryid = that.query_param
+      param.name = that.listQuery.website_name ? that.listQuery.website_name : ''
       param.startTime = stime
       param.endTime = edtime
       param.page = that.listQuery.page ? that.listQuery.page : 1
-      permission_list(param).then(res => {
+      net_list(param).then(res => {
         that.list = res.data.page.list
         that.total = res.data.page.totalCount
         that.page_count = res.data.page.pageCount
@@ -169,7 +143,7 @@ export default {
     },
     // 删除
     delet_fn(row) {
-      this.$confirm('确定要删除【' + row.permissionname + '】吗？', '提示', {
+      this.$confirm('确定要删除【' + row.website_name + '】吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -177,7 +151,7 @@ export default {
         const param = {}
         param.ids = []
         param.ids.push(row._id)
-        permission_delet(param).then(response => {
+        net_delet(param).then(response => {
           this.$message.success(response.message)
           if ((this.list.length - 1) === 0) { // 如果当前页数据已删完，则去往上一页
             this.listQuery.currentPage -= 1
@@ -186,17 +160,13 @@ export default {
         })
       }).catch(() => {})
     },
-    // 查看
-    go_detail(in_ids) {
-      this.$router.push({ path: '/systemManage/permissionManage/detail', query: { ids: in_ids }})
-    },
     // 编辑
-    go_edit_fn(in_ids) {
-      this.$router.push({ path: '/systemManage/permissionManage/edit', query: { ids: in_ids }})
+    go_edit_fn(row) {
+      this.$router.push({ path: '/systemManage/newsCategory/netManage/edit', query: { queryDt: row }})
     },
     // 添加
     add() {
-      this.$router.push({ path: '/systemManage/permissionManage/add' })
+      this.$router.push({ path: '/systemManage/newsCategory/netManage/add' })
     }
   }
 }

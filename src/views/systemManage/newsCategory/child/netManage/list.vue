@@ -7,7 +7,7 @@
       <el-popover
         v-model="popoverVisible"
         placement="bottom-start"
-        width="456"
+        width="500"
         title="高级搜索"
         :visible-arrow="false"
         trigger="click"
@@ -141,7 +141,7 @@ export default {
       this.listQuery.permissionname = ''
       this.listQuery.menu = ''
       this.listQuery.module = ''
-      this.listQuery.time_range = null
+      this.listQuery.time_range = ''
     },
     // 列表
     get_list() {
