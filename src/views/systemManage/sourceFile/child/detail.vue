@@ -1,11 +1,11 @@
 <template>
-  <div class="det-box">
+  <div class="form-edit">
     <el-form ref="form" class="form" :model="form" label-width="120px">
       <el-form-item label="文件代码">
-        <el-input v-model="form.code" placeholder="请输入系统代码" /><span class="tip">文件代码,长度2-64位字符</span>
+        <span>{{ form.code }}</span>
       </el-form-item>
       <el-form-item label="文件名称">
-        <el-input v-model="form.name" placeholder="请输入文件名称" /><span class="tip">文件名称,长度2-64位字符</span>
+        <span>{{ form.name }}</span>
       </el-form-item>
       <el-form-item label="是否启用">
         <el-radio-group v-model="form.enable_status">
@@ -39,6 +39,9 @@ export default {
   methods: {
     get_det() {
 
+    },
+    onSubmit() {
+      this.$router.push({ path: '/systemManage/sourceFile' })
     }
   }
 

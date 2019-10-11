@@ -1,8 +1,8 @@
 <template>
   <div class="list-box">
     <div id="topSearch">
-      <el-input v-model="searchVal" placeholder="请输入文件名称">
-        <el-button slot="append" type="primary" icon="el-icon-search" />
+      <el-input v-model="listQuery.name" placeholder="请输入文件名称" clearable @keyup.enter.native="topSearch">
+        <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
       </el-input>
       <el-popover
         v-model="popoverVisible"
@@ -13,28 +13,31 @@
         trigger="click"
         popper-class="advancedSearch"
       >
-        <el-form ref="form" :model="searchObj" label-width="80px">
+        <el-form ref="form" :model="listQuery" label-width="80px">
           <el-form-item label="创建人">
-            <el-input v-model="searchObj.creater" />
+            <el-input v-model="listQuery.creater" clearable />
           </el-form-item>
           <el-form-item label="创建时间">
             <el-date-picker
-              v-model="searchObj.time_range"
+              v-model="listQuery.time_range"
               type="daterange"
+              clearable
               range-separator="至"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
             />
           </el-form-item>
           <el-form-item label="状态">
-            <el-radio v-model="searchObj.enable_status" label="1">生效</el-radio>
-            <el-radio v-model="searchObj.enable_status" label="2">失效</el-radio>
+            <el-radio-group v-model="listQuery.enable_status" clearable>
+              <el-radio :label="1">生效</el-radio>
+              <el-radio :label="2">失效</el-radio>
+            </el-radio-group>
           </el-form-item>
         </el-form>
 
         <div id="searchPopoverBtn">
           <el-button type="primary" @click="topSearch">搜索</el-button>
-          <el-button type="primary" plain @click="searchObj = {}">重置</el-button>
+          <el-button type="primary" plain @click="reset">重置</el-button>
         </div>
 
         <span id="advancedSearch" slot="reference">高级搜索<i class="el-icon-caret-bottom" /></span>
@@ -82,17 +85,17 @@
       </el-table-column>
       <el-table-column class-name="status-col" label="操作" width="280" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
-          <el-button size="mini" @click="go_edit_fn(scope.row._id)"><i class="iconfont iconxiugai" /><i />修改</el-button>
-          <el-button size="mini" v-if="scope.row.status_txt==='启用'" @click="status_fn(scope.row._id,scope.row.status)"><i class="iconfont iconshixiao" />停用</el-button>
-          <el-button size="mini" v-if="scope.row.status_txt==='停用'" @click="status_fn(scope.row._id,scope.row.status)"><i class="iconfont iconshengxiao" />启用</el-button>
-          <el-button size="mini" @click="delet_fn(scope.row._id)"><i class="iconfont iconshanchu" />删除</el-button>
+          <el-button size="mini" @click="go_edit_fn(scope.row)"><i class="iconfont iconxiugai" /><i />修改</el-button>
+          <el-button v-if="scope.row.status_txt==='启用'" size="mini" @click="status_fn(scope.row._id,scope.row.status)"><i class="iconfont iconshixiao" />停用</el-button>
+          <el-button v-if="scope.row.status_txt==='停用'" size="mini" @click="status_fn(scope.row._id,scope.row.status)"><i class="iconfont iconshengxiao" />启用</el-button>
+          <el-button size="mini" @click="delet_fn(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
 
         </template>
       </el-table-column>
     </el-table>
     <div v-show="total>0" class="page-piliang">
       <!--<el-button type="primary"><i class="iconfont iconshanchu" />批量删除</el-button>-->
-      <pagination :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="get_list" />
+      <pagination :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="get_list" />
     </div>
 
   </div>
@@ -105,22 +108,18 @@ export default {
   components: { Pagination },
   data() {
     return {
-      searchVal: '',
-      searchObj: {
-        creater: null,
-        start_time: null,
-        end_time: null,
-        enable_status: null,
-        time_range: null
+      listQuery: {
+        currentPage: 1,
+        pageSize: 10,
+        name: '',
+        creater: '',
+        time_range: null,
+        enable_status: ''
       },
       list: null,
       listLoading: false,
       total: 0,
       page_count: 0,
-      listQuery: {
-        page: 1,
-        limit: 10
-      },
       status_map: { 1: '启用', 2: '停用' },
       popoverVisible: false
     }
@@ -130,7 +129,14 @@ export default {
   },
   methods: {
     topSearch() {
+      this.popoverVisible = false
       this.get_list()
+    },
+    reset() {
+      this.listQuery.name = ''
+      this.listQuery.creater = ''
+      this.listQuery.time_range = null
+      this.listQuery.enable_status = ''
     },
     get_list() {
       const that = this
@@ -166,19 +172,22 @@ export default {
     go_detail(in_ids) {
       this.$router.push({ path: '/systemManage/sourceFile/detail', query: { ids: in_ids }})
     },
-    delet_fn(in_ids) {
-      const that = this
-      const param = {}
-      param.ids = in_ids
-      source_file_delet(param).then(res => {
-        that.$message({
-          message: res.message,
-          type: 'success'
+    delet_fn(row) {
+      this.$confirm('确定要删除【' + row.name + '】吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const param = {}
+        param.ids = row._id
+        source_file_delet(param).then(response => {
+          this.$message.success(response.message)
+          if ((this.list.length - 1) === 0) { // 如果当前页数据已删完，则去往上一页
+            this.listQuery.currentPage -= 1
+          }
+          this.get_list()
         })
-        that.get_list()
-      }).catch(error => {
-        console.log(error)
-      })
+      }).catch(() => {})
     },
     status_fn(in_ids, in_ststus) {
       const that = this
@@ -196,8 +205,9 @@ export default {
         console.log(error)
       })
     },
-    go_edit_fn(in_ids) {
-      this.$router.push({ path: '/systemManage/sourceFile/edit', query: { ids: in_ids }})
+    go_edit_fn(data) {
+      const dt = data
+      this.$router.push({ path: '/systemManage/sourceFile/edit', query: { queryDt: dt }})
     },
     add() {
       this.$router.push({ path: '/systemManage/sourceFile/add' })
