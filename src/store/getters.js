@@ -15,6 +15,7 @@ const getters = {
   backstageRoutes: state => state.permission.backstageRoutes, // 后台管理权限
   permission_routes: state => state.permission.routes, // 当前登录对象拥有的所有权限
   allButtonPermission: state => state.permission.allButtonPermission,
-  currentButtonPermission: state => state.permission.currentButtonPermission
+  currentButtonPermission: state => state.permission.currentButtonPermission,
+  menuType: state => state.menuManage.menuType
 }
 export default getters

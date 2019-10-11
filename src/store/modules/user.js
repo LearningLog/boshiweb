@@ -8,7 +8,6 @@ const qs = require('querystring')
 import defaultSettings from '@/settings'
 
 const { logo_name } = defaultSettings
-debugger
 /**
  * 退出登录，清除cookie
  */
@@ -76,7 +75,9 @@ const actions = {
           if (!res.data) {
             reject('验证失败，请再次登录')
           }
-          const { logo, userInfo } = res.data
+          let { logo, userInfo } = res.data
+          logo = logo || {}
+          userInfo = userInfo || {}
           if (logo.platform_url) {
             commit('SET_LOGO', logo.platform_url)
           }
@@ -89,8 +90,9 @@ const actions = {
           commit('SET_NAME', userInfo.nickname)
         })
         const routes = {}
-        routes.systemRoutes = response.data.systemMenus
-        routes.backstageRoutes = response.data.tenementMenus
+        response.data = response.data || {}
+        routes.systemRoutes = response.data.systemMenus || []
+        routes.backstageRoutes = response.data.tenementMenus || []
         routes.allButtonPermission = response.data.allButtonPermission ? response.data.allButtonPermission : {}
 
         // const allButtonPermission = {

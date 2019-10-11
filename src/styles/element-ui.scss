@@ -43,6 +43,13 @@
     display: block
   }
 }
+.el-message-box__btns button:first-child {
+  float: right!important;
+  margin-left: 10px!important;
+}
+.el-message-box__btns button:nth-child(2) {
+  margin-left: 0px!important;
+}
 
 .el-time-panel__content:after, .el-time-panel__content:before {
   margin-top: 0px!important;

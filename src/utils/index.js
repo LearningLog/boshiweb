@@ -108,3 +108,7 @@ export function param2Obj(url) {
       '"}'
   )
 }
+
+export function getSerialNum(index, currentPage, pageSize) {
+  return ((index + 1) + (currentPage - 1)) * pageSize
+}
