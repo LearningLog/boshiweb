@@ -8,8 +8,8 @@
     </div>
     <div class="right">
       <div id="topSearch">
-        <el-input v-model="searchVal" placeholder="请输入租户名称">
-          <el-button slot="append" type="primary" icon="el-icon-search" />
+        <el-input v-model="listQuery.menuname" placeholder="请输入菜单名称" clearable @keyup.enter.native="topSearch" >
+          <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
         </el-input>
         <el-popover
           v-model="popoverVisible"
@@ -20,15 +20,12 @@
           trigger="click"
           popper-class="advancedSearch"
         >
-          <el-form ref="form" :model="searchObj" label-width="80px">
-            <el-form-item label="ID">
-              <el-input v-model="searchObj.id" />
-            </el-form-item>
+          <el-form ref="form" :model="listQuery" label-width="80px">
             <el-form-item label="标识">
-              <el-input v-model="searchObj.identify" />
+              <el-input v-model="listQuery.cmark" clearable />
             </el-form-item>
             <el-form-item label="类型">
-              <el-select v-model="searchObj.type" placeholder="请选择类型">
+              <el-select v-model="listQuery.type" placeholder="请选择类型" clearable>
                 <el-option v-for="item in menuType" :key="item.id" :label="item.name" :value="item.id" />
               </el-select>
             </el-form-item>
@@ -36,7 +33,7 @@
 
           <div id="searchPopoverBtn">
             <el-button type="primary" @click="topSearch">搜索</el-button>
-            <el-button type="primary" plain @click="searchObj = {}">重置</el-button>
+            <el-button type="primary" plain @click="reset">重置</el-button>
           </div>
 
           <span id="advancedSearch" slot="reference">高级搜索<i class="el-icon-caret-bottom" /></span>
@@ -92,8 +89,8 @@
                 <i class="iconfont icongengduo" />更多
               </el-button>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item>上移</el-dropdown-item>
-                <el-dropdown-item>下移</el-dropdown-item>
+                <el-dropdown-item @click.native="upMenu(scope.row)">上移</el-dropdown-item>
+                <el-dropdown-item @click.native="downMenu(scope.row)">下移</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -106,10 +103,9 @@
 
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import { getAllMenuList, findMenuList } from '@/api/systemManage-menuManage'
+import { getAllMenuList, findMenuList, delMenu, moveMenu } from '@/api/systemManage-menuManage'
 import { getSerialNum } from '@/utils'
 import { mapGetters } from 'vuex'
-import { delMenu } from '@/api/systemManage-menuManage'
 
 export default {
   components: { Pagination },
@@ -120,11 +116,6 @@ export default {
   },
   data() {
     return {
-      searchObj: {
-        id: null,
-        identify: null,
-        type: null
-      },
       list: null,
       listLoading: true,
       total: 0,
@@ -132,7 +123,9 @@ export default {
         currentPage: 1,
         pageSize: 10,
         pid: 'firstMenu',
-        menuname: ''
+        menuname: '',
+        cmark: '',
+        type: ''
       },
       searchVal: '',
       popoverVisible: false,
@@ -167,15 +160,18 @@ export default {
       })
     },
     topSearch() {
-      this.searchObj = {}
       this.popoverVisible = false
-      // this.$message({
-      //   showClose: true,
-      //   message: '恭喜你，这是一条成功消息',
-      //   type: 'success'
-      // })
+      this.getMenuList()
+    },
+    reset() {
+      this.listQuery.menuname = ''
+      this.listQuery.cmark = ''
+      this.listQuery.type = ''
     },
     handleNodeClick(data) {
+      this.listQuery.menuname = ''
+      this.listQuery.cmark = ''
+      this.listQuery.type = ''
       this.listQuery.pid = data.id
       this.pid = data.id
       this.getMenuList()
@@ -197,12 +193,27 @@ export default {
           if ((this.list.length - 1) === 0) { // 如果当前页数据已删完，则去往上一页
             this.listQuery.currentPage -= 1
           }
+          this.getAllMenuList()
           this.getMenuList()
         })
       }).catch(() => {})
     },
     edit(row) {
       this.$router.push({ path: '/systemManage/menuManage/edit', query: { pid: row._id }})
+    },
+    upMenu(row) {
+      moveMenu({ orderby: 'up', pid: row.pid, _id: row._id }).then(response => {
+        this.$message.success('上移成功')
+        this.getAllMenuList()
+        this.getMenuList()
+      })
+    },
+    downMenu(row) {
+      moveMenu({ orderby: 'down', pid: row.pid, _id: row._id }).then(response => {
+        this.$message.success('下移成功')
+        this.getAllMenuList()
+        this.getMenuList()
+      })
     },
     translate(menuList) {
       if (!(menuList && menuList.length > 0)) {
@@ -234,7 +245,7 @@ export default {
         newMenu['label'] = oldMenu['menuname']
         newMenu['children'] = children
         newMenu['orders'] = oldMenu['orders']
-        newMenu['id'] = oldMenu['_id']
+        newMenu['id'] = oldMenu['cid']
 
         var parrentId = oldMenu.pid
         if (parrentId === 'firstMenu') {

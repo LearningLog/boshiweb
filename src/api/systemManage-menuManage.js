@@ -47,3 +47,11 @@ export function delMenu(data) {
     data
   })
 }
+
+export function moveMenu(data) {
+  return request({
+    url: '/system/menuV2/updownmenu',
+    method: 'post',
+    data
+  })
+}
