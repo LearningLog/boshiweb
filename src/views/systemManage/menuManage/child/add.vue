@@ -51,8 +51,8 @@ export default {
         menuname: [
           { required: true, message: '请输入菜单名称（长度在 1 到 12 个字符）', trigger: 'blur' },
           { required: true, message: '请输入菜单名称（长度在 1 到 12 个字符）', trigger: 'change' },
-          { min: 2, max: 12, message: '长度在 1 到 12 个字符', trigger: 'blur' },
-          { min: 2, max: 12, message: '长度在 1 到 12 个字符', trigger: 'change' }
+          { min: 1, max: 12, message: '长度在 1 到 12 个字符', trigger: 'blur' },
+          { min: 1, max: 12, message: '长度在 1 到 12 个字符', trigger: 'change' }
         ],
         cmark: [
           { required: true, message: '请输入菜单标识（长度在 1 到 64 个字符）', trigger: 'blur' },
