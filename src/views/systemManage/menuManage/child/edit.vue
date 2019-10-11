@@ -88,7 +88,7 @@ export default {
           this.form.pid = this.pid
           editMenu(this.form).then(response => {
             this.$message.success('修改菜单成功')
-            this.$router.push({ path: '/systemManage/menuManage/detail', query: { _id: response.data._id }})
+            this.$router.push({ path: '/systemManage/menuManage/detail', query: { _id: this.form._id }})
           })
         }
       })

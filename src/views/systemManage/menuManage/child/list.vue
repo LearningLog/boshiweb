@@ -167,6 +167,7 @@ export default {
       this.listQuery.menuname = ''
       this.listQuery.cmark = ''
       this.listQuery.type = ''
+      this.getMenuList()
     },
     handleNodeClick(data) {
       this.listQuery.menuname = ''
