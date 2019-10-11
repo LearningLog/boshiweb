@@ -8,6 +8,7 @@
         v-model="popoverVisible"
         placement="bottom-start"
         width="500"
+        title="高级搜索"
         :visible-arrow="false"
         trigger="click"
         popper-class="advancedSearch"

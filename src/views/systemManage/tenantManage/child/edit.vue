@@ -1,6 +1,6 @@
 <template>
-  <div class="tenant-add">
-    <el-form ref="form" :model="form" label-width="120px">
+  <div class="form-edit">
+    <el-form ref="form" class="form" :model="form" label-width="120px">
       <el-form-item class="required" label="租户名称">
         <el-input v-model="form.name" placeholder="请输入租户名称" /><span class="tip">请输入租户平台名称(长度2-64位字符)</span>
       </el-form-item>
@@ -171,8 +171,10 @@
         <el-input v-model="form.name" placeholder="请输入管理员昵称" />
       </el-form-item>
     </el-form>
-    <el-button type="primary" @click="onSubmit">确定</el-button>
-    <el-button>取消</el-button>
+    <div id="btnGroup">
+      <el-button type="primary" @click="onSubmit">确定</el-button>
+      <el-button type="primary" plain>取消</el-button>
+    </div>
   </div>
 </template>
 
@@ -328,6 +330,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  #btnGroup{
+    padding-left: 120px;
+  }
   .com-logo /deep/ .el-upload-dragger{
     width: 60px;
     height: 60px;
