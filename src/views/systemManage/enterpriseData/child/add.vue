@@ -11,7 +11,7 @@
         <el-input v-model="form.imagename" placeholder="请输入菜单图标" maxlength="50" clearable />
       </el-form-item>
       <el-form-item class="" label="菜单路径" prop="menuurl">
-        <el-input v-model="form.menuurl" placeholder="请输入菜单路径" maxlength="120" clearable />
+        <el-input v-model="form.menuurl" placeholder="请输入菜单路径" maxlength="120" />
       </el-form-item>
       <el-form-item label="菜单类型" prop="type">
         <el-select v-model="form.type" placeholder="请选择菜单类型" clearable>
@@ -29,8 +29,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { editMenu, getMenu } from '@/api/systemManage-menuManage'
-import { updateMenuRoute } from '@/utils/update-menu-router'
+import { addMenu } from '@/api/systemManage-menuManage'
 
 export default {
   computed: {
@@ -52,8 +51,8 @@ export default {
         menuname: [
           { required: true, message: '请输入菜单名称（长度在 1 到 12 个字符）', trigger: 'blur' },
           { required: true, message: '请输入菜单名称（长度在 1 到 12 个字符）', trigger: 'change' },
-          { min: 1, max: 12, message: '长度在 1 到 12 个字符', trigger: 'change' },
-          { min: 1, max: 12, message: '长度在 1 到 12 个字符', trigger: 'blur' }
+          { min: 1, max: 12, message: '长度在 1 到 12 个字符', trigger: 'blur' },
+          { min: 1, max: 12, message: '长度在 1 到 12 个字符', trigger: 'change' }
         ],
         cmark: [
           { required: true, message: '请输入菜单标识（长度在 1 到 64 个字符）', trigger: 'blur' },
@@ -75,23 +74,15 @@ export default {
   },
   created() {
     this.pid = this.$route.query.pid
-    this.getMenu()
   },
   methods: {
-    getMenu() {
-      getMenu({ _id: this.pid }).then(response => {
-        this.form = response.data.MenuV2
-      })
-    },
     save(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.form.pid = this.pid
-          editMenu(this.form).then(async response => {
-            this.$message.success('修改菜单成功')
-            updateMenuRoute()
-
-            this.$router.push({ path: '/systemManage/menuManage/detail', query: { _id: this.form._id }})
+          addMenu(this.form).then(response => {
+            this.$message.success('新增菜单成功')
+            this.$router.push({ path: '/systemManage/menuManage/detail', query: { _id: response.data._id }})
           })
         }
       })
@@ -105,7 +96,5 @@ export default {
 </script>
 
 <style scoped>
-  .el-form-item__content .el-input {
-    width: calc(100% - 120px);
-  }
+
 </style>

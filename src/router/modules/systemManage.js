@@ -108,13 +108,6 @@ const systemManage = {
           meta: { title: '修改文件来源', icon: '', activeMenu: '/systemManage/sourceFile' }
         },
         {
-          path: 'detail',
-          name: 'sourceDetail',
-          hidden: true,
-          component: () => import('@/views/systemManage/sourceFile/child/detail'),
-          meta: { title: '文件来源详情', icon: '', activeMenu: '/systemManage/sourceFile' }
-        },
-        {
           path: 'list',
           name: 'sourceList',
           hidden: true,
@@ -203,7 +196,37 @@ const systemManage = {
           meta: { title: '资讯类别列表', icon: '', activeMenu: '/systemManage/newsCategory' }
         }
       ]
-    }
+    },
+    {
+      path: 'enterpriseData',
+      component: () => import('@/views/systemManage/enterpriseData/index'),
+      redirect: '/systemManage/menuManage/list',
+      name: 'enterpriseData',
+      meta: { title: '企业数据', icon: '', activeMenu: '/systemManage/enterpriseData' },
+      children: [
+        {
+          path: 'edit',
+          name: 'enterpriseDataEdit',
+          hidden: true,
+          component: () => import('@/views/systemManage/enterpriseData/child/edit'),
+          meta: { title: '修改企业数据', icon: '', activeMenu: '/systemManage/enterpriseData' }
+        },
+        {
+          path: 'detail',
+          name: 'enterpriseDataDetail',
+          hidden: true,
+          component: () => import('@/views/systemManage/enterpriseData/child/detail'),
+          meta: { title: '查看企业数据', icon: '', activeMenu: '/systemManage/enterpriseData' }
+        },
+        {
+          path: 'list',
+          name: 'enterpriseDataList',
+          hidden: true,
+          component: () => import('@/views/systemManage/enterpriseData/child/list.vue'),
+          meta: { title: '企业数据列表', icon: '', activeMenu: '/systemManage/enterpriseData' }
+        }
+      ]
+    },
   ]
 }
 

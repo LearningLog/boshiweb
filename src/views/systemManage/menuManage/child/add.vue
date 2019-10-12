@@ -30,6 +30,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import { addMenu } from '@/api/systemManage-menuManage'
+import { updateMenuRoute } from '@/utils/update-menu-router'
 
 export default {
   computed: {
@@ -80,8 +81,9 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.form.pid = this.pid
-          addMenu(this.form).then(response => {
+          addMenu(this.form).then(async response => {
             this.$message.success('新增菜单成功')
+            updateMenuRoute()
             this.$router.push({ path: '/systemManage/menuManage/detail', query: { _id: response.data._id }})
           })
         }
