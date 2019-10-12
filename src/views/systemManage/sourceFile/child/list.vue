@@ -86,8 +86,8 @@
       <el-table-column class-name="status-col" label="操作" width="280" align="center" fixed="right" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-button size="mini" @click="go_edit_fn(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
-          <el-button v-if="scope.row.status_txt==='启用'" size="mini" @click="status_fn(scope.row._id,scope.row.status)"><i class="iconfont iconshixiao" />停用</el-button>
-          <el-button v-if="scope.row.status_txt==='停用'" size="mini" @click="status_fn(scope.row._id,scope.row.status)"><i class="iconfont iconshengxiao" />启用</el-button>
+          <el-button v-if="scope.row.status_txt==='启用'" size="mini" @click="status_fn(scope.row._id,1)"><i class="iconfont iconshixiao" />停用</el-button>
+          <el-button v-if="scope.row.status_txt==='停用'" size="mini" @click="status_fn(scope.row._id,2)"><i class="iconfont iconshengxiao" />启用</el-button>
           <el-button size="mini" @click="delet_fn(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
 
         </template>
@@ -141,14 +141,6 @@ export default {
     get_list() {
       const that = this
       const status_map = that.status_map
-      // conditionParam: {}
-      // currentPage: 1
-      // endTime: "2019-10-11"
-      // keyTime: "c_time"
-      // pageSize: 10
-      // regexConditionParam: [{key: "name", value: "课件上传"}]
-      // sort: {_id: -1}
-      // startTime: "2019-10-10"
       let stime = ''
       let edtime = ''
       if (that.listQuery.time_range && that.listQuery.time_range[0]) {
@@ -177,19 +169,17 @@ export default {
         console.log(error)
       })
     },
-    go_detail(in_ids) {
-      this.$router.push({ path: '/systemManage/sourceFile/detail', query: { ids: in_ids }})
-    },
     delet_fn(row) {
-      this.$confirm('确定要删除【' + row.name + '】吗？', '提示', {
+      this.$confirm('确定要删除【' + row.name + '】吗？', '删除文件来源', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
         const param = {}
-        param.ids = row._id
+        param.ids = []
+        param.ids.push(row._id)
         source_file_delet(param).then(response => {
-          this.$message.success(response.message)
+          this.$message.success('删除成功')
           if ((this.list.length - 1) === 0) { // 如果当前页数据已删完，则去往上一页
             this.listQuery.currentPage -= 1
           }
@@ -205,7 +195,7 @@ export default {
       param.enable_status = in_ststus
       source_file_status(param).then(res => {
         that.$message({
-          message: res.message,
+          message: '修改成功',
           type: 'success'
         })
         that.get_list()

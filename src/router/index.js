@@ -218,13 +218,6 @@ export const asyncRoutes = [
             meta: { title: '修改文件来源', icon: '', activeMenu: '/systemManage/sourceFile' }
           },
           {
-            path: 'detail',
-            name: 'sourceDetail',
-            hidden: true,
-            component: () => import('@/views/systemManage/sourceFile/child/detail'),
-            meta: { title: '文件来源详情', icon: '', activeMenu: '/systemManage/sourceFile' }
-          },
-          {
             path: 'list',
             name: 'sourceList',
             hidden: true,

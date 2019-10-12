@@ -195,7 +195,7 @@ export default {
         edtime = that.listQuery.edtime[1]
       }
       param.webcategoryid = that.query_param
-      param.name = that.listQuery.website_name ? that.listQuery.website_name : ''
+      param.website_name = that.listQuery.website_name ? that.listQuery.website_name : ''
       param.startTime = stime
       param.endTime = edtime
       param.currentPage = that.listQuery.currentPage ? that.listQuery.currentPage : 1
@@ -210,7 +210,7 @@ export default {
     },
     // 删除
     delet_fn(row) {
-      this.$confirm('确定要删除【' + row.website_name + '】吗？', '提示', {
+      this.$confirm('确定要删除【' + row.website_name + '】吗？', '删除网站', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
