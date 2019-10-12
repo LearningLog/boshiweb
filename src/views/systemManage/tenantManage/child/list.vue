@@ -170,8 +170,7 @@ export default {
         key: '_id',
         label: 'newscategory_name'
       },
-      setInformationId: '',
-      hasList: []
+      setInformationId: ''
     }
   },
   created() {
