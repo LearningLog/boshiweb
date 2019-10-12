@@ -240,7 +240,8 @@ export default {
           }
           permission_add(this.form).then(response => {
             this.$message.success('添加成功')
-            // this.$router.push({ path: '/systemManage/permissionManage/detail', query: { _id: response.data._id }})
+            let resId = response.data.resId
+            this.$router.push({ path: '/systemManage/permissionManage/detail', query: { ids: resId }})
           })
         }
       })
