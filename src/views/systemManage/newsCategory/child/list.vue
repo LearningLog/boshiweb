@@ -136,7 +136,7 @@ export default {
       if (that.listQuery.time_range && that.listQuery.time_range[1]) {
         edtime = that.listQuery.edtime[1]
       }
-      param.name = that.listQuery.newscategory_name ? that.listQuery.newscategory_name : ''
+      param.newscategory_name = that.listQuery.newscategory_name ? that.listQuery.newscategory_name : ''
       param.startTime = stime
       param.endTime = edtime
       param.currentPage = that.listQuery.currentPage ? that.listQuery.currentPage : 1
@@ -151,7 +151,7 @@ export default {
     },
     // 删除资讯类别
     delet_fn(row) {
-      this.$confirm('确定要删除【' + row.newscategory_name + '】吗？', '提示', {
+      this.$confirm('确定要删除【' + row.newscategory_name + '】吗？', '删除资讯类别', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

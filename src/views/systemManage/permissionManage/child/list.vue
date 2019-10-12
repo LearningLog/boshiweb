@@ -84,7 +84,7 @@
       </el-table-column>
       <el-table-column class-name="status-col" label="菜单" min-width="200" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
-          {{ scope.row.permissionmenu }}
+          {{ scope.row.permissionbelongmenuname }}
         </template>
       </el-table-column>
       <el-table-column align="center" label="创建时间" min-width="150" show-overflow-tooltip>
@@ -155,7 +155,9 @@ export default {
       if (that.listQuery.time_range && that.listQuery.time_range[1]) {
         edtime = that.listQuery.edtime[1]
       }
-      param.name = that.listQuery.permissionname ? that.listQuery.permissionname : ''
+      param.permissionname = that.listQuery.permissionname ? that.listQuery.permissionname : ''
+      param.menu = that.listQuery.menu ? that.listQuery.menu : ''
+      param.module = that.listQuery.module ? that.listQuery.module : ''
       param.startTime = stime
       param.endTime = edtime
       param.currentPage = that.listQuery.currentPage ? that.listQuery.currentPage : 1
@@ -170,7 +172,7 @@ export default {
     },
     // 删除
     delet_fn(row) {
-      this.$confirm('确定要删除【' + row.permissionname + '】吗？', '提示', {
+      this.$confirm('确定要删除【' + row.permissionname + '】吗？', '删除权限', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
