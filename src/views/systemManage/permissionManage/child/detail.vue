@@ -1,23 +1,23 @@
 <template>
-  <div class="det-box">
-    <el-form ref="form" :model="form" label-width="120px">
+  <div class="form-edit">
+    <el-form ref="form" class="form" :model="form" label-width="120px">
       <el-form-item label="模块名称:">
-        <p class="item">{{ form.modulename }}</p>
+        <span>{{ form.modulename }}</span>
       </el-form-item>
       <el-form-item label="权限名称:">
-        <p class="item">{{ form.permissionname }}</p>
+        <span>{{ form.permissionname }}</span>
       </el-form-item>
       <el-form-item label="权限标识:">
-        <p class="item">{{ form.permissionmark }}</p>
+        <span>{{ form.permissionmark }}</span>
       </el-form-item>
       <el-form-item label="权限code:">
-        <p class="item">{{ form.permissioncode }}</p>
+        <span>{{ form.permissioncode }}</span>
       </el-form-item>
       <el-form-item label="权限描述:">
-        <p class="item">{{ form.permissiondesc }}</p>
+        <span>{{ form.permissiondesc }}</span>
       </el-form-item>
     </el-form>
-    <div class="btn-box">
+    <div id="btnGroup">
       <el-button type="primary" @click="onSubmit">确定</el-button>
     </div>
   </div>
@@ -48,11 +48,11 @@ export default {
       const param = {}
       param._id = this.query_param
       permission_det(param).then(res => {
-        that.form.modulename = res.data.permission.modulename ? res.data.permission.modulename : '--'
-        that.form.permissionname = res.data.permission.permissionname ? res.data.permission.permissionname : '--'
-        that.form.permissionmark = res.data.permission.permissionmark ? res.data.permission.permissionmark : '--'
-        that.form.permissioncode = res.data.permission.permissioncode ? res.data.permission.permissioncode : '--'
-        that.form.permissiondesc = res.data.permission.permissiondesc ? res.data.permission.permissiondesc : '--'
+        that.form.modulename = res.data.permission.modulename ? res.data.permission.modulename : ''
+        that.form.permissionname = res.data.permission.permissionname ? res.data.permission.permissionname : ''
+        that.form.permissionmark = res.data.permission.permissionmark ? res.data.permission.permissionmark : ''
+        that.form.permissioncode = res.data.permission.permissioncode ? res.data.permission.permissioncode : ''
+        that.form.permissiondesc = res.data.permission.permissiondesc ? res.data.permission.permissiondesc : ''
       }).catch(error => {
         console.log(error)
       })
@@ -67,14 +67,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .det-box{
-    .item{
-      font-size: 14px;
-      margin: 0 0 0 5px;
+    #btnGroup{
+      padding-left: 120px;
     }
-    .btn-box{
-      margin-left: 120px;
-    }
-  }
-
 </style>

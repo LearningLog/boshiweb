@@ -269,6 +269,50 @@ export const asyncRoutes = [
             meta: { title: '权限管理列表', icon: '', activeMenu: '/systemManage/permissionManage' }
           }
         ]
+      },
+      {
+        path: 'newsCategory',
+        component: () => import('@/views/systemManage/newsCategory/index'),
+        redirect: '/systemManage/newsCategory/list',
+        name: 'newsCategory',
+        meta: { title: '资讯类别', icon: '', activeMenu: '/systemManage/newsCategory' },
+        children: [
+          {
+            path: 'add',
+            component: () => import('@/views/systemManage/newsCategory/child/add.vue'),
+            name: 'newsCategoryAdd',
+            hidden: true,
+            meta: { title: '新增类别', icon: '', activeMenu: '/systemManage/newsCategory' }
+          },
+          {
+            path: 'detail',
+            name: 'newsCategoryDet',
+            hidden: true,
+            component: () => import('@/views/systemManage/newsCategory/child/detail'),
+            meta: { title: '查看类别', icon: '', activeMenu: '/systemManage/newsCategory' }
+          },
+          {
+            path: 'edit',
+            name: 'newsCategoryEdit',
+            hidden: true,
+            component: () => import('@/views/systemManage/newsCategory/child/edit'),
+            meta: { title: '修改类别', icon: '', activeMenu: '/systemManage/newsCategory' }
+          },
+          {
+            path: 'netList',
+            name: 'netList',
+            hidden: true,
+            component: () => import('@/views/systemManage/newsCategory/child/net-list'),
+            meta: { title: '网站管理', icon: '', activeMenu: '/systemManage/newsCategory' },
+          },
+          {
+            path: 'list',
+            name: 'newsCategoryList',
+            hidden: true,
+            component: () => import('@/views/systemManage/newsCategory/child/list.vue'),
+            meta: { title: '资讯类别列表', icon: '', activeMenu: '/systemManage/newsCategory' }
+          }
+        ]
       }
     ]
   },
