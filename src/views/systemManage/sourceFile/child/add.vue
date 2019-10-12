@@ -17,7 +17,7 @@
       </el-form-item>
     </el-form>
     <div id="btnGroup">
-      <el-button type="primary" @click="save('form')">确定</el-button>
+      <el-button type="primary" @click="save('form')">提交</el-button>
       <el-button type="primary" plain @click="cancel('form')">取消</el-button>
     </div>
   </div>
@@ -31,7 +31,7 @@ export default {
       form: {
         code: '',
         name: '',
-        enable_status: '1'
+        enable_status: 1
       },
       rules: {
         code: [
@@ -57,7 +57,7 @@ export default {
         if (valid) {
           source_file_add(this.form).then(response => {
             this.$message.success('添加成功')
-            // this.$router.push({ path: '/systemManage/sourceFile/detail', query: { _id: response.data._id }})
+            this.$router.push({ path: '/systemManage/sourceFile/list' })
           })
         }
       })

@@ -11,7 +11,7 @@ export function newscategory_list(data) {
 // 添加
 export function newscategory_add(data) {
   return request({
-    url: '//system/newscategory/addm',
+    url: '/system/newscategory/add',
     method: 'post',
     data
   })
@@ -19,7 +19,7 @@ export function newscategory_add(data) {
 // 修改
 export function newscategory_edit(data) {
   return request({
-    url: '//system/newscategory/one',
+    url: '/system/newscategory/one',
     method: 'post',
     data
   })
@@ -32,7 +32,22 @@ export function newscategory_delet(data) {
     data
   })
 }
-
+// 类别详情
+export function newscategory_det(data) {
+  return request({
+    url: '/system/newscategory/det',
+    method: 'post',
+    data
+  })
+}
+// 修改类别获取原始值
+export function newscategory_one(data) {
+  return request({
+    url: '/system/newscategory/one',
+    method: 'post',
+    data
+  })
+}
 // 网站管理列表
 export function net_list(data) {
   return request({
@@ -52,7 +67,7 @@ export function net_add(data) {
 // 网站管理修改
 export function net_edit(data) {
   return request({
-    url: '/system/website/one',
+    url: '/system/website/update',
     method: 'post',
     data
   })

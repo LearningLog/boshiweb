@@ -1,4 +1,5 @@
 <template>
+  <!--该页面暂时无处用到-->
   <div class="form-edit">
     <el-form ref="form" class="form" :model="form" label-width="120px">
       <el-form-item label="文件代码">

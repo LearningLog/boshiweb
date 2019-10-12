@@ -14,11 +14,11 @@
         <el-input v-model="form.permissioncode" placeholder="请输入权限code" clearable />
       </el-form-item>
       <el-form-item label="权限描述">
-        <el-input v-model="form.permissiondesc" placeholder="请输入权限描述" />
+        <el-input v-model="form.permissiondesc" type="textarea" :rows="3" placeholder="请输入权限描述" />
       </el-form-item>
     </el-form>
     <div id="btnGroup">
-      <el-button type="primary" @click="save('form')">确定</el-button>
+      <el-button type="primary" @click="save('form')">保存</el-button>
       <el-button type="primary" plain @click="cancel('form')">取消</el-button>
     </div>
   </div>
@@ -75,16 +75,17 @@ export default {
       const param = {}
       param._id = this.query_param
       permission_det(param).then(res => {
-        that.form.modulename = res.data.permission.modulename ? res.data.permission.modulename : '--'
-        that.form.permissionname = res.data.permission.permissionname ? res.data.permission.permissionname : '--'
-        that.form.permissionmark = res.data.permission.permissionmark ? res.data.permission.permissionmark : '--'
-        that.form.permissioncode = res.data.permission.permissioncode ? res.data.permission.permissioncode : '--'
-        that.form.permissiondesc = res.data.permission.permissiondesc ? res.data.permission.permissiondesc : '--'
+        that.form.modulename = res.data.permission.modulename
+        that.form.permissionname = res.data.permission.permissionname
+        that.form.permissionmark = res.data.permission.permissionmark
+        that.form.permissioncode = res.data.permission.permissioncode
+        that.form.permissiondesc = res.data.permission.permissiondesc
       }).catch(error => {
         console.log(error)
       })
     },
     save(formName) {
+      const query_param = this.query_param
       this.$refs[formName].validate((valid) => {
         if (valid) {
           permission_edit(this.form).then(response => {

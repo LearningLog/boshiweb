@@ -14,11 +14,11 @@
         <el-input v-model="form.permissioncode" placeholder="请输入权限code" clearable />
       </el-form-item>
       <el-form-item label="权限描述">
-        <el-input v-model="form.permissiondesc" placeholder="请输入权限描述" />
+        <el-input v-model="form.permissiondesc" type="textarea" :rows="3" placeholder="请输入权限描述" />
       </el-form-item>
     </el-form>
     <div id="btnGroup">
-      <el-button type="primary" @click="save('form')">确定</el-button>
+      <el-button type="primary" @click="save('form')">提交</el-button>
       <el-button type="primary" plain @click="cancel('form')">取消</el-button>
     </div>
   </div>

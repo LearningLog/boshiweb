@@ -83,9 +83,9 @@
           <span>{{ scope.row.c_time }}</span>
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="操作" width="280" align="center" show-overflow-tooltip>
+      <el-table-column class-name="status-col" label="操作" width="280" align="center" fixed="right" show-overflow-tooltip>
         <template slot-scope="scope">
-          <el-button size="mini" @click="go_edit_fn(scope.row)"><i class="iconfont iconxiugai" /><i />修改</el-button>
+          <el-button size="mini" @click="go_edit_fn(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
           <el-button v-if="scope.row.status_txt==='启用'" size="mini" @click="status_fn(scope.row._id,scope.row.status)"><i class="iconfont iconshixiao" />停用</el-button>
           <el-button v-if="scope.row.status_txt==='停用'" size="mini" @click="status_fn(scope.row._id,scope.row.status)"><i class="iconfont iconshengxiao" />启用</el-button>
           <el-button size="mini" @click="delet_fn(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
@@ -163,7 +163,8 @@ export default {
       param.startTime = stime
       param.endTime = edtime
       param.status = that.listQuery.enable_status ? that.listQuery.enable_status : ''
-      param.page = that.listQuery.page ? that.listQuery.page : 1
+      param.currentPage = that.listQuery.currentPage ? that.listQuery.currentPage : 1
+      param.pageSize = that.listQuery.pageSize ? that.listQuery.pageSize : 10
       source_file_list(param).then(res => {
         const dt = res.data.page.list
         dt.forEach(item => {

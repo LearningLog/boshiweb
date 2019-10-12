@@ -17,7 +17,7 @@
       </el-form-item>
     </el-form>
     <div id="btnGroup">
-      <el-button type="primary" @click="save('form')">确定</el-button>
+      <el-button type="primary" @click="save('form')">保存</el-button>
       <el-button type="primary" plain @click="cancel('form')">取消</el-button>
     </div>
   </div>
@@ -63,13 +63,13 @@ export default {
       that.form.code = that.query_param.code
       that.form.name = that.query_param.name
       that.form.enable_status = that.query_param.enable_status
-      console.log('that.query_param.enable_status',that.form.enable_status)
     },
     save(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          this.form._id = this.query_param._id
           source_file_edit(this.form).then(response => {
-            this.$message.success('添加成功')
+            this.$message.success('修改成功')
             this.$router.push({ path: '/systemManage/sourceFile' })
           })
         }

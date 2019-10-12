@@ -94,7 +94,7 @@
       </el-table-column>
       <el-table-column class-name="status-col" label="操作" min-width="180" align="center" fixed="right" show-overflow-tooltip>
         <template slot-scope="scope">
-          <el-button size="mini" @click="go_edit_fn(scope.row._id)"><i class="iconfont iconxiugai" /><i />修改</el-button>
+          <el-button size="mini" @click="go_edit_fn(scope.row._id)"><i class="iconfont iconxiugai" />修改</el-button>
           <el-button size="mini" @click="delet_fn(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
         </template>
       </el-table-column>
@@ -158,7 +158,8 @@ export default {
       param.name = that.listQuery.permissionname ? that.listQuery.permissionname : ''
       param.startTime = stime
       param.endTime = edtime
-      param.page = that.listQuery.page ? that.listQuery.page : 1
+      param.currentPage = that.listQuery.currentPage ? that.listQuery.currentPage : 1
+      param.pageSize = that.listQuery.pageSize?that.listQuery.pageSize:10
       permission_list(param).then(res => {
         that.list = res.data.page.list
         that.total = res.data.page.totalCount
@@ -175,8 +176,9 @@ export default {
         type: 'warning'
       }).then(() => {
         const param = {}
-        param.ids = []
-        param.ids.push(row._id)
+        // param.ids = []
+        // param.ids.push(row._id)
+        param._id = row._id
         permission_delet(param).then(response => {
           this.$message.success(response.message)
           if ((this.list.length - 1) === 0) { // 如果当前页数据已删完，则去往上一页

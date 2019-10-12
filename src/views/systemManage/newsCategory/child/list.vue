@@ -76,8 +76,8 @@
       </el-table-column>
       <el-table-column class-name="status-col" label="操作" min-width="180" align="center" fixed="right" show-overflow-tooltip>
         <template slot-scope="scope">
-          <el-button size="mini" @click="go_edit_fn(scope.row._id)"><i class="iconfont iconxiugai" /><i />网站管理</el-button>
-          <el-button size="mini" @click="go_edit_fn(scope.row._id)"><i class="iconfont iconxiugai" /><i />修改</el-button>
+          <el-button size="mini" @click="go_netList(scope.row._id)"><i class="iconfont iconxiugai" />网站管理</el-button>
+          <el-button size="mini" @click="go_edit_fn(scope.row._id)"><i class="iconfont iconxiugai" />修改</el-button>
           <el-button size="mini" @click="delet_fn(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
         </template>
       </el-table-column>
@@ -124,7 +124,7 @@ export default {
       this.listQuery.creater = ''
       this.listQuery.time_range = null
     },
-    // 列表
+    // 列表资讯类别
     get_list() {
       const that = this
       const param = {}
@@ -139,7 +139,8 @@ export default {
       param.name = that.listQuery.newscategory_name ? that.listQuery.newscategory_name : ''
       param.startTime = stime
       param.endTime = edtime
-      param.page = that.listQuery.page ? that.listQuery.page : 1
+      param.currentPage = that.listQuery.currentPage ? that.listQuery.currentPage : 1
+      param.pageSize = that.listQuery.pageSize?that.listQuery.pageSize:10
       newscategory_list(param).then(res => {
         that.list = res.data.page.list
         that.total = res.data.page.totalCount
@@ -148,7 +149,7 @@ export default {
         console.log(error)
       })
     },
-    // 删除
+    // 删除资讯类别
     delet_fn(row) {
       this.$confirm('确定要删除【' + row.newscategory_name + '】吗？', '提示', {
         confirmButtonText: '确定',
@@ -167,17 +168,21 @@ export default {
         })
       }).catch(() => {})
     },
-    // 查看 网站管理
+    // 查看类别
     go_detail(in_ids) {
       this.$router.push({ path: '/systemManage/newsCategory/detail', query: { ids: in_ids }})
     },
-    // 编辑
-    go_edit_fn(in_ids) {
-      this.$router.push({ path: '/systemManage/permissionManage/edit', query: { ids: in_ids }})
+    // go网站管理
+    go_netList(in_ids) {
+      this.$router.push({ path: '/systemManage/newsCategory/netList', query: { queryDt: in_ids }})
     },
-    // 添加
+    // 编辑资讯类别
+    go_edit_fn(in_ids) {
+      this.$router.push({ path: '/systemManage/newsCategory/edit', query: { ids: in_ids }})
+    },
+    // 添加资讯类别
     add() {
-      this.$router.push({ path: '/systemManage/permissionManage/add' })
+      this.$router.push({ path: '/systemManage/newsCategory/add' })
     }
   }
 }

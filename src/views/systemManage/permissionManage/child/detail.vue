@@ -48,11 +48,11 @@ export default {
       const param = {}
       param._id = this.query_param
       permission_det(param).then(res => {
-        that.form.modulename = res.data.permission.modulename ? res.data.permission.modulename : '--'
-        that.form.permissionname = res.data.permission.permissionname ? res.data.permission.permissionname : '--'
-        that.form.permissionmark = res.data.permission.permissionmark ? res.data.permission.permissionmark : '--'
-        that.form.permissioncode = res.data.permission.permissioncode ? res.data.permission.permissioncode : '--'
-        that.form.permissiondesc = res.data.permission.permissiondesc ? res.data.permission.permissiondesc : '--'
+        that.form.modulename = res.data.permission.modulename ? res.data.permission.modulename : ''
+        that.form.permissionname = res.data.permission.permissionname ? res.data.permission.permissionname : ''
+        that.form.permissionmark = res.data.permission.permissionmark ? res.data.permission.permissionmark : ''
+        that.form.permissioncode = res.data.permission.permissioncode ? res.data.permission.permissioncode : ''
+        that.form.permissiondesc = res.data.permission.permissiondesc ? res.data.permission.permissiondesc : ''
       }).catch(error => {
         console.log(error)
       })

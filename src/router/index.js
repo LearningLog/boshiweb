@@ -285,6 +285,13 @@ export const asyncRoutes = [
             meta: { title: '新增类别', icon: '', activeMenu: '/systemManage/newsCategory' }
           },
           {
+            path: 'detail',
+            name: 'newsCategoryDet',
+            hidden: true,
+            component: () => import('@/views/systemManage/newsCategory/child/detail'),
+            meta: { title: '查看类别', icon: '', activeMenu: '/systemManage/newsCategory' }
+          },
+          {
             path: 'edit',
             name: 'newsCategoryEdit',
             hidden: true,
@@ -292,27 +299,11 @@ export const asyncRoutes = [
             meta: { title: '修改类别', icon: '', activeMenu: '/systemManage/newsCategory' }
           },
           {
-            path: 'detail',
-            name: 'newsCategoryDetail',
+            path: 'netList',
+            name: 'netList',
             hidden: true,
-            component: () => import('@/views/systemManage/newsCategory/child/detail'),
+            component: () => import('@/views/systemManage/newsCategory/child/net-list'),
             meta: { title: '网站管理', icon: '', activeMenu: '/systemManage/newsCategory' },
-            children: [
-              {
-                path: 'netAdd',
-                component: () => import('@/views/systemManage/newsCategory/child/netManage/add.vue'),
-                name: 'netAdd',
-                hidden: true,
-                meta: { title: '新增网站', icon: '', activeMenu: '/systemManage/newsCategory' }
-              },
-              {
-                path: 'edit',
-                name: 'netEdit',
-                hidden: true,
-                component: () => import('@/views/systemManage/newsCategory/child/netManage/edit'),
-                meta: { title: '修改网站', icon: '', activeMenu: '/systemManage/newsCategory' }
-              }
-            ]
           },
           {
             path: 'list',
