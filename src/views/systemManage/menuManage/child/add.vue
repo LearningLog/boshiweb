@@ -96,7 +96,5 @@ export default {
 </script>
 
 <style scoped>
-.el-form-item__content .el-input {
-  width: calc(100% - 120px);
-}
+
 </style>

@@ -1,40 +1,42 @@
 <template>
   <div class="tenant-list-box">
     <div id="topSearch">
-      <el-input v-model="searchVal" placeholder="请输入租户名称">
-        <el-button slot="append" type="primary" icon="el-icon-search" />
+      <el-input v-model="listQuery.customname" placeholder="请输入租户名称" clearable @keyup.enter.native="topSearch">
+        <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
       </el-input>
       <el-popover
         v-model="popoverVisible"
         placement="bottom-start"
-        width="500"
+        width="456"
         title="高级搜索"
         :visible-arrow="false"
         trigger="click"
         popper-class="advancedSearch"
       >
-        <el-form ref="form" :model="searchObj" label-width="80px">
+        <el-form ref="form" :model="listQuery" label-width="80px">
           <el-form-item label="创建人">
-            <el-input v-model="searchObj.creater" />
+            <el-input v-model="listQuery.createUser" clearable />
           </el-form-item>
           <el-form-item label="创建时间">
             <el-date-picker
-              v-model="searchObj.time_range"
+              v-model="time_range"
               type="daterange"
               range-separator="至"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
+              format="yyyy 年 MM 月 dd 日"
+              value-format="yyyy-MM-dd"
             />
           </el-form-item>
           <el-form-item label="状态">
-            <el-radio v-model="searchObj.status" label="1">生效</el-radio>
-            <el-radio v-model="searchObj.status" label="2">失效</el-radio>
+            <el-radio v-model="listQuery.customStatus" label="1">生效</el-radio>
+            <el-radio v-model="listQuery.customStatus" label="0">失效</el-radio>
           </el-form-item>
         </el-form>
 
         <div id="searchPopoverBtn">
           <el-button type="primary" @click="topSearch">搜索</el-button>
-          <el-button type="primary" plain @click="searchObj = {}">重置</el-button>
+          <el-button type="primary" plain @click="reset">重置</el-button>
         </div>
 
         <span id="advancedSearch" slot="reference">高级搜索<i class="el-icon-caret-bottom" /></span>
@@ -50,108 +52,126 @@
       border
       fit
       highlight-current-row
+      @selection-change="handleSelectionChange"
     >
+      >
       <el-table-column
         type="selection"
         width="55"
+        fixed
       />
-      <el-table-column align="center" label="ID" width="60">
+      <el-table-column align="center" label="名称" min-width="150" show-overflow-tooltip>
         <template slot-scope="scope">
-          {{ scope.$index }}
+          <span class="pointer" @click="detail(scope.row)">{{ scope.row.customname }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="名称" show-overflow-tooltip>
-        <template slot-scope="scope">
-          <span class="pointer" @click="detail(scope.row.id)">{{ scope.row.customname }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="描述" width="150" align="center" show-overflow-tooltip>
+      <el-table-column label="描述" min-width="150" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           <span>{{ scope.row.desc }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Logo" width="110" align="center" show-overflow-tooltip>
+      <el-table-column label="Logo" min-width="110" align="center">
         <template slot-scope="scope">
-          {{ scope.row.logo }}
+          <img v-if="scope.row.pcLogoFileUrl" class="logoImg" :src="scope.row.pcLogoFileUrl" alt="">
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="个性化系统名称" width="200" align="center" show-overflow-tooltip>
+      <el-table-column class-name="status-col" label="个性化系统名称" min-width="150" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
-          {{ scope.row.personalise }}
+          {{ scope.row.customSystemName }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="创建人" width="200" show-overflow-tooltip>
+      <el-table-column align="center" label="创建人" min-width="100" show-overflow-tooltip>
         <template slot-scope="scope">
           <span>{{ scope.row.createuser }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="创建时间" width="200" show-overflow-tooltip>
+      <el-table-column align="center" label="创建时间" min-width="120" show-overflow-tooltip>
         <template slot-scope="scope">
           <span>{{ scope.row.createtime }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="状态" width="200" show-overflow-tooltip>
+      <el-table-column align="center" label="状态" min-width="70" show-overflow-tooltip>
         <template slot-scope="scope">
-          <span>{{ scope.row.status }}</span>
+          <span>{{ scope.row.customStatusName }}</span>
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="操作" width="280" align="center" show-overflow-tooltip>
+      <el-table-column class-name="status-col" label="操作" width="220" align="center" fixed="right" show-overflow-tooltip>
         <template slot-scope="scope">
-          <el-button size="mini" @click="edit(scope.row.id)"><i class="iconfont iconxiugai" /><i />修改</el-button>
-          <el-button size="mini" @click="del(scope.row.id)"><i class="iconfont iconshixiao" />失效</el-button>
-          <el-button size="mini" @click="del(scope.row.id)"><i class="iconfont iconshengxiao" />生效</el-button>
+          <el-button size="mini" @click="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
+          <el-button v-if="scope.row.customStatus === 1" size="mini" @click="enable(scope.row, 0)"><i class="iconfont iconshixiao" />失效</el-button>
+          <el-button v-else size="mini" @click="enable(scope.row, 1)"><i class="iconfont iconshengxiao" />生效</el-button>
           <el-dropdown>
             <el-button size="mini">
               <i class="iconfont icongengduo" />更多
             </el-button>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item><i class="iconfont iconzixun" />资讯</el-dropdown-item>
-              <el-dropdown-item><i class="iconfont iconshanchu" />删除</el-dropdown-item>
+              <el-dropdown-item @click.native="getInformation(scope.row)"><i class="iconfont iconzixun" />资讯</el-dropdown-item>
+              <el-dropdown-item @click.native="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </template>
       </el-table-column>
     </el-table>
-    <div class="page-piliang">
-      <el-button type="primary"><i class="iconfont iconshanchu" />批量删除</el-button>
-      <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="get_list" />
+    <pagination v-show="total>0" :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="get_list" />
+    <div id="bottomOperation">
+      <el-button v-show="total>0" type="primary" @click="batchDel"><i class="iconfont iconshanchu" />批量删除</el-button>
     </div>
-
+    <el-dialog v-el-drag-dialog class="setInformationDialog" width="600px" title="资讯管理" :visible.sync="setInformationDialogVisible">
+      <el-transfer v-model="hasList" :data="noList"  :titles="['未分配类别', '已分配类别']" @change="handleTransferChange" :props="defaultProps" />
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="setInformation">确定</el-button>
+        <el-button @click="setInformationDialogVisible = false">取 消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
+import { getAllTenantList, delTenant, batchDelTenant, editTenant, getInformationList, setInformation } from '@/api/systemManage-tenantManage'
 export default {
   components: { Pagination },
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: 'success',
-        draft: 'gray',
-        deleted: 'danger'
-      }
-      return statusMap[status]
-    }
-  },
+  directives: { elDragDialog },
   data() {
+    const generateData = _ => {
+      const data = []
+      for (let i = 1; i <= 15; i++) {
+        data.push({
+          key: i,
+          label: `备选项 ${i}`,
+          disabled: i % 4 === 0
+        })
+      }
+      return data
+    }
     return {
-      searchVal: '',
-      searchObj: {
-        creater: null,
-        creat_time: null,
-        end_time: null,
-        status: null,
-        time_range: null
-      },
-      list: null,
-      listLoading: true,
       total: 0,
       listQuery: {
-        page: 1,
-        limit: 10
+        currentPage: 1,
+        pageSize: 10,
+        customname: '',
+        createUser: null,
+        startTime: null,
+        endTime: null,
+        status: null
       },
-      popoverVisible: false
+      time_range: [],
+      list: [],
+      listLoading: true,
+      popoverVisible: false,
+      setInformationDialogVisible: false,
+      noList: [],
+      hasList: [],
+      checkedList: [],
+      data: generateData(),
+      value: [1, 4],
+      defaultProps: {
+        key: '_id',
+        label: 'newscategory_name'
+      },
+      setInformationId: '',
+      hasList: []
     }
   },
   created() {
@@ -159,32 +179,136 @@ export default {
   },
   methods: {
     get_list() {
-      this.listLoading = false
+      this.listLoading = true
+      getAllTenantList(this.listQuery).then(response => {
+        this.list = response.data.page.list
+        this.total = response.data.page.totalCount
+        this.listLoading = false
+      })
     },
     topSearch() {
-      this.searchObj = {}
       this.popoverVisible = false
+      this.listQuery.startTime = this.time_range[0]
+      this.listQuery.endTime = this.time_range[1]
+      this.get_list()
     },
+    // 重置
+    reset() {
+      this.listQuery.customname = ''
+      this.listQuery.createUser = ''
+      this.time_range = []
+      this.listQuery.startTime = ''
+      this.listQuery.endTime = ''
+      this.listQuery.status = ''
+      this.get_list()
+    },
+    // 选中数据
+    handleSelectionChange(row) {
+      this.checkedList = row
+    },
+    // 新增
     add() {
       this.$router.push({ path: '/systemManage/tenantManage/add' })
     },
-    detail(id) {
-      console.log(id)
+    // 详情
+    detail(row) {
+      this.$router.push({ path: '/systemManage/tenantManage/detail', query: { _id: row._id }})
     },
-    del(id) {
-      console.log(id)
+    // 单个删除
+    del(row) {
+      this.$confirm('确定要删除【' + row.customname + '】吗？', '删除租户', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        delTenant({ _id: row._id }).then(response => {
+          this.$message.success('删除成功')
+          if ((this.list.length - 1) === 0) { // 如果当前页数据已删完，则去往上一页
+            this.listQuery.currentPage -= 1
+          }
+          this.get_list()
+        })
+      }).catch(() => {})
     },
-    edit(id) {
-      console.log(id)
+    // 批量删除
+    batchDel() {
+      this.$confirm('确定要删除选中的租户吗？', '批量删除租户', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        batchDelTenant({ ids: this.checkedList }).then(response => {
+          this.$message.success('删除成功')
+          if ((this.list.length - 1) === 0) { // 如果当前页数据已删完，则去往上一页
+            this.listQuery.currentPage -= 1
+          }
+          this.get_list()
+        })
+      }).catch(() => {})
+    },
+    // 编辑
+    edit(row) {
+      this.$router.push({ path: '/systemManage/tenantManage/edit', query: { _id: row._id }})
+    },
+    // 生效/失效
+    enable(row, type) {
+      if (type === 0) {
+        this.$confirm('失效用户将不能进行所有本系统内的操作，请问是否对该用户失效？', '失效租户', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          editTenant({ _id: row._id, customStatus: type }).then(response => {
+            this.$message.success('失效用户成功！')
+            this.get_list()
+          })
+        }).catch(() => {})
+      } else {
+        editTenant({ _id: row._id, customStatus: type }).then(response => {
+          this.$message.success('生效用户成功！')
+          this.get_list()
+        })
+      }
+    },
+    // 获取资讯数据
+    getInformation(row) {
+      this.setInformationId = row._id
+      getInformationList({ groupId: row._id }).then(response => {
+        this.noList = response.data.noList.concat(response.data.hasList)
+        response.data.hasList.forEach((item, index) => {
+          this.hasList.push(item._id)
+        })
+      })
+      this.setInformationDialogVisible = true
+    },
+    handleTransferChange(value, direction, movedKeys) {
+      this.hasList = value
+    },
+    // 设置资讯
+    setInformation() {
+      const data = { _id: this.setInformationId, categoryinfo: this.hasList.join() }
+      setInformation(data).then(response => {
+        this.setInformationDialogVisible = false
+        this.noList = []
+        this.hasList = []
+        this.$message.success('设置资讯成功！')
+        this.get_list()
+      })
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  .tenant-list-box{
-    .page-piliang{
-      padding-top: 15px;
-    }
+  .setInformationDialog /deep/ .el-transfer {
+    margin: 0 auto;
+    text-align: center;
+  }
+  .setInformationDialog /deep/ .el-transfer-panel {
+    text-align: left;
+  }
+  img.logoImg {
+    width: 160px;
+    height: 90px;
   }
 </style>
