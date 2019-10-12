@@ -57,6 +57,9 @@
 .el-time-spinner__wrapper .el-scrollbar__wrap:not(.el-scrollbar__wrap--hidden-default) {
   padding-top: 15px!important;
 }
+.el-table__header thead tr th .cell {
+  font-weight: 600;
+}
 .el-table .cell {
   line-height: 30px;
 }

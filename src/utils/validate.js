@@ -54,3 +54,16 @@ export function strLength(str, minLenth, maxLength) {
     return false
   }
 }
+
+// 校验整数
+export function validIntNum(val) {
+  val = val === undefined ? '' : val
+  val = val.toString()
+  const reg = /^\d+$/
+  if (!reg.test(val)) {
+    val = val.replace(/[^\d]/g, '') // 清除数字以外的
+    return val
+  } else {
+    return val
+  }
+}

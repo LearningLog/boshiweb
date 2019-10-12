@@ -15,7 +15,7 @@
           v-model="popoverVisible"
           placement="bottom-start"
           title="高级搜索"
-          width="500"
+          width="456"
           :visible-arrow="false"
           trigger="click"
           popper-class="advancedSearch"
@@ -55,32 +55,32 @@
             <span>{{ ((scope.$index + 1) + (listQuery.currentPage - 1) * listQuery.pageSize ) }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" show-overflow-tooltip label="名称">
+        <el-table-column align="center" show-overflow-tooltip min-width="100" label="名称">
           <template slot-scope="scope">
             <span class="pointer" @click="detail(scope.row)">{{ scope.row.menuname }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="标识" width="200" align="center" show-overflow-tooltip>
+        <el-table-column label="标识" min-width="100" align="center" show-overflow-tooltip>
           <template slot-scope="scope">
             <span>{{ scope.row.cmark }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="图标" width="110" align="center" show-overflow-tooltip>
+        <el-table-column label="图标" min-width="60" align="center" show-overflow-tooltip>
           <template slot-scope="scope">
             <i v-if="scope.row.imagename" :class="'iconfont ' + scope.row.imagename" />
           </template>
         </el-table-column>
-        <el-table-column class-name="status-col" label="路径" width="300" align="center" show-overflow-tooltip>
+        <el-table-column class-name="status-col" label="路径" min-width="160" align="center" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ scope.row.menuurl }}
           </template>
         </el-table-column>
-        <el-table-column align="center" show-overflow-tooltip prop="created_at" label="类型" width="200">
+        <el-table-column align="center" show-overflow-tooltip prop="created_at" label="类型" min-width="90">
           <template slot-scope="scope">
-            <span>{{ scope.row.type }}</span>
+            <span>{{ getMenuTypeName(scope.row.type) }}</span>
           </template>
         </el-table-column>
-        <el-table-column class-name="status-col" label="操作" width="240" align="center" show-overflow-tooltip>
+        <el-table-column class-name="status-col" label="操作" width="220" align="center" fixed="right" show-overflow-tooltip>
           <template slot-scope="scope">
             <el-button size="mini" @click="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
             <el-button size="mini" @click="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
@@ -89,8 +89,8 @@
                 <i class="iconfont icongengduo" />更多
               </el-button>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native="upMenu(scope.row)">上移</el-dropdown-item>
-                <el-dropdown-item @click.native="downMenu(scope.row)">下移</el-dropdown-item>
+                <el-dropdown-item @click.native="upMenu(scope.row)"><i class="iconfont iconxiayi1"></i>上移</el-dropdown-item>
+                <el-dropdown-item @click.native="downMenu(scope.row)"><i class="iconfont iconxiayi1"></i>下移</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -104,7 +104,6 @@
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { getAllMenuList, findMenuList, delMenu, moveMenu } from '@/api/systemManage-menuManage'
-import { getSerialNum } from '@/utils'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -116,7 +115,7 @@ export default {
   },
   data() {
     return {
-      list: null,
+      list: [],
       listLoading: true,
       total: 0,
       listQuery: {
@@ -142,9 +141,7 @@ export default {
     this.getMenuList()
   },
   methods: {
-    getSerialNum(index, currentPage, pageSize) {
-      getSerialNum(index, currentPage, pageSize)
-    },
+    // 获取右侧菜单列表
     getMenuList() {
       this.listLoading = true
       findMenuList(this.listQuery).then(response => {
@@ -153,22 +150,26 @@ export default {
         this.listLoading = false
       })
     },
+    // 获取左侧菜单树
     getAllMenuList() {
       getAllMenuList().then(response => {
         const { MenuV2List } = response.data
         this.treeData = this.translate(MenuV2List)
       })
     },
+    // 搜索
     topSearch() {
       this.popoverVisible = false
       this.getMenuList()
     },
+    // 重置
     reset() {
       this.listQuery.menuname = ''
       this.listQuery.cmark = ''
       this.listQuery.type = ''
       this.getMenuList()
     },
+    // 选中左侧菜单树节点的回调
     handleNodeClick(data) {
       this.listQuery.menuname = ''
       this.listQuery.cmark = ''
@@ -177,14 +178,17 @@ export default {
       this.pid = data.id
       this.getMenuList()
     },
+    // 新增
     add() {
       this.$router.push({ path: '/systemManage/menuManage/add', query: { pid: this.pid }})
     },
+    // 详情
     detail(row) {
       this.$router.push({ path: '/systemManage/menuManage/detail', query: { _id: row._id }})
     },
+    // 删除
     del(row) {
-      this.$confirm('确定要删除【' + row.menuname + '】吗？', '提示', {
+      this.$confirm('确定要删除【' + row.menuname + '】吗？', '删除菜单', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -199,9 +203,11 @@ export default {
         })
       }).catch(() => {})
     },
+    // 编辑
     edit(row) {
       this.$router.push({ path: '/systemManage/menuManage/edit', query: { pid: row._id }})
     },
+    // 上移
     upMenu(row) {
       moveMenu({ orderby: 'up', pid: row.pid, _id: row._id }).then(response => {
         this.$message.success('上移成功')
@@ -209,6 +215,7 @@ export default {
         this.getMenuList()
       })
     },
+    // 下移
     downMenu(row) {
       moveMenu({ orderby: 'down', pid: row.pid, _id: row._id }).then(response => {
         this.$message.success('下移成功')
@@ -216,6 +223,17 @@ export default {
         this.getMenuList()
       })
     },
+    // 获取菜单类型
+    getMenuTypeName(type) {
+      let name = ''
+      this.menuType.forEach(item => {
+        if (item.id === type) {
+          name = item.name
+        }
+      })
+      return name
+    },
+    // 将左侧返回的扁平数据转换为树结构
     translate(menuList) {
       if (!(menuList && menuList.length > 0)) {
         return []
