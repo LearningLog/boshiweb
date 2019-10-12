@@ -117,7 +117,7 @@
       <el-button v-show="total>0" type="primary" @click="batchDel"><i class="iconfont iconshanchu" />批量删除</el-button>
     </div>
     <el-dialog v-el-drag-dialog class="setInformationDialog" width="600px" title="资讯管理" :visible.sync="setInformationDialogVisible">
-      <el-transfer v-model="hasList" :data="noList"  :titles="['未分配类别', '已分配类别']" @change="handleTransferChange" :props="defaultProps" />
+      <el-transfer v-model="hasList" :data="noList" :titles="['未分配类别', '已分配类别']" :props="defaultProps" @change="handleTransferChange" />
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="setInformation">确定</el-button>
         <el-button @click="setInformationDialogVisible = false">取 消</el-button>
@@ -129,7 +129,7 @@
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
-import { getAllTenantList, delTenant, batchDelTenant, editTenant, getInformationList, setInformation } from '@/api/systemManage-tenantManage'
+import { getAllTenantList, delTenant, batchDelTenant, editTenant, getInformationList, setInformation, setCustomStatus } from '@/api/systemManage-tenantManage'
 export default {
   components: { Pagination },
   directives: { elDragDialog },
@@ -237,7 +237,11 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        batchDelTenant({ ids: this.checkedList }).then(response => {
+        const _ids = []
+        this.checkedList.forEach(item => {
+          _ids.push(item._id)
+        })
+        batchDelTenant({ _ids: _ids }).then(response => {
           this.$message.success('删除成功')
           if ((this.list.length - 1) === 0) { // 如果当前页数据已删完，则去往上一页
             this.listQuery.currentPage -= 1
@@ -258,13 +262,13 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          editTenant({ _id: row._id, customStatus: type }).then(response => {
+          setCustomStatus({ _id: row._id, customStatus: type }).then(response => {
             this.$message.success('失效用户成功！')
             this.get_list()
           })
         }).catch(() => {})
       } else {
-        editTenant({ _id: row._id, customStatus: type }).then(response => {
+        setCustomStatus({ _id: row._id, customStatus: type }).then(response => {
           this.$message.success('生效用户成功！')
           this.get_list()
         })

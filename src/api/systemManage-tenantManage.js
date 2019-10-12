@@ -42,7 +42,15 @@ export function delTenant(data) {
 
 export function batchDelTenant(data) {
   return request({
-    url: '/system/customV2/deletecustom',
+    url: '/system/customV2/deleteMultiCustom',
+    method: 'post',
+    data
+  })
+}
+
+export function setCustomStatus(data) {
+  return request({
+    url: '/system/customV2/setCustomStatus',
     method: 'post',
     data
   })
