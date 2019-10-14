@@ -1,4 +1,9 @@
-/** When your routing table is too long, you can split it into small modules**/
+/**
+* @Author: YanHuaKang
+* @Date: 2019/10/14
+* @Description: 系统配置路由表
+* @remarks:
+*/
 
 import Layout from '@/layout/layout2'
 

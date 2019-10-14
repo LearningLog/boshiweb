@@ -1,3 +1,10 @@
+/**
+* @Author: YanHuaKang
+* @Date: 2019/10/14
+* @Description: 封装http请求
+* @remarks:
+*/
+
 import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store'

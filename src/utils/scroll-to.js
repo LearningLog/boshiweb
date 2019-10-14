@@ -1,3 +1,10 @@
+/**
+* @Author: YanHuaKang
+* @Date: 2019/10/14
+* @Description: 滚动到页面的某位置
+* @remarks:
+*/
+
 Math.easeInOutQuad = function(t, b, c, d) {
   t /= d / 2
   if (t < 1) {

@@ -42,23 +42,48 @@
 │   ├── api                    	# 所有请求
 │   ├── assets                 	# image fonts等静态资源
 │   ├── components             	# 全局公用组件
+│   │   ├── BackToTop           # 返回顶部组件
+│   │   ├── Breadcrumb          # 面包屑组件
+│   │   ├── Footer              # 底部版权组件
+│   │   ├── Hamburger           # 头部折叠组件
+│   │   ├── HelpCenter          # 帮助中心组件
+│   │   ├── LangSelect          # 语言选择组件
+│   │   ├── Pagination          # 分页组件组件
+│   │   ├── SvgIcon             # SvgIcon组件
+│   │   ├── Tinymce             # 富文本组件
+│   │   └── User                # 用户组件
 │   ├── directive              	# 全局指令
 │   ├── filters                	# 全局 filter
 │   ├── lang                   	# 国际化 language
 │   ├── layout                 	# 全局 layout
+│   │   ├── layout1             # 主页布局样式
+│   │   └── layout2             # 后台布局样式
 │   ├── router                 	# 路由
 │   ├── store                  	# 全局 store管理
+│   │   └── modules             # Vuex的store 分割模块
+│   │   │   ├── app.js          # layout2的全局数据
+│   │   │   ├── menu-manage.js  # 菜单管理全局数据
+│   │   │   ├── permission.js   # 路由权限全局数据
+│   │   │   ├── settings.js     # 全局设置数据
+│   │   │   ├── user.js         # 全局用户数据
+│   │   ├── layout1             # 主页布局样式
+│   │   └── layout2             # 后台布局样式
 │   ├── styles                 	# 全局样式
-│   │   ├── btn.scss                 # 按钮样式
-│   │   ├── element-ui.scss          # 全局自定义 element-ui 样式
-│   │   ├── index.scss               # 全局通用样式
-│   │   ├── mixin.scss               # 全局mixin
-│   │   ├── sidebar.scss             # sidebar css
-│   │   ├── transition.scss          # vue transition 动画
-│   │   └── variables.scss           # 全局变量
+│   │   ├── commonStyle.scss    # 全局布局样式
+│   │   ├── element-ui.scss     # 全局 element-ui 自定义样式
+|   |   |── globa-class.scss    # 全局 通用类名
+│   │   ├── index.scss          # 全局通用样式
+│   │   ├── mixin.scss          # 全局mixin
+│   │   ├── sidebar.scss        # sidebar css
+│   │   ├── theme.scss          # 主题色
+│   │   ├── transition.scss     # vue transition 动画
+│   │   └── variables.scss      # 全局变量
 │   ├── utils                  	# 全局公用方法
-│   ├── vendor                 	# 公用vendor
 │   ├── views                  	# views 所有页面
+│   │   ├── door                # 主页
+│   │   ├── enterpriseData      # 企业数据
+│   │   ├── systemManage        # 系统配置
+│   │   └── 404.vue             # 404
 │   ├── App.vue                	# 入口页面
 │   ├── main.js                	# 入口文件 加载组件 初始化等
 │   └── permission.js          	# 权限管理
@@ -154,6 +179,28 @@ npm run lint
 npm run lint -- --fix
 ```
 
+## 相关文档
+
+- [vue-element-admin官方文档](https://panjiachen.github.io/vue-element-admin-site/zh/)
+
+vue-element-admin 配套了系列教程文章，如何从零构建后一个完整的后台项目，建议大家先看完这些文章再来实践本项目
+
+- [手摸手，带你用 vue 撸后台 系列一(基础篇)](https://juejin.im/post/59097cd7a22b9d0065fb61d2)
+- [手摸手，带你用 vue 撸后台 系列二(登录权限篇)](https://juejin.im/post/591aa14f570c35006961acac)
+- [手摸手，带你用 vue 撸后台 系列三 (实战篇)](https://juejin.im/post/593121aa0ce4630057f70d35)
+- [手摸手，带你用 vue 撸后台 系列四(vueAdmin 一个极简的后台基础模板)](https://juejin.im/post/595b4d776fb9a06bbe7dba56)
+- [手摸手，带你用vue撸后台 系列五(v4.0新版本)](https://juejin.im/post/5c92ff94f265da6128275a85)
+- [手摸手，带你封装一个 vue component](https://segmentfault.com/a/1190000009090836)
+- [手摸手，带你优雅的使用 icon](https://juejin.im/post/59bb864b5188257e7a427c09)
+- [手摸手，带你用合理的姿势使用 webpack4（上）](https://juejin.im/post/5b56909a518825195f499806)
+- [手摸手，带你用合理的姿势使用 webpack4（下）](https://juejin.im/post/5b5d6d6f6fb9a04fea58aabc)
+
+**如有问题请先看上述使用文档和文章，若不能满足，请 [issue](https://github.com/PanJiaChen/vue-element-admin/issues/new) 和 [pr](https://github.com/PanJiaChen/vue-element-admin/pulls)**
+
+- 另外，一些公用的组件如富文本、文本复制、播放器、二维码生成、图片剪切等等，请在 `tests` 目录下查看
+
+## 以下为项目规范及注意事项
+
 ## 命名规范
 > 其实刚开始我写 vue 文件的时候也不注意，各种驼峰啊、大写开头 (PascalCase)还是横线连接 (kebab-case)混着来，谁叫 vue 都可以，在 [风格指南](https://cn.vuejs.org/v2/style-guide/) 中也没有定论。不过基于本项目我还是整理了一套文件的命名规则。
 
@@ -248,25 +295,68 @@ npm run lint -- --fix
  */
 ```
 
-## 相关文档
+## 全局规范
 
-- [vue-element-admin官方文档](https://panjiachen.github.io/vue-element-admin-site/zh/)
+- 所有表单都支持 `clearable`
+- 所有表单内不可以出现 `<button></button>`
+- 除 `layout1` 中 `AppMain.vue` 不使用 `<el-scrollbar wrap-class="scrollbar-wrapper"></<el-scrollbar>`
+  其他也超出高度必须使用 `<el-scrollbar wrap-class="scrollbar-wrapper"></<el-scrollbar>` 处理
+- 所有js要对变量名、函数进行注释，复杂逻辑亦要注释清晰
+- 必须使用 `Eslint` 代码校验工具
+- 全部 `<el-input  type="password" />` 都必须写成 `<el-input readonly onfocus="this.removeAttribute('readonly');" type="password" autocomplete="off" />` 解决input type="password" h和 type="text" 时自动填充bug
 
-vue-element-admin 配套了系列教程文章，如何从零构建后一个完整的后台项目，建议大家先看完这些文章再来实践本项目
+### 后台全局
 
-- [手摸手，带你用 vue 撸后台 系列一(基础篇)](https://juejin.im/post/59097cd7a22b9d0065fb61d2)
-- [手摸手，带你用 vue 撸后台 系列二(登录权限篇)](https://juejin.im/post/591aa14f570c35006961acac)
-- [手摸手，带你用 vue 撸后台 系列三 (实战篇)](https://juejin.im/post/593121aa0ce4630057f70d35)
-- [手摸手，带你用 vue 撸后台 系列四(vueAdmin 一个极简的后台基础模板)](https://juejin.im/post/595b4d776fb9a06bbe7dba56)
-- [手摸手，带你用vue撸后台 系列五(v4.0新版本)](https://juejin.im/post/5c92ff94f265da6128275a85)
-- [手摸手，带你封装一个 vue component](https://segmentfault.com/a/1190000009090836)
-- [手摸手，带你优雅的使用 icon](https://juejin.im/post/59bb864b5188257e7a427c09)
-- [手摸手，带你用合理的姿势使用 webpack4（上）](https://juejin.im/post/5b56909a518825195f499806)
-- [手摸手，带你用合理的姿势使用 webpack4（下）](https://juejin.im/post/5b5d6d6f6fb9a04fea58aabc)
+- 所有页面级别组件入口（<router-view />）外层都应当包裹一层<div class="app-container"></div>，即：
+```html
+<div class="app-container">
+  <router-view></router-view>
+</div>
+```
 
-**如有问题请先看上述使用文档和文章，若不能满足，请 [issue](https://github.com/PanJiaChen/vue-element-admin/issues/new) 和 [pr](https://github.com/PanJiaChen/vue-element-admin/pulls)**
+### 列表页
 
-- 另外，一些公用的组件如富文本、文本复制、播放器、二维码生成、图片剪切等等，请在 `tests` 目录下查看
+#### 搜索区域
+
+- 搜索区域应当按照目前规范，左侧单一名称搜索，带有图标按钮，且支持键入enter搜索
+- 高级搜索区域百分比布局（`el-row`），展开与收缩带有统一动画效果，背景色统一
+- 高级搜索区域一行只放三个搜索条件，除范围类时间插件，其他带有 `el-input` 的元素应当 `200px`
+- 高级搜索区域按钮与第一列 input 左对齐
+- 点击高级搜索按钮实现切换搜索区域展开与收缩
+- 搜索图标按钮与搜索文字按钮功能一致，重置功能实现重置除分页条件外的所有条件
+
+#### 新增按钮在顶部右侧，与搜索区域顶部对齐，`iconfont` 统一合理
+
+#### 列表
+
+- 操作列（左侧多选、右侧操作列）锁定
+- 表头锁定
+- 所有列都添加 `show-overflow-tooltip` 属性
+- 目前所有列都居中显示
+- 列宽合理美观，操作列图标统一合理
+
+#### 列表底部
+
+- 批量操作居左，横向排列
+- 分页居左，带有完整功能
+- 两者顶部对齐，所有列表页相同区域必须使用统一id或类名，以便于统一处理
+
+### 编辑页
+
+- 水平居中
+- 左侧为字段名称，不带有冒号（：）
+- 右侧 `el-input` 长度统一，时间插件及 `select` 长度可自行统一长度
+- 底部操作按钮与右侧输入列左对齐，并且使用 ` :disabled="isDisabled"` 防止重复提交
+- 所有编辑页按钮颜色样式统一
+- 表单验证全部使用 `element` 提供的表单校验方式，并带有 `:status-icon="true"` 校验图标
+- 所有表单都要提供两种触发方式 `blur change`
+- 提倡分步校验
+- 提交后进入详情页，取消返回列表页
+
+### 详情页
+
+- 左侧为字段名称，带有冒号（：）
+- 底部为 `确定` 按钮，点击返回列表页
 
 ## Browsers support
 

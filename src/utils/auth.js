@@ -1,3 +1,10 @@
+/**
+* @Author: YanHuaKang
+* @Date: 2019/10/14
+* @Description: 登录信息
+* @remarks:
+*/
+
 import Cookies from 'js-cookie'
 
 const TokenKey = 'boshi_token'

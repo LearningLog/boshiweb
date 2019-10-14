@@ -71,40 +71,6 @@ export const constantRoutes = [
   },
 
   {
-    path: '/example',
-    component: Layout,
-    redirect: '/example/table',
-    name: 'Example',
-    meta: { title: 'Example', icon: 'iconqiye' },
-    children: [
-      {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/table/index'),
-        meta: { title: 'Table', icon: 'table', btnPermissionId: 'example' }
-      },
-      {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/tree/index'),
-        meta: { title: 'Tree', icon: 'tree', btnPermissionId: 'example' }
-      },
-      {
-        path: 'hello-world',
-        name: 'Hello-world',
-        component: () => import('@/views/examples/hello-world'),
-        meta: { title: 'Hello World', icon: 'hello-world', btnPermissionId: 'example' }
-      },
-      {
-        path: 'vue-cropper',
-        name: 'Vue-cropper',
-        component: () => import('@/views/examples/vue-cropper'),
-        meta: { title: 'Vue Cropper', icon: 'vue-cropper', btnPermissionId: 'example' }
-      }
-    ]
-  },
-
-  {
     path: '/404',
     component: () => import('@/views/404'),
     hidden: true
@@ -227,6 +193,40 @@ export const asyncRoutes = [
         name: 'Form',
         component: () => import('@/views/form/index'),
         meta: { title: 'Form', icon: 'form' }
+      }
+    ]
+  },
+
+  {
+    path: '/example',
+    component: Layout,
+    redirect: '/example/table',
+    name: 'Example',
+    meta: { title: 'Example', icon: 'iconqiye' },
+    children: [
+      {
+        path: 'table',
+        name: 'Table',
+        component: () => import('@/views/table/index'),
+        meta: { title: 'Table', icon: 'table', btnPermissionId: 'example' }
+      },
+      {
+        path: 'tree',
+        name: 'Tree',
+        component: () => import('@/views/tree/index'),
+        meta: { title: 'Tree', icon: 'tree', btnPermissionId: 'example' }
+      },
+      {
+        path: 'hello-world',
+        name: 'Hello-world',
+        component: () => import('@/views/examples/hello-world'),
+        meta: { title: 'Hello World', icon: 'hello-world', btnPermissionId: 'example' }
+      },
+      {
+        path: 'vue-cropper',
+        name: 'Vue-cropper',
+        component: () => import('@/views/examples/vue-cropper'),
+        meta: { title: 'Vue Cropper', icon: 'vue-cropper', btnPermissionId: 'example' }
       }
     ]
   },

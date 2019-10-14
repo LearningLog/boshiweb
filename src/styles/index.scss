@@ -5,6 +5,7 @@
 @import './sidebar.scss';
 @import './theme.scss';
 @import './commonStyle.scss';
+@import './globa-class.scss';
 
 body {
   height: 100%;
@@ -50,22 +51,6 @@ div:focus {
   outline: none;
 }
 
-.clearfix {
-  &:after {
-    visibility: hidden;
-    display: block;
-    font-size: 0;
-    content: " ";
-    clear: both;
-    height: 0;
-  }
-}
-.fl{
-  float: left;
-}
-.fr{
-  float: right;
-}
 // main-container global css
 .app-container {
   position: relative;

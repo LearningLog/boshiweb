@@ -1,6 +1,9 @@
 /**
- * Created by PanJiaChen on 16/11/18.
- */
+* @Author: YanHuaKang
+* @Date: 2019/10/14
+* @Description: 表单校验函数
+* @remarks:
+*/
 
 /**
  * @param {string} path

@@ -1,3 +1,10 @@
+/**
+* @Author: YanHuaKang
+* @Date: 2019/10/14
+* @Description: 文本复制
+* @remarks:
+*/
+
 import Vue from 'vue'
 import Clipboard from 'clipboard'
 

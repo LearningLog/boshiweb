@@ -16,7 +16,6 @@
     <div class="editor-content vjs-16-9" v-html="content" />
     <div id="video" />
     <div id="video2" />
-    <About />
     <div class="placeholder-container">
       <div>placeholder</div>
       <div>placeholder</div>
@@ -140,11 +139,10 @@ import clip from '@/utils/clipboard'
 import clipboard from '@/directive/clipboard/index.js'
 import Tinymce from '@/components/Tinymce'
 import Footer from '@/components/Footer'
-import About from '@/components/About'
 const $ = window.$
 export default {
   name: 'HelloWorld',
-  components: { Tinymce, Footer, About },
+  components: { Tinymce, Footer },
   directives: {
     clipboard
   },

@@ -4,7 +4,7 @@ import getters from './getters'
 import app from './modules/app'
 import permission from './modules/permission'
 import settings from './modules/settings'
-import menuManage from './modules/menuManage'
+import menuManage from './modules/menu-manage'
 import user from './modules/user'
 
 Vue.use(Vuex)

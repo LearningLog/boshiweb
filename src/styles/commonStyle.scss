@@ -94,37 +94,3 @@
 .scrollbar-wrapper {
     overflow-x: hidden;
 }
-
-
-
-
-
-
-.hide {
-    display: none;
-}
-
-/*双伪元素清除浮动----------！！！！*/
-.clearfix:before, .clearfix:after {
-    content: "";
-    display: table;
-}
-
-.clearfix:after {
-    clear: both;
-}
-
-/*兼容IE浏览器清除浮动*/
-.clearfix {
-    zoom: 1;
-}
-
-.pointer {
-    cursor: pointer;
-}
-
-.required>.el-form-item__label:before {
-    content: '*';
-    color: #F74848;
-    margin-right: 4px;
-}
