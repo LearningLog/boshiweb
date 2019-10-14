@@ -187,7 +187,7 @@ export default {
         type: 'warning'
       }).then(() => {
         delMenu({ _id: row._id }).then(async response => {
-          this.$message.success('删除成功')
+          this.$message.success('删除成功！')
           updateMenuRoute()
           if ((this.list.length - 1) === 0) { // 如果当前页数据已删完，则去往上一页
             this.listQuery.currentPage -= 1
@@ -204,7 +204,7 @@ export default {
     // 上移
     upMenu(row) {
       moveMenu({ orderby: 'up', pid: row.pid, _id: row._id }).then(async response => {
-        this.$message.success('上移成功')
+        this.$message.success('上移成功！')
         updateMenuRoute()
         this.getAllMenuList()
         this.getMenuList()
@@ -213,7 +213,7 @@ export default {
     // 下移
     downMenu(row) {
       moveMenu({ orderby: 'down', pid: row.pid, _id: row._id }).then(response => {
-        this.$message.success('下移成功')
+        this.$message.success('下移成功！')
         updateMenuRoute()
         this.getAllMenuList()
         this.getMenuList()

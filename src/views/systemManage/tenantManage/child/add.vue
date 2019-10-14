@@ -130,7 +130,7 @@
         <el-button type="primary" :disabled="isDisabled2" @click="finish">确认</el-button>
       </div>
     </el-dialog>
-    <el-dialog v-el-drag-dialog title="图片预览" :visible.sync="logoDialogVisible">
+    <el-dialog v-el-drag-dialog title="图片预览" width="38%" :visible.sync="logoDialogVisible">
       <img width="100%" :src="logoUrl" alt="">
     </el-dialog>
   </div>
@@ -275,7 +275,7 @@ export default {
         if (valid) {
           addTenant(this.form).then(response => {
             this.isDisabled1 = true
-            this.$message.success('新增菜单成功')
+            this.$message.success('新增菜单成功！')
             this.$router.push({ path: '/systemManage/tenantManage/detail', query: { _id: response.data.id }})
           })
         }
@@ -298,7 +298,7 @@ export default {
       this.isDisabled2 = false
       const isLt5M = file.size / 1024 / 1024 < 5
       if (!isLt5M) {
-        this.$message.error('上传文件大小不能超过 5MB!')
+        this.$message.error('上传文件大小不能超过 5MB！')
         return false
       }
       this.fileName = file.name
@@ -314,7 +314,7 @@ export default {
     },
     // 上传失败
     handleUploadError(response, file, fileList) {
-      this.$message.error('上传文件失败')
+      this.$message.error('上传文件失败！')
       if (this.logoType === 1) {
         this.fileList1 = []
       } else {
@@ -354,7 +354,7 @@ export default {
         formData.append('thumbnailfile', data, this.fileName)
         uploadFile(formData).then(response => {
           this.isDisabled2 = true
-          this.$message.success('上传成功')
+          this.$message.success('上传成功！')
           if (this.logoType === 1) {
             this.deskTopImageUrl = response.data.saveHttpPath
             this.form.pcLogoFileUrl = response.data.saveHttpPath

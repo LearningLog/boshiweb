@@ -203,7 +203,7 @@ export default {
         type: 'warning'
       }).then(() => {
         delTenant({ _id: row._id }).then(response => {
-          this.$message.success('删除成功')
+          this.$message.success('删除成功！')
           if ((this.list.length - 1) === 0) { // 如果当前页数据已删完，则去往上一页
             this.listQuery.currentPage -= 1
           }
@@ -223,7 +223,7 @@ export default {
           _ids.push(item._id)
         })
         batchDelTenant({ _ids: _ids }).then(response => {
-          this.$message.success('删除成功')
+          this.$message.success('删除成功！')
           if ((this.list.length - 1) === 0) { // 如果当前页数据已删完，则去往上一页
             this.listQuery.currentPage -= 1
           }

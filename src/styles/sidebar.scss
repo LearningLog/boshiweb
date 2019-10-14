@@ -84,6 +84,10 @@
     .el-submenu .is-active.el-menu-item {
       background-color: $themeColor !important;
     }
+    .router-link-active .is-active {
+      background-color: $themeColor !important;
+    }
+    .el-menu-item is-active submenu-title-noDropdown
 
     & .nest-menu .el-submenu>.el-submenu__title,
     & .el-submenu .el-menu-item {

@@ -26,8 +26,10 @@
               <el-form-item label="有效期">
                 <el-date-picker
                   v-model="effectTime"
-                  type="date"
-                  placeholder="选择日期"
+                  type="daterange"
+                  range-separator="至"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
                 />
               </el-form-item>
             </el-form>
@@ -110,9 +112,11 @@ export default {
         payTypeName: null, // 套餐类型
         startTime: null, // 创建开始时间
         endTime: null, // 创建结束时间
-        effectTime: null // 有效截止日期
+        effectStartTime: null, // 有效开始日期
+        effectEndTime: null // 有效结束日期
       },
       time_range: [], // 创建时间
+      effectTime: [], // 有效期
       list: [], // 表格数据
       listLoading: true // 表格是否开启遮罩
     }
@@ -135,6 +139,8 @@ export default {
       this.listQuery.startTime = this.time_range[0]
       this.listQuery.endTime = this.time_range[1]
 
+      this.listQuery.effectStartTime = this.effectTime[0]
+      this.listQuery.effectEndTime = this.effectTime[1]
       this.get_list()
     },
     // 重置
@@ -142,9 +148,11 @@ export default {
       this.listQuery.customname = ''
       this.listQuery.payTypeName = ''
       this.time_range = []
-      this.effectTime = ''
+      this.effectTime = []
       this.listQuery.startTime = ''
       this.listQuery.endTime = ''
+      this.listQuery.effectStartTime = ''
+      this.listQuery.effectEndTime = ''
       this.get_list()
     },
     // 详情

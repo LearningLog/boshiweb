@@ -17,11 +17,13 @@
         <el-form-item label="存储总量（G）" prop="totalStorageSpace">
           <el-input v-model="form.totalStorageSpace" @keyup.native="intNum(form.totalStorageSpace, 'totalStorageSpace')" placeholder="请输入存储总量" maxlength="5" clearable />
         </el-form-item>
-        <el-form-item label="有效截止期" prop="effectTime">
+        <el-form-item label="有效期" prop="effectTime">
           <el-date-picker
-            v-model="form.effectTime"
-            type="date"
-            placeholder="请选择日期"
+              v-model="effectTime"
+              type="daterange"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
           />
         </el-form-item>
       </el-form>
@@ -48,8 +50,10 @@ export default {
         userTotalCount: '', // 员工规模
         totalSms: '', // 短信总量
         totalStorageSpace: '', // 存储总量
-        effectTime: '' // 有效截止期
+        effectStartTime: null, // 有效开始日期
+        effectEndTime: null // 有效结束日期
       },
+      effectTime: [], // 有效期
       rules: {
         payTypeName: [
           { required: true, message: '套餐名称（长度在 1 到 20 个字符）', trigger: 'blur' },
@@ -76,8 +80,8 @@ export default {
           { min: 1, max: 5, message: '长度在 1 到 5 个字符', trigger: 'change' }
         ],
         effectTime: [
-          { type: 'date', required: true, message: '请选择有效截止日期', trigger: 'blur' },
-          { type: 'date', required: true, message: '请选择有效截止日期', trigger: 'change' }
+          { type: 'date', required: true, message: '请选择有效日期', trigger: 'blur' },
+          { type: 'date', required: true, message: '请选择有效日期', trigger: 'change' }
         ]
       }
     }
@@ -97,8 +101,10 @@ export default {
           userTotalCount: response.data.userTotalCount,
           totalSms: response.data.totalSms,
           totalStorageSpace: response.data.totalStorageSpace,
-          effectTime: response.data.user.effectTime
+          effectStartTime: response.data.user.effectStartTime,
+          effectEndTime: response.data.user.effectEndTime
         }
+        this.effectTime = [response.data.user.effectStartTime, response.data.user.effectEndTime]
         this.form = obj
       })
     },

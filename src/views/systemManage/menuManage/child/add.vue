@@ -85,7 +85,7 @@ export default {
           this.form.pid = this.pid
           addMenu(this.form).then(async response => {
             this.isDisabled = true
-            this.$message.success('新增菜单成功')
+            this.$message.success('新增菜单成功！')
             updateMenuRoute()
             this.$router.push({ path: '/systemManage/menuManage/detail', query: { _id: response.data._id }})
           })

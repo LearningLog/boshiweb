@@ -138,7 +138,7 @@
         <el-button type="primary" :disabled="isDisabled2" :loading="loading" @click="finish">确认</el-button>
       </div>
     </el-dialog>
-    <el-dialog v-el-drag-dialog title="图片预览" :visible.sync="logoDialogVisible">
+    <el-dialog v-el-drag-dialog title="图片预览" width="38%" :visible.sync="logoDialogVisible">
       <img width="100%" :src="logoUrl" alt="">
     </el-dialog>
   </div>
@@ -315,7 +315,7 @@ export default {
       this.isDisabled1 = false
       const isLt5M = file.size / 1024 / 1024 < 5
       if (!isLt5M) {
-        this.$message.error('上传文件大小不能超过 5MB!')
+        this.$message.error('上传文件大小不能超过 5MB！')
         return false
       }
       this.fileName = file.name
@@ -331,7 +331,7 @@ export default {
     },
     // 上传失败
     handleUploadError(response, file, fileList) {
-      this.$message.error('上传文件失败')
+      this.$message.error('上传文件失败！')
       if (this.logoType === 1) {
         this.fileList1 = []
       } else {

@@ -17,7 +17,7 @@
         <el-form-item label="存储总量（G）：" prop="totalStorageSpace">
           <span>{{ form.totalStorageSpace }}</span>
         </el-form-item>
-        <el-form-item label="有效截止期：" prop="effectTime">
+        <el-form-item label="有效期：" prop="effectTime">
           <span>{{ form.effectTime }}</span>
         </el-form-item>
       </el-form>
@@ -41,7 +41,7 @@ export default {
         userTotalCount: '', // 员工规模
         totalSms: '', // 短信总量
         totalStorageSpace: '', // 存储总量
-        effectTime: '' // 有效截止期
+        effectTime: '' // 有效期
       }
     }
   },
