@@ -1,3 +1,9 @@
+/**
+ * @Author: WangLiMei
+ * @Date: 2019/10/14
+ * @Description: 资讯列表的所有接口
+ * @remarks:
+ */
 import request from '@/utils/request'
 // 资讯类别
 // 列表

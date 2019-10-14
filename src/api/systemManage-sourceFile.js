@@ -1,4 +1,9 @@
-
+/**
+ * @Author: WangLiMei
+ * @Date: 2019/10/14
+ * @Description: 文件来源的所有接口
+ * @remarks:
+ */
 import request from '@/utils/request'
 // 列表
 export function source_file_list(data) {
