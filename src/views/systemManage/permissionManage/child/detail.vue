@@ -1,22 +1,22 @@
 <template>
   <div class="form-edit">
     <el-form ref="form" class="form" :model="form" label-width="120px">
-      <el-form-item label="权限名称:">
+      <el-form-item label="权限名称：">
         <span>{{ form.permissionname }}</span>
       </el-form-item>
-      <el-form-item label="权限标识:">
+      <el-form-item label="权限标识：">
         <span>{{ form.permissionmark }}</span>
       </el-form-item>
-      <el-form-item label="权限code:">
+      <el-form-item label="权限code：">
         <span>{{ form.permissioncode }}</span>
       </el-form-item>
-      <el-form-item label="权限描述:">
+      <el-form-item label="权限描述：">
         <span>{{ form.permissiondesc }}</span>
       </el-form-item>
-      <el-form-item label="所属菜单:">
+      <el-form-item label="所属菜单：">
         <span>{{ form.permissionbelongmenuname }}</span>
       </el-form-item>
-      <el-form-item label="权限类别:">
+      <el-form-item label="权限类别：">
         <span>{{ form.permissionmanage_name }}</span>
       </el-form-item>
     </el-form>
