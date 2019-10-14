@@ -1,3 +1,9 @@
+/**
+ * @Author: WangLiMei
+ * @Date: 2019/10/14
+ * @Description: 权限管理的所有接口
+ * @remarks:
+ */
 import request from '@/utils/request'
 // 获取列表
 export function permission_list(data) {

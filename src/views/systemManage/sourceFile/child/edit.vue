@@ -2,12 +2,10 @@
   <div class="form-edit">
     <el-form ref="form" class="form" :model="form" :rules="rules" :status-icon="true" label-width="120px">
       <el-form-item class="required" label="文件代码" prop="code">
-        <el-input v-model="form.code" placeholder="请输入系统代码" clearable />
-        <div class="tip">文件代码,长度2-64位字符</div>
+        <el-input v-model="form.code" placeholder="请输入文件代码" clearable />
       </el-form-item>
       <el-form-item class="required" label="文件名称" prop="name">
         <el-input v-model="form.name" placeholder="请输入文件名称" clearable />
-        <div class="tip">文件名称,长度2-64位字符</div>
       </el-form-item>
       <el-form-item label="是否启用" prop="enable_status">
         <el-radio-group v-model="form.enable_status">
@@ -36,14 +34,14 @@ export default {
       query_param: {},
       rules: {
         code: [
-          { required: true, message: '请输入模块名称（长度在 2 到 64 个字符）', trigger: 'blur' },
-          { required: true, message: '请输入模块名称（长度在 2 到 64 个字符）', trigger: 'change' },
+          { required: true, message: '请输入文件代码（长度在 2 到 64 个字符）', trigger: 'blur' },
+          { required: true, message: '请输入文件代码（长度在 2 到 64 个字符）', trigger: 'change' },
           { min: 2, max: 64, message: '长度在 2 到 64 个字符', trigger: 'blur' },
           { min: 2, max: 64, message: '长度在 2 到 64 个字符', trigger: 'change' }
         ],
         name: [
-          { required: true, message: '请输入权限名称（长度在 2 到 64 个字符）', trigger: 'blur' },
-          { required: true, message: '请输入权限名称（长度在 2 到 64 个字符）', trigger: 'change' },
+          { required: true, message: '请输入文件名称（长度在 2 到 64 个字符）', trigger: 'blur' },
+          { required: true, message: '请输入文件名称（长度在 2 到 64 个字符）', trigger: 'change' },
           { min: 2, max: 64, message: '长度在 2 到 64 个字符', trigger: 'blur' },
           { min: 2, max: 64, message: '长度在 2 到 64 个字符', trigger: 'change' }
         ]
