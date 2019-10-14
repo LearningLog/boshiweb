@@ -18,6 +18,15 @@
         margin-top: 16px;
         //width: 100%;
     }
+    & >.el-row::before {
+        position: absolute;
+        top: -9px;
+        left: 234px;
+        background-image: url(../assets/images/triangle.png);
+        width: 20px;
+        height: 10px;
+        z-index: 2;
+    }
     & .el-card__body {
         background-color: #F3F5F8;
         /deep/ .el-form-item {
