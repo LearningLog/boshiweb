@@ -119,6 +119,37 @@ export const asyncRoutes = [
   systemManage,
 
   {
+    path: '/enterpriseData',
+    component: Layout,
+    redirect: '/enterpriseData/list',
+    name: 'enterpriseData',
+    meta: { title: '企业数据', icon: 'iconshuju' },
+    children: [
+      {
+        path: 'edit',
+        name: 'enterpriseDataEdit',
+        hidden: true,
+        component: () => import('@/views/enterpriseData/edit'),
+        meta: { title: '修改企业数据', icon: '', activeMenu: '/enterpriseData' }
+      },
+      {
+        path: 'detail',
+        name: 'enterpriseDataDetail',
+        hidden: true,
+        component: () => import('@/views/enterpriseData/detail'),
+        meta: { title: '查看企业数据', icon: '', activeMenu: '/enterpriseData' }
+      },
+      {
+        path: 'list',
+        name: 'enterpriseDataList',
+        hidden: true,
+        component: () => import('@/views/enterpriseData/list.vue'),
+        meta: { title: '企业数据列表', icon: '', activeMenu: '/enterpriseData' }
+      }
+    ]
+  },
+
+  {
     path: '/nested',
     component: Layout,
     redirect: '/nested/menu1',

@@ -21,7 +21,7 @@
       </el-form-item>
     </el-form>
     <div id="btnGroup">
-      <el-button type="primary" @click="save('form')">提交</el-button>
+      <el-button type="primary" :disabled="isDisabled" @click="save('form')">提交</el-button>
       <el-button type="primary" plain @click="cancel('form')">取消</el-button>
     </div>
   </div>
@@ -40,6 +40,7 @@ export default {
   },
   data() {
     return {
+      isDisabled: false,
       form: {
         menuname: '',
         cmark: '',
@@ -82,6 +83,7 @@ export default {
         if (valid) {
           this.form.pid = this.pid
           addMenu(this.form).then(async response => {
+            this.isDisabled = true
             this.$message.success('新增菜单成功')
             updateMenuRoute()
             this.$router.push({ path: '/systemManage/menuManage/detail', query: { _id: response.data._id }})

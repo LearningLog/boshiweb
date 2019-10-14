@@ -86,7 +86,7 @@
       </el-form-item>
     </el-form>
     <div id="btnGroup">
-      <el-button type="primary" @click="onSubmit('form')">确定</el-button>
+      <el-button type="primary" :disabled="isDisabled1" @click="onSubmit('form')">确定</el-button>
       <el-button type="primary" plain @click="cancel('form')">取消</el-button>
     </div>
     <!-- vueCropper 剪裁图片实现-->
@@ -127,7 +127,7 @@
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="closeUpload">取 消</el-button>
-        <el-button type="primary" :loading="loading" @click="finish">确认</el-button>
+        <el-button type="primary" :disabled="isDisabled2" :loading="loading" @click="finish">确认</el-button>
       </div>
     </el-dialog>
     <el-dialog v-el-drag-dialog title="图片预览" :visible.sync="logoDialogVisible">
@@ -150,17 +150,9 @@ export default {
   },
   directives: { elDragDialog },
   data() {
-    var validatePass = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入密码'))
-      } else {
-        if (this.form.uPwd !== '') {
-          this.$refs.ruleForm.validateField('uPwd')
-        }
-        callback()
-      }
-    }
     return {
+      isDisabled1: false,
+      isDisabled2: false,
       form: {
         customname: '',
         desc: '',
@@ -249,8 +241,8 @@ export default {
           { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'change' }
         ],
         uPwd: [
-          { required: true, message: '请输入管理员密码（长度在 6 到 50 个字符）', validator: validatePass, trigger: 'blur' },
-          { required: true, message: '请输入管理员密码（长度在 6 到 50 个字符）', validator: validatePass, trigger: 'change' },
+          { required: true, message: '请输入管理员密码（长度在 6 到 50 个字符）', trigger: 'blur' },
+          { required: true, message: '请输入管理员密码（长度在 6 到 50 个字符）', trigger: 'change' },
           { min: 6, max: 50, message: '长度在 6 到 50 个字符', trigger: 'blur' },
           { min: 6, max: 50, message: '长度在 6 到 50 个字符', trigger: 'change' }
         ]
@@ -263,6 +255,7 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           addTenant(this.form).then(response => {
+            this.isDisabled1 = true
             this.$message.success('新增菜单成功')
             this.$router.push({ path: '/systemManage/tenantManage/detail', query: { _id: response.data.id }})
           })
@@ -282,6 +275,7 @@ export default {
     },
     // 上传按钮   限制图片大小
     changeUpload(file, fileList) {
+      this.isDisabled2 = false
       const isLt5M = file.size / 1024 / 1024 < 5
       if (!isLt5M) {
         this.$message.error('上传文件大小不能超过 5MB!')
@@ -337,6 +331,7 @@ export default {
       this.$refs.cropper.getCropBlob((data) => {
         formData.append('thumbnailfile', data, this.fileName)
         uploadFile(formData).then(response => {
+          this.isDisabled2 = true
           this.$message.success('上传成功')
           if (this.logoType === 1) {
             this.deskTopImageUrl = response.data.saveHttpPath

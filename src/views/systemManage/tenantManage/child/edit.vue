@@ -94,7 +94,7 @@
       </el-form-item>
     </el-form>
     <div id="btnGroup">
-      <el-button type="primary" @click="onSubmit('form')">确定</el-button>
+      <el-button type="primary" :disabled="isDisabled1" @click="onSubmit('form')">确定</el-button>
       <el-button type="primary" plain @click="cancel('form')">取消</el-button>
     </div>
     <!-- vueCropper 剪裁图片实现-->
@@ -135,7 +135,7 @@
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="closeUpload">取 消</el-button>
-        <el-button type="primary" :loading="loading" @click="finish">确认</el-button>
+        <el-button type="primary" :disabled="isDisabled2" :loading="loading" @click="finish">确认</el-button>
       </div>
     </el-dialog>
     <el-dialog v-el-drag-dialog title="图片预览" :visible.sync="logoDialogVisible">
@@ -159,6 +159,8 @@ export default {
   directives: { elDragDialog },
   data() {
     return {
+      isDisabled1: false,
+      isDisabled2: false,
       id: '',
       form: {},
       isChangeTuser: 0,
@@ -288,6 +290,7 @@ export default {
               break
           }
           editTenant(this.form).then(response => {
+            this.isDisabled1 = true
             this.$message.success('修改租户成功！')
             this.$router.push({ path: '/systemManage/tenantManage/detail', query: { _id: this.id }})
           })
@@ -307,6 +310,7 @@ export default {
     },
     // 上传按钮   限制图片大小
     changeUpload(file, fileList) {
+      this.isDisabled1 = false
       const isLt5M = file.size / 1024 / 1024 < 5
       if (!isLt5M) {
         this.$message.error('上传文件大小不能超过 5MB!')
@@ -362,6 +366,7 @@ export default {
       this.$refs.cropper.getCropBlob((data) => {
         formData.append('thumbnailfile', data, this.fileName)
         uploadFile(formData).then(response => {
+          this.isDisabled2 = true
           if (this.logoType === 1) {
             this.deskTopImageUrl = response.data.saveHttpPath
             this.form.pcLogoFileUrl = response.data.saveHttpPath

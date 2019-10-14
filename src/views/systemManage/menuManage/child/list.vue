@@ -309,9 +309,6 @@ export default {
       height: calc(100% - 70px);
       width: 100%;
     }
-    .scrollbar-wrapper {
-      overflow-x: hidden !important;
-    }
   }
   .right {
     width: calc(100% - 320px) !important;

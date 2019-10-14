@@ -196,36 +196,6 @@ const systemManage = {
           meta: { title: '资讯类别列表', icon: '', activeMenu: '/systemManage/newsCategory' }
         }
       ]
-    },
-    {
-      path: 'enterpriseData',
-      component: () => import('@/views/systemManage/enterpriseData/index'),
-      redirect: '/systemManage/enterpriseData/list',
-      name: 'enterpriseData',
-      meta: { title: '企业数据', icon: '', activeMenu: '/systemManage/enterpriseData' },
-      children: [
-        {
-          path: 'edit',
-          name: 'enterpriseDataEdit',
-          hidden: true,
-          component: () => import('@/views/systemManage/enterpriseData/child/edit'),
-          meta: { title: '修改企业数据', icon: '', activeMenu: '/systemManage/enterpriseData' }
-        },
-        {
-          path: 'detail',
-          name: 'enterpriseDataDetail',
-          hidden: true,
-          component: () => import('@/views/systemManage/enterpriseData/child/detail'),
-          meta: { title: '查看企业数据', icon: '', activeMenu: '/systemManage/enterpriseData' }
-        },
-        {
-          path: 'list',
-          name: 'enterpriseDataList',
-          hidden: true,
-          component: () => import('@/views/systemManage/enterpriseData/child/list.vue'),
-          meta: { title: '企业数据列表', icon: '', activeMenu: '/systemManage/enterpriseData' }
-        }
-      ]
     }
   ]
 }
