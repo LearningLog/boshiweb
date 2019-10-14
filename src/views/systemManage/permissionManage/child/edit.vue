@@ -300,6 +300,7 @@ export default {
       const query_param = this.query_param
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          this.form._id = this.query_param
           permission_edit(this.form).then(response => {
             this.$message.success('修改成功')
             this.$router.push({ path: '/systemManage/permissionManage/detail', query: { ids: query_param }})
