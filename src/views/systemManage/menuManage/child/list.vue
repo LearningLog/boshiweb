@@ -105,30 +105,29 @@ export default {
   components: { Pagination },
   computed: {
     ...mapGetters([
-      'menuType'
+      'menuType' // 菜单类型
     ])
   },
   data() {
     return {
-      list: [],
-      listLoading: true,
-      total: 0,
-      listQuery: {
-        currentPage: 1,
-        pageSize: 10,
-        pid: 'firstMenu',
-        menuname: '',
-        cmark: '',
-        type: ''
+      list: [], // 表格数据
+      listLoading: true, // 是否开启表格遮罩
+      total: 0, // 总条数
+      listQuery: { // 查询条件
+        currentPage: 1, // 当前页
+        pageSize: 10, // 当前请求条数
+        pid: 'firstMenu', // 父id
+        menuname: '', // 菜单名称
+        cmark: '', // 描述
+        type: '' // 菜单类型
       },
-      searchVal: '',
-      popoverVisible: false,
-      treeData: [{}],
-      defaultProps: {
+      popoverVisible: false, // 是否展开高级搜索
+      treeData: [], // 菜单树list
+      defaultProps: { // 菜单树节点数据别名
         children: 'children',
         label: 'label'
       },
-      pid: 'firstMenu'
+      pid: 'firstMenu' // 父id
     }
   },
   created() {

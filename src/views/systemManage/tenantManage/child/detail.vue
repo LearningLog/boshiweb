@@ -50,22 +50,22 @@ export default {
   directives: { elDragDialog },
   data() {
     return {
-      form: {
-        customname: '',
-        desc: '',
-        userCount: '',
-        customStatus: 1,
-        text_extraction: 1,
-        username: '',
-        nickname: '',
-        uPwd: '',
-        pcLogoFileId: '',
-        pcLogoFileUrl: '',
-        mobileLogoFileId: '',
-        mobileLogoFileUrl: '',
-        customSystemName: ''
+      form: { // 表单数据
+        customname: '', // 租户名称
+        desc: '', // 描述
+        userCount: '', // 最大用户数量
+        customStatus: 1, // 租户状态
+        text_extraction: 1, // 开通智能搜索
+        uName: '', // 租户管理员
+        uNickname: '', // 管理员昵称
+        uPwd: '', // 管理员密码
+        pcLogoFileId: '', // 平台Logo id
+        pcLogoFileUrl: '', // 平台Logo url
+        mobileLogoFileId: '', // 移动端Logo id
+        mobileLogoFileUrl: '', // 移动端Logo url
+        customSystemName: '' // 个性化系统名称
       },
-      id: ''
+      id: '' // 查询id
     }
   },
   created() {
@@ -73,6 +73,7 @@ export default {
     this.getTenant()
   },
   methods: {
+    // 获取初始数据
     getTenant() {
       getOneTenant({ _id: this.id }).then(response => {
         this.form = response.data.custom
@@ -80,6 +81,7 @@ export default {
         this.form.username = response.data.user.username
       })
     },
+    // 确定
     confirm() {
       this.$router.push({ path: '/systemManage/tenantManage/list' })
     }

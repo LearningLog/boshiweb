@@ -41,14 +41,14 @@ export default {
   data() {
     return {
       isDisabled: false, // 防止重复提交
-      id: '',
+      id: '', // 查询id
       form: {
-        menuname: '',
-        payTypeName: '',
-        userTotalCount: '',
-        totalSms: '',
-        totalStorageSpace: '',
-        effectTime: ''
+        customname: '', // 企业/租户名称
+        payTypeName: '', // 套餐类型
+        userTotalCount: '', // 员工规模
+        totalSms: '', // 短信总量
+        totalStorageSpace: '', // 存储总量
+        effectTime: '' // 有效截止期
       },
       rules: {
         payTypeName: [
@@ -87,6 +87,7 @@ export default {
     this.getInitData()
   },
   methods: {
+    // 获取初始数据
     getInitData() {
       getCustomResourceDetail({ _id: this.id }).then(response => {
         const obj = {
@@ -101,6 +102,7 @@ export default {
         this.form = obj
       })
     },
+    // 提交
     onSubmit(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
@@ -112,6 +114,7 @@ export default {
         }
       })
     },
+    // 取消
     cancel(formName) {
       this.$refs[formName].resetFields()
       this.$router.push({ path: '/enterpriseData/list' })

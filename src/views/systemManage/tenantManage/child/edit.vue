@@ -159,26 +159,25 @@ export default {
   directives: { elDragDialog },
   data() {
     return {
-      isDisabled1: false,
-      isDisabled2: false,
-      id: '',
-      form: {},
-      isChangeTuser: 0,
-      loading: false, // 防止重复提交
+      isDisabled1: false, // 防止重复提交
+      isDisabled2: false, // 防止重复提交
+      id: '', // 查询id
+      form: {}, // 表单数据
+      isChangeTuser: 0, // 是否修改租户管理员
       headers: {
-        Authorization: getToken()
+        Authorization: getToken() // 图片上传 header
       },
-      logoType: '',
-      fileName: '',
-      fileList1: [],
-      fileList2: [],
-      cropperDialogVisible: false,
-      logoDialogVisible: false,
-      clearFiles: true,
-      logoUrl: '',
-      deskTopImageUrl: '',
-      mobileImageUrl: '',
-      fileInfo: {},
+      logoType: '', // 上传logo类型
+      fileName: '', // 上传文件名称
+      fileList1: [], // 平台Logo list
+      fileList2: [], // 移动端Logo list
+      cropperDialogVisible: false, // 是否打开图片裁剪弹窗
+      logoDialogVisible: false, // 是否打开logo预览弹窗
+      clearFiles: true, // 是否清除当前上传的logo
+      logoUrl: '', // 预览的logo url
+      deskTopImageUrl: '', // 平台Logo url
+      mobileImageUrl: '', // 移动端Logo url
+      fileInfo: {}, // 上传数据 似乎没用。。
       // 裁剪组件的基础配置option
       option: {
         img: '', // 裁剪图片的地址
@@ -200,7 +199,7 @@ export default {
         high: true,
         size: 1
       },
-      previews: {}, // 预览
+      previews: {}, // 剪切实时预览数据
       rules: {
         customname: [
           { required: true, message: '请输入租户名称（长度在 1 到 64 个字符）', trigger: 'blur' },
@@ -250,6 +249,7 @@ export default {
     this.getTenant()
   },
   methods: {
+    // 获取初始数据
     getTenant() {
       getOneTenant({ _id: this.id }).then(response => {
         const obj = {
@@ -278,6 +278,7 @@ export default {
         this.form = obj
       })
     },
+    // 提交
     onSubmit(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
@@ -297,6 +298,7 @@ export default {
         }
       })
     },
+    // 取消
     cancel(formName) {
       this.$refs[formName].resetFields()
       this.$router.push({ path: '/systemManage/tenantManage/list' })
@@ -327,6 +329,7 @@ export default {
     handleSuccess(response, file, fileList) {
       console.log(file)
     },
+    // 上传失败
     handleUploadError(response, file, fileList) {
       this.$message.error('上传文件失败')
       if (this.logoType === 1) {
@@ -335,6 +338,7 @@ export default {
         this.fileList2 = []
       }
     },
+    // logo删除前
     beforeRemove(file, fileList) {
       return this.$confirm('您确定要删除logo吗？', '删除图片', {
         confirmButtonText: '确定',
@@ -383,6 +387,7 @@ export default {
         })
       })
     },
+    // 关闭上传及裁剪
     closeUpload() {
       if (this.clearFiles) {
         if (this.logoType === 1) {

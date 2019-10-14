@@ -14,13 +14,13 @@
               </el-form-item>
               <el-form-item label="创建时间">
                 <el-date-picker
-                    v-model="time_range"
-                    type="daterange"
-                    range-separator="至"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                    format="yyyy 年 MM 月 dd 日"
-                    value-format="yyyy-MM-dd"
+                  v-model="time_range"
+                  type="daterange"
+                  range-separator="至"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  format="yyyy 年 MM 月 dd 日"
+                  value-format="yyyy-MM-dd"
                 />
               </el-form-item>
               <el-form-item label="状态">
@@ -129,36 +129,36 @@ export default {
   directives: { elDragDialog },
   data() {
     return {
-      total: 0,
-      listQuery: {
-        currentPage: 1,
-        pageSize: 10,
-        customname: '',
-        createUser: null,
-        startTime: null,
-        endTime: null,
-        status: null
+      total: 0, // 总条数
+      listQuery: { // 查询条件
+        currentPage: 1, // 当前页
+        pageSize: 10, // 当前页请求条数
+        customname: '', // 租户名称
+        createUser: null, // 创建人
+        startTime: null, // 创建开始时间
+        endTime: null, // 创建结束时间
+        status: null // 状态
       },
-      time_range: [],
-      list: [],
-      listLoading: true,
-      popoverVisible: false,
-      setInformationDialogVisible: false,
-      noList: [],
-      hasList: [],
-      checkedList: [],
-      value: [1, 4],
-      defaultProps: {
+      time_range: [], // 创建时间
+      list: [], // 表格数据
+      listLoading: true, // 是否开启表格遮罩
+      popoverVisible: false, // 是否开启高级搜索
+      setInformationDialogVisible: false, // 是否打开设置资讯弹窗
+      noList: [], // 未分配的资讯
+      hasList: [], // 已分配的资讯
+      checkedDelList: [], // 选择删除的list
+      defaultProps: { // 穿梭框节点别名
         key: '_id',
         label: 'newscategory_name'
       },
-      setInformationId: ''
+      setInformationId: '' // 当前设置资讯的id
     }
   },
   created() {
     this.get_list()
   },
   methods: {
+    // 获取初始化数据
     get_list() {
       this.listLoading = true
       getAllTenantList(this.listQuery).then(response => {
@@ -167,6 +167,7 @@ export default {
         this.listLoading = false
       })
     },
+    // 搜索
     topSearch() {
       this.listQuery.startTime = this.time_range[0]
       this.listQuery.endTime = this.time_range[1]
@@ -184,7 +185,7 @@ export default {
     },
     // 选中数据
     handleSelectionChange(row) {
-      this.checkedList = row
+      this.checkedDelList = row
     },
     // 新增
     add() {
@@ -218,7 +219,7 @@ export default {
         type: 'warning'
       }).then(() => {
         const _ids = []
-        this.checkedList.forEach(item => {
+        this.checkedDelList.forEach(item => {
           _ids.push(item._id)
         })
         batchDelTenant({ _ids: _ids }).then(response => {

@@ -127,7 +127,7 @@
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="closeUpload">取 消</el-button>
-        <el-button type="primary" :disabled="isDisabled2" :loading="loading" @click="finish">确认</el-button>
+        <el-button type="primary" :disabled="isDisabled2" @click="finish">确认</el-button>
       </div>
     </el-dialog>
     <el-dialog v-el-drag-dialog title="图片预览" :visible.sync="logoDialogVisible">
@@ -146,10 +146,11 @@ import { getToken } from '@/utils/auth'
 
 export default {
   components: {
-    VueCropper
+    VueCropper // 图片裁剪组件
   },
   directives: { elDragDialog },
   data() {
+    // 校验租户管理员
     var validateUName = (rule, value, callback) => {
       if (!value && value !== 0) {
         callback(new Error('请输入租户管理员（长度在 2 到 64 个字符）'))
@@ -159,6 +160,7 @@ export default {
         callback()
       }
     }
+    // 校验管理员密码
     var validatePass = (rule, value, callback) => {
       if (!value && value !== 0) {
         callback(new Error('请输入管理员密码'))
@@ -169,38 +171,38 @@ export default {
       }
     }
     return {
-      isDisabled1: false,
-      isDisabled2: false,
-      form: {
-        customname: '',
-        desc: '',
-        userCount: '',
-        customStatus: 1,
-        text_extraction: 1,
-        uName: '',
-        uNickname: '',
-        uPwd: '',
-        pcLogoFileId: '',
-        pcLogoFileUrl: '',
-        mobileLogoFileId: '',
-        mobileLogoFileUrl: '',
-        customSystemName: ''
+      isDisabled1: false, // 防止重复提交
+      isDisabled2: false, // 防止重复提交
+      form: { // 表单数据
+        customname: '', // 租户名称
+        desc: '', // 描述
+        userCount: '', // 最大用户数量
+        customStatus: 1, // 租户状态
+        text_extraction: 1, // 开通智能搜索
+        uName: '', // 租户管理员
+        uNickname: '', // 管理员昵称
+        uPwd: '', // 管理员密码
+        pcLogoFileId: '', // 平台Logo id
+        pcLogoFileUrl: '', // 平台Logo url
+        mobileLogoFileId: '', // 移动端Logo id
+        mobileLogoFileUrl: '', // 移动端Logo url
+        customSystemName: '' // 个性化系统名称
       },
       loading: false, // 防止重复提交
       headers: {
-        Authorization: getToken()
+        Authorization: getToken() // 图片上传 header
       },
-      logoType: '',
-      fileName: '',
-      fileList1: [],
-      fileList2: [],
-      cropperDialogVisible: false,
-      logoDialogVisible: false,
-      clearFiles: true,
-      logoUrl: '',
-      deskTopImageUrl: '',
-      mobileImageUrl: '',
-      fileInfo: {},
+      logoType: '', // 上传logo类型
+      fileName: '', // 上传文件名称
+      fileList1: [], // 平台Logo list
+      fileList2: [], // 移动端Logo list
+      cropperDialogVisible: false, // 是否打开图片裁剪弹窗
+      logoDialogVisible: false, // 是否打开logo预览弹窗
+      clearFiles: true, // 是否清除当前上传的logo
+      logoUrl: '', // 预览的logo url
+      deskTopImageUrl: '', // 平台Logo url
+      mobileImageUrl: '', // 移动端Logo url
+      fileInfo: {}, // 上传数据 似乎没用。。
       // 裁剪组件的基础配置option
       option: {
         img: '', // 裁剪图片的地址
@@ -222,7 +224,7 @@ export default {
         high: true,
         size: 1
       },
-      previews: {}, // 预览
+      previews: {}, // 剪切实时预览数据
       rules: {
         customname: [
           { required: true, message: '请输入租户名称（长度在 1 到 64 个字符）', trigger: 'blur' },
@@ -266,6 +268,7 @@ export default {
     }
   },
   methods: {
+    // 提交
     onSubmit(formName) {
       console.log(process.env.VUE_APP_BASE_API)
       this.$refs[formName].validate((valid) => {
@@ -278,6 +281,7 @@ export default {
         }
       })
     },
+    // 取消
     cancel(formName) {
       this.$refs[formName].resetFields()
       this.$router.push({ path: '/systemManage/tenantManage/list' })
@@ -308,6 +312,7 @@ export default {
     handleSuccess(response, file, fileList) {
       console.log(file)
     },
+    // 上传失败
     handleUploadError(response, file, fileList) {
       this.$message.error('上传文件失败')
       if (this.logoType === 1) {
@@ -316,6 +321,7 @@ export default {
         this.fileList2 = []
       }
     },
+    // logo删除前
     beforeRemove(file, fileList) {
       return this.$confirm('您确定要删除logo吗？', '删除图片', {
         confirmButtonText: '确定',
@@ -365,6 +371,7 @@ export default {
         })
       })
     },
+    // 关闭上传及裁剪
     closeUpload() {
       if (this.clearFiles) {
         if (this.logoType === 1) {

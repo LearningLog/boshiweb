@@ -40,15 +40,15 @@ export default {
   },
   data() {
     return {
-      isDisabled: false,
-      form: {
-        menuname: '',
-        cmark: '',
-        imagename: '',
-        menuurl: '',
-        type: ''
+      isDisabled: false, // 防止重复提交
+      form: { // 表单数据
+        menuname: '', // 菜单名称
+        cmark: '', // 描述
+        imagename: '', // 菜单图标
+        menuurl: '', // 菜单路径path
+        type: '' // 菜案类型
       },
-      pid: '',
+      pid: '', // 父id
       rules: {
         menuname: [
           { required: true, message: '请输入菜单名称（长度在 1 到 12 个字符）', trigger: 'blur' },
@@ -79,11 +79,13 @@ export default {
     this.getMenu()
   },
   methods: {
+    // 获取初始数据
     getMenu() {
       getMenu({ _id: this.pid }).then(response => {
         this.form = response.data.MenuV2
       })
     },
+    // 保存
     save(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
@@ -98,6 +100,7 @@ export default {
         }
       })
     },
+    // 取消
     cancel(formName) {
       this.$refs[formName].resetFields()
       this.$router.push({ path: '/systemManage/menuManage/list' })

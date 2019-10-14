@@ -33,15 +33,14 @@ export default {
   },
   data() {
     return {
-      form: {
-        menuname: '',
-        cmark: '',
-        imagename: '',
-        menuurl: '',
-        type: '',
-        typeName: ''
+      form: { // 表单数据
+        menuname: '', // 菜单名称
+        cmark: '', // 描述
+        imagename: '', // 菜单图标
+        menuurl: '', // 菜单路径path
+        type: '' // 菜案类型
       },
-      id: ''
+      pid: '' // 父id
     }
   },
   created() {
@@ -49,12 +48,14 @@ export default {
     this.getMenu()
   },
   methods: {
+    // 获取初始数据
     getMenu() {
       getMenu({ _id: this.id }).then(response => {
         this.form = response.data.MenuV2
         this.form.typeName = this.getMenuTypeName(response.data.MenuV2.type)
       })
     },
+    // 转换菜单类型
     getMenuTypeName(type) {
       let name = ''
       this.menuType.forEach(item => {
@@ -64,6 +65,7 @@ export default {
       })
       return name
     },
+    // 确定
     confirm() {
       this.$router.push({ path: '/systemManage/menuManage/list' })
     }

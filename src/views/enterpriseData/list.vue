@@ -101,27 +101,27 @@ export default {
   components: { Pagination },
   data() {
     return {
-      popoverVisible: false,
-      total: 0,
-      listQuery: {
-        currentPage: 1,
-        pageSize: 10,
-        customname: null,
-        payTypeName: null,
-        startTime: null,
-        endTime: null,
-        effectTime: null
+      popoverVisible: false, // 高级搜索是否显示
+      total: 0, // 总条数
+      listQuery: { // 查询条件
+        currentPage: 1, // 当前页
+        pageSize: 10, // 当前页请求条数
+        customname: null, // 租户名称
+        payTypeName: null, // 套餐类型
+        startTime: null, // 创建开始时间
+        endTime: null, // 创建结束时间
+        effectTime: null // 有效截止日期
       },
-      payTypeName: [],
-      time_range: [],
-      list: [],
-      listLoading: true
+      time_range: [], // 创建时间
+      list: [], // 表格数据
+      listLoading: true // 表格是否开启遮罩
     }
   },
   created() {
     this.get_list()
   },
   methods: {
+    // 获取列表数据
     get_list() {
       this.listLoading = true
       getCustomResourceList(this.listQuery).then(response => {
@@ -130,6 +130,7 @@ export default {
         this.listLoading = false
       })
     },
+    // 搜索
     topSearch() {
       this.listQuery.startTime = this.time_range[0]
       this.listQuery.endTime = this.time_range[1]
