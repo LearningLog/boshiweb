@@ -200,7 +200,7 @@ const systemManage = {
     {
       path: 'enterpriseData',
       component: () => import('@/views/systemManage/enterpriseData/index'),
-      redirect: '/systemManage/menuManage/list',
+      redirect: '/systemManage/enterpriseData/list',
       name: 'enterpriseData',
       meta: { title: '企业数据', icon: '', activeMenu: '/systemManage/enterpriseData' },
       children: [
@@ -226,7 +226,7 @@ const systemManage = {
           meta: { title: '企业数据列表', icon: '', activeMenu: '/systemManage/enterpriseData' }
         }
       ]
-    },
+    }
   ]
 }
 
