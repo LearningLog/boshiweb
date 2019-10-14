@@ -4,7 +4,7 @@
       <el-form-item class="required" label="角色名称" prop="rolename">
         <el-input v-model="form.rolename" placeholder="请输入角色名称" clearable />
       </el-form-item>
-      <el-form-item  label="角色描述" prop="desc">
+      <el-form-item label="角色描述" prop="desc">
         <el-input v-model="form.desc" placeholder="请输入角色描述" clearable />
       </el-form-item>
       <el-form-item label="所属企业" prop="roleGroupId">
@@ -13,8 +13,8 @@
             v-for="item in role_gr_list"
             :key="item.value"
             :label="item.label"
-            :value="item.value">
-          </el-option>
+            :value="item.value"
+          />
         </el-select>
       </el-form-item>
     </el-form>
@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import { source_file_add,role_gr_list } from '@/api/systemManage-sourceFile.js'
+import { role_add, role_gr_list } from '@/api/systemManage-sourceFile.js'
 export default {
   data() {
     return {
@@ -35,7 +35,7 @@ export default {
         desc: '',
         roleGroupId: ''
       },
-      role_gr_list:[],
+      role_gr_list: [],
       rules: {
         rolename: [
           { required: true, message: '请输入角色名称（长度在 2 到 20 个字符）', trigger: 'blur' },
@@ -52,7 +52,7 @@ export default {
   created() {
   },
   methods: {
-    get_role_gr_list_fn(){
+    get_role_gr_list_fn() {
       role_gr_list().then(res => {
         this.role_gr_list = res.data
       })
@@ -60,7 +60,7 @@ export default {
     save(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          source_file_add(this.form).then(response => {
+          role_add(this.form).then(response => {
             this.$message.success('添加成功')
             this.$router.push({ path: '/systemManage/roleManage/detail' })
           })
