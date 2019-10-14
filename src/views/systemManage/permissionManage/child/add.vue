@@ -1,9 +1,6 @@
 <template>
   <div class="form-edit">
     <el-form ref="form" class="form" :model="form" :rules="rules" :status-icon="true" label-width="120px">
-      <el-form-item class="required" label="模块名称" prop="modulename">
-        <el-input v-model="form.modulename" placeholder="请输入模块名称" clearable />
-      </el-form-item>
       <el-form-item class="required" label="权限名称" prop="permissionname">
         <el-input v-model="form.permissionname" placeholder="请输入权限名称" clearable />
       </el-form-item>
@@ -19,7 +16,7 @@
       <el-form-item class="required" label="所属菜单">
         <span class="pointer" @click="show_menu_tree_fn">{{ menu_tip_txt }}</span>
       </el-form-item>
-      <el-form-item label="管理类别">
+      <el-form-item class="required" label="权限类别">
         <el-radio-group v-model="form.permissionmanage">
           <el-radio v-for="item in manage_type" :key="item.permissionmanage" :label="item.permissionmanage">{{ item.name }}</el-radio>
         </el-radio-group>
@@ -66,7 +63,6 @@ export default {
   data() {
     return {
       form: {
-        modulename: '',
         permissionname: '',
         permissionmark: '',
         permissioncode: '',
@@ -74,13 +70,15 @@ export default {
         permissionbelongmenu: [],
         permissionmanage: ''
       },
+      menu_dt: [],
       treeData: [],
       menu_tip_txt: '请选择菜单',
       menu_tree_flag: false,
       menu_tree_checked: {
-        id: [],
+        ids: [],
         checkey: [],
-        dt: {}
+        dt: {},
+        lables: []
       },
       manage_type: [],
       defaultProps: {
@@ -88,12 +86,6 @@ export default {
         label: 'label'
       },
       rules: {
-        modulename: [
-          { required: true, message: '请输入模块名称（长度在 1 到 64 个字符）', trigger: 'blur' },
-          { required: true, message: '请输入模块名称（长度在 1 到 64 个字符）', trigger: 'change' },
-          { min: 1, max: 64, message: '长度在 1 到 64 个字符', trigger: 'blur' },
-          { min: 1, max: 64, message: '长度在 1 到 64 个字符', trigger: 'change' }
-        ],
         permissionname: [
           { required: true, message: '请输入权限名称（长度在 1 到 64 个字符）', trigger: 'blur' },
           { required: true, message: '请输入权限名称（长度在 1 到 64 个字符）', trigger: 'change' },
@@ -111,6 +103,9 @@ export default {
           { required: true, message: '请输入权限code（长度在 1 到 64 个字符）', trigger: 'change' },
           { min: 1, max: 64, message: '长度在 1 到 64 个字符', trigger: 'blur' },
           { min: 1, max: 64, message: '长度在 1 到 64 个字符', trigger: 'change' }
+        ],
+        permissionmanage: [
+          { required: true, message: '请选择权限类别', trigger: 'change' }
         ]
       }
     }
@@ -128,13 +123,14 @@ export default {
       const param = {}
       permission_menu(param).then(response => {
         const { MenuV2List } = response.data
-        this.treeData = this.translate(MenuV2List)
+        this.menu_dt = this.translate(MenuV2List)
+        this.treeData = this.menu_dt[0]
       })
     },
     get_permission_manage_type() {
       const param = {}
       permission_manage_type(param).then(response => {
-        this.form.manage_type = response.data
+        this.manage_type = response.data
       })
     },
     translate(menuList) {
@@ -142,6 +138,7 @@ export default {
         return []
       }
 
+      var menuIdMenu = {}
       var firstMenuList = []
       var cidMenu = {}
       var cidChildren = {}
@@ -159,15 +156,18 @@ export default {
         return cidChildren[cid]
       }
 
-      for (var i = 0; i < menuList.length; i++) {
+      for (let i = 0; i < menuList.length; i++) {
         var oldMenu = menuList[i]
 
         var newMenu = {}
+        var menuId = oldMenu['_id']
         var children = getCidChildren(oldMenu.cid)
         newMenu['label'] = oldMenu['menuname']
         newMenu['children'] = children
         newMenu['orders'] = oldMenu['orders']
         newMenu['id'] = oldMenu['_id']
+
+        menuIdMenu[menuId] = newMenu
 
         var parrentId = oldMenu.pid
         if (parrentId === 'firstMenu') {
@@ -183,27 +183,69 @@ export default {
         return val1.orders - val2.orders
       }
 
-      for (let i = 0; i < allNeedSortMenuList.length; i++) {
+      for (var i = 0; i < allNeedSortMenuList.length; i++) {
         var oneMenuList = allNeedSortMenuList[i]
         oneMenuList.sort(compare)
       }
 
-      const arr = [{}]
-      arr[0].children = firstMenuList
-      arr[0].id = 'firstMenu'
-      arr[0].label = '菜单管理'
-      arr[0].orders = 1
+      var menuIdParrentMenus = {}
+      var createParrentIds = function(menuList, parentIds) {
+        if (!(menuList && menuList.length > 0)) {
+          return
+        }
 
-      return arr
+        for (var i = 0; i < menuList.length; i++) {
+          var menu = menuList[i]
+          var menuId = menu.id
+
+          var parrentMenus = []
+          if (parentIds && parentIds.length > 0) {
+            for (var j = 0; j < parentIds.length; j++) {
+              var parentId = parentIds[0]
+              var parentMenu = menuIdMenu[parentId]
+              parrentMenus.push({ id: parentId, label: parentMenu.label })
+            }
+          }
+          parrentMenus.push({ id: menuId, label: menu.label })
+          menuIdParrentMenus[menuId] = parrentMenus
+          var menuChilds = menu.children
+
+          if (!(menuChilds && menuChilds.length > 0)) {
+            continue
+          }
+          var nextParentIds = parentIds.concat()
+          nextParentIds.push(menuId)
+
+          createParrentIds(menuChilds, nextParentIds)
+        }
+      }
+
+      createParrentIds(firstMenuList, [])
+
+      return [firstMenuList, menuIdParrentMenus]
     },
     show_menu_tree_fn() {
+      const temp = this.menu_tree_checked.ids
+      if (temp.length !== 0) {
+        const last_id = temp[temp.length - 1]
+        this.$refs.tree.setCheckedKeys([last_id])
+      }
       this.menu_tree_flag = true
     },
     menu_tree_check_fn(data, checked, indeterminate) {
       this.menu_tree_checked.checkey = [data.id]
-      // this.menu_tree_checked_id.id = data.id
       if (checked === true) {
-        this.menu_tree_checked.id = data.id
+        const need_ids = []
+        const need_lables = []
+        const cur_id = data.id
+        const menu_dt = this.menu_dt[1]
+        const cur_arr = menu_dt[cur_id]
+        cur_arr.forEach(item => {
+          need_ids.push(item.id)
+          need_lables.push(item.label)
+        })
+        this.menu_tree_checked.ids = need_ids
+        this.menu_tree_checked.lables = need_lables
         this.$refs.tree.setCheckedKeys([data.id])
         this.menu_tree_checked.dt = data
       } else {
@@ -212,20 +254,23 @@ export default {
         }
       }
     },
-    // menu_tree_click_fn(data, checked, indeterminate) {
-    //   this.menu_tree_checked.id = data.id
-    //   this.$refs.tree.setCheckedKeys([data.id])
-    // },
     save_menu() {
-      const tip = this.menu_tree_checked.dt.label
-      this.menu_tip_txt = tip
-      this.form.permissionbelongmenu.push(this.menu_tree_checked.id)
+      const tip = this.menu_tree_checked.lables
+      let tip_copy = ''
+      tip.forEach(item => {
+        tip_copy += item + '/'
+      })
+      this.menu_tip_txt = tip_copy.substring(0, tip_copy.length - 1)
+      this.form.permissionbelongmenu = this.menu_tree_checked.ids
       this.menu_tree_flag = false
     },
     cancel_menu() {
       this.menu_tree_flag = false
-      this.menu_tree_checked = { id: [], checkey: [], dt: {}}
-      this.menu_tip_txt = '请选择菜单'
+      if (this.menu_tree_checked.ids === []) {
+        this.$refs.tree.setCheckedKeys([])
+        this.menu_tree_checked = { ids: [], checkey: [], dt: {}, lables: [] }
+        this.menu_tip_txt = '请选择菜单'
+      }
     },
     save(formName) {
       this.$refs[formName].validate((valid) => {
@@ -240,7 +285,8 @@ export default {
           }
           permission_add(this.form).then(response => {
             this.$message.success('添加成功')
-            // this.$router.push({ path: '/systemManage/permissionManage/detail', query: { _id: response.data._id }})
+            const resId = response.data.resId
+            this.$router.push({ path: '/systemManage/permissionManage/detail', query: { ids: resId }})
           })
         }
       })
@@ -258,8 +304,8 @@ export default {
   #btnGroup{
     padding-left: 120px;
   }
-  .menu_tree_box{
-    height: 500px;
-    overflow-y: auto;
+  .el-scrollbar {
+    height: 600px;
+    width: 100%;
   }
 </style>

@@ -4,44 +4,38 @@
       <el-input v-model="listQuery.name" placeholder="请输入文件名称" clearable @keyup.enter.native="topSearch">
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
       </el-input>
-      <el-popover
-        v-model="popoverVisible"
-        placement="bottom-start"
-        width="456"
-        title="高级搜索"
-        :visible-arrow="false"
-        trigger="click"
-        popper-class="advancedSearch"
-      >
-        <el-form ref="form" :model="listQuery" label-width="80px">
-          <el-form-item label="创建人">
-            <el-input v-model="listQuery.creater" clearable />
-          </el-form-item>
-          <el-form-item label="创建时间">
-            <el-date-picker
-              v-model="listQuery.time_range"
-              type="daterange"
-              clearable
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-            />
-          </el-form-item>
-          <el-form-item label="状态">
-            <el-radio-group v-model="listQuery.enable_status" clearable>
-              <el-radio :label="1">生效</el-radio>
-              <el-radio :label="2">失效</el-radio>
-            </el-radio-group>
-          </el-form-item>
-        </el-form>
-
-        <div id="searchPopoverBtn">
-          <el-button type="primary" @click="topSearch">搜索</el-button>
-          <el-button type="primary" plain @click="reset">重置</el-button>
-        </div>
-
-        <span id="advancedSearch" slot="reference">高级搜索<i class="el-icon-caret-bottom" /></span>
-      </el-popover>
+      <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">高级搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
+      <transition name="fade-advanced-search">
+        <el-row v-show="popoverVisible">
+          <el-card id="advancedSearchArea" shadow="never">
+            <el-form ref="form" :model="listQuery" label-width="100px">
+              <el-form-item label="创建人">
+                <el-input v-model="listQuery.creater" clearable />
+              </el-form-item>
+              <el-form-item label="创建时间">
+                <el-date-picker
+                  v-model="listQuery.time_range"
+                  type="daterange"
+                  clearable
+                  range-separator="至"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                />
+              </el-form-item>
+              <el-form-item label="状态">
+                <el-radio-group v-model="listQuery.enable_status" clearable>
+                  <el-radio :label="1">生效</el-radio>
+                  <el-radio :label="2">失效</el-radio>
+                </el-radio-group>
+              </el-form-item>
+            </el-form>
+            <div id="searchPopoverBtn">
+              <el-button type="primary" @click="topSearch">搜索</el-button>
+              <el-button type="primary" plain @click="reset">重置</el-button>
+            </div>
+          </el-card>
+        </el-row>
+      </transition>
     </div>
     <div id="topBtn">
       <el-button type="primary" @click="add"><i class="iconfont iconjia" />新增</el-button>
@@ -93,11 +87,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <div v-show="total>0" class="page-piliang">
-      <!--<el-button type="primary"><i class="iconfont iconshanchu" />批量删除</el-button>-->
-      <pagination :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="get_list" />
-    </div>
-
+    <pagination v-show="total>0" :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="get_list" />
   </div>
 </template>
 
@@ -129,7 +119,6 @@ export default {
   },
   methods: {
     topSearch() {
-      this.popoverVisible = false
       this.get_list()
     },
     reset() {
@@ -147,7 +136,7 @@ export default {
         stime = that.listQuery.time_range[0]
       }
       if (that.listQuery.time_range && that.listQuery.time_range[1]) {
-        edtime = that.listQuery.edtime[1]
+        edtime = that.listQuery.time_range[1]
       }
       const param = {}
       param.name = that.listQuery.name ? that.listQuery.name : ''
@@ -215,9 +204,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .tenant-list-box{
-    .page-piliang{
-      padding-top: 15px;
-    }
-  }
+
 </style>

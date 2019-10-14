@@ -26,7 +26,7 @@ export function permission_manage_type(data) {
 // 添加
 export function permission_add(data) {
   return request({
-    url: '/system/permissionV2/addPermissionInfoo',
+    url: '/system/permissionV2/addPermissionInfo',
     method: 'post',
     data
   })
@@ -34,7 +34,7 @@ export function permission_add(data) {
 // 修改
 export function permission_edit(data) {
   return request({
-    url: '/system/permission/updatePermissionInfo',
+    url: '/system/permissionV2/updatePermissionInfo',
     method: 'post',
     data
   })
