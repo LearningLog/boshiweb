@@ -116,7 +116,7 @@
     <div id="bottomOperation">
       <el-button v-show="total>0" type="primary" @click="batchDel"><i class="iconfont iconshanchu" />批量删除</el-button>
     </div>
-    <el-dialog v-el-drag-dialog class="setInformationDialog" width="600px" title="资讯管理" :visible.sync="setInformationDialogVisible">
+    <el-dialog v-el-drag-dialog class="setInformationDialog" width="30%" title="资讯管理" :visible.sync="setInformationDialogVisible">
       <el-transfer v-model="hasList" :data="noList" :titles="['未分配类别', '已分配类别']" :props="defaultProps" @change="handleTransferChange" />
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="setInformation">确定</el-button>
@@ -311,7 +311,7 @@ export default {
     text-align: left;
   }
   img.logoImg {
-    width: 160px;
-    height: 90px;
+    width: 100px;
+    height: 100px;
   }
 </style>
