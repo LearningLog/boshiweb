@@ -150,6 +150,16 @@ export default {
   },
   directives: { elDragDialog },
   data() {
+    var validatePass = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入密码'))
+      } else {
+        if (this.form.uPwd !== '') {
+          this.$refs.ruleForm.validateField('uPwd')
+        }
+        callback()
+      }
+    }
     return {
       form: {
         customname: '',
@@ -239,8 +249,8 @@ export default {
           { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'change' }
         ],
         uPwd: [
-          { required: true, message: '请输入管理员密码（长度在 6 到 50 个字符）', trigger: 'blur' },
-          { required: true, message: '请输入管理员密码（长度在 6 到 50 个字符）', trigger: 'change' },
+          { required: true, message: '请输入管理员密码（长度在 6 到 50 个字符）', validator: validatePass, trigger: 'blur' },
+          { required: true, message: '请输入管理员密码（长度在 6 到 50 个字符）', validator: validatePass, trigger: 'change' },
           { min: 6, max: 50, message: '长度在 6 到 50 个字符', trigger: 'blur' },
           { min: 6, max: 50, message: '长度在 6 到 50 个字符', trigger: 'change' }
         ]

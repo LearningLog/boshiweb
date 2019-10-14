@@ -1,323 +1,310 @@
 <template>
-  <div class="clearfix">
-    <div class="left">
-      <h4>博士知识库</h4>
-      <el-scrollbar wrap-class="scrollbar-wrapper">
-        <el-tree :data="treeData" :props="defaultProps" default-expand-all :expand-on-click-node="false" @node-click="handleNodeClick" />
-      </el-scrollbar>
+  <div class="tenant-list-box">
+    <div id="topSearch">
+      <el-input v-model="listQuery.customname" placeholder="请输入租户名称" clearable @keyup.enter.native="topSearch">
+        <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
+      </el-input>
+      <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">高级搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
+      <transition name="fade-advanced-search">
+        <el-row v-show="popoverVisible">
+          <el-card id="advancedSearchArea" shadow="never">
+            <el-form ref="form" :model="listQuery" label-width="100px">
+              <el-form-item label="创建人">
+                <el-input v-model="listQuery.createUser" clearable />
+              </el-form-item>
+              <el-form-item label="创建时间">
+                <el-date-picker
+                    v-model="time_range"
+                    type="daterange"
+                    range-separator="至"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                    format="yyyy 年 MM 月 dd 日"
+                    value-format="yyyy-MM-dd"
+                />
+              </el-form-item>
+              <el-form-item label="状态">
+                <el-radio v-model="listQuery.customStatus" label="1">生效</el-radio>
+                <el-radio v-model="listQuery.customStatus" label="0">失效</el-radio>
+              </el-form-item>
+            </el-form>
+            <div id="searchPopoverBtn">
+              <el-button type="primary" @click="topSearch">搜索</el-button>
+              <el-button type="primary" plain @click="reset">重置</el-button>
+            </div>
+          </el-card>
+        </el-row>
+      </transition>
     </div>
-    <div class="right">
-      <div id="topSearch">
-        <el-input v-model="listQuery.menuname" placeholder="请输入菜单名称" clearable @keyup.enter.native="topSearch" >
-          <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
-        </el-input>
-        <el-popover
-          v-model="popoverVisible"
-          placement="bottom-start"
-          title="高级搜索"
-          width="456"
-          :visible-arrow="false"
-          trigger="click"
-          popper-class="advancedSearch"
-        >
-          <el-form ref="form" :model="listQuery" label-width="80px">
-            <el-form-item label="标识">
-              <el-input v-model="listQuery.cmark" clearable />
-            </el-form-item>
-            <el-form-item label="类型">
-              <el-select v-model="listQuery.type" placeholder="请选择类型" clearable>
-                <el-option v-for="item in menuType" :key="item.id" :label="item.name" :value="item.id" />
-              </el-select>
-            </el-form-item>
-          </el-form>
-
-          <div id="searchPopoverBtn">
-            <el-button type="primary" @click="topSearch">搜索</el-button>
-            <el-button type="primary" plain @click="reset">重置</el-button>
-          </div>
-
-          <span id="advancedSearch" slot="reference">高级搜索<i class="el-icon-caret-bottom" /></span>
-        </el-popover>
-      </div>
-      <div id="topBtn">
-        <el-button type="primary" @click="add"><i class="iconfont iconjia" />新增</el-button>
-      </div>
-      <el-table
-        v-loading="listLoading"
-        :data="list"
-        element-loading-text="Loading"
-        border
-        fit
-        highlight-current-row
+    <div id="topBtn">
+      <el-button type="primary" @click="add"><i class="iconfont iconjia" />新增</el-button>
+    </div>
+    <el-table
+      v-loading="listLoading"
+      :data="list"
+      element-loading-text="Loading"
+      border
+      fit
+      highlight-current-row
+      @selection-change="handleSelectionChange"
+    >
       >
-        <el-table-column align="center" label="序号" width="60">
-          <template slot-scope="scope">
-            <span>{{ ((scope.$index + 1) + (listQuery.currentPage - 1) * listQuery.pageSize ) }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column align="center" show-overflow-tooltip min-width="100" label="名称">
-          <template slot-scope="scope">
-            <span class="pointer" @click="detail(scope.row)">{{ scope.row.menuname }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="标识" min-width="100" align="center" show-overflow-tooltip>
-          <template slot-scope="scope">
-            <span>{{ scope.row.cmark }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="图标" min-width="60" align="center" show-overflow-tooltip>
-          <template slot-scope="scope">
-            <i v-if="scope.row.imagename" :class="'iconfont ' + scope.row.imagename" />
-          </template>
-        </el-table-column>
-        <el-table-column class-name="status-col" label="路径" min-width="160" align="center" show-overflow-tooltip>
-          <template slot-scope="scope">
-            {{ scope.row.menuurl }}
-          </template>
-        </el-table-column>
-        <el-table-column align="center" show-overflow-tooltip prop="created_at" label="类型" min-width="90">
-          <template slot-scope="scope">
-            <span>{{ getMenuTypeName(scope.row.type) }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column class-name="status-col" label="操作" width="220" align="center" fixed="right" show-overflow-tooltip>
-          <template slot-scope="scope">
-            <el-button size="mini" @click="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
-            <el-button size="mini" @click="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
-            <el-dropdown>
-              <el-button size="mini">
-                <i class="iconfont icongengduo" />更多
-              </el-button>
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native="upMenu(scope.row)"><i class="iconfont iconxiayi1"></i>上移</el-dropdown-item>
-                <el-dropdown-item @click.native="downMenu(scope.row)"><i class="iconfont iconxiayi1"></i>下移</el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
-          </template>
-        </el-table-column>
-      </el-table>
-      <pagination v-show="total>0" :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="getMenuList" />
+      <el-table-column
+        type="selection"
+        width="55"
+        fixed
+      />
+      <el-table-column align="center" label="名称" min-width="150" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <span class="pointer" @click="detail(scope.row)">{{ scope.row.customname }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="描述" min-width="150" align="center" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <span>{{ scope.row.desc }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="Logo" min-width="110" align="center">
+        <template slot-scope="scope">
+          <img v-if="scope.row.pcLogoFileUrl" class="logoImg" :src="scope.row.pcLogoFileUrl" alt="">
+        </template>
+      </el-table-column>
+      <el-table-column class-name="status-col" label="个性化系统名称" min-width="150" align="center" show-overflow-tooltip>
+        <template slot-scope="scope">
+          {{ scope.row.customSystemName }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="创建人" min-width="100" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <span>{{ scope.row.createuser }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="创建时间" min-width="120" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <span>{{ scope.row.createtime }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="状态" min-width="70" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <span>{{ scope.row.customStatusName }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column class-name="status-col" label="操作" width="220" align="center" fixed="right" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <el-button size="mini" @click="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
+          <el-button v-if="scope.row.customStatus === 1" size="mini" @click="enable(scope.row, 0)"><i class="iconfont iconshixiao" />失效</el-button>
+          <el-button v-else size="mini" @click="enable(scope.row, 1)"><i class="iconfont iconshengxiao" />生效</el-button>
+          <el-dropdown>
+            <el-button size="mini">
+              <i class="iconfont icongengduo" />更多
+            </el-button>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item @click.native="getInformation(scope.row)"><i class="iconfont iconzixun" />资讯</el-dropdown-item>
+              <el-dropdown-item @click.native="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </template>
+      </el-table-column>
+    </el-table>
+    <pagination v-show="total>0" :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="get_list" />
+    <div id="bottomOperation">
+      <el-button v-show="total>0" type="primary" @click="batchDel"><i class="iconfont iconshanchu" />批量删除</el-button>
     </div>
+    <el-dialog v-el-drag-dialog class="setInformationDialog" width="30%" title="资讯管理" :visible.sync="setInformationDialogVisible">
+      <el-transfer v-model="hasList" :data="noList" :titles="['未分配类别', '已分配类别']" :props="defaultProps" @change="handleTransferChange" />
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="setInformation">确定</el-button>
+        <el-button @click="setInformationDialogVisible = false">取 消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import { getAllMenuList, findMenuList, delMenu, moveMenu } from '@/api/systemManage-menuManage'
-import { mapGetters } from 'vuex'
-
+import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
+import { getAllTenantList, delTenant, batchDelTenant, getInformationList, setInformation, setCustomStatus } from '@/api/systemManage-tenantManage'
 export default {
   components: { Pagination },
-  computed: {
-    ...mapGetters([
-      'menuType'
-    ])
-  },
+  directives: { elDragDialog },
   data() {
+    const generateData = _ => {
+      const data = []
+      for (let i = 1; i <= 15; i++) {
+        data.push({
+          key: i,
+          label: `备选项 ${i}`,
+          disabled: i % 4 === 0
+        })
+      }
+      return data
+    }
     return {
-      list: [],
-      listLoading: true,
       total: 0,
       listQuery: {
         currentPage: 1,
         pageSize: 10,
-        pid: 'firstMenu',
-        menuname: '',
-        cmark: '',
-        type: ''
+        customname: '',
+        createUser: null,
+        startTime: null,
+        endTime: null,
+        status: null
       },
-      searchVal: '',
+      time_range: [],
+      list: [],
+      listLoading: true,
       popoverVisible: false,
-      treeData: [{}],
+      setInformationDialogVisible: false,
+      noList: [],
+      hasList: [],
+      checkedList: [],
+      data: generateData(),
+      value: [1, 4],
       defaultProps: {
-        children: 'children',
-        label: 'label'
+        key: '_id',
+        label: 'newscategory_name'
       },
-      pid: 'firstMenu'
+      setInformationId: ''
     }
   },
   created() {
-    this.getAllMenuList()
-    this.getMenuList()
+    this.get_list()
   },
   methods: {
-    // 获取右侧菜单列表
-    getMenuList() {
+    get_list() {
       this.listLoading = true
-      findMenuList(this.listQuery).then(response => {
+      getAllTenantList(this.listQuery).then(response => {
         this.list = response.data.page.list
         this.total = response.data.page.totalCount
         this.listLoading = false
       })
     },
-    // 获取左侧菜单树
-    getAllMenuList() {
-      getAllMenuList().then(response => {
-        const { MenuV2List } = response.data
-        this.treeData = this.translate(MenuV2List)
-      })
-    },
-    // 搜索
     topSearch() {
-      this.popoverVisible = false
-      this.getMenuList()
+      this.listQuery.startTime = this.time_range[0]
+      this.listQuery.endTime = this.time_range[1]
+      this.get_list()
     },
     // 重置
     reset() {
-      this.listQuery.menuname = ''
-      this.listQuery.cmark = ''
-      this.listQuery.type = ''
-      this.getMenuList()
+      this.listQuery.customname = ''
+      this.listQuery.createUser = ''
+      this.time_range = []
+      this.listQuery.startTime = ''
+      this.listQuery.endTime = ''
+      this.listQuery.status = ''
+      this.get_list()
     },
-    // 选中左侧菜单树节点的回调
-    handleNodeClick(data) {
-      this.listQuery.menuname = ''
-      this.listQuery.cmark = ''
-      this.listQuery.type = ''
-      this.listQuery.pid = data.id
-      this.pid = data.id
-      this.getMenuList()
+    // 选中数据
+    handleSelectionChange(row) {
+      this.checkedList = row
     },
     // 新增
     add() {
-      this.$router.push({ path: '/systemManage/menuManage/add', query: { pid: this.pid }})
+      this.$router.push({ path: '/systemManage/tenantManage/add' })
     },
     // 详情
     detail(row) {
-      this.$router.push({ path: '/systemManage/menuManage/detail', query: { _id: row._id }})
+      this.$router.push({ path: '/systemManage/tenantManage/detail', query: { _id: row._id }})
     },
-    // 删除
+    // 单个删除
     del(row) {
-      this.$confirm('确定要删除【' + row.menuname + '】吗？', '删除菜单', {
+      this.$confirm('确定要删除【' + row.customname + '】吗？', '删除租户', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        delMenu({ _id: row._id }).then(response => {
+        delTenant({ _id: row._id }).then(response => {
           this.$message.success('删除成功')
           if ((this.list.length - 1) === 0) { // 如果当前页数据已删完，则去往上一页
             this.listQuery.currentPage -= 1
           }
-          this.getAllMenuList()
-          this.getMenuList()
+          this.get_list()
+        })
+      }).catch(() => {})
+    },
+    // 批量删除
+    batchDel() {
+      this.$confirm('确定要删除选中的租户吗？', '批量删除租户', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const _ids = []
+        this.checkedList.forEach(item => {
+          _ids.push(item._id)
+        })
+        batchDelTenant({ _ids: _ids }).then(response => {
+          this.$message.success('删除成功')
+          if ((this.list.length - 1) === 0) { // 如果当前页数据已删完，则去往上一页
+            this.listQuery.currentPage -= 1
+          }
+          this.get_list()
         })
       }).catch(() => {})
     },
     // 编辑
     edit(row) {
-      this.$router.push({ path: '/systemManage/menuManage/edit', query: { pid: row._id }})
+      this.$router.push({ path: '/systemManage/tenantManage/edit', query: { _id: row._id }})
     },
-    // 上移
-    upMenu(row) {
-      moveMenu({ orderby: 'up', pid: row.pid, _id: row._id }).then(response => {
-        this.$message.success('上移成功')
-        this.getAllMenuList()
-        this.getMenuList()
+    // 生效/失效
+    enable(row, type) {
+      if (type === 0) {
+        this.$confirm('失效用户将不能进行所有本系统内的操作，请问是否对该用户失效？', '失效租户', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          setCustomStatus({ _id: row._id, customStatus: type }).then(response => {
+            this.$message.success('失效用户成功！')
+            this.get_list()
+          })
+        }).catch(() => {})
+      } else {
+        setCustomStatus({ _id: row._id, customStatus: type }).then(response => {
+          this.$message.success('生效用户成功！')
+          this.get_list()
+        })
+      }
+    },
+    // 获取资讯数据
+    getInformation(row) {
+      this.setInformationId = row._id
+      getInformationList({ groupId: row._id }).then(response => {
+        this.noList = response.data.noList.concat(response.data.hasList)
+        response.data.hasList.forEach((item, index) => {
+          this.hasList.push(item._id)
+        })
       })
+      this.setInformationDialogVisible = true
     },
-    // 下移
-    downMenu(row) {
-      moveMenu({ orderby: 'down', pid: row.pid, _id: row._id }).then(response => {
-        this.$message.success('下移成功')
-        this.getAllMenuList()
-        this.getMenuList()
+    handleTransferChange(value, direction, movedKeys) {
+      this.hasList = value
+    },
+    // 设置资讯
+    setInformation() {
+      const data = { _id: this.setInformationId, categoryinfo: this.hasList.join() }
+      setInformation(data).then(response => {
+        this.setInformationDialogVisible = false
+        this.noList = []
+        this.hasList = []
+        this.$message.success('设置资讯成功！')
+        this.get_list()
       })
-    },
-    // 获取菜单类型
-    getMenuTypeName(type) {
-      let name = ''
-      this.menuType.forEach(item => {
-        if (item.id === type) {
-          name = item.name
-        }
-      })
-      return name
-    },
-    // 将左侧返回的扁平数据转换为树结构
-    translate(menuList) {
-      if (!(menuList && menuList.length > 0)) {
-        return []
-      }
-
-      var firstMenuList = []
-      var cidMenu = {}
-      var cidChildren = {}
-      // 该数组元素是每一级菜单数组，用于排序
-      var allNeedSortMenuList = []
-      allNeedSortMenuList.push(firstMenuList)
-
-      var getCidChildren = function(cid) {
-        if (cid in cidChildren) {
-          return cidChildren[cid]
-        }
-        var newChildren = []
-        cidChildren[cid] = newChildren
-        allNeedSortMenuList.push(newChildren)
-        return cidChildren[cid]
-      }
-
-      for (var i = 0; i < menuList.length; i++) {
-        var oldMenu = menuList[i]
-
-        var newMenu = {}
-        var children = getCidChildren(oldMenu.cid)
-        newMenu['label'] = oldMenu['menuname']
-        newMenu['children'] = children
-        newMenu['orders'] = oldMenu['orders']
-        newMenu['id'] = oldMenu['cid']
-
-        var parrentId = oldMenu.pid
-        if (parrentId === 'firstMenu') {
-          firstMenuList.push(newMenu)
-        } else {
-          var parrentChildren = getCidChildren(parrentId)
-          parrentChildren.push(newMenu)
-        }
-        cidMenu[oldMenu.cid] = newMenu
-      }
-
-      var compare = function(val1, val2) {
-        return val1.orders - val2.orders
-      }
-
-      for (let i = 0; i < allNeedSortMenuList.length; i++) {
-        var oneMenuList = allNeedSortMenuList[i]
-        oneMenuList.sort(compare)
-      }
-
-      const arr = [{}]
-      arr[0].children = firstMenuList
-      arr[0].id = 'firstMenu'
-      arr[0].label = '菜单管理'
-      arr[0].orders = 1
-
-      return arr
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  .left {
-    float: left;
-    width:300px;
-    height: calc(100vh - 120px);
-    margin-right: 20px;
-    border:1px solid rgba(222, 222, 222, 1);
-    padding-left: 10px;
-    & h4 {
-      margin-left: 10px;
-    }
-    .el-scrollbar {
-      height: calc(100% - 70px);
-      width: 100%;
-    }
-    .scrollbar-wrapper {
-      overflow-x: hidden !important;
-    }
+  .setInformationDialog /deep/ .el-transfer {
+    margin: 0 auto;
+    text-align: center;
   }
-  .right {
-    width: calc(100% - 320px) !important;
-    float: right;
+  .setInformationDialog /deep/ .el-transfer-panel {
+    text-align: left;
+  }
+  img.logoImg {
+    width: 100px;
+    height: 100px;
   }
 </style>

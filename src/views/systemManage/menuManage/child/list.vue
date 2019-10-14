@@ -11,33 +11,27 @@
         <el-input v-model="listQuery.menuname" placeholder="请输入菜单名称" clearable @keyup.enter.native="topSearch">
           <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
         </el-input>
-        <el-popover
-          v-model="popoverVisible"
-          placement="bottom-start"
-          title="高级搜索"
-          width="456"
-          :visible-arrow="false"
-          trigger="click"
-          popper-class="advancedSearch"
-        >
-          <el-form ref="form" :model="listQuery" label-width="80px">
-            <el-form-item label="标识">
-              <el-input v-model="listQuery.cmark" clearable />
-            </el-form-item>
-            <el-form-item label="类型">
-              <el-select v-model="listQuery.type" placeholder="请选择类型" clearable>
-                <el-option v-for="item in menuType" :key="item.id" :label="item.name" :value="item.id" />
-              </el-select>
-            </el-form-item>
-          </el-form>
-
-          <div id="searchPopoverBtn">
-            <el-button type="primary" @click="topSearch">搜索</el-button>
-            <el-button type="primary" plain @click="reset">重置</el-button>
-          </div>
-
-          <span id="advancedSearch" slot="reference">高级搜索<i class="el-icon-caret-bottom" /></span>
-        </el-popover>
+        <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">高级搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
+        <transition name="fade-advanced-search">
+          <el-row v-show="popoverVisible">
+            <el-card id="advancedSearchArea" shadow="never">
+              <el-form ref="form" :model="listQuery" label-width="100px">
+                <el-form-item label="标识">
+                  <el-input v-model="listQuery.cmark" clearable />
+                </el-form-item>
+                <el-form-item label="类型">
+                  <el-select v-model="listQuery.type" placeholder="请选择类型" clearable>
+                    <el-option v-for="item in menuType" :key="item.id" :label="item.name" :value="item.id" />
+                  </el-select>
+                </el-form-item>
+              </el-form>
+              <div id="searchPopoverBtn">
+                <el-button type="primary" @click="topSearch">搜索</el-button>
+                <el-button type="primary" plain @click="reset">重置</el-button>
+              </div>
+            </el-card>
+          </el-row>
+        </transition>
       </div>
       <div id="topBtn">
         <el-button type="primary" @click="add"><i class="iconfont iconjia" />新增</el-button>
@@ -160,7 +154,6 @@ export default {
     },
     // 搜索
     topSearch() {
-      this.popoverVisible = false
       this.getMenuList()
     },
     // 重置
