@@ -202,8 +202,8 @@ export default {
       }).catch(() => {})
     },
     go_edit_fn(data) {
-      const dt = data
-      this.$router.push({ path: '/systemManage/roleManage/edit', query: { queryDt: dt }})
+      const id = data.id
+      this.$router.push({ path: '/systemManage/roleManage/edit', query: { ids: id }})
     },
     add() {
       this.$router.push({ path: '/systemManage/roleManage/add' })
