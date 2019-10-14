@@ -8,22 +8,24 @@
         <el-form-item label="套餐名称" prop="payTypeName">
           <el-input v-model="form.payTypeName" placeholder="请输入套餐名称" maxlength="20" clearable />
         </el-form-item>
-        <el-form-item label="员工规模（个）" prop="userTotalCount">
-          <el-input v-model="form.userTotalCount" @keyup.native="intNum(form.userTotalCount, 'userTotalCount')" placeholder="请输入员工规模" maxlength="5" clearable />
+        <el-form-item label="员工规模（个）" prop="totalUserCount">
+          <el-input v-model="form.totalUserCount" placeholder="请输入员工规模" maxlength="5" clearable @keyup.native="intNum(form.totalUserCount, 'totalUserCount')" />
         </el-form-item>
         <el-form-item label="短信总量（条）" prop="totalSms">
-          <el-input v-model="form.totalSms" @keyup.native="intNum(form.totalSms, 'totalSms')" placeholder="请输入短信总量" maxlength="5" clearable />
+          <el-input v-model="form.totalSms" placeholder="请输入短信总量" maxlength="5" clearable @keyup.native="intNum(form.totalSms, 'totalSms')" />
         </el-form-item>
         <el-form-item label="存储总量（G）" prop="totalStorageSpace">
-          <el-input v-model="form.totalStorageSpace" @keyup.native="intNum(form.totalStorageSpace, 'totalStorageSpace')" placeholder="请输入存储总量" maxlength="5" clearable />
+          <el-input v-model="form.totalStorageSpace" placeholder="请输入存储总量" maxlength="5" clearable @keyup.native="intNum(form.totalStorageSpace, 'totalStorageSpace')" />
         </el-form-item>
         <el-form-item label="有效期" prop="effectTime">
           <el-date-picker
-              v-model="effectTime"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
+            v-model="form.effectTime"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            format="yyyy 年 MM 月 dd 日"
+            value-format="yyyy-MM-dd"
           />
         </el-form-item>
       </el-form>
@@ -41,19 +43,27 @@ import { getCustomResourceDetail, editCustomResource } from '@/api/enterprise-da
 
 export default {
   data() {
+    var validDate = (rule, value, callback) => {
+      value = value || []
+      if (!value[0] || !value[1]) {
+        callback(new Error('请选择有效日期'))
+      } else {
+        callback()
+      }
+    }
     return {
       isDisabled: false, // 防止重复提交
       id: '', // 查询id
       form: {
         customname: '', // 企业/租户名称
         payTypeName: '', // 套餐类型
-        userTotalCount: '', // 员工规模
+        totalUserCount: '', // 员工规模
         totalSms: '', // 短信总量
         totalStorageSpace: '', // 存储总量
-        effectStartTime: null, // 有效开始日期
-        effectEndTime: null // 有效结束日期
+        startTime: '', // 有效开始日期
+        endTime: '', // 有效结束日期
+        effectTime: [] // 有效期
       },
-      effectTime: [], // 有效期
       rules: {
         payTypeName: [
           { required: true, message: '套餐名称（长度在 1 到 20 个字符）', trigger: 'blur' },
@@ -61,27 +71,21 @@ export default {
           { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' },
           { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'change' }
         ],
-        userTotalCount: [
+        totalUserCount: [
           { required: true, message: '请输入员工规模', trigger: 'blur' },
-          { required: true, message: '请输入员工规模', trigger: 'change' },
-          { min: 1, max: 5, message: '长度在 1 到 5 个字符', trigger: 'blur' },
-          { min: 1, max: 5, message: '长度在 1 到 5 个字符', trigger: 'change' }
+          { required: true, message: '请输入员工规模', trigger: 'change' }
         ],
         totalSms: [
           { required: true, message: '请输入短信总量', trigger: 'blur' },
-          { required: true, message: '请输入短信总量', trigger: 'change' },
-          { min: 1, max: 5, message: '长度在 1 到 5 个字符', trigger: 'blur' },
-          { min: 1, max: 5, message: '长度在 1 到 5 个字符', trigger: 'change' }
+          { required: true, message: '请输入短信总量', trigger: 'change' }
         ],
         totalStorageSpace: [
           { required: true, message: '请输入存储总量', trigger: 'blur' },
-          { required: true, message: '请输入存储总量', trigger: 'change' },
-          { min: 1, max: 5, message: '长度在 1 到 5 个字符', trigger: 'blur' },
-          { min: 1, max: 5, message: '长度在 1 到 5 个字符', trigger: 'change' }
+          { required: true, message: '请输入存储总量', trigger: 'change' }
         ],
         effectTime: [
-          { type: 'date', required: true, message: '请选择有效日期', trigger: 'blur' },
-          { type: 'date', required: true, message: '请选择有效日期', trigger: 'change' }
+          { validator: validDate, trigger: 'blur' },
+          { validator: validDate, trigger: 'change' }
         ]
       }
     }
@@ -98,18 +102,20 @@ export default {
           _id: response.data._id,
           customname: response.data.customname,
           payTypeName: response.data.payTypeName,
-          userTotalCount: response.data.userTotalCount,
+          totalUserCount: response.data.totalUserCount,
           totalSms: response.data.totalSms,
           totalStorageSpace: response.data.totalStorageSpace,
-          effectStartTime: response.data.user.effectStartTime,
-          effectEndTime: response.data.user.effectEndTime
+          startTime: response.data.startTime,
+          endTime: response.data.endTime,
+          effectTime: response.data.startTime ? [response.data.startTime, response.data.endTime] : ''
         }
-        this.effectTime = [response.data.user.effectStartTime, response.data.user.effectEndTime]
         this.form = obj
       })
     },
     // 提交
     onSubmit(formName) {
+      this.form.startTime = this.form.effectTime[0]
+      this.form.endTime = this.form.effectTime[1]
       this.$refs[formName].validate((valid) => {
         if (valid) {
           editCustomResource(this.form).then(response => {

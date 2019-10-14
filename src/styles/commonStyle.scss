@@ -41,12 +41,11 @@
         }
         /deep/ .el-date-editor.el-range-editor.el-input, .el-date-editor.el-range-editor.el-input__inner {
             width: auto;
-
-            & /deep/.el-range-separator {
-                width: auto;
-            }
         }
     }
+}
+.el-date-editor .el-range-separator {
+    width: auto!important;
 }
 #advancedSearchArea #searchPopoverBtn {
     padding-left: 100px;

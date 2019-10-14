@@ -18,7 +18,7 @@ export function getCustomResourceDetail(data) {
 
 export function editCustomResource(data) {
   return request({
-    url: '/system/customResource/getCustomResourceById',
+    url: '/system/customResource/setCustomResourceById',
     method: 'post',
     data
   })

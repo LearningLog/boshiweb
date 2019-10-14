@@ -30,7 +30,7 @@
       </el-form-item>
       <div v-if="isChangeTuser === 1">
         <el-form-item label="租户管理员" prop="uName">
-          <el-input v-model="form.uName" placeholder="请输入租户管理员" maxlength="64" clearable />
+          <el-input v-model="form.uName" :disabled="true" placeholder="请输入租户管理员" maxlength="64" clearable />
         </el-form-item>
         <el-form-item label="管理员昵称" prop="uNickname">
           <el-input v-model="form.uNickname" placeholder="请输入管理员昵称" maxlength="20" clearable />
@@ -135,7 +135,7 @@
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="closeUpload">取 消</el-button>
-        <el-button type="primary" :disabled="isDisabled2" :loading="loading" @click="finish">确认</el-button>
+        <el-button type="primary" :disabled="isDisabled2" @click="finish">确认</el-button>
       </div>
     </el-dialog>
     <el-dialog v-el-drag-dialog title="图片预览" width="38%" :visible.sync="logoDialogVisible">
