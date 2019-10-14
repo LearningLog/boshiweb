@@ -62,19 +62,9 @@
           <span class="pointer" @click="go_detail(scope.row._id)">{{ scope.row.permissionname }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="模块" min-width="150" align="center" show-overflow-tooltip>
+      <el-table-column label="菜单模块" min-width="150" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           <span>{{ scope.row.modulename }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="标识" min-width="150" align="center" show-overflow-tooltip>
-        <template slot-scope="scope">
-          <span>{{ scope.row.permissionmark }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column class-name="status-col" label="code" min-width="150" align="center" show-overflow-tooltip>
-        <template slot-scope="scope">
-          {{ scope.row.permissioncode }}
         </template>
       </el-table-column>
       <el-table-column class-name="status-col" label="描述" align="center" show-overflow-tooltip>
