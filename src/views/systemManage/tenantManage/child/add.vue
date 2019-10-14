@@ -29,7 +29,7 @@
         <el-input v-model="form.uNickname" placeholder="请输入管理员昵称" maxlength="20" clearable />
       </el-form-item>
       <el-form-item label="管理员密码" prop="uPwd">
-        <el-input v-model="form.uPwd" placeholder="请输入管理员密码" type="password" autocomplete="off" maxlength="50" clearable />
+        <el-input v-model="form.uPwd" placeholder="请输入管理员密码" readonly onfocus="this.removeAttribute('readonly');" type="password" autocomplete="off" maxlength="50" clearable />
       </el-form-item>
       <el-form-item label="平台Logo">
         <el-upload
@@ -137,7 +137,7 @@
 </template>
 
 <script>
-import { validIntNum } from '@/utils/validate'
+import { validIntNum, regUName, regPwd } from '@/utils/validate'
 import { VueCropper } from 'vue-cropper'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import { addTenant } from '@/api/systemManage-tenantManage'
@@ -150,6 +150,24 @@ export default {
   },
   directives: { elDragDialog },
   data() {
+    var validateUName = (rule, value, callback) => {
+      if (!value && value !== 0) {
+        callback(new Error('请输入租户管理员（长度在 2 到 64 个字符）'))
+      } else if (!regUName(value)) {
+        callback(new Error('2 到 64 位字母和数字的组合，不能连续11位数字'))
+      } else {
+        callback()
+      }
+    }
+    var validatePass = (rule, value, callback) => {
+      if (!value && value !== 0) {
+        callback(new Error('请输入管理员密码'))
+      } else if (!regPwd(value)) {
+        callback(new Error('6 到 50 位字母和数字的组合'))
+      } else {
+        callback()
+      }
+    }
     return {
       isDisabled1: false,
       isDisabled2: false,
@@ -229,8 +247,8 @@ export default {
           { required: true, message: '请选择是否开通智能搜索', trigger: 'change' }
         ],
         uName: [
-          { required: true, message: '请输入租户管理员（长度在 2 到 64 个字符）', trigger: 'blur' },
-          { required: true, message: '请输入租户管理员（长度在 2 到 64 个字符）', trigger: 'change' },
+          { required: true, validator: validateUName, trigger: 'blur' },
+          { required: true, validator: validateUName, trigger: 'change' },
           { min: 2, max: 64, message: '长度在 2 到 64 个字符', trigger: 'blur' },
           { min: 2, max: 64, message: '长度在 2 到 64 个字符', trigger: 'change' }
         ],
@@ -241,10 +259,8 @@ export default {
           { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'change' }
         ],
         uPwd: [
-          { required: true, message: '请输入管理员密码（长度在 6 到 50 个字符）', trigger: 'blur' },
-          { required: true, message: '请输入管理员密码（长度在 6 到 50 个字符）', trigger: 'change' },
-          { min: 6, max: 50, message: '长度在 6 到 50 个字符', trigger: 'blur' },
-          { min: 6, max: 50, message: '长度在 6 到 50 个字符', trigger: 'change' }
+          { required: true, validator: validatePass, trigger: 'blur' },
+          { required: true, validator: validatePass, trigger: 'change' }
         ]
       }
     }

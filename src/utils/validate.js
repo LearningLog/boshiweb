@@ -54,8 +54,25 @@ export function strLength(str, minLenth, maxLength) {
     return false
   }
 }
-
-// 校验整数
+/**
+ * 租户管理员 2 到 64 位字母和数字的组合，不能连续11位数字
+ * @param {string} param
+ * @returns {Boolean}
+ */
+export function regUName(param) {
+  const uName_phone = /\d{11}|\d{13}/
+  const uName_pattern = /^(?!(?:\d+|[a-zA-Z]+)$)[\da-zA-Z]{2,64}$/
+  if (!uName_phone.test(param) && uName_pattern.test(param)) {
+    return true
+  } else {
+    return false
+  }
+}
+/**
+ * 校验正整数
+ * @param val
+ * @returns {string | *}
+ */
 export function validIntNum(val) {
   val = val === undefined ? '' : val
   val = val.toString()
