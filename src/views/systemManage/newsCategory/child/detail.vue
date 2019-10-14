@@ -1,13 +1,13 @@
 <template>
   <div class="form-edit">
     <el-form ref="form" class="form" :model="form" label-width="120px">
-      <el-form-item label="类别名称:">
+      <el-form-item label="类别名称：">
         <span>{{ form.newscategory_name }}</span>
       </el-form-item>
-      <el-form-item label="类别描述:">
+      <el-form-item label="类别描述：">
         <span>{{ form.newscategory_desc }}</span>
       </el-form-item>
-      <el-form-item label="网站:">
+      <el-form-item label="网站：">
         <span>{{ form.net_list }}</span>
       </el-form-item>
     </el-form>

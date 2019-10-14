@@ -37,6 +37,14 @@ export function role_delet(data) {
     data
   })
 }
+// 详情
+export function role_det(data) {
+  return request({
+    url: '/system/roleV2/detrole',
+    method: 'post',
+    data
+  })
+}
 // 企业列表
 export function role_gr_list(data) {
   return request({
