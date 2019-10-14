@@ -46,3 +46,25 @@
 .breadcrumb-leave-active {
   position: absolute;
 }
+
+/* fade-transform */
+.fade-transform-leave-active,
+.fade-transform-enter-active {
+  transition: all .5s;
+}
+
+/* fade-advanced-search */
+.fade-advanced-search-leave-active,
+.fade-advanced-search-enter-active {
+  transition: all .5s;
+}
+
+.fade-advanced-search-enter {
+  opacity: 0;
+  //transform: translateX(-30px);
+}
+
+.fade-advanced-search-leave-to {
+  opacity: 0;
+  //transform: translateX(30px);
+}

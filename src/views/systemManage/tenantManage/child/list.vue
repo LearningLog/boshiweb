@@ -4,43 +4,37 @@
       <el-input v-model="listQuery.customname" placeholder="请输入租户名称" clearable @keyup.enter.native="topSearch">
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
       </el-input>
-      <el-popover
-        v-model="popoverVisible"
-        placement="bottom-start"
-        width="456"
-        title="高级搜索"
-        :visible-arrow="false"
-        trigger="click"
-        popper-class="advancedSearch"
-      >
-        <el-form ref="form" :model="listQuery" label-width="80px">
-          <el-form-item label="创建人">
-            <el-input v-model="listQuery.createUser" clearable />
-          </el-form-item>
-          <el-form-item label="创建时间">
-            <el-date-picker
-              v-model="time_range"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-              format="yyyy 年 MM 月 dd 日"
-              value-format="yyyy-MM-dd"
-            />
-          </el-form-item>
-          <el-form-item label="状态">
-            <el-radio v-model="listQuery.customStatus" label="1">生效</el-radio>
-            <el-radio v-model="listQuery.customStatus" label="0">失效</el-radio>
-          </el-form-item>
-        </el-form>
-
-        <div id="searchPopoverBtn">
-          <el-button type="primary" @click="topSearch">搜索</el-button>
-          <el-button type="primary" plain @click="reset">重置</el-button>
-        </div>
-
-        <span id="advancedSearch" slot="reference">高级搜索<i class="el-icon-caret-bottom" /></span>
-      </el-popover>
+      <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">高级搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
+      <transition name="fade-advanced-search">
+        <el-row v-show="popoverVisible">
+          <el-card id="advancedSearchArea" shadow="never">
+            <el-form ref="form" :model="listQuery" label-width="100px">
+              <el-form-item label="创建人">
+                <el-input v-model="listQuery.createUser" clearable />
+              </el-form-item>
+              <el-form-item label="创建时间">
+                <el-date-picker
+                    v-model="time_range"
+                    type="daterange"
+                    range-separator="至"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                    format="yyyy 年 MM 月 dd 日"
+                    value-format="yyyy-MM-dd"
+                />
+              </el-form-item>
+              <el-form-item label="状态">
+                <el-radio v-model="listQuery.customStatus" label="1">生效</el-radio>
+                <el-radio v-model="listQuery.customStatus" label="0">失效</el-radio>
+              </el-form-item>
+            </el-form>
+            <div id="searchPopoverBtn">
+              <el-button type="primary" @click="topSearch">搜索</el-button>
+              <el-button type="primary" plain @click="reset">重置</el-button>
+            </div>
+          </el-card>
+        </el-row>
+      </transition>
     </div>
     <div id="topBtn">
       <el-button type="primary" @click="add"><i class="iconfont iconjia" />新增</el-button>
@@ -129,22 +123,11 @@
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
-import { getAllTenantList, delTenant, batchDelTenant, editTenant, getInformationList, setInformation, setCustomStatus } from '@/api/systemManage-tenantManage'
+import { getAllTenantList, delTenant, batchDelTenant, getInformationList, setInformation, setCustomStatus } from '@/api/systemManage-tenantManage'
 export default {
   components: { Pagination },
   directives: { elDragDialog },
   data() {
-    const generateData = _ => {
-      const data = []
-      for (let i = 1; i <= 15; i++) {
-        data.push({
-          key: i,
-          label: `备选项 ${i}`,
-          disabled: i % 4 === 0
-        })
-      }
-      return data
-    }
     return {
       total: 0,
       listQuery: {
@@ -164,7 +147,6 @@ export default {
       noList: [],
       hasList: [],
       checkedList: [],
-      data: generateData(),
       value: [1, 4],
       defaultProps: {
         key: '_id',
@@ -186,7 +168,6 @@ export default {
       })
     },
     topSearch() {
-      this.popoverVisible = false
       this.listQuery.startTime = this.time_range[0]
       this.listQuery.endTime = this.time_range[1]
       this.get_list()
