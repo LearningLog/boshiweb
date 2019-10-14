@@ -8,7 +8,7 @@
     </div>
     <div class="right">
       <div id="topSearch">
-        <el-input v-model="listQuery.menuname" placeholder="请输入菜单名称" clearable @keyup.enter.native="topSearch">
+        <el-input v-model="listQuery.menuname" placeholder="请输入菜单名称" clearable @keyup.enter.native="topSearch" >
           <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
         </el-input>
         <el-popover
@@ -89,8 +89,8 @@
                 <i class="iconfont icongengduo" />更多
               </el-button>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native="upMenu(scope.row)"><i class="iconfont iconxiayi1" />上移</el-dropdown-item>
-                <el-dropdown-item @click.native="downMenu(scope.row)"><i class="iconfont iconxiayi1" />下移</el-dropdown-item>
+                <el-dropdown-item @click.native="upMenu(scope.row)"><i class="iconfont iconxiayi1"></i>上移</el-dropdown-item>
+                <el-dropdown-item @click.native="downMenu(scope.row)"><i class="iconfont iconxiayi1"></i>下移</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -105,7 +105,6 @@
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { getAllMenuList, findMenuList, delMenu, moveMenu } from '@/api/systemManage-menuManage'
 import { mapGetters } from 'vuex'
-import { updateMenuRoute } from '@/utils/update-menu-router'
 
 export default {
   components: { Pagination },
@@ -194,9 +193,8 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        delMenu({ _id: row._id }).then(async response => {
+        delMenu({ _id: row._id }).then(response => {
           this.$message.success('删除成功')
-          updateMenuRoute()
           if ((this.list.length - 1) === 0) { // 如果当前页数据已删完，则去往上一页
             this.listQuery.currentPage -= 1
           }
@@ -211,9 +209,8 @@ export default {
     },
     // 上移
     upMenu(row) {
-      moveMenu({ orderby: 'up', pid: row.pid, _id: row._id }).then(async response => {
+      moveMenu({ orderby: 'up', pid: row.pid, _id: row._id }).then(response => {
         this.$message.success('上移成功')
-        updateMenuRoute()
         this.getAllMenuList()
         this.getMenuList()
       })
@@ -222,7 +219,6 @@ export default {
     downMenu(row) {
       moveMenu({ orderby: 'down', pid: row.pid, _id: row._id }).then(response => {
         this.$message.success('下移成功')
-        updateMenuRoute()
         this.getAllMenuList()
         this.getMenuList()
       })

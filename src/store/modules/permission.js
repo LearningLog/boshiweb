@@ -19,6 +19,7 @@ export function filterAsyncRoutes(routes, responseRoutes) {
         homePath += tmp.path + '/'
       }
       if (item.menuurl === tmp.path) {
+        tmp.meta.title = item.menuname
         if (item.children && item.children.length > 0) {
           tmp.children = filterAsyncRoutes(tmp.children, item.children)
         } else if (homePath.indexOf(tmp.path) > -1) {
