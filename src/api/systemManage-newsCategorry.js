@@ -40,7 +40,7 @@ export function newscategory_delet(data) {
 // 类别详情
 export function newscategory_det(data) {
   return request({
-    url: '/system/newscategory/det',
+    url: '/system/newscategoryV2/one',
     method: 'post',
     data
   })

@@ -14,7 +14,7 @@
         <el-input v-model="form.permissiondesc" type="textarea" :rows="3" placeholder="请输入权限描述" />
       </el-form-item>
       <el-form-item class="required" label="所属菜单">
-        <span class="pointer" @click="show_menu_tree_fn">{{ menu_tip_txt }}</span>
+        <span class="pointer actcolor" @click="show_menu_tree_fn">{{ menu_tip_txt }}</span>
       </el-form-item>
       <el-form-item label="权限类别">
         <el-radio-group v-model="form.permissionmanage">
@@ -333,8 +333,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  @import "~@/styles/theme.scss";
   #btnGroup{
     padding-left: 120px;
+  }
+  .actcolor{
+    color: $themeColor;
   }
   .menu_tree_box{
     .el-scrollbar {
@@ -342,4 +346,7 @@ export default {
       width: 100%;
     }
   }
+  /*#app /deep/ .el-dialog--center .el-dialog__body{*/
+    /*padding: 10px 25px 10px !important;*/
+  /*}*/
 </style>

@@ -45,7 +45,7 @@ export default {
           this.sub_dis = true
           newscategory_add(this.form).then(response => {
             this.$message.success('添加成功！')
-            this.$router.push({ path: '/systemManage/newsCategory/detail', query: { _id: response.data._id }})
+            this.$router.push({ path: '/systemManage/newsCategory/detail', query: { ids: response.data._id }})
           })
         }
       })
