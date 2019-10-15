@@ -305,7 +305,7 @@ vue-element-admin 配套了系列教程文章，如何从零构建后一个完�
 - 必须使用 `Eslint` 代码校验工具
 - 全部 `<el-input  type="password" />` 都必须写成 `<el-input readonly onfocus="this.removeAttribute('readonly');" type="password" autocomplete="off" />` 解决input type="password" h和 type="text" 时自动填充bug
 - 所有提示性文字都要带有标点符号，中/文对应全角半角
-- 所有el-dialog title居左，加拖拽功能
+- 所有弹出信息 title居左，底部按钮居右，左确定，右取消，dialog加拖拽功能
 
 ### 后台全局
 
@@ -339,7 +339,7 @@ vue-element-admin 配套了系列教程文章，如何从零构建后一个完�
 
 #### 列表底部
 
-- 批量操作居左，横向排列
+- 批量操作居左，横向排列，更多按钮点击弹出，失焦消失
 - 分页居左，带有完整功能
 - 两者顶部对齐，所有列表页相同区域必须使用统一id或类名，以便于统一处理
 

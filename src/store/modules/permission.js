@@ -57,9 +57,18 @@ export function filterAsyncRoutes(routes, responseRoutes) {
   return res
 }
 
+export function getCurrentSystem(path) {
+  if (path) {
+    const pathArr = path.split('/')
+    return pathArr[1]
+  }
+  return []
+}
+
 const state = {
   routes: [],
   addRoutes: [],
+  currentPath: '',
   currentSystem: Cookies.get('currentSystem') ? Cookies.get('currentSystem') : '',
   systemRoutes: [],
   backstageRoutes: [],
@@ -73,15 +82,30 @@ const state = {
 const mutations = {
   // 设置权限路由
   SET_ROUTES: (state, routes) => {
-    if (state.currentSystem === 'systemManage' && state.systemRoutes.length > 0) {
-      state.addRoutes = state.systemRoutes
-      state.routes = constantRoutes.concat(state.systemRoutes)
-    } else if (state.currentSystem === 'backstageManage' && state.backstageRoutes.length > 0) {
-      state.addRoutes = state.backstageRoutes
-      state.routes = constantRoutes.concat(state.backstageRoutes)
+    if (!state.currentSystem && !Cookies.get('currentSystem')) {
+      state.currentSystem = getCurrentSystem(state.currentPath)
+      Cookies.set('currentSystem', state.currentSystem)
+      if (state.currentSystem === 'systemManage' && state.systemRoutes.length > 0) {
+        state.addRoutes = state.systemRoutes
+        state.routes = constantRoutes.concat(state.systemRoutes)
+      } else if (state.currentSystem === 'backstageManage' && state.backstageRoutes.length > 0) {
+        state.addRoutes = state.backstageRoutes
+        state.routes = constantRoutes.concat(state.backstageRoutes)
+      } else {
+        state.addRoutes = routes
+        state.routes = constantRoutes.concat(routes)
+      }
     } else {
-      state.addRoutes = routes
-      state.routes = constantRoutes.concat(routes)
+      if (state.currentSystem === 'systemManage' && state.systemRoutes.length > 0) {
+        state.addRoutes = state.systemRoutes
+        state.routes = constantRoutes.concat(state.systemRoutes)
+      } else if (state.currentSystem === 'backstageManage' && state.backstageRoutes.length > 0) {
+        state.addRoutes = state.backstageRoutes
+        state.routes = constantRoutes.concat(state.backstageRoutes)
+      } else {
+        state.addRoutes = routes
+        state.routes = constantRoutes.concat(routes)
+      }
     }
   },
   // 设置系统管理路由
@@ -101,9 +125,15 @@ const mutations = {
     state.routes = []
   },
 
+  // 设置首页path
   SET_HOME_PATH: (state, path) => {
     state.homePath = path
     Cookies.set('homePath', path)
+  },
+
+  // 设置当前组件path
+  SET_CURREN_PATH: (state, path) => {
+    state.currentPath = path
   },
 
   SET_SYSTEM_HOME_PATH: (state, path) => {
@@ -130,7 +160,8 @@ const mutations = {
 const actions = {
   generateRoutes({ commit }, responseRoutes) {
     return new Promise(async resolve => {
-      const { systemRoutes, backstageRoutes } = responseRoutes
+      const { systemRoutes, backstageRoutes, fullPath } = responseRoutes
+      commit('SET_CURREN_PATH', fullPath)
       const accessedRoutes1 = await filterAsyncRoutes(asyncRoutes, systemRoutes)
       commit('SET_SYSTEM_HOME_PATH', homePaths)
       homePath = ''

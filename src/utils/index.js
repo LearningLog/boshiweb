@@ -128,9 +128,15 @@ export function getFileShowSize(fileSize) {
     var G = 0
     var M = 0
     var K = 0
-    //		T=parseInt(fileSize/TLength);
-    //		G=parseInt(fileSize/GLength);
-    M = parseInt(fileSize / MLength)
+    debugger
+    T = fileSize / TLength
+    G = fileSize / GLength
+    M = fileSize / MLength
+
+    T = parseInt(T.toFixed(2))
+    G = parseInt(G.toFixed(2))
+    M = parseInt(M.toFixed(2))
+
     if (T > 0) {
       // 如果大于1T则显示为2.34TB样式
       T = fileSize / TLength
@@ -146,7 +152,11 @@ export function getFileShowSize(fileSize) {
     } else {
       // 显示为44KB
       K = fileSize / KLength
-      showStr = parseInt(K) + 'KB'
+      if (parseInt(K)) {
+        showStr = parseInt(K) + 'KB'
+      } else {
+        showStr = '--'
+      }
     }
     return showStr
   } else {

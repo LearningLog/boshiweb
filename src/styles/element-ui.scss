@@ -112,12 +112,20 @@
   -webkit-transition:all 0.5s;
 }
 
-.el-dialog__headerbtn {
-  width: 26px;
-  height: 26px;
+.el-icon-close {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  text-align: center!important;
+  margin-top: 2px!important;
+  box-sizing: border-box;
   border-radius: 50% !important;
 }
-.el-dialog__headerbtn:hover {
+.el-icon-close:before {
+  display: inline-block;
+  margin-top: 2px;
+}
+.el-icon-close:hover {
   background-color: #f5f7fa;
 }
 
