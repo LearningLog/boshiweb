@@ -53,11 +53,12 @@ export default {
         console.log(error)
       })
     },
+    // 保存修改
     save(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           newscategory_edit(this.form).then(response => {
-            this.$message.success('修改成功')
+            this.$message.success('修改成功！')
             // this.$router.push({ path: '/systemManage/newsCategory/detail', query: { _id: response.data._id }})
           })
         }

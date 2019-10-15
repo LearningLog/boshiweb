@@ -37,17 +37,18 @@ export default {
   created() {
   },
   methods: {
+    // 确认添加类别
     save(formName) {
-      debugger
       this.$refs[formName].validate((valid) => {
         if (valid) {
           newscategory_add(this.form).then(response => {
-            this.$message.success('添加成功')
+            this.$message.success('添加成功！')
             // this.$router.push({ path: '/systemManage/newsCategory/detail', query: { _id: response.data._id }})
           })
         }
       })
     },
+    // 取消添加类别
     cancel(formName) {
       this.$refs[formName].resetFields()
       this.$router.push({ path: '/systemManage/newsCategory' })

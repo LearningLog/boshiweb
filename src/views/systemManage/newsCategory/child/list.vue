@@ -104,9 +104,11 @@ export default {
     this.get_list()
   },
   methods: {
+    // 高级搜索
     topSearch() {
       this.get_list()
     },
+    // 重置
     reset() {
       this.listQuery.newscategory_name = ''
       this.listQuery.creater = ''
@@ -156,7 +158,7 @@ export default {
         })
       }).catch(() => {})
     },
-    // 查看类别
+    // 查看资讯类别
     go_detail(in_ids) {
       this.$router.push({ path: '/systemManage/newsCategory/detail', query: { ids: in_ids }})
     },

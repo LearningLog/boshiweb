@@ -53,6 +53,7 @@ export default {
     this.get_original_info()
   },
   methods: {
+    // 获取原始值
     get_original_info() {
       const that = this
       const param = {}
@@ -62,6 +63,7 @@ export default {
       that.form.name = that.query_param.name
       that.form.enable_status = that.query_param.enable_status
     },
+    // 确定编辑
     save(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
@@ -73,6 +75,7 @@ export default {
         }
       })
     },
+    // 取消编辑
     cancel(formName) {
       this.$refs[formName].resetFields()
       this.$router.push({ path: '/systemManage/sourceFile' })

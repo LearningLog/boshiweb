@@ -113,12 +113,13 @@ export default {
   },
   created() {
     this.query_param = this.$route.query.ids
-    this.get_munu()
+    this.get_menu()
     this.get_permission_manage_type()
     this.get_det()
   },
   methods: {
-    get_munu() {
+    // 获取所有菜单
+    get_menu() {
       const param = {}
       permission_menu(param).then(response => {
         const { MenuV2List } = response.data
@@ -126,12 +127,14 @@ export default {
         this.treeData = this.menu_dt[0]
       })
     },
+    // 获取权限类别
     get_permission_manage_type() {
       const param = {}
       permission_manage_type(param).then(response => {
         this.manage_type = response.data
       })
     },
+    // 处理菜单数据为tree
     translate(menuList) {
       if (!(menuList && menuList.length > 0)) {
         return []
@@ -223,6 +226,7 @@ export default {
 
       return [firstMenuList, menuIdParrentMenus]
     },
+    // 显示菜单树
     show_menu_tree_fn() {
       this.menu_tree_flag = true
       const temp = this.menu_tree_checked.ids
@@ -234,6 +238,7 @@ export default {
         })
       }
     },
+    // 选择菜单 单选
     menu_tree_check_fn(data, checked, indeterminate) {
       this.menu_tree_checked.checkey = [data.id]
       if (checked === true) {
@@ -256,6 +261,7 @@ export default {
         }
       }
     },
+    // 保存选择的菜单
     save_menu() {
       const tip = this.menu_tree_checked.lables
       let tip_copy = ''
@@ -266,6 +272,7 @@ export default {
       this.form.permissionbelongmenu = this.menu_tree_checked.ids
       this.menu_tree_flag = false
     },
+    // 菜单选择取消
     cancel_menu() {
       this.menu_tree_flag = false
       if (this.menu_tree_checked.ids === []) {
@@ -274,6 +281,7 @@ export default {
         this.menu_tip_txt = '请选择菜单'
       }
     },
+    // 获取权限详情
     get_det() {
       const that = this
       const param = {}
@@ -296,6 +304,7 @@ export default {
         console.log(error)
       })
     },
+    // 确定权限编辑
     save(formName) {
       const query_param = this.query_param
       this.$refs[formName].validate((valid) => {
@@ -308,6 +317,7 @@ export default {
         }
       })
     },
+    // 取消权限编辑
     cancel(formName) {
       this.$refs[formName].resetFields()
       this.$router.push({ path: '/systemManage/permissionManage/list' })

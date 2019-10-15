@@ -235,17 +235,19 @@ export default {
           param.website_name = this.net_add_form.website_name
           param.website_desc = this.net_add_form.website_desc
           net_add(param).then(response => {
-            this.$message.success('添加成功')
+            this.$message.success('添加成功！')
             this.net_add_flag = false
             this.get_list()
           })
         }
       })
     },
+    // 取消添加
     cancel_add(formName) {
       this.$refs[formName].resetFields()
       this.net_add_flag = false
     },
+    // 保存编辑
     save_edit(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
@@ -255,13 +257,14 @@ export default {
           param.website_name = this.net_edit_form.website_name
           param.website_desc = this.net_edit_form.website_desc
           net_edit(param).then(response => {
-            this.$message.success('修改成功')
+            this.$message.success('修改成功！')
             this.net_edit_flag = false
             this.get_list()
           })
         }
       })
     },
+    // 取消编辑
     cancel_edit() {
       this.net_edit_flag = false
     }

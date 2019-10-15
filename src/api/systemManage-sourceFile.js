@@ -5,7 +5,7 @@
  * @remarks:
  */
 import request from '@/utils/request'
-// 列表
+// 文件来源列表
 export function source_file_list(data) {
   return request({
     url: '/sourceSystem/pageSourceSystem',
@@ -13,7 +13,7 @@ export function source_file_list(data) {
     data
   })
 }
-// 添加
+// 文件来源添加
 export function source_file_add(data) {
   return request({
     url: '/sourceSystem/addSourceSystem',
@@ -21,7 +21,7 @@ export function source_file_add(data) {
     data
   })
 }
-// 修改
+// 文件来源修改
 export function source_file_edit(data) {
   return request({
     url: '/sourceSystem/updateSourceSystem',
@@ -29,7 +29,7 @@ export function source_file_edit(data) {
     data
   })
 }
-// 删除
+// 文件来源删除
 export function source_file_delet(data) {
   return request({
     url: '/sourceSystem/deleteSourceSystem',
@@ -37,7 +37,7 @@ export function source_file_delet(data) {
     data
   })
 }
-// 更改
+// 文件来源更改状态
 export function source_file_status(data) {
   return request({
     url: '/sourceSystem/updateEnableStatus',

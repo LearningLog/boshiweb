@@ -1,4 +1,10 @@
-import request from '@/utils/request'
+/**
+ * @Author: WangLiMei
+ * @Date: 2019/10/15
+ * @Description: 登录页面所有接口
+ *               手机号第一次登录需要验证码验证ps用户名不用
+ * @remarks:
+ */import request from '@/utils/request'
 // 第一次登录发送验证码
 export function firstLogin_sendsms(data) {
   return request({

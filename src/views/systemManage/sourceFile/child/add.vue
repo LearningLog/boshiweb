@@ -50,6 +50,7 @@ export default {
   created() {
   },
   methods: {
+    // 添加文件来源
     save(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
@@ -60,6 +61,7 @@ export default {
         }
       })
     },
+    // 取消添加文件来源
     cancel(formName) {
       this.$refs[formName].resetFields()
       this.$router.push({ path: '/systemManage/sourceFile/list' })
