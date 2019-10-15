@@ -417,27 +417,27 @@ export default {
   directives: { inputFilter, elDragDialog },
   data() {
     return {
-      username: '',
-      password: '',
-      logintype: 1,
-      agree_check: true,
-      is_first: false,
-      YZ_id: '', // 第一次登录
-      first_down: '60s',
-      first_sms: '',
-      first_dis: false,
-      YZMDT: {},
-      passwordType: 'password',
-      forget_pwd_flag: false,
-      forget_phone: '',
-      forget_sms: '',
-      forget_down: '发送',
-      forget_dis: false,
-      new_pwd: '',
-      confirm_pwd: '',
-      reset_pwd_sms: {},
-      show_agreement: false,
-      redirect: undefined
+      username: '', // 用户名
+      password: '', // 密码
+      logintype: 1, // 登录平台 pc端
+      agree_check: true, // 同意协议否
+      is_first: false, // 是否是手机号第一次登录
+      YZ_id: '', // 手机号第一次登录返回的需验证数据
+      first_down: '60s', // 倒计时
+      first_sms: '', // 手机号第一次登录的验证码
+      first_dis: false, // 发送手机号第一次登录的验证码按钮是否可用
+      YZMDT: {}, // 手机号第一次登录的验证码信息
+      passwordType: 'password', // inputtype
+      forget_pwd_flag: false, // 是否忘记密码
+      forget_phone: '', // 发送忘记密码的验证码的手机号
+      forget_sms: '', // 忘记密码的验证码
+      forget_down: '发送', // 发送忘记密码的btn的txt
+      forget_dis: false, // 发送忘记密码的btn是否可用
+      new_pwd: '', // 新密码
+      confirm_pwd: '', // 确认密码
+      reset_pwd_sms: {}, // 忘记密码的验证码信息
+      show_agreement: false, // 是否显示协议
+      redirect: undefined // 重置路径
     }
   },
   watch: {
@@ -449,31 +449,35 @@ export default {
     }
   },
   methods: {
+    // 显示协议
     show_agreement_fn() {
       this.show_agreement = true
     },
+    // 协议统一否
     agree_fn() {
       this.agree_check = true
       this.show_agreement = false
     },
+    // 是否忘记密码
     foget_pwd_fn() {
       this.forget_pwd_flag = true
     },
+    // 登录
     login_fn() {
       const that = this
       const uname = that.username
       const pwd = that.password
       const agree_check = that.agree_check
       if (!agree_check) {
-        that.$message.error('请阅读并同意服务协议')
+        that.$message.error('请阅读并同意服务协议！')
         return
       }
       if (uname === '') {
-        that.$message.error('请输入用户名或手机号')
+        that.$message.error('请输入用户名或手机号！')
         return
       }
       if (pwd === '') {
-        that.$message.error('请输入密码')
+        that.$message.error('请输入密码！')
         return
       }
       const param = {}
@@ -491,6 +495,7 @@ export default {
         console.log(res)
       })
     },
+    // 手机号第一次登录的弹窗
     show_first_fn() {
       const that = this
       that.$confirm('该手机号首次登录系统，需进行安全校验，是否发送验证码至该手机？', '提示', {
@@ -503,6 +508,7 @@ export default {
         console.log('取消激活')
       })
     },
+    // 手机号第一次登录的发送验证码
     first_sendsms_fn() {
       const that = this
       const param = {}
@@ -521,6 +527,7 @@ export default {
         console.log(error)
       })
     },
+    // 手机号第一次登录的倒计时
     first_countdown_fn() {
       const that = this
       if (that.first_down === '重新发送') {
@@ -540,6 +547,7 @@ export default {
         }, 1000)
       }
     },
+    // 验证手机号第一次登录的验证码
     first_sms_vali_fn() {
       const that = this
       const first_sms = that.first_sms
@@ -549,7 +557,7 @@ export default {
         param.sms_token = that.YZMDT.sms_token
         param.sms_code = that.first_sms
         validate_first_sms(param).then(res => {
-          console.log('验证成功')
+          console.log('验证成功！')
           that.login_fn()
           // that.$router.push({ path: this.redirect || '/' })
         }).catch(error => {
@@ -557,11 +565,12 @@ export default {
         })
       }
     },
+    // 忘记密码发送验证码
     forget_sendsms_fn() {
       const that = this
       const forget_phone = that.forget_phone
       if (!regPhone(forget_phone)) {
-        that.$message.error('请输入正确的手机号')
+        that.$message.error('请输入正确的手机号！')
         return
       }
       const param = {}
@@ -569,7 +578,7 @@ export default {
       param.type = 4
       forget_sendsms(param).then(res => {
         if (res.code === 10001) {
-          that.$message.error('该手机号不存在')
+          that.$message.error('该手机号不存在！')
         } else {
           that.forget_countdown()
           that.reset_pwd_sms.send_id = res.data._id
@@ -579,6 +588,7 @@ export default {
         console.log(error)
       })
     },
+    // 忘记密码倒计时
     forget_countdown() {
       const that = this
       let count = 59
@@ -595,6 +605,7 @@ export default {
       }, 1000)
       console.log(that.forget_down)
     },
+    // 重置密码登录
     forget_log_fn() {
       const that = this
       const forget_phone = that.forget_phone
@@ -604,23 +615,23 @@ export default {
       const verifyparam = {}
       const verifiedDt = {}
       if (!regPhone(forget_phone)) {
-        that.$message.error('请输入正确的手机号')
+        that.$message.error('请输入正确的手机号！')
         return
       }
       if (forget_sms === '') {
-        that.$message.error('验证码不能为空')
+        that.$message.error('验证码不能为空！')
         return
       }
       if (new_pwd === '' || confirm_pwd === '') {
-        that.$message.error('密码不能为空')
+        that.$message.error('密码不能为空！')
         return
       }
       if (new_pwd !== confirm_pwd) {
-        that.$message.error('两次密码不一致')
+        that.$message.error('两次密码不一致！')
         return
       }
       if (!regPwd(new_pwd) || !regPwd(confirm_pwd)) {
-        that.$message.error('密码6-50位,数字+字母')
+        that.$message.error('密码6-50位,数字+字母！')
         return
       }
       verifyparam.sms_token = that.reset_pwd_sms.send_sms_token
@@ -639,7 +650,7 @@ export default {
         forget_updatepwd(reset_pwd_param).then(res => {
           debugger
           that.$message({
-            message: '重置成功',
+            message: '重置成功！',
             type: 'success'
           })
           that.forget_pwd_flag = false

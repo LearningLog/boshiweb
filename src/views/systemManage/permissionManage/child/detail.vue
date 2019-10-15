@@ -17,7 +17,7 @@
         <span>{{ form.permissionbelongmenuname }}</span>
       </el-form-item>
       <el-form-item label="权限类别：">
-        <span>{{ form.permissionmanage_name }}</span>
+        <span>{{ form.manageName }}</span>
       </el-form-item>
     </el-form>
     <div id="btnGroup">
@@ -38,7 +38,7 @@ export default {
         permissiondesc: '',
         permissionmanage: '',
         permissionbelongmenuname: '',
-        permissionmanage_name: ''
+        manageName: ''
       },
       manage_type: [],
       query_param: ''
@@ -62,11 +62,7 @@ export default {
         that.form.permissioncode = res_dt.permissioncode
         that.form.permissiondesc = res_dt.permissiondesc
         that.form.permissionbelongmenuname = res_dt.permissionbelongmenuname
-        that.manage_type.forEach(item => {
-          if (res_dt.permissionmanage === item.permissionmanage) {
-            that.form.permissionmanage_name = item.name
-          }
-        })
+        that.form.manageName = res_dt.manageName
       }).catch(error => {
         console.log(error)
       })
