@@ -22,7 +22,7 @@
     </div>
     <div class="right-menu">
       <div class="search">
-        <el-input v-model="searchVal" placeholder="请输入内容">
+        <el-input v-model="searchVal" class="global-search" placeholder="请输入内容">
           <el-button slot="append" icon="el-icon-search" />
         </el-input>
       </div>
@@ -141,6 +141,9 @@ export default {
       line-height: 50px;
       float: left;
       margin-right: 20px;
+      .global-search{
+        vertical-align: middle;
+      }
     }
 
     &:focus {
