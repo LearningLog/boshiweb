@@ -29,7 +29,7 @@
         <el-input v-model="form.uNickname" placeholder="请输入管理员昵称" maxlength="20" clearable />
       </el-form-item>
       <el-form-item label="管理员密码" prop="uPwd">
-        <el-input v-model="form.uPwd" placeholder="请输入管理员密码" readonly onfocus="this.removeAttribute('readonly');" type="password" autocomplete="off" maxlength="50" clearable />
+        <el-input v-model="form.uPwd" placeholder="请输入管理员密码" type="password" autocomplete="new-password" maxlength="50" clearable />
       </el-form-item>
       <el-form-item label="平台Logo">
         <el-upload

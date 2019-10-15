@@ -84,8 +84,8 @@ export default {
           { required: true, message: '请输入存储总量', trigger: 'change' }
         ],
         effectTime: [
-          { validator: validDate, trigger: 'blur' },
-          { validator: validDate, trigger: 'change' }
+          { required: true, validator: validDate, trigger: 'blur' },
+          { required: true, validator: validDate, trigger: 'change' }
         ]
       }
     }

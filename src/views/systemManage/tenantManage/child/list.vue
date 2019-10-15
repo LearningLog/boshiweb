@@ -137,7 +137,7 @@ export default {
         createUser: null, // 创建人
         startTime: null, // 创建开始时间
         endTime: null, // 创建结束时间
-        status: null // 状态
+        customStatus: null // 状态
       },
       time_range: [], // 创建时间
       list: [], // 表格数据
@@ -180,7 +180,7 @@ export default {
       this.time_range = []
       this.listQuery.startTime = ''
       this.listQuery.endTime = ''
-      this.listQuery.status = ''
+      this.listQuery.customStatus = ''
       this.get_list()
     },
     // 选中数据

@@ -64,7 +64,7 @@
       </el-table-column>
       <el-table-column class-name="status-col" label="员工规模" min-width="150" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
-          {{ scope.row.userTotalCount }}
+          {{ scope.row.totalUserCount }}
         </template>
       </el-table-column>
       <el-table-column align="center" label="短信使用" min-width="100" show-overflow-tooltip>
@@ -82,9 +82,10 @@
           <span>{{ scope.row.createtime }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="有效期" min-width="100" show-overflow-tooltip>
+      <el-table-column align="center" label="有效期" min-width="130" show-overflow-tooltip>
         <template slot-scope="scope">
           <span>{{ scope.row.effectTime }}</span>
+          <span>{{ parseTime(scope.row.startTime || '', '{y}-{m}-{d}') }}</span><span>&nbsp;至&nbsp;&nbsp;</span><span>{{ parseTime(scope.row.endTime || '', '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
       <el-table-column class-name="status-col" label="操作" width="220" align="center" fixed="right" show-overflow-tooltip>
@@ -101,7 +102,8 @@
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { getCustomResourceList } from '@/api/enterprise-data'
-import { getFileShowSize } from '@/utils/index'
+import { getFileShowSize, parseTime } from '@/utils/index'
+
 export default {
   components: { Pagination },
   data() {
@@ -168,6 +170,9 @@ export default {
     },
     getFileShowSize(fileSize) {
       return getFileShowSize(fileSize)
+    },
+    parseTime(time, cFormat) {
+      return parseTime(time, cFormat)
     }
   }
 }

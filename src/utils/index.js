@@ -128,7 +128,6 @@ export function getFileShowSize(fileSize) {
     var G = 0
     var M = 0
     var K = 0
-    debugger
     T = fileSize / TLength
     G = fileSize / GLength
     M = fileSize / MLength
