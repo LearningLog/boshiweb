@@ -92,10 +92,10 @@
     </el-dialog>
     <!--修改网站弹窗-->
     <el-dialog
+      v-el-drag-dialog
       title="新增网站"
       :visible.sync="net_edit_flag"
       width="50%"
-      center
     >
       <div class="form-edit">
         <el-form ref="net_edit_form" class="form" :model="net_edit_form" :rules="rules" :status-icon="true" label-width="120px">

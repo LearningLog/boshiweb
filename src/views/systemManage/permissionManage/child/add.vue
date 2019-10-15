@@ -28,6 +28,7 @@
     </div>
     <!--菜单选择列表-->
     <el-dialog
+      v-el-drag-dialog
       title="所属菜单"
       :visible.sync="menu_tree_flag"
       width="50%"
@@ -58,7 +59,10 @@
 
 <script>
 import { permission_add, permission_menu, permission_manage_type } from '@/api/systemManage-permissionManage.js'
+import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
+
 export default {
+  directives: { elDragDialog },
   data() {
     return {
       form: {
@@ -111,7 +115,6 @@ export default {
     }
   },
   mounted() {
-
   },
   created() {
     this.get_menu()
@@ -315,7 +318,7 @@ export default {
   }
   .menu_tree_box{
     .el-scrollbar {
-      height: 500px;
+      height: 58vh;
       width: 100%;
     }
   }
