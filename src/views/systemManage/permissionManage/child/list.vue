@@ -113,9 +113,11 @@ export default {
     this.get_list()
   },
   methods: {
+    // 高级搜索
     topSearch() {
       this.get_list()
     },
+    // 重置搜索条件
     reset() {
       this.listQuery.permissionname = ''
       this.listQuery.menu = ''
@@ -149,7 +151,7 @@ export default {
         console.log(error)
       })
     },
-    // 删除
+    // 删除权限
     delet_fn(row) {
       this.$confirm('确定要删除【' + row.permissionname + '】吗？', '删除权限', {
         confirmButtonText: '确定',
@@ -169,15 +171,15 @@ export default {
         })
       }).catch(() => {})
     },
-    // 查看
+    // go详情
     go_detail(in_ids) {
       this.$router.push({ path: '/systemManage/permissionManage/detail', query: { ids: in_ids }})
     },
-    // 编辑
+    // go编辑
     go_edit_fn(in_ids) {
       this.$router.push({ path: '/systemManage/permissionManage/edit', query: { ids: in_ids }})
     },
-    // 添加
+    // go添加
     add() {
       this.$router.push({ path: '/systemManage/permissionManage/add' })
     }

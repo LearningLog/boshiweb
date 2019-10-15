@@ -5,8 +5,7 @@
  * @remarks:
  */
 import request from '@/utils/request'
-// 资讯类别
-// 列表
+// 资讯类别列表
 export function newscategory_list(data) {
   return request({
     url: '/system/newscategoryV2/list',
@@ -14,7 +13,7 @@ export function newscategory_list(data) {
     data
   })
 }
-// 添加
+// 资讯类别添加
 export function newscategory_add(data) {
   return request({
     url: '/system/newscategory/add',
@@ -22,7 +21,7 @@ export function newscategory_add(data) {
     data
   })
 }
-// 修改
+// 资讯类别修改
 export function newscategory_edit(data) {
   return request({
     url: '/system/newscategory/one',
@@ -30,7 +29,7 @@ export function newscategory_edit(data) {
     data
   })
 }
-// 删除
+// 资讯类别删除
 export function newscategory_delet(data) {
   return request({
     url: '/system/newscategory/delete',

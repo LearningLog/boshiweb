@@ -32,11 +32,11 @@ export default {
   },
   created() {
     this.query_param = this.$route.query.ids
-    this.get_list()
+    this.get_det()
   },
   methods: {
-    // 列表
-    get_list() {
+    // 获取详情
+    get_det() {
       const that = this
       const param = {}
       param._id = that.query_param
@@ -48,6 +48,7 @@ export default {
         console.log(error)
       })
     },
+    // 返回列表页
     onSubmit() {
       this.$router.push({ path: '/systemManage/newsCategory' })
     }

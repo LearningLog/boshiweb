@@ -9,7 +9,7 @@
       </el-form-item>
     </el-form>
     <div id="btnGroup">
-      <el-button type="primary" @click="save('form')">保存</el-button>
+      <el-button type="primary" :disabled="sub_dis" @click="save('form')">保存</el-button>
       <el-button type="primary" plain @click="cancel('form')">取消</el-button>
     </div>
   </div>
@@ -24,6 +24,7 @@ export default {
         newscategory_name: '',
         newscategory_desc: ''
       },
+      sub_dis: false,
       rules: {
         newscategory_name: [
           { required: true, message: '请输入类别名称（长度在 2 到 20个字符）', trigger: 'blur' },
@@ -53,12 +54,14 @@ export default {
         console.log(error)
       })
     },
+    // 保存修改
     save(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          this.sub_dis = true
           newscategory_edit(this.form).then(response => {
-            this.$message.success('修改成功')
-            // this.$router.push({ path: '/systemManage/newsCategory/detail', query: { _id: response.data._id }})
+            this.$message.success('修改成功！')
+            this.$router.push({ path: '/systemManage/newsCategory/detail', query: { _id: response.data._id }})
           })
         }
       })

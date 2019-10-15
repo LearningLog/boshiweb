@@ -118,15 +118,18 @@ export default {
     this.get_list()
   },
   methods: {
+    // 高级搜索
     topSearch() {
       this.get_list()
     },
+    // 重置搜索条件
     reset() {
       this.listQuery.name = ''
       this.listQuery.creater = ''
       this.listQuery.time_range = null
       this.listQuery.enable_status = ''
     },
+    // 获取列表
     get_list() {
       const that = this
       const status_map = that.status_map
@@ -158,6 +161,7 @@ export default {
         console.log(error)
       })
     },
+    // 删除文件来源
     delet_fn(row) {
       this.$confirm('确定要删除【' + row.name + '】吗？', '删除文件来源', {
         confirmButtonText: '确定',
@@ -176,6 +180,7 @@ export default {
         })
       }).catch(() => {})
     },
+    // 更改状态
     status_fn(in_ids, in_ststus) {
       const that = this
       const param = {}
@@ -192,10 +197,12 @@ export default {
         console.log(error)
       })
     },
+    // go编辑
     go_edit_fn(data) {
       const dt = data
       this.$router.push({ path: '/systemManage/sourceFile/edit', query: { queryDt: dt }})
     },
+    // go添加
     add() {
       this.$router.push({ path: '/systemManage/sourceFile/add' })
     }

@@ -15,7 +15,7 @@
       </el-form-item>
     </el-form>
     <div id="btnGroup">
-      <el-button type="primary" @click="save('form')">保存</el-button>
+      <el-button type="primary" :disabled="sub_dis" @click="save('form')">保存</el-button>
       <el-button type="primary" plain @click="cancel('form')">取消</el-button>
     </div>
   </div>
@@ -31,6 +31,7 @@ export default {
         name: '',
         enable_status: null
       },
+      sub_dis: false,
       query_param: {},
       rules: {
         code: [
@@ -53,6 +54,7 @@ export default {
     this.get_original_info()
   },
   methods: {
+    // 获取原始值
     get_original_info() {
       const that = this
       const param = {}
@@ -62,9 +64,11 @@ export default {
       that.form.name = that.query_param.name
       that.form.enable_status = that.query_param.enable_status
     },
+    // 确定编辑
     save(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          this.sub_dis = true
           this.form._id = this.query_param._id
           source_file_edit(this.form).then(response => {
             this.$message.success('修改成功')
@@ -73,6 +77,7 @@ export default {
         }
       })
     },
+    // 取消编辑
     cancel(formName) {
       this.$refs[formName].resetFields()
       this.$router.push({ path: '/systemManage/sourceFile' })

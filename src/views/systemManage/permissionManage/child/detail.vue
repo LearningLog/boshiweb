@@ -50,6 +50,7 @@ export default {
     this.get_det()
   },
   methods: {
+    // 获取详情
     get_det() {
       const that = this
       const param = {}
@@ -70,12 +71,14 @@ export default {
         console.log(error)
       })
     },
+    // 获取管理类别
     get_permission_manage_type() {
       const param = {}
       permission_manage_type(param).then(response => {
         this.manage_type = response.data
       })
     },
+    // 返回列表页
     onSubmit() {
       this.$router.push({ path: '/systemManage/permissionManage' })
     }

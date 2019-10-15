@@ -13,7 +13,7 @@ export function permission_list(data) {
     data
   })
 }
-// 获取菜单
+// 获取所有菜单
 export function permission_menu(data) {
   return request({
     url: '/system/menuV2/findAllMenus',
@@ -29,7 +29,7 @@ export function permission_manage_type(data) {
     data
   })
 }
-// 添加
+// 权限添加
 export function permission_add(data) {
   return request({
     url: '/system/permissionV2/addPermissionInfo',
@@ -37,7 +37,7 @@ export function permission_add(data) {
     data
   })
 }
-// 修改
+// 权限修改
 export function permission_edit(data) {
   return request({
     url: '/system/permissionV2/updatePermissionInfo',
@@ -45,7 +45,7 @@ export function permission_edit(data) {
     data
   })
 }
-// 删除
+// 权限删除
 export function permission_delet(data) {
   return request({
     url: '/system/permissionV2/deletePermissionInfo',
@@ -53,7 +53,7 @@ export function permission_delet(data) {
     data
   })
 }
-// 查看暂定
+// 权限详情
 export function permission_det(data) {
   return request({
     url: '/system/permissionV2/findPermissionById',
