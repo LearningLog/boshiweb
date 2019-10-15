@@ -71,6 +71,31 @@ export function regUName(param) {
     return false
   }
 }
+
+// input键入小数限制
+export function onKeyValid(val, num) {
+  val = val === undefined ? '' : val
+  val = val.toString()
+  if (num === 2) {
+    const reg = /^0\.{1}\d{0,2}|\.{1}\d{0,2}$/
+    if (!reg.test(val)) {
+      debugger
+      return (val * 1).toFixed(2)
+    }
+  } else if (num === 3) {
+    const reg = /^0\.{1}\d{0,2}|\.{1}\d{0,3}/
+    if (!reg.test(val)) {
+      return ''
+    }
+  } else if (num === 4) {
+    const reg = /^0\.{1}\d{0,2}|\.{1}\d{0,4}/
+    if (!reg.test(val)) {
+      return ''
+    }
+  }
+  return val
+}
+
 /**
  * 校验正整数
  * @param val
@@ -82,6 +107,23 @@ export function validIntNum(val) {
   const reg = /^\d+$/
   if (!reg.test(val)) {
     val = val.replace(/[^\d]/g, '') // 清除数字以外的
+    return val
+  } else {
+    return val
+  }
+}
+
+/**
+ * input & keyup 校验输入数字（含小数）
+ * @param val
+ * @returns {string | *}
+ */
+export function validNum(val) {
+  val = val === undefined ? '' : val
+  val = val.toString()
+  const reg = /^\d+$/
+  if (!reg.test(val)) {
+    val = val.replace(/[^\d.]/g, '') // 清除数字以外的
     return val
   } else {
     return val

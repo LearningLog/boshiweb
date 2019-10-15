@@ -2,6 +2,7 @@ const getters = {
   sidebar: state => state.app.sidebar,
   language: state => state.app.language, // 语言国际化
   device: state => state.app.device,
+  tableHeight: state => state.app.tableHeight,
   token: state => state.user.token,
   logo: state => state.user.logo,
   logo_name: state => state.user.logo_name,

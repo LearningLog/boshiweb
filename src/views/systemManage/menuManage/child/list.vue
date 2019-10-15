@@ -1,7 +1,7 @@
 <template>
   <div class="clearfix">
     <div class="left">
-      <h4>博士知识库</h4>
+      <h4>博识知识库</h4>
       <el-scrollbar wrap-class="scrollbar-wrapper">
         <el-tree :data="treeData" :props="defaultProps" default-expand-all :expand-on-click-node="false" @node-click="handleNodeClick" />
       </el-scrollbar>

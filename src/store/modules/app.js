@@ -7,7 +7,8 @@ const state = {
     withoutAnimation: false
   },
   language: getLanguage(),
-  device: 'desktop'
+  device: 'desktop',
+  tableHeight: document.documentElement.clientHeight - 240
 }
 
 const mutations = {
@@ -31,6 +32,9 @@ const mutations = {
   SET_LANGUAGE: (state, language) => {
     state.language = language
     Cookies.set('language', language)
+  },
+  SET_DOCUMENT_HEIGHT: (state, documentHeight) => {
+    state.tableHeight = documentHeight - 240
   }
 }
 
@@ -46,6 +50,9 @@ const actions = {
   },
   setLanguage({ commit }, language) {
     commit('SET_LANGUAGE', language)
+  },
+  setDocumentHeight({ commit }, documentHeight) {
+    commit('SET_DOCUMENT_HEIGHT', documentHeight)
   }
 }
 

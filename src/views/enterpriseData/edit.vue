@@ -15,7 +15,7 @@
           <el-input v-model="form.totalSms" placeholder="请输入短信总量" maxlength="5" clearable @keyup.native="intNum(form.totalSms, 'totalSms')" />
         </el-form-item>
         <el-form-item label="存储总量（G）" prop="totalStorageSpace">
-          <el-input v-model="form.totalStorageSpace" placeholder="请输入存储总量" maxlength="5" clearable @keyup.native="intNum(form.totalStorageSpace, 'totalStorageSpace')" />
+          <el-input v-model="form.totalStorageSpace" placeholder="请输入存储总量" maxlength="7" clearable @keyup.native="intNum(form.totalStorageSpace, 'totalStorageSpace')" @blur="blurNum(form.totalStorageSpace)" />
         </el-form-item>
         <el-form-item label="有效期" prop="effectTime">
           <el-date-picker
@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import { validIntNum } from '@/utils/validate'
+import { onKeyValid, validIntNum, validNum } from '@/utils/validate'
 import { getCustomResourceDetail, editCustomResource } from '@/api/enterprise-data'
 
 export default {
@@ -48,6 +48,17 @@ export default {
       if (!value[0] || !value[1]) {
         callback(new Error('请选择有效日期'))
       } else {
+        callback()
+      }
+    }
+    var validTotalStorageSpace = (rule, value, callback) => {
+      debugger
+      if (!value && value !== 0) {
+        callback(new Error('请输入存储总量，最多9,999G'))
+      } else if (value > 9999) {
+        callback(new Error('请输入存储总量，最多9,999G'))
+      }
+      else {
         callback()
       }
     }
@@ -80,8 +91,8 @@ export default {
           { required: true, message: '请输入短信总量', trigger: 'change' }
         ],
         totalStorageSpace: [
-          { required: true, message: '请输入存储总量', trigger: 'blur' },
-          { required: true, message: '请输入存储总量', trigger: 'change' }
+          { required: true, validator: validTotalStorageSpace, message: '请输入存储总量，最多9,999G', trigger: 'blur' },
+          { required: true, validator: validTotalStorageSpace, message: '请输入存储总量，最多9,999G', trigger: 'change' }
         ],
         effectTime: [
           { required: true, validator: validDate, trigger: 'blur' },
@@ -133,7 +144,15 @@ export default {
     },
     // 校验正整数
     intNum(val, field) {
-      this.form[field] = validIntNum(val)
+      if (!val) return false
+      if (field === 'totalStorageSpace') {
+        this.form[field] = validNum(val)
+      } else {
+        this.form[field] = validIntNum(val)
+      }
+    },
+    blurNum(val) {
+      this.form.totalStorageSpace = onKeyValid(val, 2)
     }
   }
 

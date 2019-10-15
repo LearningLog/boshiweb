@@ -21,6 +21,8 @@ export default {
     window.removeEventListener('resize', this.$_resizeHandler)
   },
   mounted() {
+    const documentHeighht = document.documentElement.clientHeight
+    store.dispatch('app/setDocumentHeight', documentHeighht)
     const isMobile = this.$_isMobile()
     if (isMobile) {
       store.dispatch('app/toggleDevice', 'mobile')
@@ -35,6 +37,8 @@ export default {
       return rect.width - 1 < WIDTH
     },
     $_resizeHandler() {
+      const documentHeighht = document.documentElement.clientHeight
+      store.dispatch('app/setDocumentHeight', documentHeighht)
       if (!document.hidden) {
         const isMobile = this.$_isMobile()
         store.dispatch('app/toggleDevice', isMobile ? 'mobile' : 'desktop')

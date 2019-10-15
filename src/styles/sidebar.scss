@@ -87,7 +87,7 @@
     .router-link-active .is-active {
       background-color: $themeColor !important;
     }
-    .el-menu-item is-active submenu-title-noDropdown
+
 
     & .nest-menu .el-submenu>.el-submenu__title,
     & .el-submenu .el-menu-item {
@@ -194,6 +194,10 @@
   }
 }
 
+.el-menu-item.is-active{
+    background-color: $themeColor !important;
+}
+
 // when menu collapsed
 .el-menu--vertical {
   &>.el-menu {
@@ -210,7 +214,7 @@
   .el-menu-item {
     &:hover {
       // you can use $subMenuHover
-      background-color: $menuHover !important;
+      background-color: $themeColor !important;
     }
   }
 
