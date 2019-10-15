@@ -31,7 +31,6 @@
       title="所属菜单"
       :visible.sync="menu_tree_flag"
       width="50%"
-      center
     >
       <div class="menu_tree_box">
         <el-scrollbar wrap-class="scrollbar-wrapper">

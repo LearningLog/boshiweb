@@ -41,10 +41,6 @@
       fit
       highlight-current-row
     >
-      <!--<el-table-column-->
-      <!--type="selection"-->
-      <!--width="55"-->
-      <!--/>-->
       <el-table-column align="center" label="类别" show-overflow-tooltip>
         <template slot-scope="scope">
           <span>{{ scope.row.website_name }}</span>
@@ -70,10 +66,10 @@
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="get_list" />
     <!--新增网站弹窗-->
     <el-dialog
+      v-el-drag-dialog
       title="新增网站"
       :visible.sync="net_add_flag"
       width="50%"
-      center
     >
       <div class="form-edit">
         <el-form ref="net_add_form" class="form" :model="net_add_form" :rules="rules" :status-icon="true" label-width="120px">
@@ -122,8 +118,11 @@
 <script>
 import { net_list, net_delet, net_add, net_edit } from '@/api/systemManage-newsCategorry.js'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
+
 export default {
   components: { Pagination },
+  directives: { elDragDialog },
   data() {
     return {
       listQuery: {

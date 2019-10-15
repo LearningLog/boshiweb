@@ -62,7 +62,7 @@
           <span>{{ scope.row.payTypeName }}</span>
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="员工规模" min-width="150" align="center" show-overflow-tooltip>
+      <el-table-column class-name="status-col" label="员工规模" min-width="70" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.totalUserCount }}
         </template>
@@ -72,7 +72,7 @@
           <span>{{ scope.row.usedTotalSms }}</span><span>&nbsp;/&nbsp;</span><span>{{ scope.row.totalSms }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="存储空间" min-width="120" show-overflow-tooltip>
+      <el-table-column align="center" label="存储空间" min-width="100" show-overflow-tooltip>
         <template slot-scope="scope">
           <span>{{ getFileShowSize(scope.row.usedStorageSpace) }}</span><span>&nbsp;/&nbsp;</span><span>{{ getFileShowSize(scope.row.totalStorageSpace) }}</span>
         </template>
@@ -88,7 +88,7 @@
           <span>{{ parseTime(scope.row.startTime || '', '{y}-{m}-{d}') }}</span><span>&nbsp;至&nbsp;&nbsp;</span><span>{{ parseTime(scope.row.endTime || '', '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="操作" width="220" align="center" fixed="right" show-overflow-tooltip>
+      <el-table-column class-name="status-col" label="操作" width="160" align="center" fixed="right" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-button size="mini" @click="detail(scope.row)"><i class="iconfont iconchakan" />查看</el-button>
           <el-button size="mini" @click="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
