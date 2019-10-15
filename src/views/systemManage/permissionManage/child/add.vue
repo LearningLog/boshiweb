@@ -23,7 +23,7 @@
       </el-form-item>
     </el-form>
     <div id="btnGroup">
-      <el-button type="primary" @click="save('form')">提交</el-button>
+      <el-button type="primary" :disabled="sub_dis" @click="save('form')">提交</el-button>
       <el-button type="primary" plain @click="cancel('form')">取消</el-button>
     </div>
     <!--菜单选择列表-->
@@ -70,6 +70,7 @@ export default {
         permissionbelongmenu: [],
         permissionmanage: ''
       },
+      sub_dis: false,
       menu_dt: [],
       treeData: [],
       menu_tip_txt: '请选择菜单',
@@ -290,6 +291,7 @@ export default {
             this.$message.error('请选择管理类别')
             return
           }
+          this.sub_dis = true
           permission_add(this.form).then(response => {
             this.$message.success('添加成功')
             const resId = response.data.resId
