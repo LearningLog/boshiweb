@@ -19,6 +19,9 @@
         </el-select>
         <div class="tip">系统后台归属的菜单，不会出现在租户菜单列表中</div>
       </el-form-item>
+      <el-form-item label="父级菜单">
+        <el-input :value="pname" :disabled="true" />
+      </el-form-item>
     </el-form>
     <div id="btnGroup">
       <el-button type="primary" :disabled="isDisabled" @click="save('form')">提交</el-button>
@@ -49,6 +52,7 @@ export default {
         type: '' // 菜案类型
       },
       pid: '', // 父id
+      pname: '', // 父级菜单
       rules: {
         menuname: [
           { required: true, message: '请输入菜单名称（长度在 1 到 12 个字符）', trigger: 'blur' },
@@ -76,6 +80,7 @@ export default {
   },
   created() {
     this.pid = this.$route.query.pid
+    this.pname = this.$route.query.pname
   },
   methods: {
     // 保存

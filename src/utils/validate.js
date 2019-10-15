@@ -64,8 +64,9 @@ export function strLength(str, minLenth, maxLength) {
  */
 export function regUName(param) {
   const uName_phone = /\d{11}|\d{13}/
-  const uName_pattern = /^(?!(?:\d+|[a-zA-Z]+)$)[\da-zA-Z]{2,64}$/
-  if (!uName_phone.test(param) && uName_pattern.test(param)) {
+  const uName_pattern1 = /^[a-zA-Z0-9]{2,64}$/
+  const uName_pattern2 = /^.*[a-zA-Z].*$/
+  if (!uName_phone.test(param) && uName_pattern1.test(param) && uName_pattern2.test(param)) {
     return true
   } else {
     return false

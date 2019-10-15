@@ -16,6 +16,9 @@
       <el-form-item label="菜单类型：">
         <span>{{ form.typeName }}</span>
       </el-form-item>
+      <el-form-item label="父级菜单：">
+        <span>{{ form.pname }}</span>
+      </el-form-item>
     </el-form>
     <div id="btnGroup">
       <el-button type="primary" @click="confirm">确定</el-button>
@@ -40,11 +43,13 @@ export default {
         menuurl: '', // 菜单路径path
         type: '' // 菜案类型
       },
+      id: '', // 查询id
       pid: '' // 父id
     }
   },
   created() {
     this.id = this.$route.query._id
+    this.pid = this.$route.query.pid
     this.getMenu()
   },
   methods: {
@@ -67,7 +72,7 @@ export default {
     },
     // 确定
     confirm() {
-      this.$router.push({ path: '/systemManage/menuManage/list' })
+      this.$router.push({ path: '/systemManage/menuManage/list', query: { pid: this.pid }})
     }
   }
 }

@@ -119,15 +119,15 @@
         </div>
         <!--预览-->
         <!--<div class="show-preview" :style="{'width': previews.w + 'px', 'height': previews.h + 'px', 'overflow': 'hidden', 'margin': '5px'}">-->
-        <div class="show-preview" :style="{'width':'240px', 'height':'135px', 'overflow': 'hidden', 'margin': '5px'}">
+        <div class="show-preview" :style="{'width':'200px', 'height':'200px', 'overflow': 'hidden', 'margin': '5px'}">
           <div :style="previews.div" class="preview">
             <img :src="previews.url" :style="previews.img">
           </div>
         </div>
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="closeUpload">取 消</el-button>
         <el-button type="primary" :disabled="isDisabled2" @click="finish">确认</el-button>
+        <el-button @click="closeUpload">取 消</el-button>
       </div>
     </el-dialog>
     <el-dialog v-el-drag-dialog title="图片预览" width="38%" :visible.sync="logoDialogVisible">
