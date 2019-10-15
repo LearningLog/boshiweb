@@ -41,9 +41,16 @@ export default {
       const param = {}
       param._id = that.query_param
       newscategory_det(param).then(res => {
-        that.form.newscategory_name = res.data.permission.newscategory_name ? res.data.permission.newscategory_name : '--'
-        that.form.newscategory_desc = res.data.permission.newscategory_desc ? res.data.permission.newscategory_desc : '--'
-        that.form.net_list = res.data.permission.net_list ? res.data.permission.net_list : '--'
+        const res_dt = res.data.newscategory
+        const net_dt = ''
+        that.form.newscategory_name = res_dt.newscategory_name
+        that.form.newscategory_desc = res_dt.newscategory_desc
+        if (res_dt && res_dt.website) {
+          res_dt.website.forEach(item => {
+            net_dt += item.website_name + ','
+          })
+        }
+        that.form.net_list = net_dt.substring(0, net_dt.length - 1)
       }).catch(error => {
         console.log(error)
       })

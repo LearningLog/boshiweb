@@ -80,8 +80,8 @@
       <el-table-column class-name="status-col" label="操作" min-width="280" align="center" fixed="right" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-button size="mini" @click="go_edit_fn(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
-          <el-button v-if="scope.row.status_txt==='启用'" size="mini" @click="status_fn(scope.row._id,1)"><i class="iconfont iconshixiao" />停用</el-button>
-          <el-button v-if="scope.row.status_txt==='停用'" size="mini" @click="status_fn(scope.row._id,2)"><i class="iconfont iconshengxiao" />启用</el-button>
+          <el-button v-if="scope.row.status_txt==='启用'" size="mini" @click="status_fn(scope.row._id,2)"><i class="iconfont iconshixiao" />停用</el-button>
+          <el-button v-if="scope.row.status_txt==='停用'" size="mini" @click="status_fn(scope.row._id,1)"><i class="iconfont iconshengxiao" />启用</el-button>
           <el-button size="mini" @click="delet_fn(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
 
         </template>
