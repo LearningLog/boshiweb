@@ -465,15 +465,15 @@ export default {
       const pwd = that.password
       const agree_check = that.agree_check
       if (!agree_check) {
-        that.$message.error('请阅读并同意服务协议')
+        that.$message.error('请阅读并同意服务协议。')
         return
       }
       if (uname === '') {
-        that.$message.error('请输入用户名或手机号')
+        that.$message.error('请输入用户名或手机号！')
         return
       }
       if (pwd === '') {
-        that.$message.error('请输入密码')
+        that.$message.error('请输入密码！')
         return
       }
       const param = {}
@@ -561,7 +561,7 @@ export default {
       const that = this
       const forget_phone = that.forget_phone
       if (!regPhone(forget_phone)) {
-        that.$message.error('请输入正确的手机号')
+        that.$message.error('请输入正确的手机号！')
         return
       }
       const param = {}
@@ -569,7 +569,7 @@ export default {
       param.type = 4
       forget_sendsms(param).then(res => {
         if (res.code === 10001) {
-          that.$message.error('该手机号不存在')
+          that.$message.error('该手机号不存在！')
         } else {
           that.forget_countdown()
           that.reset_pwd_sms.send_id = res.data._id
@@ -604,23 +604,23 @@ export default {
       const verifyparam = {}
       const verifiedDt = {}
       if (!regPhone(forget_phone)) {
-        that.$message.error('请输入正确的手机号')
+        that.$message.error('请输入正确的手机号！')
         return
       }
       if (forget_sms === '') {
-        that.$message.error('验证码不能为空')
+        that.$message.error('验证码不能为空！')
         return
       }
       if (new_pwd === '' || confirm_pwd === '') {
-        that.$message.error('密码不能为空')
+        that.$message.error('密码不能为空！')
         return
       }
       if (new_pwd !== confirm_pwd) {
-        that.$message.error('两次密码不一致')
+        that.$message.error('两次密码不一致！')
         return
       }
       if (!regPwd(new_pwd) || !regPwd(confirm_pwd)) {
-        that.$message.error('密码6-50位,数字+字母')
+        that.$message.error('密码6-50位，数字+字母。')
         return
       }
       verifyparam.sms_token = that.reset_pwd_sms.send_sms_token
@@ -639,7 +639,7 @@ export default {
         forget_updatepwd(reset_pwd_param).then(res => {
           debugger
           that.$message({
-            message: '重置成功',
+            message: '重置成功！',
             type: 'success'
           })
           that.forget_pwd_flag = false
