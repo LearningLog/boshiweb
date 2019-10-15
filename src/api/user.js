@@ -1,5 +1,13 @@
+/**
+* @Author: YanHuaKang
+* @Date: 2019/10/15
+* @Description:
+* @remarks:
+*/
+
 import request from '@/utils/request'
 
+// 用户登录
 export function login(data) {
   return request({
     url: '/login',
@@ -7,7 +15,7 @@ export function login(data) {
     data
   })
 }
-
+// 获取用户信息
 export function getInfo() {
   return request({
     url: '/system/user/onloadByUser',
@@ -15,7 +23,7 @@ export function getInfo() {
     data: {}
   })
 }
-
+// 获取权限路由菜单
 export function getMenuList() {
   return request({
     url: '/system/menuV2/initmenu',
@@ -23,7 +31,7 @@ export function getMenuList() {
     data: {}
   })
 }
-
+// 登出
 export function logout() {
   return request({
     url: '/logout',

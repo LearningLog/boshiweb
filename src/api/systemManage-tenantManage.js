@@ -1,5 +1,13 @@
+/**
+* @Author: YanHuaKang
+* @Date: 2019/10/15
+* @Description: 租户管理
+* @remarks:
+*/
+
 import request from '@/utils/request'
 
+// 获取所有租户列表
 export function getAllTenantList(data) {
   return request({
     url: '/system/customV2/findCustomList',
@@ -7,7 +15,7 @@ export function getAllTenantList(data) {
     data
   })
 }
-
+// 新增租户
 export function addTenant(data) {
   return request({
     url: '/system/customV2/addcustom',
@@ -15,7 +23,7 @@ export function addTenant(data) {
     data
   })
 }
-
+// 获取单个租户详情
 export function getOneTenant(data) {
   return request({
     url: '/system/customV2/findCustomById',
@@ -23,7 +31,7 @@ export function getOneTenant(data) {
     data
   })
 }
-
+// 编辑租户
 export function editTenant(data) {
   return request({
     url: '/system/customV2/updatecustom',
@@ -31,7 +39,7 @@ export function editTenant(data) {
     data
   })
 }
-
+// 删除租户
 export function delTenant(data) {
   return request({
     url: '/system/customV2/deletecustom',
@@ -39,7 +47,7 @@ export function delTenant(data) {
     data
   })
 }
-
+// 批量删除租户
 export function batchDelTenant(data) {
   return request({
     url: '/system/customV2/deleteMultiCustom',
@@ -47,7 +55,7 @@ export function batchDelTenant(data) {
     data
   })
 }
-
+// 设置租户状态
 export function setCustomStatus(data) {
   return request({
     url: '/system/customV2/setCustomStatus',
@@ -55,7 +63,7 @@ export function setCustomStatus(data) {
     data
   })
 }
-
+// 获取资讯数据
 export function getInformationList(data) {
   return request({
     url: 'system/newscategory/all',
@@ -63,7 +71,7 @@ export function getInformationList(data) {
     data
   })
 }
-
+// 设置资讯
 export function setInformation(data) {
   return request({
     url: 'system/custom/saveCustomCategory',

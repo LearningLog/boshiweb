@@ -9,7 +9,7 @@ import request from '@/utils/request'
 // 列表
 export function newscategory_list(data) {
   return request({
-    url: '/system/newscategory/list',
+    url: '/system/newscategoryV2/list',
     method: 'post',
     data
   })
@@ -57,7 +57,7 @@ export function newscategory_one(data) {
 // 网站管理列表
 export function net_list(data) {
   return request({
-    url: '/system/website/list',
+    url: '/system/websiteV2/list',
     method: 'post',
     data
   })

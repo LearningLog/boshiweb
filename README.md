@@ -305,6 +305,7 @@ vue-element-admin 配套了系列教程文章，如何从零构建后一个完�
 - 必须使用 `Eslint` 代码校验工具
 - 全部 `<el-input  type="password" />` 都必须写成 `<el-input readonly onfocus="this.removeAttribute('readonly');" type="password" autocomplete="off" />` 解决input type="password" h和 type="text" 时自动填充bug
 - 所有提示性文字都要带有标点符号，中/文对应全角半角
+- 所有el-dialog title居左，加拖拽功能
 
 ### 后台全局
 

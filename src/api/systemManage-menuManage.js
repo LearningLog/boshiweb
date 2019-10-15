@@ -1,5 +1,13 @@
+/**
+* @Author: YanHuaKang
+* @Date: 2019/10/15
+* @Description: 菜单管理接口
+* @remarks:
+*/
+
 import request from '@/utils/request'
 
+// 获取左侧所有菜单
 export function getAllMenuList() {
   return request({
     url: '/system/menuV2/findAllMenus',
@@ -7,7 +15,7 @@ export function getAllMenuList() {
     data: {}
   })
 }
-
+// 获取右侧菜单列表
 export function findMenuList(data) {
   return request({
     url: '/system/menuV2/findMenuList',
@@ -15,7 +23,7 @@ export function findMenuList(data) {
     data
   })
 }
-
+// 新增菜单
 export function addMenu(data) {
   return request({
     url: '/system/menuV2/addmenu',
@@ -23,7 +31,7 @@ export function addMenu(data) {
     data
   })
 }
-
+// 获取单个菜单数据
 export function getMenu(data) {
   return request({
     url: '/system/menuV2/findMenuById',
@@ -31,7 +39,7 @@ export function getMenu(data) {
     data
   })
 }
-
+// 编辑菜单
 export function editMenu(data) {
   return request({
     url: '/system/menuV2/updatemenu',
@@ -39,7 +47,7 @@ export function editMenu(data) {
     data
   })
 }
-
+// 删除菜单
 export function delMenu(data) {
   return request({
     url: '/system/menuV2/deletemenu',
@@ -47,7 +55,7 @@ export function delMenu(data) {
     data
   })
 }
-
+// 移动菜单
 export function moveMenu(data) {
   return request({
     url: '/system/menuV2/updownmenu',

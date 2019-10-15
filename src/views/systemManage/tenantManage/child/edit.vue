@@ -417,15 +417,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  #btnGroup{
-    padding-left: 120px;
+  #btnGroup {
+    padding-left: 140px;
   }
   /deep/ .el-upload-dragger {
     border: none;
     width: auto;
     height: auto;
   }
-  [class^="el-icon-"], [class*=" el-icon-"]{
+  [class^="el-icon-"], [class*=" el-icon-"] {
     line-height: 60px!important;
   }
   .vueCropper {

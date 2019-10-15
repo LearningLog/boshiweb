@@ -69,12 +69,12 @@
       </el-table-column>
       <el-table-column align="center" label="短信使用" min-width="100" show-overflow-tooltip>
         <template slot-scope="scope">
-          <span>{{ scope.row.usedTotalSms + '/' + scope.row.totalSms }}</span>
+          <span>{{ scope.row.usedTotalSms }}</span><span>&nbsp;/&nbsp;</span><span>{{ scope.row.totalSms }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="存储空间" min-width="120" show-overflow-tooltip>
         <template slot-scope="scope">
-          <span>{{ scope.row.usedStorageSpace + '/' + scope.row.totalStorageSpace }}</span>
+          <span>{{ getFileShowSize(scope.row.usedStorageSpace) }}</span><span>&nbsp;/&nbsp;</span><span>{{ getFileShowSize(scope.row.totalStorageSpace) }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="创建时间" min-width="100" show-overflow-tooltip>
@@ -101,6 +101,7 @@
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { getCustomResourceList } from '@/api/enterprise-data'
+import { getFileShowSize } from '@/utils/index'
 export default {
   components: { Pagination },
   data() {
@@ -164,6 +165,9 @@ export default {
     // 编辑
     edit(row) {
       this.$router.push({ path: '/enterpriseData/edit', query: { _id: row._id }})
+    },
+    getFileShowSize(fileSize) {
+      return getFileShowSize(fileSize)
     }
   }
 }

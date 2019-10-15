@@ -112,3 +112,44 @@ export function param2Obj(url) {
 export function getSerialNum(index, currentPage, pageSize) {
   return ((index + 1) + (currentPage - 1)) * pageSize
 }
+
+/** 获取显示大小
+ * @param fileSize
+ */
+export function getFileShowSize(fileSize) {
+  if (fileSize) {
+    var KLength = 1024
+    var MLength = KLength * 1024
+    var GLength = MLength * 1024
+    var TLength = GLength * 1024
+
+    var showStr = ''
+    var T = 0
+    var G = 0
+    var M = 0
+    var K = 0
+    //		T=parseInt(fileSize/TLength);
+    //		G=parseInt(fileSize/GLength);
+    M = parseInt(fileSize / MLength)
+    if (T > 0) {
+      // 如果大于1T则显示为2.34TB样式
+      T = fileSize / TLength
+      showStr = T.toFixed(2) + 'TB'
+    } else if (G > 0) {
+      // 如果大于1G则显示为2.34GB样式
+      G = fileSize / GLength
+      showStr = G.toFixed(2) + 'GB'
+    } else if (M > 0) {
+      // 如果大于1M则显示为2.34MB样式
+      M = fileSize / MLength
+      showStr = M.toFixed(2) + 'MB'
+    } else {
+      // 显示为44KB
+      K = fileSize / KLength
+      showStr = parseInt(K) + 'KB'
+    }
+    return showStr
+  } else {
+    return '--'
+  }
+}
