@@ -19,6 +19,9 @@
         </el-select>
         <div class="tip">系统后台归属的菜单，不会出现在租户菜单列表中</div>
       </el-form-item>
+      <el-form-item label="父级菜单">
+        <el-input :value="form.pname" :disabled="true" />
+      </el-form-item>
     </el-form>
     <div id="btnGroup">
       <el-button type="primary"  :disabled="isDisabled" @click="save('form')">提交</el-button>

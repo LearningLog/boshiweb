@@ -94,7 +94,7 @@
           <el-button size="mini" @click="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
           <el-button v-if="scope.row.customStatus === 1" size="mini" @click="enable(scope.row, 0)"><i class="iconfont iconshixiao" />失效</el-button>
           <el-button v-else size="mini" @click="enable(scope.row, 1)"><i class="iconfont iconshengxiao" />生效</el-button>
-          <el-dropdown>
+          <el-dropdown trigger="click">
             <el-button size="mini">
               <i class="iconfont icongengduo" />更多
             </el-button>
@@ -110,7 +110,7 @@
     <div id="bottomOperation">
       <el-button v-show="total>0" type="primary" @click="batchDel"><i class="iconfont iconshanchu" />批量删除</el-button>
     </div>
-    <el-dialog v-el-drag-dialog class="setInformationDialog" width="30%" title="资讯管理" :visible.sync="setInformationDialogVisible">
+    <el-dialog v-el-drag-dialog class="setInformationDialog" width="650px" title="资讯管理" :visible.sync="setInformationDialogVisible">
       <el-transfer v-model="hasList" :data="noList" :titles="['未分配类别', '已分配类别']" :props="defaultProps" @change="handleTransferChange" />
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="setInformation">确定</el-button>
@@ -213,6 +213,10 @@ export default {
     },
     // 批量删除
     batchDel() {
+      if (!this.checkedDelList.length) {
+        this.$message.warning('请选择租户！')
+        return false
+      }
       this.$confirm('确定要删除选中的租户吗？', '批量删除租户', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',

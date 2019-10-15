@@ -72,10 +72,22 @@ service.interceptors.response.use(
         duration: 5 * 1000
       })
 
-      // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
+      // 29999: 非法token;  30000: Token 过期;
+      if (res.code === 29999) {
+        // to re-login
+        MessageBox.confirm('您尚未登陆，请登录。', '退出登录', {
+          confirmButtonText: '确认',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          store.dispatch('user/resetToken').then(() => {
+            location.reload()
+          })
+        })
+      }
       if (res.code === 30000) {
         // to re-login
-        MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', '退出登录', {
+        MessageBox.confirm('令牌已失效，请您重新登陆。', '退出登录', {
           confirmButtonText: '确认',
           cancelButtonText: '取消',
           type: 'warning'
@@ -91,16 +103,22 @@ service.interceptors.response.use(
     }
   },
   error => {
-    // console.log('err' + error) // for debug
-    // Message({
-    //   message: error.message,
-    //   type: 'error',
-    //   duration: 5 * 1000
-    // })
-    // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
+    // 29999: 非法token;  30000: Token 过期;
+    if (error.response.data.code === 29999) {
+      // to re-login
+      MessageBox.confirm('您尚未登陆，请登录。', '退出登录', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        store.dispatch('user/resetToken').then(() => {
+          location.reload()
+        })
+      })
+    }
     if (error.response.data.code === 30000) {
       // to re-login
-      MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', '退出登录', {
+      MessageBox.confirm('令牌已失效，请您重新登陆。', '退出登录', {
         confirmButtonText: '确认',
         cancelButtonText: '取消',
         type: 'warning'

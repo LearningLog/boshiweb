@@ -78,12 +78,12 @@
           <template slot-scope="scope">
             <el-button size="mini" @click="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
             <el-button size="mini" @click="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
-            <el-dropdown>
+            <el-dropdown trigger="click">
               <el-button size="mini">
                 <i class="iconfont icongengduo" />更多
               </el-button>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native="upMenu(scope.row)"><i class="iconfont iconxiayi1" />上移</el-dropdown-item>
+                <el-dropdown-item @click.native="upMenu(scope.row)"><i class="iconfont iconshangyi1" />上移</el-dropdown-item>
                 <el-dropdown-item @click.native="downMenu(scope.row)"><i class="iconfont iconxiayi1" />下移</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
@@ -127,10 +127,12 @@ export default {
         children: 'children',
         label: 'label'
       },
-      pid: 'firstMenu' // 父id
+      pid: 'firstMenu', // 父id
+      pname: '菜单管理' // 父级菜单
     }
   },
   created() {
+    this.listQuery.pid = this.$route.query.pid || 'firstMenu'
     this.getAllMenuList()
     this.getMenuList()
   },
@@ -169,15 +171,16 @@ export default {
       this.listQuery.type = ''
       this.listQuery.pid = data.id
       this.pid = data.id
+      this.pname = data.label
       this.getMenuList()
     },
     // 新增
     add() {
-      this.$router.push({ path: '/systemManage/menuManage/add', query: { pid: this.pid }})
+      this.$router.push({ path: '/systemManage/menuManage/add', query: { pid: this.pid, pname: this.pname }})
     },
     // 详情
     detail(row) {
-      this.$router.push({ path: '/systemManage/menuManage/detail', query: { _id: row._id }})
+      this.$router.push({ path: '/systemManage/menuManage/detail', query: { _id: row._id, pid: row.pid }})
     },
     // 删除
     del(row) {
@@ -296,7 +299,7 @@ export default {
 <style lang="scss" scoped>
   .left {
     float: left;
-    width:300px;
+    width:240px;
     height: calc(100vh - 120px);
     margin-right: 20px;
     border:1px solid rgba(222, 222, 222, 1);
@@ -310,7 +313,7 @@ export default {
     }
   }
   .right {
-    width: calc(100% - 320px) !important;
+    width: calc(100% - 260px) !important;
     float: right;
   }
 </style>

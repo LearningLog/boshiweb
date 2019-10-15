@@ -119,7 +119,7 @@
         </div>
         <!--预览-->
         <!--<div class="show-preview" :style="{'width': previews.w + 'px', 'height': previews.h + 'px', 'overflow': 'hidden', 'margin': '5px'}">-->
-        <div class="show-preview" :style="{'width':'240px', 'height':'135px', 'overflow': 'hidden', 'margin': '5px'}">
+        <div class="show-preview" :style="{'width':'200px', 'height':'200px', 'overflow': 'hidden', 'margin': '5px'}">
           <div :style="previews.div" class="preview">
             <img :src="previews.url" :style="previews.img">
           </div>

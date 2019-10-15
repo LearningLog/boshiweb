@@ -62,7 +62,6 @@
       title="服务协议"
       :visible.sync="show_agreement"
       width="55%"
-      center
     >
       <div class="agreement-box">
         <p class="no_indent">
@@ -718,6 +717,7 @@ export default {
                 width: 50%;
                 margin: 0 auto;
                 .forget-word{
+                    margin: 18px 0;
                     color: $themeColor;
                     font-size: 14px;
                     cursor: pointer;
