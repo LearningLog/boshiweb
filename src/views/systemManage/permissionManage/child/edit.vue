@@ -333,8 +333,10 @@ export default {
   #btnGroup{
     padding-left: 120px;
   }
-  .el-scrollbar {
-    height: 600px;
-    width: 100%;
+  .menu_tree_box{
+    .el-scrollbar {
+      height: 500px;
+      width: 100%;
+    }
   }
 </style>

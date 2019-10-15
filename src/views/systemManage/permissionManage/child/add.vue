@@ -34,19 +34,19 @@
       center
     >
       <div class="menu_tree_box">
-        <!--<el-scrollbar wrap-class="scrollbar-wrapper">-->
-        <el-tree
-          ref="tree"
-          :data="treeData"
-          :props="defaultProps"
-          show-checkbox
-          node-key="id"
-          :check-strictly="true"
-          default-expand-all
-          :expand-on-click-node="false"
-          @check-change="menu_tree_check_fn"
-        />
-        <!--</el-scrollbar>-->
+        <el-scrollbar wrap-class="scrollbar-wrapper">
+          <el-tree
+            ref="tree"
+            :data="treeData"
+            :props="defaultProps"
+            show-checkbox
+            node-key="id"
+            :check-strictly="true"
+            default-expand-all
+            :expand-on-click-node="false"
+            @check-change="menu_tree_check_fn"
+          />
+        </el-scrollbar>
       </div>
 
       <span slot="footer" class="dialog-footer">
@@ -314,8 +314,11 @@ export default {
   #btnGroup{
     padding-left: 120px;
   }
-  .el-scrollbar {
-    height: 600px;
-    width: 100%;
+  .menu_tree_box{
+    .el-scrollbar {
+      height: 500px;
+      width: 100%;
+    }
   }
+
 </style>
