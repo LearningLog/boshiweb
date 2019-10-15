@@ -51,12 +51,12 @@
           <span>{{ scope.row.website_desc }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="创建时间" min-width="150" show-overflow-tooltip>
+      <el-table-column align="center" label="创建时间" min-width="130" show-overflow-tooltip>
         <template slot-scope="scope">
           <span>{{ scope.row.createtime }}</span>
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="操作" min-width="180" align="center" fixed="right" show-overflow-tooltip>
+      <el-table-column class-name="status-col" label="操作" width="160" align="center" fixed="right" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-button size="mini" @click="show_edit_fn(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
           <el-button size="mini" @click="delet_fn(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>

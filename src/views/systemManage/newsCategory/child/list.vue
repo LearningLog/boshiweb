@@ -61,7 +61,7 @@
           <span>{{ scope.row.createtime }}</span>
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="操作" width="250" align="center" fixed="right" show-overflow-tooltip>
+      <el-table-column class-name="status-col" label="操作" width="230" align="center" fixed="right" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-button size="mini" @click="go_edit_fn(scope.row._id)"><i class="iconfont iconxiugai" />修改</el-button>
           <el-button size="mini" @click="go_netList(scope.row._id)"><i class="iconfont iconxiugai" />设置</el-button>

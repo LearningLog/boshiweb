@@ -17,7 +17,7 @@
             <el-card id="advancedSearchArea" shadow="never">
               <el-form ref="form" :model="listQuery" label-width="100px">
                 <el-form-item label="标识">
-                  <el-input v-model="listQuery.cmark" clearable />
+                  <el-input v-model="listQuery.cmark" placeholder="请输入菜单标识" clearable />
                 </el-form-item>
                 <el-form-item label="类型">
                   <el-select v-model="listQuery.type" placeholder="请选择类型" clearable>

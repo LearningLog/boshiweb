@@ -10,10 +10,10 @@
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
               <el-form-item label="创建人">
-                <el-input v-model="listQuery.creater" clearable />
+                <el-input v-model="listQuery.creater" placeholder="请输入创建人" clearable />
               </el-form-item>
               <el-form-item label="归属企业">
-                <el-input v-model="listQuery.groupId" clearable />
+                <el-input v-model="listQuery.groupId" placeholder="请输入归属企业" clearable />
               </el-form-item>
               <el-form-item label="创建时间">
                 <el-date-picker
@@ -126,6 +126,7 @@ export default {
       this.listQuery.creater = ''
       this.listQuery.time_range = null
       this.listQuery.groupId = ''
+      this.get_list()
     },
     get_list() {
       const that = this

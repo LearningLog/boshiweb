@@ -10,7 +10,7 @@
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
               <el-form-item label="创建人">
-                <el-input v-model="listQuery.creater" clearable />
+                <el-input v-model="listQuery.creater" placeholder="请输入创建人" clearable />
               </el-form-item>
               <el-form-item label="创建时间">
                 <el-date-picker
@@ -57,27 +57,27 @@
           <span>{{ scope.row.name }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="代码" width="220" align="center" show-overflow-tooltip>
+      <el-table-column label="代码" min-width="120" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           <span>{{ scope.row.code }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="状态" min-width="200" align="center" show-overflow-tooltip>
+      <el-table-column label="状态" min-width="80" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           <span>{{ scope.row.status_txt }}</span>
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="创建人" min-width="220" align="center" show-overflow-tooltip>
+      <el-table-column class-name="status-col" label="创建人" min-width="100" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.personalise }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="创建时间" min-width="220" show-overflow-tooltip>
+      <el-table-column align="center" label="创建时间" min-width="130" show-overflow-tooltip>
         <template slot-scope="scope">
           <span>{{ scope.row.c_time }}</span>
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="操作" min-width="280" align="center" fixed="right" show-overflow-tooltip>
+      <el-table-column class-name="status-col" label="操作" width="230" align="center" fixed="right" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-button size="mini" @click="go_edit_fn(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
           <el-button v-if="scope.row.status_txt==='启用'" size="mini" @click="status_fn(scope.row._id,2)"><i class="iconfont iconshixiao" />停用</el-button>
@@ -128,6 +128,7 @@ export default {
       this.listQuery.creater = ''
       this.listQuery.time_range = null
       this.listQuery.enable_status = ''
+      this.get_list()
     },
     // 获取列表
     get_list() {

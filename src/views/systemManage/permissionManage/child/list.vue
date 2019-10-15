@@ -10,10 +10,10 @@
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
               <el-form-item label="菜单模块">
-                <el-input v-model="listQuery.module" clearable />
+                <el-input v-model="listQuery.module" placeholder="请输入菜单模块" clearable />
               </el-form-item>
               <el-form-item label="菜单">
-                <el-input v-model="listQuery.menu" clearable />
+                <el-input v-model="listQuery.menu" placeholder="请输入菜单" clearable />
               </el-form-item>
               <el-form-item label="创建时间">
                 <el-date-picker
@@ -56,7 +56,7 @@
           <span class="pointer" @click="go_detail(scope.row._id)">{{ scope.row.permissionname }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="菜单模块" min-width="150" align="center" show-overflow-tooltip>
+      <el-table-column label="菜单模块" min-width="120" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           <span>{{ scope.row.modulename }}</span>
         </template>
@@ -66,17 +66,17 @@
           {{ scope.row.permissiondesc }}
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="菜单" min-width="200" align="center" show-overflow-tooltip>
+      <el-table-column class-name="status-col" label="菜单" min-width="120" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.permissionbelongmenuname }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="创建时间" min-width="150" show-overflow-tooltip>
+      <el-table-column align="center" label="创建时间" min-width="130" show-overflow-tooltip>
         <template slot-scope="scope">
           <span>{{ scope.row.createtime }}</span>
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="操作" min-width="180" align="center" fixed="right" show-overflow-tooltip>
+      <el-table-column class-name="status-col" label="操作" width="160" align="center" fixed="right" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-button size="mini" @click="go_edit_fn(scope.row._id)"><i class="iconfont iconxiugai" />修改</el-button>
           <el-button size="mini" @click="delet_fn(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
@@ -123,6 +123,7 @@ export default {
       this.listQuery.menu = ''
       this.listQuery.module = ''
       this.listQuery.time_range = null
+      this.get_list()
     },
     // 列表
     get_list() {
