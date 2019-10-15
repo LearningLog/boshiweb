@@ -122,7 +122,9 @@ export default {
       vertical-align: middle;
     }
   }
-
+  .el-menu-item.is-active {
+      background-color: rgb(84, 92, 100) !important;
+  }
   & .left-menu {
     float: left;
     margin-left: 20px;
