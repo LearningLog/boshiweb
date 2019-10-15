@@ -9,9 +9,6 @@
         <el-row v-show="popoverVisible">
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
-              <!--<el-form-item label="创建人">-->
-              <!--<el-input v-model="listQuery.creater" clearable />-->
-              <!--</el-form-item>-->
               <el-form-item label="创建时间">
                 <el-date-picker
                   v-model="listQuery.time_range"
@@ -44,31 +41,27 @@
       fit
       highlight-current-row
     >
-      <!--<el-table-column-->
-      <!--type="selection"-->
-      <!--width="55"-->
-      <!--/>-->
       <el-table-column align="center" label="类别" show-overflow-tooltip>
         <template slot-scope="scope">
           <span class="pointer" @click="go_detail(scope.row._id)">{{ scope.row.newscategory_name }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="描述" min-width="150" align="center" show-overflow-tooltip>
+      <el-table-column label="描述" min-width="130" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           <span>{{ scope.row.newscategory_desc }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="创建人" min-width="150" align="center" show-overflow-tooltip>
+      <el-table-column label="创建人" min-width="80" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           <span>{{ scope.row.creater }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="创建时间" min-width="150" show-overflow-tooltip>
+      <el-table-column align="center" label="创建时间" min-width="120" show-overflow-tooltip>
         <template slot-scope="scope">
           <span>{{ scope.row.createtime }}</span>
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="操作" min-width="180" align="center" fixed="right" show-overflow-tooltip>
+      <el-table-column class-name="status-col" label="操作" width="250" align="center" fixed="right" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-button size="mini" @click="go_edit_fn(scope.row._id)"><i class="iconfont iconxiugai" />修改</el-button>
           <el-button size="mini" @click="go_netList(scope.row._id)"><i class="iconfont iconxiugai" />设置</el-button>
@@ -113,6 +106,7 @@ export default {
       this.listQuery.newscategory_name = ''
       this.listQuery.creater = ''
       this.listQuery.time_range = null
+      this.get_list()
     },
     // 列表资讯类别
     get_list() {
