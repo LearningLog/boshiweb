@@ -233,7 +233,9 @@ export default {
           param.webcategoryid = this.query_param
           param.website_name = this.net_add_form.website_name
           param.website_desc = this.net_add_form.website_desc
+          this.listLoading = true
           net_add(param).then(response => {
+            this.listLoading = false
             this.$message.success('添加成功！')
             this.net_add_flag = false
             this.get_list()

@@ -24,7 +24,6 @@
             range-separator="至"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            format="yyyy 年 MM 月 dd 日"
             value-format="yyyy-MM-dd"
           />
         </el-form-item>
@@ -125,6 +124,7 @@ export default {
     },
     // 提交
     onSubmit(formName) {
+      this.time_range = this.effectTime || []
       this.form.startTime = this.form.effectTime[0]
       this.form.endTime = this.form.effectTime[1]
       this.$refs[formName].validate((valid) => {

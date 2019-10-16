@@ -275,7 +275,7 @@ export default {
         if (valid) {
           this.isDisabled1 = true
           addTenant(this.form).then(response => {
-            this.$message.success('新增菜单成功！')
+            this.$message.success('新增租户成功！')
             this.$router.push({ path: '/systemManage/tenantManage/detail', query: { _id: response.data.id }})
           })
         }

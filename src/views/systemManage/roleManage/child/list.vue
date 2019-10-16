@@ -38,6 +38,7 @@
       <el-button type="primary" @click="add"><i class="iconfont iconjia" />新增</el-button>
     </div>
     <el-table
+      v-loading="listLoading"
       :data="list"
       element-loading-text="Loading"
       border
@@ -110,6 +111,7 @@ export default {
   data() {
     return {
       listQuery: {
+        listLoading: false,
         currentPage: 1, // 当前页码
         pageSize: 10, // 当前列表请求条数
         rolename: '', // 角色名称
@@ -145,9 +147,12 @@ export default {
     },
     // 获取角色列表
     get_list() {
+      this.time_range = this.time_range || []
       this.listQuery.startTime = this.time_range[0]
       this.listQuery.endtTime = this.time_range[1]
+      this.listLoading = true
       role_list(this.listQuery).then(response => {
+        this.listLoading = false
         this.list = response.data.page.list
         this.total = response.data.page.totalCount
       })

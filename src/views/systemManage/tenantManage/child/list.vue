@@ -19,7 +19,6 @@
                   range-separator="至"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
-                  format="yyyy 年 MM 月 dd 日"
                   value-format="yyyy-MM-dd"
                 />
               </el-form-item>
@@ -163,13 +162,14 @@ export default {
     get_list() {
       this.listLoading = true
       getAllTenantList(this.listQuery).then(response => {
+        this.listLoading = false
         this.list = response.data.page.list
         this.total = response.data.page.totalCount
-        this.listLoading = false
       })
     },
     // 搜索
     topSearch() {
+      this.time_range = this.time_range || []
       this.listQuery.startTime = this.time_range[0]
       this.listQuery.endTime = this.time_range[1]
       this.get_list()

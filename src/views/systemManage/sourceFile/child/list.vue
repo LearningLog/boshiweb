@@ -151,7 +151,9 @@ export default {
       param.status = that.listQuery.enable_status ? that.listQuery.enable_status : ''
       param.currentPage = that.listQuery.currentPage ? that.listQuery.currentPage : 1
       param.pageSize = that.listQuery.pageSize ? that.listQuery.pageSize : 10
+      this.listLoading = true
       source_file_list(param).then(res => {
+        this.listLoading = false
         const dt = res.data.page.list
         dt.forEach(item => {
           item.status_txt = status_map[item.enable_status]

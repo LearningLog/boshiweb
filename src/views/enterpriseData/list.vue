@@ -19,7 +19,6 @@
                   range-separator="至"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
-                  format="yyyy 年 MM 月 dd 日"
                   value-format="yyyy-MM-dd"
                 />
               </el-form-item>
@@ -30,7 +29,6 @@
                   range-separator="至"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
-                  format="yyyy 年 MM 月 dd 日"
                   value-format="yyyy-MM-dd"
                 />
               </el-form-item>
@@ -141,9 +139,11 @@ export default {
     },
     // 搜索
     topSearch() {
+      this.time_range = this.time_range || []
       this.listQuery.startTime = this.time_range[0]
       this.listQuery.endTime = this.time_range[1]
 
+      this.time_range = this.effectTime || []
       this.listQuery.effectStartTime = this.effectTime[0]
       this.listQuery.effectEndTime = this.effectTime[1]
       this.get_list()

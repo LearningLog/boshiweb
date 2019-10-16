@@ -144,7 +144,9 @@ export default {
       param.endTime = edtime
       param.currentPage = that.listQuery.currentPage ? that.listQuery.currentPage : 1
       param.pageSize = that.listQuery.pageSize ? that.listQuery.pageSize : 10
+      this.listLoading = true
       permission_list(param).then(res => {
+        this.listLoading = false
         that.list = res.data.page.list
         that.total = res.data.page.totalCount
         that.page_count = res.data.page.pageCount
