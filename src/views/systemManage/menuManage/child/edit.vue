@@ -13,8 +13,8 @@
       <el-form-item class="" label="菜单路径" prop="menuurl">
         <el-input v-model="form.menuurl" placeholder="请输入菜单路径" maxlength="120" clearable />
       </el-form-item>
-      <el-form-item label="菜单类型" prop="type">
-        <el-select v-model="form.type" placeholder="请选择菜单类型" clearable>
+      <el-form-item label="菜单模块" prop="type">
+        <el-select v-model="form.type" placeholder="请选择菜单模块" clearable>
           <el-option v-for="item in menuType" :key="item.id" :label="item.name" :value="item.id" />
         </el-select>
         <div class="tip">系统后台归属的菜单，不会出现在租户菜单列表中</div>
@@ -49,8 +49,9 @@ export default {
         cmark: '', // 描述
         imagename: '', // 菜单图标
         menuurl: '', // 菜单路径path
-        type: '' // 菜案类型
+        type: '' // 菜案模块
       },
+      id: '', // 查询id
       pid: '', // 父id
       rules: {
         menuname: [
@@ -72,19 +73,20 @@ export default {
           { min: 1, max: 120, message: '长度在 1 到 120 个字符', trigger: 'change' }
         ],
         type: [
-          { required: true, message: '请选择菜单类型', trigger: 'change' }
+          { required: true, message: '请选择菜单模块', trigger: 'change' }
         ]
       }
     }
   },
   created() {
+    this.id = this.$route.query.id
     this.pid = this.$route.query.pid
     this.getMenu()
   },
   methods: {
     // 获取初始数据
     getMenu() {
-      getMenu({ _id: this.pid }).then(response => {
+      getMenu({ _id: this.id }).then(response => {
         this.form = response.data.MenuV2
       })
     },
@@ -93,12 +95,12 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.form.pid = this.pid
+          this.isDisabled = true
           editMenu(this.form).then(async response => {
-            this.isDisabled = true
             this.$message.success('修改菜单成功！')
             updateMenuRoute()
 
-            this.$router.push({ path: '/systemManage/menuManage/detail', query: { _id: this.form._id }})
+            this.$router.push({ path: '/systemManage/menuManage/detail', query: { _id: this.form._id, pid: this.pid }})
           })
         }
       })

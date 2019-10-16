@@ -1,21 +1,16 @@
 /*
-Error: File to import not found or unreadable: ~element-ui/packages/theme-chalk/src/index.
-        on line 25 of element-variables.scss
+Error: File to import not found or unreadable: ~@/styles/theme.scss.
+        on line 1 of element-variables.scss
 
-20: $--table-border:1px solid#dfe6ec;
-21: 
-22: /* icon font path, required *\/
-23: $--font-path: '~element-ui/lib/theme-chalk/fonts';
-24: 
-25: @import "~element-ui/packages/theme-chalk/src/index";
-26: 
-27: // the :export directive is the magic sauce for webpack
-28: // https://www.bluematador.com/blog/how-to-share-variables-between-js-and-sass
-29: :export {
-30:   theme: $--color-primary;
+1: @import "~@/styles/theme.scss";
+2: /**
+3: * I think element-ui's default theme color is too light for long-term use.
+4: * So I modified the default color and you can modify it to your liking.
+5: **\/
+6: 
 
 Backtrace:
-element-variables.scss:25
+element-variables.scss:1
 C:/Ruby25-x64/lib/ruby/gems/2.5.0/gems/sass-3.7.4/lib/sass/tree/import_node.rb:67:in `rescue in import'
 C:/Ruby25-x64/lib/ruby/gems/2.5.0/gems/sass-3.7.4/lib/sass/tree/import_node.rb:44:in `import'
 C:/Ruby25-x64/lib/ruby/gems/2.5.0/gems/sass-3.7.4/lib/sass/tree/import_node.rb:28:in `imported_file'
@@ -58,4 +53,4 @@ C:/Ruby25-x64/bin/scss:23:in `<main>'
 body:before {
   white-space: pre;
   font-family: monospace;
-  content: "Error: File to import not found or unreadable: ~element-ui/packages/theme-chalk/src/index.\A         on line 25 of element-variables.scss\A \A 20: $--table-border:1px solid#dfe6ec;\A 21: \A 22: /* icon font path, required */\A 23: $--font-path: '~element-ui/lib/theme-chalk/fonts';\A 24: \A 25: @import \"~element-ui/packages/theme-chalk/src/index\";\A 26: \A 27: // the :export directive is the magic sauce for webpack\A 28: // https://www.bluematador.com/blog/how-to-share-variables-between-js-and-sass\A 29: :export {\A 30:   theme: $--color-primary;"; }
+  content: "Error: File to import not found or unreadable: ~@/styles/theme.scss.\A         on line 1 of element-variables.scss\A \A 1: @import \"~@/styles/theme.scss\";\A 2: /**\A 3: * I think element-ui's default theme color is too light for long-term use.\A 4: * So I modified the default color and you can modify it to your liking.\A 5: **/\A 6: "; }

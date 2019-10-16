@@ -290,8 +290,8 @@ export default {
               this.form.isChangeTuser = 'y'
               break
           }
+          this.isDisabled1 = true
           editTenant(this.form).then(response => {
-            this.isDisabled1 = true
             this.$message.success('修改租户成功！')
             this.$router.push({ path: '/systemManage/tenantManage/detail', query: { _id: this.id }})
           })
@@ -369,8 +369,8 @@ export default {
       const formData = new FormData()
       this.$refs.cropper.getCropBlob((data) => {
         formData.append('thumbnailfile', data, this.fileName)
+        this.isDisabled2 = true
         uploadFile(formData).then(response => {
-          this.isDisabled2 = true
           if (this.logoType === 1) {
             this.deskTopImageUrl = response.data.saveHttpPath
             this.form.pcLogoFileUrl = response.data.saveHttpPath

@@ -1,7 +1,7 @@
 <template>
   <div class="list-box">
     <div id="topSearch">
-      <el-input v-model="listQuery.rolename" placeholder="请输入分组名称" clearable @keyup.enter.native="topSearch">
+      <el-input v-model="listQuery.rolename" placeholder="请输入角色名称" clearable @keyup.enter.native="topSearch">
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
       </el-input>
       <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">高级搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
@@ -17,7 +17,7 @@
               </el-form-item>
               <el-form-item label="创建时间">
                 <el-date-picker
-                  v-model="listQuery.time_range"
+                  v-model="time_range"
                   type="daterange"
                   clearable
                   range-separator="至"
@@ -38,7 +38,6 @@
       <el-button type="primary" @click="add"><i class="iconfont iconjia" />新增</el-button>
     </div>
     <el-table
-      v-loading="listLoading"
       :data="list"
       element-loading-text="Loading"
       border
@@ -55,31 +54,44 @@
           <span>{{ scope.row.rolename }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="描述" min-width="220" align="center" show-overflow-tooltip>
+      <el-table-column label="描述" min-width="100" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           <span>{{ scope.row.desc }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="创建人" min-width="200" align="center" show-overflow-tooltip>
+      <el-table-column label="创建人" min-width="100" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           <span>{{ scope.row.createuser }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="创建时间" min-width="220" show-overflow-tooltip>
+      <el-table-column align="center" label="创建时间" min-width="130" show-overflow-tooltip>
         <template slot-scope="scope">
           <span>{{ scope.row.createtime }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="所属企业" min-width="220" show-overflow-tooltip>
+      <el-table-column align="center" label="所属企业" min-width="140" show-overflow-tooltip>
         <template slot-scope="scope">
-          <span>{{ scope.row.groupId }}</span>
+          <span>{{ scope.row.roleGroupName }}</span>
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="操作" min-width="280" align="center" fixed="right" show-overflow-tooltip>
+      <el-table-column align="center" label="是否默认" min-width="60" show-overflow-tooltip>
         <template slot-scope="scope">
-          <el-button size="mini" @click="go_edit_fn(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
-          <el-button size="mini" @click="delet_fn(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
-          <el-button size="mini" @click="auth_fn(scope.row)"><i class="iconfont iconshanchu" />授权</el-button>
+          <el-tag type="success" v-if="scope.row.defaultRole === 1">是</el-tag>
+          <el-tag type="danger" v-else>否</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column class-name="status-col" label="操作" width="230" align="center" fixed="right" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <div v-if="scope.row.auth">
+            <el-button size="mini" :disabled="true"><i class="iconfont iconxiugai" />修改</el-button>
+            <el-button size="mini" :disabled="true"><i class="iconfont iconshanchu" />删除</el-button>
+            <el-button size="mini" :disabled="true"><i class="iconfont iconshanchu" />授权</el-button>
+          </div>
+          <div v-else>
+            <el-button size="mini" @click="go_edit_fn(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
+            <el-button size="mini" @click="delete_fn(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
+            <el-button size="mini" @click="authorize_fn(scope.row)"><i class="iconfont iconshanchu" />授权</el-button>
+          </div>
         </template>
       </el-table-column>
     </el-table>
@@ -91,75 +103,61 @@
 </template>
 
 <script>
-import { role_list, role_delet } from '@/api/systemManage-roleManage.js'
+import { role_list, role_delete, deleteMultiRole } from '@/api/systemManage-roleManage.js'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 export default {
   components: { Pagination },
   data() {
     return {
       listQuery: {
-        currentPage: 1,
-        pageSize: 10,
-        rolename: '',
-        creater: '',
-        time_range: null,
-        groupId: ''
+        currentPage: 1, // 当前页码
+        pageSize: 10, // 当前列表请求条数
+        rolename: '', // 角色名称
+        creater: '', // 创建人
+        startTime: '', // 开始时间
+        endtTime: '', // 结束时间
+        roleGroupName: '' // 归属企业
       },
-      checkedList: [],
-      list: null,
-      listLoading: false,
-      total: 0,
-      page_count: 0,
-      status_map: { 1: '启用', 2: '停用' },
-      popoverVisible: false
+      time_range: [],
+      delCheckedList: [], // 选中的数据
+      list: null, // 列表数据
+      total: 0, // 总条数
+      popoverVisible: false // 高级搜索是否展开
     }
   },
   created() {
     this.get_list()
   },
   methods: {
+    // 搜索
     topSearch() {
       this.get_list()
     },
+    // 重置
     reset() {
       this.listQuery.rolename = ''
       this.listQuery.creater = ''
-      this.listQuery.time_range = null
-      this.listQuery.groupId = ''
+      this.listQuery.startTime = ''
+      this.listQuery.endtTime = ''
+      this.listQuery.time_range = []
+      this.listQuery.roleGroupName = ''
       this.get_list()
     },
+    // 获取角色列表
     get_list() {
-      const that = this
-      const status_map = that.status_map
-      let stime = ''
-      let edtime = ''
-      if (that.listQuery.time_range && that.listQuery.time_range[0]) {
-        stime = that.listQuery.time_range[0]
-      }
-      if (that.listQuery.time_range && that.listQuery.time_range[1]) {
-        edtime = that.listQuery.time_range[1]
-      }
-      const param = {}
-      param.rolename = that.listQuery.rolename ? that.listQuery.rolename : ''
-      param.creater = that.listQuery.creater ? that.listQuery.creater : ''
-      param.startTime = stime
-      param.endTime = edtime
-      param.groupId = that.listQuery.groupId ? that.listQuery.groupId : ''
-      param.currentPage = that.listQuery.currentPage ? that.listQuery.currentPage : 1
-      param.pageSize = that.listQuery.pageSize ? that.listQuery.pageSize : 10
-      role_list(param).then(res => {
-        const dt = res.data.page.list
-        dt.forEach(item => {
-          item.status_txt = status_map[item.enable_status]
-        })
-        that.list = res.data.page.list
-        that.total = res.data.page.totalCount
-        that.page_count = res.data.page.pageCount
-      }).catch(error => {
-        console.log(error)
+      this.listQuery.startTime = this.time_range[0]
+      this.listQuery.endtTime = this.time_range[1]
+      role_list(this.listQuery).then(response => {
+        this.list = response.data.page.list
+        this.total = response.data.page.totalCount
       })
     },
-    delet_fn(row) {
+    // 新增
+    add() {
+      this.$router.push({ path: '/systemManage/roleManage/add' })
+    },
+    // 删除单个角色
+    delete_fn(row) {
       this.$confirm('确定要删除【' + row.name + '】吗？', '删除角色', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -168,8 +166,8 @@ export default {
         const param = {}
         param.ids = []
         param.ids.push(row._id)
-        role_delet(param).then(response => {
-          this.$message.success('删除成功')
+        role_delete(param).then(response => {
+          this.$message.success('删除成功！')
           if ((this.list.length - 1) === 0) { // 如果当前页数据已删完，则去往上一页
             this.listQuery.currentPage -= 1
           }
@@ -179,38 +177,39 @@ export default {
     },
     // 选中数据
     select_fn(row) {
-      this.checkedList = row
+      this.delCheckedList = row
     },
+    // 批量删除
     batch_del_fn() {
+      if (!this.delCheckedList.length) {
+        this.$message.warning('请选择角色！')
+        return false
+      }
       this.$confirm('确定要删除选中的角色吗？', '批量删除角色', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
         const _ids = []
-        this.checkedList.forEach(item => {
+        this.delCheckedList.forEach(item => {
           _ids.push(item._id)
         })
-        const param = {}
-        param._id = _ids
-        role_delet(param).then(response => {
-          this.$message.success('删除成功')
-          if ((this.list.length - 1) === 0) { // 如果当前页数据已删完，则去往上一页
+        deleteMultiRole({ _ids: _ids }).then(response => {
+          this.$message.success('批量删除成功！')
+          if ((this.list.length - this.delCheckedList.length) === 0) { // 如果当前页数据已删完，则去往上一页
             this.listQuery.currentPage -= 1
           }
           this.get_list()
         })
       }).catch(() => {})
     },
-    go_edit_fn(data) {
-      const id = data.id
-      this.$router.push({ path: '/systemManage/roleManage/edit', query: { ids: id }})
+    // 修改
+    go_edit_fn(row) {
+      this.$router.push({ path: '/systemManage/roleManage/edit', query: { id: row.id }})
     },
-    add() {
-      this.$router.push({ path: '/systemManage/roleManage/add' })
-    },
-    auth_fn() {
-      this.$router.push({ path: '/systemManage/roleManage/add' })
+    // 授权
+    authorize_fn() {
+      this.$router.push({ path: '/systemManage/roleManage/authorize' })
     }
   }
 }

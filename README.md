@@ -341,6 +341,7 @@ vue-element-admin 配套了系列教程文章，如何从零构建后一个完�
 - 操作列 两个按钮，设置 `width=“160”`; 三个按钮，设置 `width=“230”`
 - 时间列一般为 `min-width="130"`
 - 保留一个不写 width 的列
+- 枚举字段 用 `<el-tag></el-tag>` 展示， 肯定类用 `type="success"`，否定类用 `type="danger"` 
 
 #### 列表底部
 

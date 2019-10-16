@@ -19,8 +19,8 @@
                 <el-form-item label="标识">
                   <el-input v-model="listQuery.cmark" placeholder="请输入菜单标识" clearable />
                 </el-form-item>
-                <el-form-item label="类型">
-                  <el-select v-model="listQuery.type" placeholder="请选择类型" clearable>
+                <el-form-item label="菜单模块">
+                  <el-select v-model="listQuery.type" placeholder="请选择菜单模块" clearable>
                     <el-option v-for="item in menuType" :key="item.id" :label="item.name" :value="item.id" />
                   </el-select>
                 </el-form-item>
@@ -69,7 +69,7 @@
             {{ scope.row.menuurl }}
           </template>
         </el-table-column>
-        <el-table-column align="center" show-overflow-tooltip prop="created_at" label="类型" min-width="90">
+        <el-table-column align="center" show-overflow-tooltip prop="created_at" label="模块" min-width="90">
           <template slot-scope="scope">
             <span>{{ getMenuTypeName(scope.row.type) }}</span>
           </template>
@@ -105,7 +105,7 @@ export default {
   components: { Pagination },
   computed: {
     ...mapGetters([
-      'menuType' // 菜单类型
+      'menuType' // 菜单模块
     ])
   },
   data() {
@@ -119,7 +119,7 @@ export default {
         pid: 'firstMenu', // 父id
         menuname: '', // 菜单名称
         cmark: '', // 描述
-        type: '' // 菜单类型
+        type: '' // 菜单模块
       },
       popoverVisible: false, // 是否展开高级搜索
       treeData: [], // 菜单树list
@@ -202,7 +202,7 @@ export default {
     },
     // 编辑
     edit(row) {
-      this.$router.push({ path: '/systemManage/menuManage/edit', query: { pid: row._id }})
+      this.$router.push({ path: '/systemManage/menuManage/edit', query: { id: row._id, pid: row.pid }})
     },
     // 上移
     upMenu(row) {
@@ -222,7 +222,7 @@ export default {
         this.getMenuList()
       })
     },
-    // 获取菜单类型
+    // 获取菜单模块
     getMenuTypeName(type) {
       let name = ''
       this.menuType.forEach(item => {

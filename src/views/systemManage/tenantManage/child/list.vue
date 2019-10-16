@@ -86,7 +86,8 @@
       </el-table-column>
       <el-table-column align="center" label="状态" min-width="70" show-overflow-tooltip>
         <template slot-scope="scope">
-          <span>{{ scope.row.customStatusName }}</span>
+          <el-tag type="success" v-if="scope.row.customStatus === 1">{{ scope.row.customStatusName }}</el-tag>
+          <el-tag type="danger" v-else>{{ scope.row.customStatusName }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column class-name="status-col" label="操作" width="220" align="center" fixed="right" show-overflow-tooltip>
@@ -227,8 +228,8 @@ export default {
           _ids.push(item._id)
         })
         batchDelTenant({ _ids: _ids }).then(response => {
-          this.$message.success('删除成功！')
-          if ((this.list.length - 1) === 0) { // 如果当前页数据已删完，则去往上一页
+          this.$message.success('批量删除成功！')
+          if ((this.list.length - this.checkedDelList.length) === 0) { // 如果当前页数据已删完，则去往上一页
             this.listQuery.currentPage -= 1
           }
           this.get_list()

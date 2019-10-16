@@ -5,7 +5,8 @@
  * @remarks:
  */
 import request from '@/utils/request'
-// 获取列表
+
+// 获取角色列表
 export function role_list(data) {
   return request({
     url: '/system/roleV2/findRoleList',
@@ -13,10 +14,25 @@ export function role_list(data) {
     data
   })
 }
+// 所属企业列表
+export function getCustomManageList() {
+  return request({
+    url: '/system/customV2/getCustomManageList',
+    method: 'post'
+  })
+}
 // 添加
 export function role_add(data) {
   return request({
     url: '/system/roleV2/addrole',
+    method: 'post',
+    data
+  })
+}
+// 单个角色详情
+export function getOneRole(data) {
+  return request({
+    url: '/system/roleV2/detrole',
     method: 'post',
     data
   })
@@ -30,29 +46,22 @@ export function role_edit(data) {
   })
 }
 // 删除
-export function role_delet(data) {
+export function role_delete(data) {
   return request({
     url: '/system/roleV2/deleterole',
     method: 'post',
     data
   })
 }
-// 详情
-export function role_det(data) {
+// 批量删除
+export function deleteMultiRole(data) {
   return request({
-    url: '/system/roleV2/detrole',
+    url: '/system/roleV2/deleteMultiRole',
     method: 'post',
     data
   })
 }
-// 企业列表
-export function role_gr_list(data) {
-  return request({
-    url: '/system/roleV2/saveMenu',
-    method: 'post',
-    data
-  })
-}
+
 // 角色授权
 export function role_auth(data) {
   return request({

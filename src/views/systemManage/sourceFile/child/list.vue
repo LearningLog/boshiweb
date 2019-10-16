@@ -64,7 +64,8 @@
       </el-table-column>
       <el-table-column label="状态" min-width="80" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
-          <span>{{ scope.row.status_txt }}</span>
+          <el-tag type="success" v-if="scope.row.enable_status === 1">{{ scope.row.status_txt }}</el-tag>
+          <el-tag type="danger" v-else>{{ scope.row.status_txt }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column class-name="status-col" label="创建人" min-width="100" align="center" show-overflow-tooltip>

@@ -273,8 +273,8 @@ export default {
       console.log(process.env.VUE_APP_BASE_API)
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          this.isDisabled1 = true
           addTenant(this.form).then(response => {
-            this.isDisabled1 = true
             this.$message.success('新增菜单成功！')
             this.$router.push({ path: '/systemManage/tenantManage/detail', query: { _id: response.data.id }})
           })
@@ -352,8 +352,8 @@ export default {
       const formData = new FormData()
       this.$refs.cropper.getCropBlob((data) => {
         formData.append('thumbnailfile', data, this.fileName)
+        this.isDisabled2 = true
         uploadFile(formData).then(response => {
-          this.isDisabled2 = true
           this.$message.success('上传成功！')
           if (this.logoType === 1) {
             this.deskTopImageUrl = response.data.saveHttpPath

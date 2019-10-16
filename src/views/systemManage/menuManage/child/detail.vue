@@ -13,7 +13,7 @@
       <el-form-item class="" label="菜单路径：">
         <span>{{ form.menuurl }}</span>
       </el-form-item>
-      <el-form-item label="菜单类型：">
+      <el-form-item label="菜单模块：">
         <span>{{ form.typeName }}</span>
       </el-form-item>
       <el-form-item label="父级菜单：">
@@ -41,7 +41,7 @@ export default {
         cmark: '', // 描述
         imagename: '', // 菜单图标
         menuurl: '', // 菜单路径path
-        type: '' // 菜案类型
+        type: '' // 菜案模块
       },
       id: '', // 查询id
       pid: '' // 父id
@@ -60,7 +60,7 @@ export default {
         this.form.typeName = this.getMenuTypeName(response.data.MenuV2.type)
       })
     },
-    // 转换菜单类型
+    // 转换菜单模块
     getMenuTypeName(type) {
       let name = ''
       this.menuType.forEach(item => {

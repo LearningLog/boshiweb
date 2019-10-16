@@ -4,38 +4,44 @@
       <el-form-item class="required" label="角色名称" prop="rolename">
         <el-input v-model="form.rolename" placeholder="请输入角色名称" clearable />
       </el-form-item>
-      <el-form-item label="角色描述" prop="desc">
+      <el-form-item label="角色描述">
         <el-input v-model="form.desc" placeholder="请输入角色描述" clearable />
       </el-form-item>
       <el-form-item label="所属企业" prop="roleGroupId">
-        <el-select v-model="value" placeholder="请选择所属企业">
+        <el-select v-model="form.roleGroupId" placeholder="请选择所属企业" clearable>
           <el-option
-            v-for="item in role_gr_list"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
+            v-for="item in custom_list"
+            :key="item._id"
+            :label="item.customname"
+            :value="item._id"
           />
         </el-select>
       </el-form-item>
     </el-form>
     <div id="btnGroup">
-      <el-button type="primary" @click="save('form')">提交</el-button>
+      <el-button type="primary" :disabled="idDisabled" @click="save('form')">提交</el-button>
       <el-button type="primary" plain @click="cancel('form')">取消</el-button>
     </div>
   </div>
 </template>
 
 <script>
-import { role_add, role_gr_list } from '@/api/systemManage-sourceFile.js'
+import { getCustomManageList, role_add } from '@/api/systemManage-roleManage'
 export default {
   data() {
     return {
+      idDisabled: false,
       form: {
-        rolename: '',
-        desc: '',
-        roleGroupId: ''
+        rolename: '', // 角色名称
+        desc: '', // 角色描述
+        roleGroupId: '' // 所属企业
       },
-      role_gr_list: [],
+      custom_list: [
+        {
+          _id: '5ce7f5106282c91ba828e991',
+          customname: '哈哈哈'
+        }
+      ], // 所属企业list
       rules: {
         rolename: [
           { required: true, message: '请输入角色名称（长度在 2 到 20 个字符）', trigger: 'blur' },
@@ -44,36 +50,40 @@ export default {
           { min: 2, max: 20, message: '长度在 2 到 64 个字符', trigger: 'change' }
         ],
         roleGroupId: [
+          { required: true, message: '请选择所属企业', trigger: 'blur' },
           { required: true, message: '请选择所属企业', trigger: 'change' }
         ]
       }
     }
   },
   created() {
+    this.getCustomManageList()
   },
   methods: {
-    get_role_gr_list_fn() {
-      role_gr_list().then(res => {
-        this.role_gr_list = res.data
-      })
+    // 获取所属企业list
+    getCustomManageList() {
+      // getCustomManageList().then(res => {
+      //   this.custom_list = res.data
+      // })
     },
+    // 提交
     save(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          this.idDisabled = true
           role_add(this.form).then(response => {
-            this.$message.success('添加成功')
-            this.$router.push({ path: '/systemManage/roleManage/detail' })
+            this.$message.success('添加角色成功！')
+            this.$router.push({ path: '/systemManage/roleManage/detail', query: { id: response.data.id } })
           })
         }
       })
     },
+    // 取消
     cancel(formName) {
       this.$refs[formName].resetFields()
-      this.$router.push({ path: '/systemManage/sourceFile/list' })
+      this.$router.push({ path: '/systemManage/roleManage/list' })
     }
-
   }
-
 }
 </script>
 

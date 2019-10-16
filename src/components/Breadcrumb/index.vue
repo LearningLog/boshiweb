@@ -1,6 +1,6 @@
 <template>
   <div>
-    <i class="el-icon-back routerback" @click="routerback" />
+    <!--<i class="el-icon-back routerback" @click="routerback" />-->
     <el-breadcrumb class="app-breadcrumb" separator="/">
       <transition-group name="breadcrumb">
         <el-breadcrumb-item v-for="(item,index) in levelList" :key="item.path">
@@ -45,9 +45,9 @@ export default {
     this.getBreadcrumb()
   },
   methods: {
-    routerback() {
-      this.$router.back(-1)
-    },
+    // routerback() {
+    //   this.$router.back(-1)
+    // },
     getBreadcrumb() {
       // only show routes with meta.title
       const matched = this.$route.matched.filter(item => item.meta && item.meta.title)

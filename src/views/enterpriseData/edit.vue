@@ -129,8 +129,8 @@ export default {
       this.form.endTime = this.form.effectTime[1]
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          this.isDisabled = true
           editCustomResource(this.form).then(response => {
-            this.isDisabled = true
             this.$message.success('修改租户成功！')
             this.$router.push({ path: '/enterpriseData/detail', query: { _id: this.id }})
           })
