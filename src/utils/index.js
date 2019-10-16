@@ -113,7 +113,7 @@ export function getSerialNum(index, currentPage, pageSize) {
   return ((index + 1) + (currentPage - 1)) * pageSize
 }
 
-/** 获取显示大小
+/** 获取存储空间大小
  * @param fileSize
  */
 export function getFileShowSize(fileSize) {
