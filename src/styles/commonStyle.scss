@@ -3,12 +3,14 @@
 #topSearch {
     //float: left;
     margin-bottom: 16px;
-
     & >.el-input {
         width: 200px;
+        float: left;
     }
 
     & #advancedSearchBtn {
+        height: 32px;
+        line-height: 32px;
         font-size: 14px;
         margin-left: 10px;
         color: $themeColor;
@@ -17,6 +19,10 @@
     & #advancedSearchArea {
         margin-top: 16px;
         //width: 100%;
+    }
+    & .el-row{
+        clear: both;
+        margin-top: 10px;
     }
     & >.el-row::before {
         position: absolute;
