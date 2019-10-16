@@ -3,7 +3,7 @@
     <div class="left">
       <h4>博识知识库</h4>
       <el-scrollbar wrap-class="scrollbar-wrapper">
-        <el-tree :data="treeData" :props="defaultProps" default-expand-all :expand-on-click-node="false" @node-click="handleNodeClick" />
+        <el-tree :data="treeData" :props="defaultProps" default-expand-all highlight-current :expand-on-click-node="false" @node-click="handleNodeClick" />
       </el-scrollbar>
     </div>
     <div class="right">

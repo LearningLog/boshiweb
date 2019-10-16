@@ -14,11 +14,12 @@ export function role_list(data) {
     data
   })
 }
-// 所属企业列表
+// 所属租户列表
 export function getCustomManageList() {
   return request({
     url: '/system/customV2/getCustomManageList',
-    method: 'post'
+    method: 'post',
+    data: {}
   })
 }
 // 添加
@@ -32,7 +33,7 @@ export function role_add(data) {
 // 单个角色详情
 export function getOneRole(data) {
   return request({
-    url: '/system/roleV2/detrole',
+    url: '/system/roleV2/findRoleById',
     method: 'post',
     data
   })
@@ -62,36 +63,28 @@ export function deleteMultiRole(data) {
   })
 }
 
-// 角色授权
-export function role_auth(data) {
+// 角色授权页面管理类型
+export function get_role_manage_type() {
   return request({
-    url: '/system/roleV2/saveMenu',
+    url: '/system/roleV2/getDefaultManage',
     method: 'post',
-    data
+    data: {}
   })
 }
-// 设置默认角色
-export function defalt_role_set(data) {
-  return request({
-    url: '/system/roleV2/updateDefaultRole',
-    method: 'post',
-    data
-  })
-}
-// 默认角色列表
-export function defalt_role_list(data) {
-  return request({
-    url: '/system/roleV2/getDefaultRole',
-    method: 'post',
-    data
-  })
-}
-
-// 角色授权菜单权限树
-export function role_tree(data) {
+// 获取角色授权菜单权限树
+export function getAllMenus(data) {
   return request({
     url: '/system/roleV2/findAllMenus',
     method: 'post',
     data
   })
 }
+// 角色授权
+export function setRoleAuthority(data) {
+  return request({
+    url: '/system/roleV2/saveMenu',
+    method: 'post',
+    data
+  })
+}
+

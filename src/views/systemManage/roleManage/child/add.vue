@@ -7,8 +7,8 @@
       <el-form-item label="角色描述">
         <el-input v-model="form.desc" placeholder="请输入角色描述" clearable />
       </el-form-item>
-      <el-form-item label="所属企业" prop="roleGroupId">
-        <el-select v-model="form.roleGroupId" placeholder="请选择所属企业" clearable>
+      <el-form-item label="所属租户" prop="roleGroupId">
+        <el-select v-model="form.roleGroupId" placeholder="请选择所属租户" clearable filterable>
           <el-option
             v-for="item in custom_list"
             :key="item._id"
@@ -34,14 +34,9 @@ export default {
       form: {
         rolename: '', // 角色名称
         desc: '', // 角色描述
-        roleGroupId: '' // 所属企业
+        roleGroupId: '' // 所属租户
       },
-      custom_list: [
-        {
-          _id: '5ce7f5106282c91ba828e991',
-          customname: '哈哈哈'
-        }
-      ], // 所属企业list
+      custom_list: [], // 所属租户list
       rules: {
         rolename: [
           { required: true, message: '请输入角色名称（长度在 2 到 20 个字符）', trigger: 'blur' },
@@ -50,8 +45,8 @@ export default {
           { min: 2, max: 20, message: '长度在 2 到 64 个字符', trigger: 'change' }
         ],
         roleGroupId: [
-          { required: true, message: '请选择所属企业', trigger: 'blur' },
-          { required: true, message: '请选择所属企业', trigger: 'change' }
+          { required: true, message: '请选择所属租户', trigger: 'blur' },
+          { required: true, message: '请选择所属租户', trigger: 'change' }
         ]
       }
     }
@@ -60,11 +55,11 @@ export default {
     this.getCustomManageList()
   },
   methods: {
-    // 获取所属企业list
+    // 获取所属租户list
     getCustomManageList() {
-      // getCustomManageList().then(res => {
-      //   this.custom_list = res.data
-      // })
+      getCustomManageList().then(res => {
+        this.custom_list = res.data
+      })
     },
     // 提交
     save(formName) {
@@ -73,7 +68,7 @@ export default {
           this.idDisabled = true
           role_add(this.form).then(response => {
             this.$message.success('添加角色成功！')
-            this.$router.push({ path: '/systemManage/roleManage/detail', query: { id: response.data.id } })
+            this.$router.push({ path: '/systemManage/roleManage/detail', query: { id: response.data._id }})
           })
         }
       })

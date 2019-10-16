@@ -7,7 +7,7 @@
       <el-form-item class="" label="角色描述：">
         <span>{{ form.desc }}</span>
       </el-form-item>
-      <el-form-item class="" label="所属企业：">
+      <el-form-item class="" label="所属租户：">
         <span>{{ form.customname }}</span>
       </el-form-item>
     </el-form>
@@ -26,19 +26,19 @@ export default {
       form: { // 表单数据
         rolename: '', // 角色名称
         desc: '', // 角色描述
-        customname: '' // 所属企业
+        customname: '' // 所属租户
       },
       id: '' // 查询id
     }
   },
   created() {
-    this.id = this.$route.query._id
+    this.id = this.$route.query.id
     this.getInitData()
   },
   methods: {
     // 获取初始数据
     getInitData() {
-      getOneRole({ id: this.id }).then(response => {
+      getOneRole({ _id: this.id }).then(response => {
         this.form = response.data.role
       })
     },

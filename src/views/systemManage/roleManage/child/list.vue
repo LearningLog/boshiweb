@@ -12,8 +12,8 @@
               <el-form-item label="创建人">
                 <el-input v-model="listQuery.creater" placeholder="请输入创建人" clearable />
               </el-form-item>
-              <el-form-item label="归属企业">
-                <el-input v-model="listQuery.groupId" placeholder="请输入归属企业" clearable />
+              <el-form-item label="所属租户">
+                <el-input v-model="listQuery.groupId" placeholder="请输入所属租户" clearable />
               </el-form-item>
               <el-form-item label="创建时间">
                 <el-date-picker
@@ -49,10 +49,12 @@
       <el-table-column
         type="selection"
         width="55"
-      />
+        :selectable="selectable"
+      >
+      </el-table-column>
       <el-table-column align="center" label="名称" show-overflow-tooltip>
         <template slot-scope="scope">
-          <span>{{ scope.row.rolename }}</span>
+          <span class="pointer" @click="detail(scope.row)">{{ scope.row.rolename }}</span>
         </template>
       </el-table-column>
       <el-table-column label="描述" min-width="100" align="center" show-overflow-tooltip>
@@ -70,28 +72,28 @@
           <span>{{ scope.row.createtime }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="所属企业" min-width="140" show-overflow-tooltip>
+      <el-table-column align="center" label="所属租户" min-width="140" show-overflow-tooltip>
         <template slot-scope="scope">
-          <span>{{ scope.row.roleGroupName }}</span>
+          <span>{{ scope.row.customname }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="是否默认" min-width="60" show-overflow-tooltip>
         <template slot-scope="scope">
-          <el-tag type="success" v-if="scope.row.defaultRole === 1">是</el-tag>
-          <el-tag type="danger" v-else>否</el-tag>
+          <el-tag v-if="scope.row.defaultRole === '1'" type="success">是</el-tag>
+          <el-tag v-else type="danger">否</el-tag>
         </template>
       </el-table-column>
       <el-table-column class-name="status-col" label="操作" width="230" align="center" fixed="right" show-overflow-tooltip>
         <template slot-scope="scope">
           <div v-if="scope.row.auth">
-            <el-button size="mini" :disabled="true"><i class="iconfont iconxiugai" />修改</el-button>
-            <el-button size="mini" :disabled="true"><i class="iconfont iconshanchu" />删除</el-button>
-            <el-button size="mini" :disabled="true"><i class="iconfont iconshanchu" />授权</el-button>
-          </div>
-          <div v-else>
             <el-button size="mini" @click="go_edit_fn(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
             <el-button size="mini" @click="delete_fn(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
             <el-button size="mini" @click="authorize_fn(scope.row)"><i class="iconfont iconshanchu" />授权</el-button>
+          </div>
+          <div v-else>
+            <el-button size="mini" :disabled="true"><i class="iconfont iconxiugai" />修改</el-button>
+            <el-button size="mini" :disabled="true"><i class="iconfont iconshanchu" />删除</el-button>
+            <el-button size="mini" :disabled="true"><i class="iconfont iconshanchu" />授权</el-button>
           </div>
         </template>
       </el-table-column>
@@ -118,7 +120,7 @@ export default {
         creater: '', // 创建人
         startTime: '', // 开始时间
         endtTime: '', // 结束时间
-        roleGroupName: '' // 归属企业
+        roleGroupName: '' // 所属租户
       },
       time_range: [],
       delCheckedList: [], // 选中的数据
@@ -157,21 +159,25 @@ export default {
         this.total = response.data.page.totalCount
       })
     },
+    selectable(row, index) {
+      return row.auth
+    },
+    // 详情
+    detail(row) {
+      this.$router.push({ path: '/systemManage/roleManage/detail', query: { id: row._id }})
+    },
     // 新增
     add() {
       this.$router.push({ path: '/systemManage/roleManage/add' })
     },
     // 删除单个角色
     delete_fn(row) {
-      this.$confirm('确定要删除【' + row.name + '】吗？', '删除角色', {
+      this.$confirm('确定要删除【' + row.rolename + '】吗？', '删除角色', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        const param = {}
-        param.ids = []
-        param.ids.push(row._id)
-        role_delete(param).then(response => {
+        role_delete({ _id: row._id }).then(response => {
           this.$message.success('删除成功！')
           if ((this.list.length - 1) === 0) { // 如果当前页数据已删完，则去往上一页
             this.listQuery.currentPage -= 1
@@ -210,11 +216,11 @@ export default {
     },
     // 修改
     go_edit_fn(row) {
-      this.$router.push({ path: '/systemManage/roleManage/edit', query: { id: row.id }})
+      this.$router.push({ path: '/systemManage/roleManage/edit', query: { id: row._id }})
     },
     // 授权
-    authorize_fn() {
-      this.$router.push({ path: '/systemManage/roleManage/authorize' })
+    authorize_fn(row) {
+      this.$router.push({ path: '/systemManage/roleManage/authorize', query: { id: row._id }})
     }
   }
 }

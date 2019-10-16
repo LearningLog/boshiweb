@@ -43,6 +43,7 @@
             node-key="id"
             :check-strictly="true"
             default-expand-all
+            highlight-current
             :expand-on-click-node="false"
             @check-change="menu_tree_check_fn"
           />
