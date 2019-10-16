@@ -1,22 +1,23 @@
 <template>
   <div class="help-center">
-    <a :href="helpUrl" target="_blank"><i class="iconfont iconbangzhuzhongxin" />&nbsp;帮助中心</a>
+    <a :href="helpUrl" target="_blank"><i class="iconfont iconbangzhuzhongxin" />帮助中心</a>
   </div>
 </template>
 
 <script>
 export default {
   name: 'HelpCenter',
-  data() {
-    return {
-      helpUrl: 'https://help.yunshicloud.com/boshi/'
+  props: {
+    helpUrl: {
+      type: String,
+      default: 'https://help.yunshicloud.com/boshi/'
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-	@import "~@/styles/element-variables.scss";
+  @import "~@/styles/theme.scss";
 	.help-center {
 		display: inline-block;
 		height: 50px;
@@ -26,10 +27,14 @@ export default {
 
     & a {
       font-size: 14px;
+
+      i.iconbangzhuzhongxin {
+        margin-right: 4px;
+      }
     }
 
     & a:hover {
-      color: $--color-primary;
+      color: $themeColor;
     }
 }
 </style>
