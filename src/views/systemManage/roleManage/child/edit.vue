@@ -19,7 +19,7 @@
       </el-form-item>
     </el-form>
     <div id="btnGroup">
-      <el-button type="primary" :disabled="idDisabled" @click="save('form')">提交</el-button>
+      <el-button type="primary" v-no-more-click @click="save('form')">提交</el-button>
       <el-button type="primary" plain @click="cancel('form')">取消</el-button>
     </div>
   </div>
@@ -30,7 +30,6 @@ import { getOneRole, getCustomManageList, role_edit } from '@/api/systemManage-r
 export default {
   data() {
     return {
-      idDisabled: false,
       id: '', // 查询id
       form: {
         rolename: '', // 角色名称
@@ -74,7 +73,6 @@ export default {
     save(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.idDisabled = true
           role_edit(this.form).then(response => {
             this.$message.success('修改角色成功！')
             this.$router.push({ path: '/systemManage/roleManage/detail', query: { id: this.id }})

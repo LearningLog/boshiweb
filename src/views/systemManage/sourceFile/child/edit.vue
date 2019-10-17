@@ -15,7 +15,7 @@
       </el-form-item>
     </el-form>
     <div id="btnGroup">
-      <el-button type="primary" :disabled="sub_dis" @click="save('form')">保存</el-button>
+      <el-button type="primary" v-no-more-click @click="save('form')">保存</el-button>
       <el-button type="primary" plain @click="cancel('form')">取消</el-button>
     </div>
   </div>
@@ -31,7 +31,6 @@ export default {
         name: '',
         enable_status: null
       },
-      sub_dis: false,
       query_param: {},
       rules: {
         code: [
@@ -68,7 +67,6 @@ export default {
     save(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.sub_dis = true
           this.form._id = this.query_param._id
           source_file_edit(this.form).then(response => {
             this.$message.success('修改成功')

@@ -42,6 +42,20 @@ Vue.use(ElementUI, {
   i18n: (key, value) => i18n.t(key, value)
 })
 
+// 提交以后禁用按钮一段时间，防止重复提交
+Vue.directive('noMoreClick', {
+  inserted(el, binding) {
+    el.addEventListener('click', e => {
+      el.classList.add('is-disabled')
+      el.disabled = true
+      setTimeout(() => {
+        el.disabled = false
+        el.classList.remove('is-disabled')
+      }, 2000)
+    })
+  }
+})
+
 Vue.config.productionTip = false
 
 new Vue({

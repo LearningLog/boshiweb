@@ -24,7 +24,7 @@
       </el-form-item>
     </el-form>
     <div id="btnGroup">
-      <el-button type="primary" :disabled="isDisabled" @click="save('form')">提交</el-button>
+      <el-button type="primary" v-no-more-click @click="save('form')">提交</el-button>
       <el-button type="primary" plain @click="cancel('form')">取消</el-button>
     </div>
   </div>
@@ -43,7 +43,6 @@ export default {
   },
   data() {
     return {
-      isDisabled: false, // 防止重复提交
       form: { // 表单数据
         menuname: '', // 菜单名称
         cmark: '', // 描述
@@ -82,7 +81,6 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.form.pid = this.pid
-          this.isDisabled = true
           addMenu(this.form).then(async response => {
             this.$message.success('新增菜单成功！')
             updateMenuRoute()

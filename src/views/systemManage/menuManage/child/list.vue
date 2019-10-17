@@ -296,9 +296,9 @@ export default {
   // 因为需求：去往子页面，回来时查询离开前的pid，去往其他页面，回来时默认查询 ‘firstMenu’
   beforeRouteLeave(to, from, next) {
     if (to.path.indexOf('/menuManage/') === -1) {
-      this.$store.dispatch('menuManage/setMenuOrigin', 'firstMenu')
+      this.$store.dispatch('menuManage/setMenuPid', 'firstMenu')
     } else {
-      this.$store.dispatch('menuManage/setMenuOrigin', this.listQuery.pid)
+      this.$store.dispatch('menuManage/setMenuPid', this.listQuery.pid)
     }
     next()
   }

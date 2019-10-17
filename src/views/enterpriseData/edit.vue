@@ -29,7 +29,7 @@
         </el-form-item>
       </el-form>
       <div id="btnGroup">
-        <el-button type="primary" :disabled="isDisabled" @click="onSubmit('form')">确定</el-button>
+        <el-button type="primary" v-no-more-click @click="onSubmit('form')">确定</el-button>
         <el-button type="primary" plain @click="cancel('form')">取消</el-button>
       </div>
     </div>
@@ -62,7 +62,6 @@ export default {
       }
     }
     return {
-      isDisabled: false, // 防止重复提交
       id: '', // 查询id
       form: {
         customname: '', // 企业/租户名称
@@ -129,7 +128,6 @@ export default {
       this.form.endTime = this.form.effectTime[1]
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.isDisabled = true
           editCustomResource(this.form).then(response => {
             this.$message.success('修改租户成功！')
             this.$router.push({ path: '/enterpriseData/detail', query: { _id: this.id }})

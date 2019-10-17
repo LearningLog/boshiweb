@@ -31,7 +31,7 @@
       </el-form-item>
     </el-form>
     <div id="btnGroup">
-      <el-button type="primary" :disabled="idDisabled" @click="save()">提交</el-button>
+      <el-button type="primary" v-no-more-click @click="save">提交</el-button>
       <el-button type="primary" plain @click="cancel('form')">取消</el-button>
     </div>
   </div>
@@ -42,7 +42,6 @@ import { getOneRole, get_role_manage_type, getAllMenus, setRoleAuthority } from 
 export default {
   data() {
     return {
-      idDisabled: false,
       id: '', // 查询id
       form: {
         rolename: '', // 角色名称
@@ -142,14 +141,12 @@ export default {
       this.getMenuidsAndPermissionids(menuTree)
       console.log('menuids', this.menuids)
       console.log('permissionids', this.permissionids)
-      debugger
       const param = {
         _id: this.id,
         manageType: this.manageType,
         menuids: this.menuids,
         permissionids: this.permissionids
       }
-      this.idDisabled = true
       setRoleAuthority(param).then(response => {
         this.$message.success('角色授权成功！')
         this.$router.push({ path: '/systemManage/roleManage/list' })

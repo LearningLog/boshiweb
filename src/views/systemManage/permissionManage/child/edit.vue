@@ -24,7 +24,7 @@
       </el-form-item>
     </el-form>
     <div id="btnGroup">
-      <el-button type="primary" :disabled="sub_dis" @click="save('form')">保存</el-button>
+      <el-button type="primary" v-no-more-click @click="save('form')">保存</el-button>
       <el-button type="primary" plain @click="cancel('form')">取消</el-button>
     </div>
     <!--菜单选择列表-->
@@ -77,7 +77,6 @@ export default {
         permissionmanage: '',
         permissionbelongmenu2: '111'
       },
-      sub_dis: false,
       menu_dt: [],
       treeData: [],
       menu_tip_txt: '请选择菜单',
@@ -321,7 +320,6 @@ export default {
       const query_param = this.query_param
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.sub_dis = true
           this.form._id = this.query_param
           permission_edit(this.form).then(response => {
             this.$message.success('修改成功')

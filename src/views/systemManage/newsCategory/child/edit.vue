@@ -1,15 +1,15 @@
 <template>
   <div class="form-edit">
     <el-form ref="form" class="form" :model="form" :rules="rules" :status-icon="true" label-width="120px">
-      <el-form-item class="required" label="类别名称" prop="newscategory_name">
+      <el-form-item label="类别名称" prop="newscategory_name">
         <el-input v-model="form.newscategory_name" placeholder="请输入类别名称" clearable />
       </el-form-item>
-      <el-form-item class="required" label="类别描述" prop="newscategory_desc">
-        <el-input v-model="form.newscategory_desc" type="textarea" :rows="3" placeholder="请输入权限名称" clearable />
+      <el-form-item label="类别描述">
+        <el-input v-model="form.newscategory_desc" type="textarea" :rows="3" placeholder="请输入类别描述" clearable />
       </el-form-item>
     </el-form>
     <div id="btnGroup">
-      <el-button type="primary" :disabled="sub_dis" @click="save('form')">保存</el-button>
+      <el-button type="primary" v-no-more-click @click="save('form')">保存</el-button>
       <el-button type="primary" plain @click="cancel('form')">取消</el-button>
     </div>
   </div>
@@ -25,7 +25,6 @@ export default {
         newscategory_desc: '',
         _id: ''
       },
-      sub_dis: false,
       rules: {
         newscategory_name: [
           { required: true, message: '请输入类别名称（长度在 2 到 20个字符）', trigger: 'blur' },
@@ -58,7 +57,6 @@ export default {
     save(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.sub_dis = true
           newscategory_edit(this.form).then(response => {
             this.$message.success('修改成功！')
             this.$router.push({ path: '/systemManage/newsCategory/detail', query: { id: this.form._id }})

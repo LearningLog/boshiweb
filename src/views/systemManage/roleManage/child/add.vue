@@ -19,7 +19,7 @@
       </el-form-item>
     </el-form>
     <div id="btnGroup">
-      <el-button type="primary" :disabled="idDisabled" @click="save('form')">提交</el-button>
+      <el-button type="primary" v-no-more-click @click="save('form')">提交</el-button>
       <el-button type="primary" plain @click="cancel('form')">取消</el-button>
     </div>
   </div>
@@ -30,7 +30,6 @@ import { getCustomManageList, role_add } from '@/api/systemManage-roleManage'
 export default {
   data() {
     return {
-      idDisabled: false,
       form: {
         rolename: '', // 角色名称
         desc: '', // 角色描述
@@ -65,7 +64,6 @@ export default {
     save(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.idDisabled = true
           role_add(this.form).then(response => {
             this.$message.success('添加角色成功！')
             this.$router.push({ path: '/systemManage/roleManage/detail', query: { id: response.data._id }})

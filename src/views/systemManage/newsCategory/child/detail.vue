@@ -8,7 +8,7 @@
         <span>{{ form.newscategory_desc }}</span>
       </el-form-item>
       <el-form-item class="website" label="网站：">
-        <p v-for="item in form.net_list" :key="item._id">{{ item.website_name }}</p>
+        <p class="websiteItem" v-for="item in form.net_list" :key="item._id">{{ item.website_name }}</p>
       </el-form-item>
     </el-form>
     <div id="btnGroup">
@@ -62,5 +62,8 @@ export default {
 <style lang="scss" scoped>
   #btnGroup{
     padding-left: 120px;
+  }
+  .websiteItem {
+    margin: 0;
   }
 </style>

@@ -24,7 +24,7 @@ export function newscategory_add(data) {
 // 资讯类别修改
 export function newscategory_edit(data) {
   return request({
-    url: '/system/newscategory/one',
+    url: '/system/newscategoryV2/update',
     method: 'post',
     data
   })

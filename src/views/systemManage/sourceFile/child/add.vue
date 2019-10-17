@@ -15,7 +15,7 @@
       </el-form-item>
     </el-form>
     <div id="btnGroup">
-      <el-button type="primary" :disabled="sub_dis" @click="save('form')">提交</el-button>
+      <el-button type="primary" v-no-more-click @click="save('form')">提交</el-button>
       <el-button type="primary" plain @click="cancel('form')">取消</el-button>
     </div>
   </div>
@@ -31,7 +31,6 @@ export default {
         name: '',
         enable_status: 1
       },
-      sub_dis: false,
       rules: {
         code: [
           { required: true, message: '请输入文件代码（长度在 2 到 64 个字符）', trigger: 'blur' },
@@ -55,7 +54,6 @@ export default {
     save(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.sub_dis = true
           source_file_add(this.form).then(response => {
             this.$message.success('添加成功')
             this.$router.push({ path: '/systemManage/sourceFile/list' })

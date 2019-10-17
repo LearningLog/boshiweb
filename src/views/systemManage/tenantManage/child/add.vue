@@ -88,7 +88,7 @@
       </el-form-item>
     </el-form>
     <div id="btnGroup">
-      <el-button type="primary" :disabled="isDisabled1" @click="onSubmit('form')">确定</el-button>
+      <el-button type="primary" v-no-more-click @click="onSubmit('form')">确定</el-button>
       <el-button type="primary" plain @click="cancel('form')">取消</el-button>
     </div>
     <!-- vueCropper 剪裁图片实现-->
@@ -128,7 +128,7 @@
         </div>
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" :disabled="isDisabled2" @click="finish">确认</el-button>
+        <el-button type="primary" v-no-more-click @click="finish">确认</el-button>
         <el-button @click="closeUpload">取 消</el-button>
       </div>
     </el-dialog>
@@ -174,8 +174,6 @@ export default {
       }
     }
     return {
-      isDisabled1: false, // 防止重复提交
-      isDisabled2: false, // 防止重复提交
       form: { // 表单数据
         customname: '', // 租户名称
         desc: '', // 描述
@@ -276,7 +274,6 @@ export default {
       console.log(process.env.VUE_APP_BASE_API)
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.isDisabled1 = true
           addTenant(this.form).then(response => {
             this.$message.success('新增租户成功！')
             this.$router.push({ path: '/systemManage/tenantManage/detail', query: { _id: response.data.id }})
@@ -298,7 +295,6 @@ export default {
     },
     // 上传按钮   限制图片大小
     changeUpload(file, fileList) {
-      this.isDisabled2 = false
       const isLt5M = file.size / 1024 / 1024 < 5
       if (!isLt5M) {
         this.$message.error('上传文件大小不能超过 5MB！')
@@ -357,7 +353,6 @@ export default {
       const formData = new FormData()
       this.$refs.cropper.getCropBlob((data) => {
         formData.append('thumbnailfile', data, this.fileName)
-        this.isDisabled2 = true
         uploadFile(formData).then(response => {
           this.$message.success('上传成功！')
           if (this.logoType === 1) {
