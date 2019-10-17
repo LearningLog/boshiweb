@@ -19,8 +19,8 @@ export function filterAsyncRoutes(routes, responseRoutes) {
         homePath += tmp.path + '/'
       }
       if (item.menuurl === tmp.path) {
-        tmp.meta.title = item.menuname || tmp.meta.title
-        tmp.meta.icon = item.imagename || tmp.meta.icon
+        tmp.meta.title = item.menuname
+        tmp.meta.icon = item.imagename
         if (item.children && item.children.length > 0) {
           tmp.children = filterAsyncRoutes(tmp.children, item.children)
         } else if (homePath.indexOf(tmp.path) > -1) {

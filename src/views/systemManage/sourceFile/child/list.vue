@@ -20,12 +20,13 @@
                   range-separator="至"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
+                  value-format="yyyy-MM-dd"
                 />
               </el-form-item>
               <el-form-item label="状态">
                 <el-radio-group v-model="listQuery.enable_status" clearable>
-                  <el-radio :label="1">生效</el-radio>
-                  <el-radio :label="2">失效</el-radio>
+                  <el-radio :label="1">启用</el-radio>
+                  <el-radio :label="2">停用</el-radio>
                 </el-radio-group>
               </el-form-item>
             </el-form>
@@ -148,7 +149,7 @@ export default {
       param.creater = that.listQuery.creater ? that.listQuery.creater : ''
       param.startTime = stime
       param.endTime = edtime
-      param.status = that.listQuery.enable_status ? that.listQuery.enable_status : ''
+      param.enable_status = that.listQuery.enable_status ? that.listQuery.enable_status : ''
       param.currentPage = that.listQuery.currentPage ? that.listQuery.currentPage : 1
       param.pageSize = that.listQuery.pageSize ? that.listQuery.pageSize : 10
       this.listLoading = true

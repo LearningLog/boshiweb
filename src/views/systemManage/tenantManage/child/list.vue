@@ -58,7 +58,7 @@
           <span class="pointer" @click="detail(scope.row)">{{ scope.row.customname }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Logo" min-width="110" align="center">
+      <el-table-column label="Logo" min-width="90" align="center">
         <template slot-scope="scope">
           <img v-if="scope.row.pcLogoFileUrl" class="logoImg" :src="scope.row.pcLogoFileUrl" alt="">
         </template>
@@ -293,7 +293,11 @@ export default {
     text-align: left;
   }
   img.logoImg {
-    width: 100px;
-    height: 100px;
+    width: 70px;
+    height: 70px;
+    vertical-align: middle;
+  }
+  .el-table /deep/ .el-table__body tr {
+    height: 90px!important;
   }
 </style>

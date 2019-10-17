@@ -18,6 +18,8 @@ export default {
 
     if (icon) {
       vnodes.push(<i class={ 'iconfont ' + icon}></i>)
+    } else {
+      vnodes.push(<i class={ 'iconfont withoutIcon' }></i>)
     }
 
     if (title) {
@@ -27,3 +29,10 @@ export default {
   }
 }
 </script>
+
+<style>
+	.withoutIcon {
+		width: 16px;
+		margin-right: 14px;
+	}
+</style>

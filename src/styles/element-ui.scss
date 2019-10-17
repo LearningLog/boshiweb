@@ -139,3 +139,10 @@
 .el-table .cell {
   text-align: center;
 }
+.el-checkbox__input.is-disabled.is-checked .el-checkbox__inner {
+  background-color: $themeColor;
+  border-color: $themeColor;
+}
+.el-checkbox__input.is-disabled.is-checked .el-checkbox__inner::after {
+  border-color: #FFFFFF;
+}

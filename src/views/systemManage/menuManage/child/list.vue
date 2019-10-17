@@ -316,4 +316,8 @@ export default {
     width: calc(100% - 260px) !important;
     float: right;
   }
+  #topSearch #advancedSearchArea /deep/ .el-form-item {
+    width: 49%;
+    display: inline-block;
+  }
 </style>

@@ -35,8 +35,6 @@ export default {
       }
     }
   },
-  created() {
-  },
   methods: {
     // 确认添加类别
     save(formName) {

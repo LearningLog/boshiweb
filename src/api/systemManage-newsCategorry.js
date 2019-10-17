@@ -32,7 +32,7 @@ export function newscategory_edit(data) {
 // 资讯类别删除
 export function newscategory_delet(data) {
   return request({
-    url: '/system/newscategory/delete',
+    url: '/system/newscategoryV2/deleteone',
     method: 'post',
     data
   })
