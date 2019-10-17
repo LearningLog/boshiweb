@@ -132,7 +132,7 @@ export default {
     }
   },
   created() {
-    this.listQuery.pid = this.$route.query.pid || 'firstMenu'
+    this.listQuery.pid = this.$store.state.menuManage.backMenuManage || 'firstMenu'
     this.getAllMenuList()
     this.getMenuList()
   },
@@ -176,11 +176,11 @@ export default {
     },
     // 新增
     add() {
-      this.$router.push({ path: '/systemManage/menuManage/add', query: { pid: this.pid, pname: this.pname }})
+      this.$router.push({ path: '/systemManage/menuManage/add' })
     },
     // 详情
     detail(row) {
-      this.$router.push({ path: '/systemManage/menuManage/detail', query: { _id: row._id, pid: row.pid }})
+      this.$router.push({ path: '/systemManage/menuManage/detail', query: { _id: row._id }})
     },
     // 删除
     del(row) {
@@ -202,7 +202,7 @@ export default {
     },
     // 编辑
     edit(row) {
-      this.$router.push({ path: '/systemManage/menuManage/edit', query: { id: row._id, pid: row.pid }})
+      this.$router.push({ path: '/systemManage/menuManage/edit', query: { id: row._id }})
     },
     // 上移
     upMenu(row) {
@@ -292,6 +292,15 @@ export default {
 
       return arr
     }
+  },
+  // 因为需求：去往子页面，回来时查询离开前的pid，去往其他页面，回来时默认查询 ‘firstMenu’
+  beforeRouteLeave(to, from, next) {
+    if (to.path.indexOf('/menuManage/') === -1) {
+      this.$store.dispatch('menuManage/setMenuOrigin', 'firstMenu')
+    } else {
+      this.$store.dispatch('menuManage/setMenuOrigin', this.listQuery.pid)
+    }
+    next()
   }
 }
 </script>

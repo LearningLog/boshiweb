@@ -1,7 +1,7 @@
 <template>
   <div class="form-edit">
     <el-form ref="form" class="form" :model="form" label-width="120px">
-      <el-form-item class="required" label="角色名称：">
+      <el-form-item label="角色名称：">
         <span>{{ form.rolename }}</span>
       </el-form-item>
       <el-form-item label="角色描述：">

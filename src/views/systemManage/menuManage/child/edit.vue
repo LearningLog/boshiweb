@@ -52,7 +52,6 @@ export default {
         type: '' // 菜案模块
       },
       id: '', // 查询id
-      pid: '', // 父id
       rules: {
         menuname: [
           { required: true, message: '请输入菜单名称（长度在 1 到 12 个字符）', trigger: 'blur' },
@@ -80,7 +79,6 @@ export default {
   },
   created() {
     this.id = this.$route.query.id
-    this.pid = this.$route.query.pid
     this.getMenu()
   },
   methods: {
@@ -100,7 +98,7 @@ export default {
             this.$message.success('修改菜单成功！')
             updateMenuRoute()
 
-            this.$router.push({ path: '/systemManage/menuManage/detail', query: { _id: this.form._id, pid: this.pid }})
+            this.$router.push({ path: '/systemManage/menuManage/detail', query: { _id: this.form._id }})
           })
         }
       })

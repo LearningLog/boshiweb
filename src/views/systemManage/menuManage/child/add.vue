@@ -51,8 +51,6 @@ export default {
         menuurl: '', // 菜单路径path
         type: '' // 菜案模块
       },
-      pid: '', // 父id
-      pname: '', // 父级菜单
       rules: {
         menuname: [
           { required: true, message: '请输入菜单名称（长度在 1 到 12 个字符）', trigger: 'blur' },
@@ -78,10 +76,6 @@ export default {
       }
     }
   },
-  created() {
-    this.pid = this.$route.query.pid
-    this.pname = this.$route.query.pname
-  },
   methods: {
     // 保存
     save(formName) {
@@ -92,7 +86,7 @@ export default {
           addMenu(this.form).then(async response => {
             this.$message.success('新增菜单成功！')
             updateMenuRoute()
-            this.$router.push({ path: '/systemManage/menuManage/detail', query: { _id: response.data._id, pid: this.pid }})
+            this.$router.push({ path: '/systemManage/menuManage/detail', query: { _id: response.data._id }})
           })
         }
       })

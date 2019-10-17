@@ -43,13 +43,11 @@ export default {
         menuurl: '', // 菜单路径path
         type: '' // 菜案模块
       },
-      id: '', // 查询id
-      pid: '' // 父id
+      id: '' // 查询id
     }
   },
   created() {
     this.id = this.$route.query._id
-    this.pid = this.$route.query.pid
     this.getMenu()
   },
   methods: {
@@ -72,7 +70,7 @@ export default {
     },
     // 确定
     confirm() {
-      this.$router.push({ path: '/systemManage/menuManage/list', query: { pid: this.pid }})
+      this.$router.push({ path: '/systemManage/menuManage/list' })
     }
   }
 }
