@@ -7,8 +7,8 @@
       <el-form-item label="类别描述：">
         <span>{{ form.newscategory_desc }}</span>
       </el-form-item>
-      <el-form-item label="网站：">
-        <span>{{ form.net_list }}</span>
+      <el-form-item class="website" label="网站：">
+        <p v-for="item in form.net_list" :key="item._id">{{ item.website_name }}</p>
       </el-form-item>
     </el-form>
     <div id="btnGroup">
@@ -31,7 +31,7 @@ export default {
     }
   },
   created() {
-    this.query_param = this.$route.query.ids
+    this.query_param = this.$route.query.id
     this.get_det()
   },
   methods: {
@@ -42,15 +42,10 @@ export default {
       param._id = that.query_param
       newscategory_det(param).then(res => {
         const res_dt = res.data.newscategory
-        const net_dt = ''
+        // let net_dt = ''
         that.form.newscategory_name = res_dt.newscategory_name
         that.form.newscategory_desc = res_dt.newscategory_desc
-        if (res_dt && res_dt.website) {
-          res_dt.website.forEach(item => {
-            net_dt += item.website_name + ','
-          })
-        }
-        that.form.net_list = net_dt.substring(0, net_dt.length - 1)
+        that.form.net_list = res.data.website || []
       }).catch(error => {
         console.log(error)
       })

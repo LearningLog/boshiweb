@@ -41,6 +41,7 @@
       </div>
       <el-form-item label="平台Logo">
         <el-upload
+          class="uploadDeskTopLogo"
           ref="uploadDeskTopLogo"
           name="thumbnailfile"
           :action="uploadUrl()"
@@ -66,6 +67,7 @@
       </el-form-item>
       <el-form-item label="移动端Logo">
         <el-upload
+          class="uploadMobileLogo"
           ref="uploadMobileLogo"
           name="thumbnailfile"
           :action="uploadUrl()"
@@ -127,9 +129,9 @@
         </div>
         <!--预览-->
         <!--<div class="show-preview" :style="{'width': previews.w + 'px', 'height': previews.h + 'px', 'overflow': 'hidden', 'margin': '5px'}">-->
-        <div class="show-preview" :style="{'width':'240px', 'height':'135px', 'overflow': 'hidden', 'margin': '5px'}">
+        <div class="show-preview" :style="{'width':'180px', 'height':'180px', 'overflow': 'hidden', 'margin': '5px'}">
           <div :style="previews.div" class="preview">
-            <img :src="previews.url" :style="previews.img">
+            <img :src="previews.url" class="previewImg">
           </div>
         </div>
       </div>
@@ -151,6 +153,7 @@ import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import { getOneTenant, editTenant } from '@/api/systemManage-tenantManage'
 import { uploadFile } from '@/api/uploadFile'
 import { getToken } from '@/utils/auth'
+const $ = window.$
 
 export default {
   components: {
@@ -189,8 +192,8 @@ export default {
         fixed: true, // 是否开启截图框宽高固定比例
         fixedNumber: [1, 1], // 截图框的宽高比例
         autoCrop: true, // 是否默认生成截图框
-        autoCropWidth: 200, // 默认生成截图框宽度 只有自动截图开启 宽度高度才生效
-        autoCropHeight: 200, // 默认生成截图框高度 只有自动截图开启 宽度高度才生效
+        autoCropWidth: 180, // 默认生成截图框宽度 只有自动截图开启 宽度高度才生效
+        autoCropHeight: 180, // 默认生成截图框高度 只有自动截图开启 宽度高度才生效
         full: false, // 是否输出原图比例的截图
         canMoveBox: true, // 截图框能否拖动
         original: false, // 上传图片按照原始比例渲染
@@ -271,9 +274,11 @@ export default {
         }
         if (response.data.custom.pcLogoFileUrl) {
           this.fileList1 = [{ name: '', url: response.data.custom.pcLogoFileUrl }]
+          $('.uploadDeskTopLogo .el-upload--picture-card').hide()
         }
         if (response.data.custom.mobileLogoFileUrl) {
           this.fileList2 = [{ name: '', url: response.data.custom.mobileLogoFileUrl }]
+          $('.uploadMobileLogo .el-upload--picture-card').hide()
         }
         this.form = obj
       })
@@ -312,7 +317,7 @@ export default {
     },
     // 上传按钮   限制图片大小
     changeUpload(file, fileList) {
-      this.isDisabled1 = false
+      this.isDisabled2 = false
       const isLt5M = file.size / 1024 / 1024 < 5
       if (!isLt5M) {
         this.$message.error('上传文件大小不能超过 5MB！')
@@ -352,9 +357,11 @@ export default {
       if (this.logoType === 1) {
         this.form.pcLogoFileId = ''
         this.form.pcLogoFileUrl = ''
+        $('.uploadDeskTopLogo .el-upload--picture-card').show()
       } else {
         this.form.mobileLogoFileId = ''
         this.form.mobileLogoFileUrl = ''
+        $('.uploadMobileLogo .el-upload--picture-card').show()
       }
     },
     // 处理预览
@@ -376,11 +383,13 @@ export default {
             this.form.pcLogoFileUrl = response.data.saveHttpPath
             this.form.pcLogoFileId = response.data.id
             this.fileList1 = [{ name: response.data.originalFilename, url: response.data.saveHttpPath }]
+            $('.uploadDeskTopLogo .el-upload--picture-card').hide()
           } else {
             this.mobileImageUrl = response.data.saveHttpPath
             this.form.mobileLogoFileUrl = response.data.saveHttpPath
             this.form.mobileLogoFileId = response.data.id
             this.fileList2 = [{ name: response.data.originalFilename, url: response.data.saveHttpPath }]
+            $('.uploadMobileLogo .el-upload--picture-card').hide()
           }
           this.fileInfo = {}
           this.cropperDialogVisible = false
@@ -398,10 +407,14 @@ export default {
         this.cropperDialogVisible = false
         this.clearFiles = true
       }
+      this.clearFiles = true
     },
     // 实时预览函数
-    realTime(data) {
-      this.previews = data
+    realTime(realTimeData) {
+      this.$refs.cropper.getCropData((data) => {
+        this.previews = realTimeData
+        this.previews.url = data
+      })
     },
     // 图片加载情况
     imgLoad(msg) {
@@ -434,8 +447,18 @@ export default {
   // 截图
   .cropper-content {
     .cropper {
-      width: auto;
-      height: 300px;
+      width: calc(100% - 200px);
+      height: 340px;
+      display: inline-block;
     }
+  }
+  .show-preview {
+    float: right;
+    width: 140px;
+    display: inline-block;
+  }
+  .previewImg {
+    width: 180px;
+    height: 180px;
   }
 </style>

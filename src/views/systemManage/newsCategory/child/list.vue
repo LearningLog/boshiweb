@@ -64,7 +64,7 @@
       <el-table-column class-name="status-col" label="操作" width="230" align="center" fixed="right" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-button size="mini" @click="go_edit_fn(scope.row._id)"><i class="iconfont iconxiugai" />修改</el-button>
-          <el-button size="mini" @click="go_netList(scope.row._id)"><i class="iconfont iconxiugai" />设置</el-button>
+          <el-button size="mini" @click="go_netList(scope.row._id)"><i class="iconfont iconxitong" />设置</el-button>
           <el-button size="mini" @click="delet_fn(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
         </template>
       </el-table-column>
@@ -142,10 +142,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        const param = {}
-        param.ids = []
-        param.ids.push(row._id)
-        newscategory_delet(param).then(response => {
+        newscategory_delet({ _id: row._id }).then(response => {
           this.$message.success(response.message)
           if ((this.list.length - 1) === 0) { // 如果当前页数据已删完，则去往上一页
             this.listQuery.currentPage -= 1
@@ -155,16 +152,16 @@ export default {
       }).catch(() => {})
     },
     // 查看资讯类别
-    go_detail(in_ids) {
-      this.$router.push({ path: '/systemManage/newsCategory/detail', query: { ids: in_ids }})
+    go_detail(id) {
+      this.$router.push({ path: '/systemManage/newsCategory/detail', query: { id: id }})
     },
     // go网站管理
-    go_netList(in_ids) {
-      this.$router.push({ path: '/systemManage/newsCategory/netList', query: { queryDt: in_ids }})
+    go_netList(id) {
+      this.$router.push({ path: '/systemManage/newsCategory/netList', query: { id: id }})
     },
     // 编辑资讯类别
-    go_edit_fn(in_ids) {
-      this.$router.push({ path: '/systemManage/newsCategory/edit', query: { ids: in_ids }})
+    go_edit_fn(id) {
+      this.$router.push({ path: '/systemManage/newsCategory/edit', query: { id: id }})
     },
     // 添加资讯类别
     add() {

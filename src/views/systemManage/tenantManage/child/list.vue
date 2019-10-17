@@ -58,11 +58,6 @@
           <span class="pointer" @click="detail(scope.row)">{{ scope.row.customname }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="描述" min-width="150" align="center" show-overflow-tooltip>
-        <template slot-scope="scope">
-          <span>{{ scope.row.desc }}</span>
-        </template>
-      </el-table-column>
       <el-table-column label="Logo" min-width="110" align="center">
         <template slot-scope="scope">
           <img v-if="scope.row.pcLogoFileUrl" class="logoImg" :src="scope.row.pcLogoFileUrl" alt="">

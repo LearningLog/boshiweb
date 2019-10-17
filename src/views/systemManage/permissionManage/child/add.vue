@@ -13,10 +13,11 @@
       <el-form-item label="权限描述">
         <el-input v-model="form.permissiondesc" type="textarea" :rows="3" placeholder="请输入权限描述" />
       </el-form-item>
-      <el-form-item class="required" label="所属菜单">
+      <el-form-item class="required" label="所属菜单" prop="permissionbelongmenu2">
         <span class="pointer actcolor" @click="show_menu_tree_fn">{{ menu_tip_txt }}</span>
+        <el-input v-show="false" v-model="form.permissionbelongmenu2" />
       </el-form-item>
-      <el-form-item class="required" label="权限类别">
+      <el-form-item class="required" label="权限类别" prop="permissionmanage">
         <el-radio-group v-model="form.permissionmanage">
           <el-radio v-for="item in manage_type" :key="item.permissionmanage" :label="item.permissionmanage">{{ item.name }}</el-radio>
         </el-radio-group>
@@ -42,9 +43,10 @@
             show-checkbox
             node-key="id"
             :check-strictly="true"
+            :expand-on-click-node="false"
+            :check-on-click-node="true"
             default-expand-all
             highlight-current
-            :expand-on-click-node="false"
             @check-change="menu_tree_check_fn"
           />
         </el-scrollbar>
@@ -72,7 +74,8 @@ export default {
         permissioncode: '',
         permissiondesc: '',
         permissionbelongmenu: [],
-        permissionmanage: ''
+        permissionmanage: '',
+        permissionbelongmenu2: ''
       },
       sub_dis: false,
       menu_dt: [],
@@ -108,6 +111,10 @@ export default {
           { required: true, message: '请输入权限code（长度在 1 到 64 个字符）', trigger: 'change' },
           { min: 1, max: 64, message: '长度在 1 到 64 个字符', trigger: 'blur' },
           { min: 1, max: 64, message: '长度在 1 到 64 个字符', trigger: 'change' }
+        ],
+        permissionbelongmenu2: [
+          { required: true, message: '请选择所属菜单', trigger: 'blur' },
+          { required: true, message: '请选择所属菜单', trigger: 'change' }
         ],
         permissionmanage: [
           { required: true, message: '请选择权限类别', trigger: 'change' }
@@ -271,6 +278,7 @@ export default {
       })
       this.menu_tip_txt = tip_copy.substring(0, tip_copy.length - 1)
       this.form.permissionbelongmenu = this.menu_tree_checked.ids
+      this.form.permissionbelongmenu2 = this.form.permissionbelongmenu.length ? '11111' : ''
       this.menu_tree_flag = false
     },
     // 菜单选择取消
@@ -291,7 +299,7 @@ export default {
             return
           }
           if (this.form.permissionmanage === '') {
-            this.$message.error('请选择管理类别')
+            this.$message.error('请选择权限类别')
             return
           }
           this.sub_dis = true

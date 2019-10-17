@@ -28,7 +28,7 @@ export default {
       rules: {
         newscategory_name: [
           { required: true, message: '请输入类别名称（长度在 2 到 20个字符）', trigger: 'blur' },
-          { required: true, message: '请输入模块名称（长度在 2 到 20 个字符）', trigger: 'change' },
+          { required: true, message: '请输入类别名称（长度在 2 到 20 个字符）', trigger: 'change' },
           { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' },
           { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'change' }
         ]
@@ -45,7 +45,7 @@ export default {
           this.sub_dis = true
           newscategory_add(this.form).then(response => {
             this.$message.success('添加成功！')
-            this.$router.push({ path: '/systemManage/newsCategory/detail', query: { ids: response.data._id }})
+            this.$router.push({ path: '/systemManage/newsCategory/detail', query: { id: response.data._id }})
           })
         }
       })

@@ -42,8 +42,8 @@ export default {
         rolename: [
           { required: true, message: '请输入角色名称（长度在 2 到 20 个字符）', trigger: 'blur' },
           { required: true, message: '请输入角色名称（长度在 2 到 20 个字符）', trigger: 'change' },
-          { min: 2, max: 20, message: '长度在 2 到 64 个字符', trigger: 'blur' },
-          { min: 2, max: 20, message: '长度在 2 到 64 个字符', trigger: 'change' }
+          { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' },
+          { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'change' }
         ],
         roleGroupId: [
           { required: true, message: '请选择所属租户', trigger: 'blur' },

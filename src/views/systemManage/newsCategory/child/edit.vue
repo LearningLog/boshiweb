@@ -22,22 +22,22 @@ export default {
     return {
       form: {
         newscategory_name: '',
-        newscategory_desc: ''
+        newscategory_desc: '',
+        _id: ''
       },
       sub_dis: false,
       rules: {
         newscategory_name: [
           { required: true, message: '请输入类别名称（长度在 2 到 20个字符）', trigger: 'blur' },
-          { required: true, message: '请输入模块名称（长度在 2 到 20 个字符）', trigger: 'change' },
+          { required: true, message: '请输入类别名称（长度在 2 到 20 个字符）', trigger: 'change' },
           { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' },
           { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'change' }
         ]
-      },
-      query_param: ''
+      }
     }
   },
   created() {
-    this.query_param = this.$route.query.ids
+    this.form._id = this.$route.query.id
     this.get_det()
   },
   methods: {
@@ -45,11 +45,11 @@ export default {
     get_det() {
       const that = this
       const param = {}
-      param._id = this.query_param
+      param._id = this.form._id
       newscategory_one(param).then(res => {
         const dt = res.data.newscategory
-        that.form.newscategory_name = dt.newscategory_name ? dt.newscategory_name : '--'
-        that.form.newscategory_desc = dt.newscategory_desc ? dt.newscategory_desc : '--'
+        that.form.newscategory_name = dt.newscategory_name ? dt.newscategory_name : ''
+        that.form.newscategory_desc = dt.newscategory_desc ? dt.newscategory_desc : ''
       }).catch(error => {
         console.log(error)
       })
@@ -61,7 +61,7 @@ export default {
           this.sub_dis = true
           newscategory_edit(this.form).then(response => {
             this.$message.success('修改成功！')
-            this.$router.push({ path: '/systemManage/newsCategory/detail', query: { _id: response.data._id }})
+            this.$router.push({ path: '/systemManage/newsCategory/detail', query: { id: this.form._id }})
           })
         }
       })

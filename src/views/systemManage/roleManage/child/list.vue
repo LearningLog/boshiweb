@@ -13,7 +13,7 @@
                 <el-input v-model="listQuery.creater" placeholder="请输入创建人" clearable />
               </el-form-item>
               <el-form-item label="所属租户">
-                <el-input v-model="listQuery.groupId" placeholder="请输入所属租户" clearable />
+                <el-input v-model="listQuery.customname" placeholder="请输入所属租户" clearable />
               </el-form-item>
               <el-form-item label="创建时间">
                 <el-date-picker
@@ -77,7 +77,7 @@
           <span>{{ scope.row.customname }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="是否默认" min-width="60" show-overflow-tooltip>
+      <el-table-column align="center" label="是否默认" min-width="80" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-tag v-if="scope.row.defaultRole === '1'" type="success">是</el-tag>
           <el-tag v-else type="danger">否</el-tag>
@@ -88,12 +88,12 @@
           <div v-if="scope.row.auth">
             <el-button size="mini" @click="go_edit_fn(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
             <el-button size="mini" @click="delete_fn(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
-            <el-button size="mini" @click="authorize_fn(scope.row)"><i class="iconfont iconshanchu" />授权</el-button>
+            <el-button size="mini" @click="authorize_fn(scope.row)"><i class="iconfont iconshouquan" />授权</el-button>
           </div>
           <div v-else>
             <el-button size="mini" :disabled="true"><i class="iconfont iconxiugai" />修改</el-button>
             <el-button size="mini" :disabled="true"><i class="iconfont iconshanchu" />删除</el-button>
-            <el-button size="mini" :disabled="true"><i class="iconfont iconshanchu" />授权</el-button>
+            <el-button size="mini" :disabled="true"><i class="iconfont iconshouquan" />授权</el-button>
           </div>
         </template>
       </el-table-column>
@@ -112,15 +112,15 @@ export default {
   components: { Pagination },
   data() {
     return {
+      listLoading: false,
       listQuery: {
-        listLoading: false,
         currentPage: 1, // 当前页码
         pageSize: 10, // 当前列表请求条数
         rolename: '', // 角色名称
         creater: '', // 创建人
         startTime: '', // 开始时间
         endtTime: '', // 结束时间
-        roleGroupName: '' // 所属租户
+        customname: '' // 所属租户
       },
       time_range: [],
       delCheckedList: [], // 选中的数据
@@ -143,8 +143,8 @@ export default {
       this.listQuery.creater = ''
       this.listQuery.startTime = ''
       this.listQuery.endtTime = ''
-      this.listQuery.time_range = []
-      this.listQuery.roleGroupName = ''
+      this.time_range = []
+      this.listQuery.customname = ''
       this.get_list()
     },
     // 获取角色列表

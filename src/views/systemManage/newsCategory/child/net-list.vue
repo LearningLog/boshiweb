@@ -159,7 +159,7 @@ export default {
     }
   },
   created() {
-    this.query_param = this.$route.query.queryDt
+    this.query_param = this.$route.query.id
     this.get_list()
   },
   methods: {

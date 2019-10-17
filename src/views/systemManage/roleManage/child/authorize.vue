@@ -1,18 +1,18 @@
 <template>
   <div class="form-edit">
     <el-form ref="form" class="form" :model="form" label-width="120px">
-      <el-form-item class="required" label="角色名称">
+      <el-form-item class="required" label="角色名称：">
         <span>{{ form.rolename }}</span>
       </el-form-item>
-      <el-form-item label="角色描述">
+      <el-form-item label="角色描述：">
         <span>{{ form.desc }}</span>
       </el-form-item>
-      <el-form-item label="角色类型" prop="roleGroupId">
+      <el-form-item label="角色类型：" prop="roleGroupId">
         <el-radio-group v-model="manageType">
           <el-radio v-for="item in manageTypeList" :key="item.id" :label="item.id">{{ item.name }}</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="角色授权">
+      <el-form-item label="角色授权：">
         <el-scrollbar wrap-class="scrollbar-wrapper">
           <el-tree
             ref="menuTree"
@@ -20,6 +20,8 @@
             show-checkbox
             default-expand-all
             highlight-current
+            :expand-on-click-node="false"
+            :check-on-click-node="true"
             node-key="_id"
             :default-checked-keys="treecheckedKeys"
             :props="defaultProps"
@@ -71,7 +73,6 @@ export default {
     getInitData() {
       getOneRole({ _id: this.id }).then(response => {
         this.form = response.data.role
-        this.manageType = response.data.role.manageType
       })
     },
     // 获取角色授权页面管理类型
