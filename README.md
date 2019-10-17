@@ -303,7 +303,7 @@ vue-element-admin 配套了系列教程文章，如何从零构建后一个完�
   其他也超出高度必须使用 `<el-scrollbar wrap-class="scrollbar-wrapper"></<el-scrollbar>` 处理
 - 所有js要对变量名、函数进行注释，复杂逻辑亦要注释清晰
 - 必须使用 `Eslint` 代码校验工具
-- 全部 `<el-input  type="password" />` 都必须写成 `<el-input readonly onfocus="this.removeAttribute('readonly');" type="password" autocomplete="off" />` 解决input type="password" h和 type="text" 时自动填充bug
+- 全部 `<el-input  type="password" />` 都必须写成 `<el-input type="password" autocomplete="new-password" />` 解决input type="password" h和 type="text" 时自动填充bug
 - 所有提示性文字都要带有标点符号，中/文对应全角半角
 - 所有弹出信息 title居左，底部按钮居右，左确定，右取消，dialog加拖拽功能
 
@@ -354,12 +354,13 @@ vue-element-admin 配套了系列教程文章，如何从零构建后一个完�
 - 水平居中
 - 左侧为字段名称，不带有冒号（：）
 - 右侧 `el-input` 长度统一，时间插件及 `select` 长度可自行统一长度
-- 底部操作按钮与右侧输入列左对齐，并且使用 ` :disabled="isDisabled"` 防止重复提交
+- 底部操作按钮与右侧输入列左对齐，并且使用 `v-no-more-click`全局命令，防止重复提交
 - 所有编辑页按钮颜色样式统一
 - 表单验证全部使用 `element` 提供的表单校验方式，并带有 `:status-icon="true"` 校验图标
 - 所有表单都要提供两种触发方式 `blur change`
 - 提倡分步校验
-- 提交后进入详情页，取消返回列表页
+- 提交后进入详情页，取消返回列表页，
+- 离开编辑页，提示用户是否确定离开页面
 
 ### 详情页
 

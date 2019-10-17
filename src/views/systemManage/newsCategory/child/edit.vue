@@ -67,8 +67,18 @@ export default {
     cancel(formName) {
       this.$router.push({ path: '/systemManage/newsCategory/list' })
     }
+  },
+  beforeRouteLeave(to, from, next) {
+    this.$confirm('您的数据尚未保存，是否离开？', '离开页面', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    }).then(() => {
+      next()
+    }).catch(() => {
+      next(false)
+    })
   }
-
 }
 </script>
 

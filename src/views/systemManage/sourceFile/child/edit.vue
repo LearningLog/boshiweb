@@ -80,9 +80,18 @@ export default {
       this.$refs[formName].resetFields()
       this.$router.push({ path: '/systemManage/sourceFile' })
     }
-
+  },
+  beforeRouteLeave(to, from, next) {
+    this.$confirm('您的数据尚未保存，是否离开？', '离开页面', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    }).then(() => {
+      next()
+    }).catch(() => {
+      next(false)
+    })
   }
-
 }
 </script>
 

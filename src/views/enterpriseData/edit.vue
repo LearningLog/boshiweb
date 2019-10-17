@@ -42,7 +42,7 @@ import { getCustomResourceDetail, editCustomResource } from '@/api/enterprise-da
 
 export default {
   data() {
-    var validDate = (rule, value, callback) => {
+    const validDate = (rule, value, callback) => {
       value = value || []
       if (!value[0] || !value[1]) {
         callback(new Error('请选择有效日期'))
@@ -50,14 +50,12 @@ export default {
         callback()
       }
     }
-    var validTotalStorageSpace = (rule, value, callback) => {
-      debugger
+    const validTotalStorageSpace = (rule, value, callback) => {
       if (!value && value !== 0) {
         callback(new Error('请输入存储总量，最多9,999G'))
       } else if (value > 9999) {
         callback(new Error('请输入存储总量，最多9,999G'))
-      }
-      else {
+      } else {
         callback()
       }
     }
@@ -149,11 +147,22 @@ export default {
         this.form[field] = validIntNum(val)
       }
     },
+    // 失焦校验
     blurNum(val) {
       this.form.totalStorageSpace = onKeyValid(val, 2)
     }
+  },
+  beforeRouteLeave(to, from, next) {
+    this.$confirm('您的数据尚未保存，是否离开？', '离开页面', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    }).then(() => {
+      next()
+    }).catch(() => {
+      next(false)
+    })
   }
-
 }
 </script>
 

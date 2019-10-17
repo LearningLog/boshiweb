@@ -176,7 +176,7 @@ export default {
     },
     // 新增
     add() {
-      this.$router.push({ path: '/systemManage/menuManage/add' })
+      this.$router.push({ path: '/systemManage/menuManage/add', query: { pname: this.pname }})
     },
     // 详情
     detail(row) {
