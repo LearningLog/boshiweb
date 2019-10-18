@@ -149,6 +149,7 @@ export default {
       }
       setRoleAuthority(param).then(response => {
         this.$message.success('角色授权成功！')
+        this.noLeaveprompt = true
         this.$router.push({ path: '/systemManage/roleManage/list' })
       })
     },
@@ -159,15 +160,19 @@ export default {
     }
   },
   beforeRouteLeave(to, from, next) {
-    this.$confirm('您的数据尚未保存，是否离开？', '离开页面', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning'
-    }).then(() => {
+    if (!this.noLeaveprompt) {
+      this.$confirm('您的数据尚未保存，是否离开？', '离开页面', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        next()
+      }).catch(() => {
+        next(false)
+      })
+    } else {
       next()
-    }).catch(() => {
-      next(false)
-    })
+    }
   }
 }
 </script>

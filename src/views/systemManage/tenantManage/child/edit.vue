@@ -295,6 +295,7 @@ export default {
           }
           editTenant(this.form).then(response => {
             this.$message.success('修改租户成功！')
+            this.noLeaveprompt = true
             this.$router.push({ path: '/systemManage/tenantManage/detail', query: { _id: this.id }})
           })
         }
@@ -421,15 +422,19 @@ export default {
     }
   },
   beforeRouteLeave(to, from, next) {
-    this.$confirm('您的数据尚未保存，是否离开？', '离开页面', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning'
-    }).then(() => {
+    if (!this.noLeaveprompt) {
+      this.$confirm('您的数据尚未保存，是否离开？', '离开页面', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        next()
+      }).catch(() => {
+        next(false)
+      })
+    } else {
       next()
-    }).catch(() => {
-      next(false)
-    })
+    }
   }
 }
 </script>

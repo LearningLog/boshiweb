@@ -56,6 +56,7 @@ export default {
         if (valid) {
           source_file_add(this.form).then(response => {
             this.$message.success('添加成功')
+            this.noLeaveprompt = true
             this.$router.push({ path: '/systemManage/sourceFile/list' })
           })
         }
@@ -68,15 +69,19 @@ export default {
     }
   },
   beforeRouteLeave(to, from, next) {
-    this.$confirm('您的数据尚未保存，是否离开？', '离开页面', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning'
-    }).then(() => {
+    if (!this.noLeaveprompt) {
+      this.$confirm('您的数据尚未保存，是否离开？', '离开页面', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        next()
+      }).catch(() => {
+        next(false)
+      })
+    } else {
       next()
-    }).catch(() => {
-      next(false)
-    })
+    }
   }
 }
 </script>

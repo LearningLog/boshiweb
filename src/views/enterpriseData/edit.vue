@@ -29,7 +29,7 @@
         </el-form-item>
       </el-form>
       <div id="btnGroup">
-        <el-button type="primary" v-no-more-click @click="onSubmit('form')">确定</el-button>
+        <el-button v-no-more-click type="primary" @click="onSubmit('form')">确定</el-button>
         <el-button type="primary" plain @click="cancel('form')">取消</el-button>
       </div>
     </div>
@@ -128,6 +128,7 @@ export default {
         if (valid) {
           editCustomResource(this.form).then(response => {
             this.$message.success('修改租户成功！')
+            this.noLeaveprompt = true
             this.$router.push({ path: '/enterpriseData/detail', query: { _id: this.id }})
           })
         }
@@ -153,15 +154,19 @@ export default {
     }
   },
   beforeRouteLeave(to, from, next) {
-    this.$confirm('您的数据尚未保存，是否离开？', '离开页面', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning'
-    }).then(() => {
+    if (!this.noLeaveprompt) {
+      this.$confirm('您的数据尚未保存，是否离开？', '离开页面', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        next()
+      }).catch(() => {
+        next(false)
+      })
+    } else {
       next()
-    }).catch(() => {
-      next(false)
-    })
+    }
   }
 }
 </script>

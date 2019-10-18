@@ -75,6 +75,7 @@ export default {
         if (valid) {
           role_edit(this.form).then(response => {
             this.$message.success('修改角色成功！')
+            this.noLeaveprompt = true
             this.$router.push({ path: '/systemManage/roleManage/detail', query: { id: this.id }})
           })
         }
@@ -87,15 +88,19 @@ export default {
     }
   },
   beforeRouteLeave(to, from, next) {
-    this.$confirm('您的数据尚未保存，是否离开？', '离开页面', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning'
-    }).then(() => {
+    if (!this.noLeaveprompt) {
+      this.$confirm('您的数据尚未保存，是否离开？', '离开页面', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        next()
+      }).catch(() => {
+        next(false)
+      })
+    } else {
       next()
-    }).catch(() => {
-      next(false)
-    })
+    }
   }
 }
 </script>

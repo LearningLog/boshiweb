@@ -19,6 +19,8 @@
     & #advancedSearchArea {
         margin-top: 16px;
         //width: 100%;
+
+
     }
     & .el-row{
         clear: both;
@@ -35,21 +37,38 @@
     }
     & .el-card__body {
         background-color: #F3F5F8;
-        /deep/ .el-form-item {
+
+        & /deep/ .el-form .el-form-item {
             width: 33%;
             display: inline-block;
         }
-        /deep/ .el-input {
+        & /deep/ .el-form .el-input {
             width: 200px;
         }
-        /deep/ .el-date-editor.el-input, .el-date-editor.el-input__inner {
+        & /deep/ .el-date-editor.el-input, .el-date-editor.el-input__inner {
             width: 200px;
         }
-        /deep/ .el-date-editor.el-range-editor.el-input, .el-date-editor.el-range-editor.el-input__inner {
+        & /deep/ .el-date-editor.el-range-editor.el-input, .el-date-editor.el-range-editor.el-input__inner {
             width: auto;
         }
     }
 }
+// 火狐与IE下此处表现异常，拿出来重写此部分样式 ================================================
+#topSearch .el-form .el-form-item {
+    width: 33%;
+    display: inline-block;
+}
+#topSearch .el-form .el-input {
+    width: 200px;
+}
+#topSearch .el-date-editor.el-input, #topSearch .el-date-editor.el-input__inner {
+    width: 200px;
+}
+#topSearch .el-date-editor.el-range-editor.el-input, #topSearch .el-date-editor.el-range-editor.el-input__inner {
+    width: auto;
+}
+// ========================================================================================
+
 .el-date-editor .el-range-separator {
     width: auto!important;
 }

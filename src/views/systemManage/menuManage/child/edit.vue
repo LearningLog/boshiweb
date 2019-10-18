@@ -94,6 +94,7 @@ export default {
           this.form.pid = this.pid
           editMenu(this.form).then(async response => {
             this.$message.success('修改菜单成功！')
+            this.noLeaveprompt = true
             updateMenuRoute()
 
             this.$router.push({ path: '/systemManage/menuManage/detail', query: { _id: this.form._id }})
@@ -108,15 +109,19 @@ export default {
     }
   },
   beforeRouteLeave(to, from, next) {
-    this.$confirm('您的数据尚未保存，是否离开？', '离开页面', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning'
-    }).then(() => {
+    if (!this.noLeaveprompt) {
+      this.$confirm('您的数据尚未保存，是否离开？', '离开页面', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        next()
+      }).catch(() => {
+        next(false)
+      })
+    } else {
       next()
-    }).catch(() => {
-      next(false)
-    })
+    }
   }
 }
 </script>
