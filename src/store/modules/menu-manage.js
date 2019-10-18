@@ -19,7 +19,7 @@ const state = {
     id: 'tenement',
     name: '租户前台'
   }],
-  pid: '' // pid
+  pid: 'firstMenu' // pid
 }
 
 const mutations = {

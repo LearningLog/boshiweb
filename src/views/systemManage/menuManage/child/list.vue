@@ -132,7 +132,7 @@ export default {
     }
   },
   created() {
-    this.listQuery.pid = this.$store.state.menuManage.backMenuManage || 'firstMenu'
+    this.listQuery.pid = this.$store.state.menuManage.pid || 'firstMenu'
     this.getAllMenuList()
     this.getMenuList()
   },
@@ -166,6 +166,7 @@ export default {
     },
     // 选中左侧菜单树节点的回调
     handleNodeClick(data) {
+      this.listQuery.currentPage = 1
       this.listQuery.menuname = ''
       this.listQuery.cmark = ''
       this.listQuery.type = ''
@@ -176,7 +177,7 @@ export default {
     },
     // 新增
     add() {
-      this.$router.push({ path: '/systemManage/menuManage/add', query: { pname: this.pname }})
+      this.$router.push({ path: '/systemManage/menuManage/add', query: { pid: this.pid, pname: this.pname }})
     },
     // 详情
     detail(row) {

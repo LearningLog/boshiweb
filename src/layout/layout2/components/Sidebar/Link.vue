@@ -1,7 +1,8 @@
 
 <template>
   <!-- eslint-disable vue/require-component-is -->
-  <component v-bind="linkProps(to)" @click.native="refreshView(to)">
+  <!--<component v-bind="linkProps(to)" @click.native="refreshView(to)">-->
+  <component v-bind="linkProps(to)">
     <slot />
   </component>
 </template>

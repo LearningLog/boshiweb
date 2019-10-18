@@ -71,7 +71,7 @@
       </el-table-column>
       <el-table-column class-name="status-col" label="创建人" min-width="100" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
-          {{ scope.row.personalise }}
+          {{ scope.row.username }}
         </template>
       </el-table-column>
       <el-table-column align="center" label="创建时间" min-width="130" show-overflow-tooltip>

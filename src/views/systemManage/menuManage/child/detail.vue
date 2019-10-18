@@ -48,6 +48,7 @@ export default {
   },
   created() {
     this.id = this.$route.query._id
+    this.pname = this.$route.query.pname
     this.getMenu()
   },
   methods: {

@@ -53,7 +53,7 @@
       </el-table-column>
       <el-table-column label="创建人" min-width="80" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
-          <span>{{ scope.row.creater }}</span>
+          <span>{{ scope.row.createuser }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="创建时间" min-width="120" show-overflow-tooltip>

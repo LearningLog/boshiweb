@@ -174,6 +174,8 @@ export default {
       }
     }
     return {
+      dataIsChange: 0, // 计数器，据此判断表单是否已编辑
+      noLeaveprompt: false, // 表单提交后，设置为true，据此判断提交不再弹出离开提示
       form: { // 表单数据
         customname: '', // 租户名称
         desc: '', // 描述
@@ -284,7 +286,6 @@ export default {
     },
     // 取消
     cancel(formName) {
-      this.$refs[formName].resetFields()
       this.$router.push({ path: '/systemManage/tenantManage/list' })
     },
     // 上传路径
@@ -403,17 +404,30 @@ export default {
       this.form.userCount = validIntNum(val)
     }
   },
+  watch: {
+    // 监听表单数据变化
+    form: {
+      handler(val) {
+        if (val) {
+          this.dataIsChange++
+        }
+      },
+      deep: true // 深层次监听
+    }
+  },
   beforeRouteLeave(to, from, next) {
-    if (!this.noLeaveprompt) {
-      this.$confirm('您的数据尚未保存，是否离开？', '离开页面', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        next()
-      }).catch(() => {
-        next(false)
-      })
+    if (this.dataIsChange && !this.noLeaveprompt) { // 判断表单数据是否变化，以及提交后不进行此保存提示
+      setTimeout(() => { // 此处必须要加延迟执行，主要解决浏览器前进后退带来的闪现
+        this.$confirm('您的数据尚未保存，是否离开？', '离开页面', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          next()
+        }).catch(() => {
+          next(false)
+        })
+      }, 200)
     } else {
       next()
     }
