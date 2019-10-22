@@ -341,8 +341,74 @@ vue-element-admin 配套了系列教程文章，如何从零构建后一个完�
 - 列宽合理美观，操作列图标统一合理
 - 操作列 两个按钮，设置 `width=“160”`; 三个按钮，设置 `width=“230”`
 - 时间列一般为 `min-width="130"`
-- 保留一个不写 width 的列
+- 列宽尽量合理设置，不要过大产生滚动条
 - 枚举字段 用 `<el-tag></el-tag>` 展示， 肯定类用 `type="success"`，否定类用 `type="danger"` 
+- 以下为样板：
+```html
+<el-table
+      v-loading="listLoading"
+      :data="list"
+      element-loading-text="Loading"
+      border
+      fit
+      highlight-current-row
+      @selection-change="handleSelectionChange"
+    >
+      >
+      <el-table-column
+        type="selection"
+        width="50"
+        fixed
+      />
+      <el-table-column align="center" label="名称" min-width="150" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <span class="pointer" @click="detail(scope.row)">{{ scope.row.customname }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="Logo" min-width="90" align="center">
+        <template slot-scope="scope">
+          <img v-if="scope.row.pcLogoFileUrl" class="logoImg" :src="scope.row.pcLogoFileUrl" alt="">
+        </template>
+      </el-table-column>
+      <el-table-column class-name="status-col" label="个性化系统名称" min-width="150" align="center" show-overflow-tooltip>
+        <template slot-scope="scope">
+          {{ scope.row.customSystemName }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="创建人" min-width="100" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <span>{{ scope.row.createuser }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="创建时间" min-width="120" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <span>{{ scope.row.createtime }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="状态" min-width="70" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <el-tag type="success" v-if="scope.row.customStatus === 1">{{ scope.row.customStatusName }}</el-tag>
+          <el-tag type="danger" v-else>{{ scope.row.customStatusName }}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column class-name="status-col" label="操作" width="230" align="center" fixed="right" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <el-button size="mini" @click="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
+          <el-button v-if="scope.row.customStatus === 1" size="mini" @click="enable(scope.row, 0)"><i class="iconfont iconshixiao" />失效</el-button>
+          <el-button v-else size="mini" @click="enable(scope.row, 1)"><i class="iconfont iconshengxiao" />生效</el-button>
+          <el-dropdown trigger="click">
+            <el-button size="mini">
+              <i class="iconfont icongengduo" />更多
+            </el-button>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item @click.native="getInformation(scope.row)"><i class="iconfont iconzixun" />资讯</el-dropdown-item>
+              <el-dropdown-item @click.native="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </template>
+      </el-table-column>
+    </el-table>
+```
 
 #### 列表底部
 
@@ -361,7 +427,83 @@ vue-element-admin 配套了系列教程文章，如何从零构建后一个完�
 - 所有表单都要提供两种触发方式 `blur change`
 - 提倡分步校验
 - 提交后进入详情页，取消返回列表页，
-- 离开编辑页，提示用户是否确定离开页面，使用目前一致的代码
+- 离开编辑页，提示用户是否确定离开页面，使用目前一致的代码，一下为打样， ====== 处为关键代码
+```javascript
+编辑页
+export default {
+  data() {
+    return {
+      dataIsChange: 0, // =======计数器，据此判断表单是否已编辑=======
+      noLeaveprompt: false, // =======表单提交后，设置为true，据此判断提交不再弹出离开提示=======
+      form: {
+        code: '',
+        name: '',
+        enable_status: null
+      }
+    }
+  },
+  created(options) {
+    this.id = this.$route.query.id
+    this.get_original_info()
+  },
+  methods: {
+    // 获取原始值
+    get_original_info() {
+      source_file_detail({ _id: this.id }).then(response => {
+        this.form = response.data
+        this.dataIsChange = -1 // =======在初次获取到数据改变了原数据，将 this.dataIsChange 设置为 -1=======
+      })
+    },
+    // 确定编辑
+    save(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.form._id = this.query_param._id
+          source_file_edit(this.form).then(response => {
+            this.$message.success('修改成功')
+            this.noLeaveprompt = true // =======保存成功后取消离开页面提示=======
+            this.$router.push({ path: '/systemManage/sourceFile' })
+          })
+        }
+      })
+    },
+    // 取消编辑
+    cancel(formName) {
+      this.$router.push({ path: '/systemManage/sourceFile' })
+    }
+  },
+  // ===必有的逻辑===
+  watch: {
+    // 监听表单数据变化
+    form: {
+      handler(val) {
+        if (val) {
+          this.dataIsChange++
+        }
+      },
+      deep: true // 深层次监听
+    }
+  },
+  // ===必有的逻辑===
+  beforeRouteLeave(to, from, next) {
+    if (this.dataIsChange && !this.noLeaveprompt) { // 判断表单数据是否变化，以及提交后不进行此保存提示
+      setTimeout(() => { // 此处必须要加延迟执行，主要解决浏览器前进后退带来的闪现
+        this.$confirm('您的数据尚未保存，是否离开？', '离开页面', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          next()
+        }).catch(() => {
+          next(false)
+        })
+      }, 200)
+    } else {
+      next()
+    }
+  }
+}
+```
 
 ### 详情页
 

@@ -74,7 +74,7 @@
             <span>{{ getMenuTypeName(scope.row.type) }}</span>
           </template>
         </el-table-column>
-        <el-table-column class-name="status-col" label="操作" width="220" align="center" fixed="right" show-overflow-tooltip>
+        <el-table-column class-name="status-col" label="操作" width="230" align="center" fixed="right" show-overflow-tooltip>
           <template slot-scope="scope">
             <el-button size="mini" @click="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
             <el-button size="mini" @click="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>

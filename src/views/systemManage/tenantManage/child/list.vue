@@ -50,7 +50,7 @@
       >
       <el-table-column
         type="selection"
-        width="55"
+        width="50"
         fixed
       />
       <el-table-column align="center" label="名称" min-width="150" show-overflow-tooltip>
@@ -84,7 +84,7 @@
           <el-tag type="danger" v-else>{{ scope.row.customStatusName }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="操作" width="220" align="center" fixed="right" show-overflow-tooltip>
+      <el-table-column class-name="status-col" label="操作" width="230" align="center" fixed="right" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-button size="mini" @click="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
           <el-button v-if="scope.row.customStatus === 1" size="mini" @click="enable(scope.row, 0)"><i class="iconfont iconshixiao" />失效</el-button>
