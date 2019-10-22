@@ -310,7 +310,7 @@ export default {
   .left {
     float: left;
     width:240px;
-    height: calc(100vh - 170px);
+    height: calc(100vh - 140px);
     margin-right: 20px;
     border:1px solid rgba(222, 222, 222, 1);
     padding-left: 10px;

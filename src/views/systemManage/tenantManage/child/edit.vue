@@ -39,7 +39,7 @@
           <el-input v-model="form.uPwd" placeholder="请输入管理员密码" type="password" autocomplete="off" maxlength="50" clearable />
         </el-form-item>
       </div>
-      <el-form-item label="平台Logo">
+      <el-form-item label="平台Logo" class="logoClass">
         <el-upload
           class="uploadDeskTopLogo"
           ref="uploadDeskTopLogo"
@@ -65,7 +65,7 @@
           <i class="el-icon-plus avatar-uploader-icon" />
         </el-upload>
       </el-form-item>
-      <el-form-item label="移动端Logo">
+      <el-form-item label="移动端Logo" class="logoClass">
         <el-upload
           class="uploadMobileLogo"
           ref="uploadMobileLogo"
@@ -484,5 +484,11 @@ export default {
   .previewImg {
     width: 180px;
     height: 180px;
+  }
+  .logoClass /deep/ .el-form-item__content {
+    line-height: 18px;
+  }
+  /deep/ .el-upload-list li {
+    margin-bottom: 0;
   }
 </style>

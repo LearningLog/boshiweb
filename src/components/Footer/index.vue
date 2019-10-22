@@ -1,5 +1,7 @@
 <template>
-  <div class="footer">{{ footer }}</div>
+  <div class="clearfix footer">
+    <div class="footer">{{ footer }}</div>
+  </div>
 </template>
 
 <script>
@@ -16,13 +18,21 @@ export default {
 
 <style lang="scss" scoped>
   .footer {
-    position: absolute;
-    bottom: 0;
     text-align: center;
     width: 100%;
     height: 50px;
     line-height: 50px;
     color: #b0b4bf;
-    background-color: #FFFFFF;
+    background-color: #f2f5f8;
+    font-size: 12px;
+    z-index: 10;
+
+    .footer-text {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 50px;
+      line-height: 50px;
+    }
   }
 </style>
