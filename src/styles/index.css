@@ -1,18 +1,18 @@
 /*
 Error: File to import not found or unreadable: ~@/styles/theme.scss.
         on line 1 of commonStyle.scss
-        from line 7 of index.scss
+        from line 8 of index.scss
 
 1: @import './variables.scss';
 2: @import './mixin.scss';
 3: @import './transition.scss';
 4: @import './element-ui.scss';
 5: @import './sidebar.scss';
-6: @import './theme.scss';
+6: @import './btn.scss';
 
 Backtrace:
 commonStyle.scss:1
-index.scss:7
+index.scss:8
 C:/Ruby25-x64/lib/ruby/gems/2.5.0/gems/sass-3.7.4/lib/sass/tree/import_node.rb:67:in `rescue in import'
 C:/Ruby25-x64/lib/ruby/gems/2.5.0/gems/sass-3.7.4/lib/sass/tree/import_node.rb:44:in `import'
 C:/Ruby25-x64/lib/ruby/gems/2.5.0/gems/sass-3.7.4/lib/sass/tree/import_node.rb:28:in `imported_file'
@@ -68,4 +68,4 @@ C:/Ruby25-x64/bin/scss:23:in `<main>'
 body:before {
   white-space: pre;
   font-family: monospace;
-  content: "Error: File to import not found or unreadable: ~@/styles/theme.scss.\A         on line 1 of commonStyle.scss\A         from line 7 of index.scss\A \A 1: @import './variables.scss';\A 2: @import './mixin.scss';\A 3: @import './transition.scss';\A 4: @import './element-ui.scss';\A 5: @import './sidebar.scss';\A 6: @import './theme.scss';"; }
+  content: "Error: File to import not found or unreadable: ~@/styles/theme.scss.\A         on line 1 of commonStyle.scss\A         from line 8 of index.scss\A \A 1: @import './variables.scss';\A 2: @import './mixin.scss';\A 3: @import './transition.scss';\A 4: @import './element-ui.scss';\A 5: @import './sidebar.scss';\A 6: @import './btn.scss';"; }
