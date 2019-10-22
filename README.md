@@ -128,7 +128,7 @@
 - 使用 [Mock.js](https://github.com/nuysoft/Mock) 进行模拟请求数据
 - 使用 [nprogress](http://ricostacruz.com/nprogress/) 轻量的全局进度条控制
 - 使用 [vue-i18n](http://kazupon.github.io/vue-i18n/zh/) 实现国际化
-- 使用[iconfont字体图标](https://www.iconfont.cn/manage/index?spm=a313x.7781069.1998910419.11&manage_type=myprojects&projectId=1441544&keyword=)
+- 使用 [iconfont字体图标](https://www.iconfont.cn/manage/index?spm=a313x.7781069.1998910419.11&manage_type=myprojects&projectId=1441544&keyword=)
 
 ## Build Setup
 
@@ -297,19 +297,20 @@ vue-element-admin 配套了系列教程文章，如何从零构建后一个完�
 
 ## 全局规范
 
+- 为后期可支持添加布局大小组件，全局除列表页的操作部分可使用 `size="mini"` 其余地方的element组件均不可设置 `size` 属性
 - 所有表单都支持 `clearable`
-- 所有表单内不可以出现 `<button></button>`
+- 所有表单内不可以出现 `<button></button>`（为了大家的统一习惯）
 - 除 `layout1` 中 `AppMain.vue` 不使用 `<el-scrollbar wrap-class="scrollbar-wrapper"></<el-scrollbar>`
   其他也超出高度必须使用 `<el-scrollbar wrap-class="scrollbar-wrapper"></<el-scrollbar>` 处理
 - 所有js要对变量名、函数进行注释，复杂逻辑亦要注释清晰
 - 必须使用 `Eslint` 代码校验工具
-- 全部 `<el-input  type="password" />` 都必须写成 `<el-input type="password" autocomplete="new-password" />` 解决input type="password" h和 type="text" 时自动填充bug
+- 全部 `<el-input  type="password" />` 都必须写成 `<el-input type="password" autocomplete="new-password" />` 解决input type="password" h和 type="text" 时自动填充bug，有好的方法可以一起分享
 - 所有提示性文字都要带有标点符号，中/文对应全角半角
 - 所有弹出信息 title居左，底部按钮居右，左确定，右取消，dialog加拖拽功能
 
 ### 后台全局
 
-- 所有页面级别组件入口（<router-view />）外层都应当包裹一层<div class="app-container"></div>，即：
+- 所有页面级别组件入口（<router-view />）外层都应当包裹一层 `<div class="app-container"></div>`，即：
 ```html
 <div class="app-container">
   <router-view></router-view>
@@ -360,7 +361,7 @@ vue-element-admin 配套了系列教程文章，如何从零构建后一个完�
 - 所有表单都要提供两种触发方式 `blur change`
 - 提倡分步校验
 - 提交后进入详情页，取消返回列表页，
-- 离开编辑页，提示用户是否确定离开页面
+- 离开编辑页，提示用户是否确定离开页面，使用目前一致的代码
 
 ### 详情页
 
