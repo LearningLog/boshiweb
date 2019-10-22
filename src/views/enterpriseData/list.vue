@@ -49,7 +49,6 @@
       fit
       highlight-current-row
     >
-      >
       <el-table-column align="center" label="租户" min-width="150" show-overflow-tooltip prop="customname">
       </el-table-column>
       <el-table-column label="套餐类型" min-width="150" align="center" show-overflow-tooltip prop="payTypeName">

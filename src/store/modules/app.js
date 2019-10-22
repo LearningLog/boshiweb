@@ -8,7 +8,7 @@ const state = {
   },
   language: getLanguage(),
   device: 'desktop',
-  tableHeight: document.documentElement.clientHeight - 240
+  tableHeight: document.documentElement.clientHeight - 234
 }
 
 const mutations = {
@@ -34,7 +34,7 @@ const mutations = {
     Cookies.set('language', language)
   },
   SET_DOCUMENT_HEIGHT: (state, documentHeight) => {
-    state.tableHeight = documentHeight - 240
+    state.tableHeight = documentHeight - 234
   }
 }
 

@@ -45,10 +45,8 @@
       border
       fit
       highlight-current-row
-      :height="660"
       @selection-change="handleSelectionChange"
     >
-      >
       <el-table-column
         type="selection"
         width="50"
@@ -56,7 +54,7 @@
       />
       <el-table-column align="center" label="名称" min-width="150">
         <template slot-scope="scope">
-          <span class="pointer">{{ scope.row.customname }}</span>
+          <span class="pointer" @click="detail(scope.row)">{{ scope.row.customname }}</span>
         </template>
       </el-table-column>
       <el-table-column label="Logo" min-width="90" align="center">
