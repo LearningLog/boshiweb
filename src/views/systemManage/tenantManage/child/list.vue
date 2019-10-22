@@ -45,6 +45,7 @@
       border
       fit
       highlight-current-row
+      :height="660"
       @selection-change="handleSelectionChange"
     >
       >
@@ -53,9 +54,9 @@
         width="50"
         fixed
       />
-      <el-table-column align="center" label="名称" min-width="150" show-overflow-tooltip>
+      <el-table-column align="center" label="名称" min-width="150">
         <template slot-scope="scope">
-          <span class="pointer" @click="detail(scope.row)">{{ scope.row.customname }}</span>
+          <span class="pointer">{{ scope.row.customname }}</span>
         </template>
       </el-table-column>
       <el-table-column label="Logo" min-width="90" align="center">
@@ -63,41 +64,20 @@
           <img v-if="scope.row.pcLogoFileUrl" class="logoImg" :src="scope.row.pcLogoFileUrl" alt="">
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="个性化系统名称" min-width="150" align="center" show-overflow-tooltip>
+      <el-table-column class-name="status-col" label="个性化系统名称" min-width="150" align="center" prop="customSystemName" />
+      <el-table-column align="center" label="创建人" min-width="100" prop="createuser" />
+      <el-table-column align="center" label="创建时间" min-width="120" prop="createtime" />
+      <el-table-column align="center" label="状态" min-width="70">
         <template slot-scope="scope">
-          {{ scope.row.customSystemName }}
+          <el-tag v-if="scope.row.customStatus === 1" type="success">{{ scope.row.customStatusName }}</el-tag>
+          <el-tag v-else type="danger">{{ scope.row.customStatusName }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="创建人" min-width="100" show-overflow-tooltip>
-        <template slot-scope="scope">
-          <span>{{ scope.row.createuser }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="创建时间" min-width="120" show-overflow-tooltip>
-        <template slot-scope="scope">
-          <span>{{ scope.row.createtime }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="状态" min-width="70" show-overflow-tooltip>
-        <template slot-scope="scope">
-          <el-tag type="success" v-if="scope.row.customStatus === 1">{{ scope.row.customStatusName }}</el-tag>
-          <el-tag type="danger" v-else>{{ scope.row.customStatusName }}</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column class-name="status-col" label="操作" width="230" align="center" fixed="right" show-overflow-tooltip>
+      <el-table-column class-name="status-col" label="操作" width="230" align="center" fixed="right">
         <template slot-scope="scope">
           <el-button size="mini" @click="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
           <el-button v-if="scope.row.customStatus === 1" size="mini" @click="enable(scope.row, 0)"><i class="iconfont iconshixiao" />失效</el-button>
           <el-button v-else size="mini" @click="enable(scope.row, 1)"><i class="iconfont iconshengxiao" />生效</el-button>
-          <el-dropdown trigger="click">
-            <el-button size="mini">
-              <i class="iconfont icongengduo" />更多
-            </el-button>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item @click.native="getInformation(scope.row)"><i class="iconfont iconzixun" />资讯</el-dropdown-item>
-              <el-dropdown-item @click.native="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
         </template>
       </el-table-column>
     </el-table>

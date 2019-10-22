@@ -49,19 +49,9 @@
       fit
       highlight-current-row
     >
-      <!--<el-table-column-->
-      <!--type="selection"-->
-      <!--width="55"-->
-      <!--/>-->
-      <el-table-column align="center" label="名称" show-overflow-tooltip>
-        <template slot-scope="scope">
-          <span>{{ scope.row.name }}</span>
-        </template>
+      <el-table-column align="center" label="名称" show-overflow-tooltip prop="name">
       </el-table-column>
-      <el-table-column label="代码" min-width="120" align="center" show-overflow-tooltip>
-        <template slot-scope="scope">
-          <span>{{ scope.row.code }}</span>
-        </template>
+      <el-table-column label="代码" min-width="120" align="center" show-overflow-tooltip prop="code">
       </el-table-column>
       <el-table-column label="状态" min-width="80" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
@@ -69,15 +59,9 @@
           <el-tag type="danger" v-else>{{ scope.row.status_txt }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="创建人" min-width="100" align="center" show-overflow-tooltip>
-        <template slot-scope="scope">
-          {{ scope.row.username }}
-        </template>
+      <el-table-column class-name="status-col" label="创建人" min-width="100" align="center" show-overflow-tooltip prop="username">
       </el-table-column>
-      <el-table-column align="center" label="创建时间" min-width="130" show-overflow-tooltip>
-        <template slot-scope="scope">
-          <span>{{ scope.row.c_time }}</span>
-        </template>
+      <el-table-column align="center" label="创建时间" min-width="130" show-overflow-tooltip prop="c_time">
       </el-table-column>
       <el-table-column class-name="status-col" label="操作" width="230" align="center" fixed="right" show-overflow-tooltip>
         <template slot-scope="scope">

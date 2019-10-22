@@ -47,34 +47,18 @@
       fit
       highlight-current-row
     >
-      <!--<el-table-column-->
-      <!--type="selection"-->
-      <!--width="55"-->
-      <!--/>-->
       <el-table-column align="center" label="名称" show-overflow-tooltip>
         <template slot-scope="scope">
           <span class="pointer" @click="go_detail(scope.row._id)">{{ scope.row.permissionname }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="菜单模块" min-width="120" align="center" show-overflow-tooltip>
-        <template slot-scope="scope">
-          <span>{{ scope.row.modulename }}</span>
-        </template>
+      <el-table-column label="菜单模块" min-width="120" align="center" show-overflow-tooltip prop="modulename">
       </el-table-column>
-      <el-table-column class-name="status-col" label="描述" align="center" show-overflow-tooltip>
-        <template slot-scope="scope">
-          {{ scope.row.permissiondesc }}
-        </template>
+      <el-table-column class-name="status-col" label="描述" align="center" show-overflow-tooltip prop="permissiondesc">
       </el-table-column>
-      <el-table-column class-name="status-col" label="菜单" min-width="120" align="center" show-overflow-tooltip>
-        <template slot-scope="scope">
-          {{ scope.row.permissionbelongmenuname }}
-        </template>
+      <el-table-column class-name="status-col" label="菜单" min-width="120" align="center" show-overflow-tooltip prop="permissionbelongmenuname">
       </el-table-column>
-      <el-table-column align="center" label="创建时间" min-width="130" show-overflow-tooltip>
-        <template slot-scope="scope">
-          <span>{{ scope.row.createtime }}</span>
-        </template>
+      <el-table-column align="center" label="创建时间" min-width="130" show-overflow-tooltip prop="createtime">
       </el-table-column>
       <el-table-column class-name="status-col" label="操作" width="160" align="center" fixed="right" show-overflow-tooltip>
         <template slot-scope="scope">
