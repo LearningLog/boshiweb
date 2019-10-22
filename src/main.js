@@ -8,6 +8,7 @@ import './styles/element-variables.scss'
 
 import '@/styles/index.scss' // global css
 import '@/assets/fonts/iconfont.css' // iconfont css
+import '@/assets/fonts/iconfont.js' // iconfont js
 
 import App from './App'
 import store from './store'

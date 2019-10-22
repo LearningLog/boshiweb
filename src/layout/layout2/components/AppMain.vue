@@ -37,7 +37,7 @@ export default {
     }
   },
   mounted() {
-    this.mainContentHeight = document.body.offsetHeight - 50
+    this.mainContentHeight = document.body.offsetHeight - 100
   }
 }
 </script>

@@ -25,13 +25,21 @@
             node-key="_id"
             :default-checked-keys="treecheckedKeys"
             :props="defaultProps"
-            :render-content="renderContent"
-          />
+          >
+            <span slot-scope="{ node, data }" class="custom-tree-node">
+              <span :dataType="data.type">
+                <svg class="icon" aria-hidden="true">
+                  <use :xlink:href="data.type === 'permission' ? '#iconzu' : '#iconwenjianjia'" />
+                </svg>
+                {{ node.label }}
+              </span>
+            </span>
+          </el-tree>
         </el-scrollbar>
       </el-form-item>
     </el-form>
     <div id="btnGroup">
-      <el-button type="primary" v-no-more-click @click="save">提交</el-button>
+      <el-button v-no-more-click type="primary" @click="save">提交</el-button>
       <el-button type="primary" plain @click="cancel('form')">取消</el-button>
     </div>
   </div>
@@ -61,6 +69,17 @@ export default {
       },
       menuids: [], // 菜单权限集合
       permissionids: [] // 功能权限集合
+    }
+  },
+  watch: {
+    // 监听表单数据变化
+    form: {
+      handler(val) {
+        if (val) {
+          this.dataIsChange++
+        }
+      },
+      deep: true // 深层次监听
     }
   },
   created() {
@@ -120,24 +139,6 @@ export default {
         }
       })
     },
-    // 自定义树节点
-    renderContent(h, { node, data, store }) {
-      if (data.type === 'permission') {
-        return (
-          <span class='custom-tree-node'>
-            <i class='iconfont iconzu authKey' style='color:#1980ff;'></i>
-            <span style='margin-left:5px;'>{node.label}</span>
-          </span>
-        )
-      } else {
-        return (
-          <span class='custom-tree-node'>
-            <i class='iconfont iconwenjianjia menuKey' style='color:#fdc931;'></i>
-            <span style='margin-left:5px;'>{node.label}</span>
-          </span>
-        )
-      }
-    },
     // 保存
     save() {
       const menuTree = this.$refs.menuTree.getCheckedNodes()
@@ -159,17 +160,6 @@ export default {
     // 取消
     cancel(formName) {
       this.$router.push({ path: '/systemManage/roleManage/list' })
-    }
-  },
-  watch: {
-    // 监听表单数据变化
-    form: {
-      handler(val) {
-        if (val) {
-          this.dataIsChange++
-        }
-      },
-      deep: true // 深层次监听
     }
   },
   beforeRouteLeave(to, from, next) {
