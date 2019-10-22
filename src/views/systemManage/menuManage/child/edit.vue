@@ -88,6 +88,7 @@ export default {
     getMenu() {
       getMenu({ _id: this.id }).then(response => {
         this.form = response.data.MenuV2
+        this.dataIsChange = -1
       })
     },
     // 保存

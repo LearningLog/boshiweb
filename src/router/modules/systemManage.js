@@ -10,7 +10,7 @@ import Layout from '@/layout/layout2'
 const systemManage = {
   path: '/systemManage',
   component: Layout,
-  redirect: '/systemManage/menuManage',
+  redirect: 'noRedirect',
   name: 'systemManage',
   meta: {
     title: '系统配置',

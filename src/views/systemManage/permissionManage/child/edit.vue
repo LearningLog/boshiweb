@@ -313,6 +313,7 @@ export default {
         const temp = res_dt.permissionbelongmenuname
         const temparr = temp.split('/')
         this.menu_tree_checked.lables = temparr
+        this.dataIsChange = -1
       }).catch(error => {
         console.log(error)
       })

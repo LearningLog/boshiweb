@@ -119,6 +119,7 @@ export default {
           effectTime: response.data.startTime ? [response.data.startTime, response.data.endTime] : ''
         }
         this.form = obj
+        this.dataIsChange = -1
       })
     },
     // 提交

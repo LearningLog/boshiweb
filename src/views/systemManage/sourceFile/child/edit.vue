@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { source_file_edit } from '@/api/systemManage-sourceFile.js'
+import { source_file_detail, source_file_edit } from '@/api/systemManage-sourceFile.js'
 export default {
   data() {
     return {
@@ -33,7 +33,7 @@ export default {
         name: '',
         enable_status: null
       },
-      query_param: {},
+      id: null,
       rules: {
         code: [
           { required: true, message: '请输入文件代码（长度在 2 到 64 个字符）', trigger: 'blur' },
@@ -51,19 +51,16 @@ export default {
     }
   },
   created(options) {
-    this.query_param = this.$route.query.queryDt
+    this.id = this.$route.query.id
     this.get_original_info()
   },
   methods: {
     // 获取原始值
     get_original_info() {
-      const that = this
-      const param = {}
-      param.ids = that.query_param._id
-      // 根据id获取单个数据
-      that.form.code = that.query_param.code
-      that.form.name = that.query_param.name
-      that.form.enable_status = that.query_param.enable_status
+      source_file_detail({ _id: this.id }).then(response => {
+        this.form = response.data
+        this.dataIsChange = -1
+      })
     },
     // 确定编辑
     save(formName) {

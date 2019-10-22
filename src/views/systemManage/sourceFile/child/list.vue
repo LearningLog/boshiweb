@@ -203,9 +203,8 @@ export default {
       })
     },
     // go编辑
-    go_edit_fn(data) {
-      const dt = data
-      this.$router.push({ path: '/systemManage/sourceFile/edit', query: { queryDt: dt }})
+    go_edit_fn(row) {
+      this.$router.push({ path: '/systemManage/sourceFile/edit', query: { id: row._id }})
     },
     // go添加
     add() {

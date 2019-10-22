@@ -281,6 +281,7 @@ export default {
           $('.uploadMobileLogo .el-upload--picture-card').hide()
         }
         this.form = obj
+        this.dataIsChange = -1
       })
     },
     // 提交

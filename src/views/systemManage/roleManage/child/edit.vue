@@ -63,6 +63,7 @@ export default {
     getInitData() {
       getOneRole({ _id: this.id }).then(response => {
         this.form = response.data.role
+        this.dataIsChange = -1
       })
     },
     // 获取所属租户list

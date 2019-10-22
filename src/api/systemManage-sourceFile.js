@@ -21,6 +21,14 @@ export function source_file_add(data) {
     data
   })
 }
+// 文件来源详情
+export function source_file_detail(data) {
+  return request({
+    url: '/sourceSystem/findById',
+    method: 'post',
+    data
+  })
+}
 // 文件来源修改
 export function source_file_edit(data) {
   return request({

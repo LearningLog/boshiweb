@@ -74,6 +74,7 @@ export default {
     getInitData() {
       getOneRole({ _id: this.id }).then(response => {
         this.form = response.data.role
+        this.dataIsChange = -1
       })
     },
     // 获取角色授权页面管理类型

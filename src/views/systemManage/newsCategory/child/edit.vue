@@ -51,6 +51,7 @@ export default {
         const dt = res.data.newscategory
         that.form.newscategory_name = dt.newscategory_name ? dt.newscategory_name : ''
         that.form.newscategory_desc = dt.newscategory_desc ? dt.newscategory_desc : ''
+        this.dataIsChange = -1
       }).catch(error => {
         console.log(error)
       })
