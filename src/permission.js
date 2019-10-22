@@ -32,6 +32,7 @@ router.beforeEach(async(to, from, next) => {
         // 设置当前菜单下按钮权限
         const currentButtonPermission = to.meta.btnPermissionId ? JSON.parse(store.getters.allButtonPermission)[to.meta.btnPermissionId] : {}
         await store.dispatch('permission/setCurrentBtnMermission', currentButtonPermission)
+        sessionStorage.setItem('defaultActive', JSON.stringify(to.path))
         next()
       } else {
         try {
