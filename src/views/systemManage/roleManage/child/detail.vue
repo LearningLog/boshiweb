@@ -26,8 +26,16 @@
             node-key="_id"
             :default-checked-keys="treecheckedKeys"
             :props="defaultProps"
-            :render-content="renderContent"
-          />
+          >
+            <span slot-scope="{ node, data }" class="custom-tree-node">
+              <span :dataType="data.type">
+                <svg class="icon" aria-hidden="true">
+                  <use :xlink:href="data.type === 'permission' ? '#iconzu' : '#iconwenjianjia'" />
+                </svg>
+                {{ node.label }}
+              </span>
+            </span>
+          </el-tree>
         </el-scrollbar>
       </el-form-item>
     </el-form>
@@ -106,24 +114,6 @@ export default {
           this.getDefaultCheckedKeys(item.childs)
         }
       })
-    },
-    // 自定义树节点
-    renderContent(h, { node, data, store }) {
-      if (data.type === 'permission') {
-        return (
-          <span class='custom-tree-node'>
-          <i class='iconfont iconzu authKey' style='color:#1980ff;'></i>
-          <span style='margin-left:5px;'>{node.label}</span>
-        </span>
-      )
-      } else {
-        return (
-          <span class='custom-tree-node'>
-          <i class='iconfont iconwenjianjia menuKey' style='color:#fdc931;'></i>
-          <span style='margin-left:5px;'>{node.label}</span>
-        </span>
-      )
-      }
     },
     // 确定
     confirm() {
