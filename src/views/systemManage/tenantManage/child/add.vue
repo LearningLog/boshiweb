@@ -88,7 +88,7 @@
       </el-form-item>
     </el-form>
     <div id="btnGroup">
-      <el-button type="primary" v-no-more-click @click="onSubmit('form')">确定</el-button>
+      <el-button type="primary" v-no-more-click @click="onSubmit('form')">提交</el-button>
       <el-button type="primary" plain @click="cancel('form')">取消</el-button>
     </div>
     <!-- vueCropper 剪裁图片实现-->

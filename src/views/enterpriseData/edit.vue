@@ -29,7 +29,7 @@
         </el-form-item>
       </el-form>
       <div id="btnGroup">
-        <el-button v-no-more-click type="primary" @click="onSubmit('form')">确定</el-button>
+        <el-button v-no-more-click type="primary" @click="onSubmit('form')">保存</el-button>
         <el-button type="primary" plain @click="cancel('form')">取消</el-button>
       </div>
     </div>

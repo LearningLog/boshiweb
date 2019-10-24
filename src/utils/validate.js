@@ -80,7 +80,6 @@ export function onKeyValid(val, num) {
   if (num === 2) {
     const reg = /^0\.{1}\d{0,2}|\.{1}\d{0,2}$/
     if (!reg.test(val)) {
-      debugger
       return (val * 1).toFixed(2)
     }
   } else if (num === 3) {

@@ -648,7 +648,6 @@ export default {
         reset_pwd_param._id = verifiedDt.userId
         // 修改密码
         forget_updatepwd(reset_pwd_param).then(res => {
-          debugger
           that.$message({
             message: '重置成功！',
             type: 'success'
