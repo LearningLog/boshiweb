@@ -6,19 +6,19 @@
     <div class="echartsDom">
       <div class="userCount echarts">
         <div class="userCountPercent percent">
-          <span>{{ this.form.createdUserCount }}</span><span>/</span><span>{{ this.form.totalUserCount }}</span>
+          <span>{{ form.createdUserCount }}</span><span>/</span><span>{{ form.totalUserCount }}</span>
         </div>
         <div id="userCount" class="item" />
       </div>
       <div class="sms echarts">
         <div class="smsPercent percent">
-          <span>{{ this.form.noticeTotalSms + this.form.codeTotalSms }}</span><span>/</span><span>{{ this.form.usedTotalSms }}</span>
+          <span>{{ form.noticeTotalSms + form.codeTotalSms }}</span><span>/</span><span>{{ form.usedTotalSms }}</span>
         </div>
         <div id="sms" class="item" />
       </div>
       <div class="storageSpace echarts">
         <div class="storageSpacePercent percent">
-          <span>{{ getFileShowSizeToG(this.form.usedStorageSpace) }}</span><span>/</span><span>{{ getFileShowSizeToG(this.form.totalStorageSpace) }}</span>
+          <span>{{ getFileShowSizeToG(form.usedStorageSpace) }}</span><span>/</span><span>{{ getFileShowSizeToG(form.totalStorageSpace) }}</span>
         </div>
         <div id="storageSpace" class="item" />
       </div>
