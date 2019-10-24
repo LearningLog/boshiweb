@@ -18,6 +18,7 @@ export default {
   },
   methods: {
     refreshView(url) {
+      console.log('url', url)
       const defaultActive = JSON.parse(sessionStorage.getItem('defaultActive'))
       // 点击侧边栏 刷新当前路由，vue-element-admin官网解释
       // https://panjiachen.gitee.io/vue-element-admin-site/zh/guide/essentials/router-and-nav.html#%E7%82%B9%E5%87%BB%E4%BE%A7%E8%BE%B9%E6%A0%8F-%E5%88%B7%E6%96%B0%E5%BD%93%E5%89%8D%E8%B7%AF%E7%94%B1
