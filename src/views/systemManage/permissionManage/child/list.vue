@@ -10,10 +10,10 @@
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
               <el-form-item label="菜单模块">
-                <el-input v-model="listQuery.module" placeholder="请输入菜单模块" clearable />
+                <el-input v-model="listQuery.module" placeholder="请输入菜单模块" clearable @keyup.enter.native="topSearch" />
               </el-form-item>
               <el-form-item label="菜单">
-                <el-input v-model="listQuery.menu" placeholder="请输入菜单" clearable />
+                <el-input v-model="listQuery.menu" placeholder="请输入菜单" clearable @keyup.enter.native="topSearch" />
               </el-form-item>
               <el-form-item label="创建时间">
                 <el-date-picker

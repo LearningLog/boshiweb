@@ -10,7 +10,7 @@
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
               <el-form-item label="套餐类型">
-                <el-input v-model="listQuery.payTypeName" placeholder="请输入套餐类型" clearable />
+                <el-input v-model="listQuery.payTypeName" placeholder="请输入套餐类型" clearable @keyup.enter.native="topSearch" />
               </el-form-item>
               <el-form-item label="创建时间">
                 <el-date-picker

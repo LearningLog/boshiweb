@@ -17,10 +17,10 @@
             <el-card id="advancedSearchArea" shadow="never">
               <el-form ref="form" :model="listQuery" label-width="100px">
                 <el-form-item label="标识">
-                  <el-input v-model="listQuery.cmark" placeholder="请输入菜单标识" clearable />
+                  <el-input v-model="listQuery.cmark" placeholder="请输入菜单标识" clearable @keyup.enter.native="topSearch" />
                 </el-form-item>
                 <el-form-item label="菜单模块">
-                  <el-select v-model="listQuery.type" placeholder="请选择菜单模块" clearable>
+                  <el-select v-model="listQuery.type" placeholder="请选择菜单模块" clearable @keyup.enter.native="topSearch">
                     <el-option v-for="item in menuType" :key="item.id" :label="item.name" :value="item.id" />
                   </el-select>
                 </el-form-item>
