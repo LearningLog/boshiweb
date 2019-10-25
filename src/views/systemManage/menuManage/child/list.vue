@@ -54,15 +54,13 @@
             <span class="pointer" @click="detail(scope.row)">{{ scope.row.menuname }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="标识" min-width="100" align="center" show-overflow-tooltip prop="cmark">
-        </el-table-column>
+        <el-table-column label="标识" min-width="130" align="center" show-overflow-tooltip prop="cmark" />
         <el-table-column label="图标" min-width="60" align="center" show-overflow-tooltip>
           <template slot-scope="scope">
             <i v-if="scope.row.imagename" :class="'iconfont ' + scope.row.imagename" />
           </template>
         </el-table-column>
-        <el-table-column class-name="status-col" label="路径" min-width="160" align="center" show-overflow-tooltip prop="menuurl">
-        </el-table-column>
+        <el-table-column class-name="status-col" label="路径" min-width="130" align="center" show-overflow-tooltip prop="menuurl" />
         <el-table-column align="center" show-overflow-tooltip prop="created_at" label="模块" min-width="90">
           <template slot-scope="scope">
             <span>{{ getMenuTypeName(scope.row.type) }}</span>

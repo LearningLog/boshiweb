@@ -41,8 +41,8 @@
       </div>
       <el-form-item label="平台Logo" class="logoClass">
         <el-upload
-          class="uploadDeskTopLogo"
           ref="uploadDeskTopLogo"
+          class="uploadDeskTopLogo"
           name="thumbnailfile"
           :action="uploadUrl()"
           :headers="headers"
@@ -67,8 +67,8 @@
       </el-form-item>
       <el-form-item label="移动端Logo" class="logoClass">
         <el-upload
-          class="uploadMobileLogo"
           ref="uploadMobileLogo"
+          class="uploadMobileLogo"
           name="thumbnailfile"
           :action="uploadUrl()"
           :headers="headers"
@@ -96,7 +96,7 @@
       </el-form-item>
     </el-form>
     <div id="btnGroup">
-      <el-button type="primary" v-no-more-click @click="onSubmit('form')">保存</el-button>
+      <el-button v-no-more-click type="primary" @click="onSubmit('form')">保存</el-button>
       <el-button type="primary" plain @click="cancel('form')">取消</el-button>
     </div>
     <!-- vueCropper 剪裁图片实现-->
@@ -136,7 +136,7 @@
         </div>
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" v-no-more-click @click="finish">确认</el-button>
+        <el-button v-no-more-click type="primary" @click="finish">确认</el-button>
         <el-button @click="closeUpload">取 消</el-button>
       </div>
     </el-dialog>
@@ -245,6 +245,17 @@ export default {
           { min: 6, max: 50, message: '长度在 6 到 50 个字符', trigger: 'change' }
         ]
       }
+    }
+  },
+  watch: {
+    // 监听表单数据变化
+    form: {
+      handler(val) {
+        if (val) {
+          this.dataIsChange++
+        }
+      },
+      deep: true // 深层次监听
     }
   },
   created() {
@@ -421,17 +432,6 @@ export default {
     // 校验最大用户数为正整数
     intNum(val) {
       this.form.userCount = validIntNum(val)
-    }
-  },
-  watch: {
-    // 监听表单数据变化
-    form: {
-      handler(val) {
-        if (val) {
-          this.dataIsChange++
-        }
-      },
-      deep: true // 深层次监听
     }
   },
   beforeRouteLeave(to, from, next) {

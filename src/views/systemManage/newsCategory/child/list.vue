@@ -46,12 +46,9 @@
           <span class="pointer" @click="go_detail(scope.row._id)">{{ scope.row.newscategory_name }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="描述" min-width="130" align="center" show-overflow-tooltip prop="newscategory_desc">
-      </el-table-column>
-      <el-table-column label="创建人" min-width="80" align="center" show-overflow-tooltip prop="createuser">
-      </el-table-column>
-      <el-table-column align="center" label="创建时间" min-width="120" show-overflow-tooltip prop="createtime">
-      </el-table-column>
+      <el-table-column label="描述" min-width="130" align="center" show-overflow-tooltip prop="newscategory_desc" />
+      <el-table-column label="创建人" min-width="80" align="center" show-overflow-tooltip prop="createuser" />
+      <el-table-column align="center" label="创建时间" min-width="120" show-overflow-tooltip prop="createtime" />
       <el-table-column class-name="status-col" label="操作" width="230" align="center" fixed="right" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-button size="mini" @click="go_edit_fn(scope.row._id)"><i class="iconfont iconxiugai" />修改</el-button>

@@ -6,13 +6,13 @@
       label-width="130px"
     >
       <el-form-item label="租户名称：">
-        <span>{{form.customname}}</span>
+        <span>{{ form.customname }}</span>
       </el-form-item>
       <el-form-item label="租户描述：">
-        <span>{{form.desc}}</span>
+        <span>{{ form.desc }}</span>
       </el-form-item>
       <el-form-item label="最大用户数：">
-        <span>{{form.userCount}}</span>
+        <span>{{ form.userCount }}</span>
       </el-form-item>
       <el-form-item label="租户状态：">
         <span>{{ form.customStatus === 1 ? '生效' : '失效' }}</span>
@@ -21,19 +21,19 @@
         <span>{{ form.text_extraction === 1 ? '开启' : '关闭' }}</span>
       </el-form-item>
       <el-form-item label="租户管理员：">
-        <span>{{form.username}}</span>
+        <span>{{ form.username }}</span>
       </el-form-item>
       <el-form-item label="管理员昵称：">
-        <span>{{form.nickname}}</span>
+        <span>{{ form.nickname }}</span>
       </el-form-item>
       <el-form-item label="平台Logo：">
-        <img v-if="form.pcLogoFileUrl" :src="form.pcLogoFileUrl" />
+        <img v-if="form.pcLogoFileUrl" :src="form.pcLogoFileUrl">
       </el-form-item>
       <el-form-item label="移动端Logo：">
-        <img v-if="form.mobileLogoFileUrl" :src="form.mobileLogoFileUrl" />
+        <img v-if="form.mobileLogoFileUrl" :src="form.mobileLogoFileUrl">
       </el-form-item>
       <el-form-item label="个性化系统名称：">
-        <span>{{form.customSystemName}}</span>
+        <span>{{ form.customSystemName }}</span>
       </el-form-item>
     </el-form>
     <div id="btnGroup">

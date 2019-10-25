@@ -24,7 +24,7 @@
       </el-form-item>
     </el-form>
     <div id="btnGroup">
-      <el-button type="primary" v-no-more-click @click="save('form')">保存</el-button>
+      <el-button v-no-more-click type="primary" @click="save('form')">保存</el-button>
       <el-button type="primary" plain @click="cancel('form')">取消</el-button>
     </div>
     <!--菜单选择列表-->
@@ -122,6 +122,17 @@ export default {
           { required: true, message: '请选择权限类别', trigger: 'change' }
         ]
       }
+    }
+  },
+  watch: {
+    // 监听表单数据变化
+    form: {
+      handler(val) {
+        if (val) {
+          this.dataIsChange++
+        }
+      },
+      deep: true // 深层次监听
     }
   },
   created() {
@@ -325,7 +336,7 @@ export default {
         if (valid) {
           this.form._id = this.query_param
           permission_edit(this.form).then(response => {
-            this.$message.success('修改成功')
+            this.$message.success('修改权限成功！')
             this.noLeaveprompt = true
             this.$router.push({ path: '/systemManage/permissionManage/detail', query: { ids: query_param }})
           })
@@ -335,17 +346,6 @@ export default {
     // 取消权限编辑
     cancel(formName) {
       this.$router.push({ path: '/systemManage/permissionManage/list' })
-    }
-  },
-  watch: {
-    // 监听表单数据变化
-    form: {
-      handler(val) {
-        if (val) {
-          this.dataIsChange++
-        }
-      },
-      deep: true // 深层次监听
     }
   },
   beforeRouteLeave(to, from, next) {

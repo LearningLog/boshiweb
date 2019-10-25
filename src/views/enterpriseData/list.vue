@@ -49,25 +49,21 @@
       fit
       highlight-current-row
     >
-      <el-table-column align="center" label="租户" min-width="150" show-overflow-tooltip prop="customname">
-      </el-table-column>
-      <el-table-column label="套餐类型" min-width="150" align="center" show-overflow-tooltip prop="payTypeName">
-      </el-table-column>
-      <el-table-column class-name="status-col" label="员工规模" min-width="70" align="center" show-overflow-tooltip prop="totalUserCount">
-      </el-table-column>
-      <el-table-column align="center" label="短信使用" min-width="100" show-overflow-tooltip>
+      <el-table-column align="center" label="租户" min-width="140" show-overflow-tooltip prop="customname" />
+      <el-table-column label="套餐类型" min-width="110" align="center" show-overflow-tooltip prop="payTypeName" />
+      <el-table-column class-name="status-col" label="员工规模" min-width="70" align="center" show-overflow-tooltip prop="totalUserCount" />
+      <el-table-column align="center" label="短信使用" min-width="70" show-overflow-tooltip>
         <template slot-scope="scope">
           <span>{{ scope.row.usedTotalSms }}</span><span>&nbsp;/&nbsp;</span><span>{{ scope.row.totalSms }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="存储空间" min-width="100" show-overflow-tooltip>
+      <el-table-column align="center" label="存储空间" min-width="70" show-overflow-tooltip>
         <template slot-scope="scope">
           <span>{{ getFileShowSize(scope.row.usedStorageSpace) }}</span><span>&nbsp;/&nbsp;</span><span>{{ getFileShowSize(scope.row.totalStorageSpace) }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="创建时间" min-width="100" show-overflow-tooltip prop="createtime">
-      </el-table-column>
-      <el-table-column align="center" label="有效期" min-width="130" show-overflow-tooltip>
+      <el-table-column align="center" label="创建时间" min-width="100" show-overflow-tooltip prop="createtime" />
+      <el-table-column align="center" label="有效期" min-width="120" show-overflow-tooltip>
         <template slot-scope="scope">
           <span>{{ scope.row.effectTime }}</span>
           <span>{{ parseTime(scope.row.startTime || '', '{y}-{m}-{d}') }}</span><span>&nbsp;至&nbsp;</span><span>{{ parseTime(scope.row.endTime || '', '{y}-{m}-{d}') }}</span>

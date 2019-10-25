@@ -8,7 +8,7 @@
         <el-input v-model="form.desc" placeholder="请输入租户描述" maxlength="100" clearable />
       </el-form-item>
       <el-form-item label="最大用户数" prop="userCount">
-        <el-input v-model="form.userCount" @keyup.native="intNum(form.userCount)" placeholder="请输入最大用户数" clearable />
+        <el-input v-model="form.userCount" placeholder="请输入最大用户数" clearable @keyup.native="intNum(form.userCount)" />
       </el-form-item>
       <el-form-item label="租户状态" prop="customStatus">
         <el-radio-group v-model="form.customStatus">
@@ -33,8 +33,8 @@
       </el-form-item>
       <el-form-item label="平台Logo" class="logoClass">
         <el-upload
-          class="uploadDeskTopLogo"
           ref="uploadDeskTopLogo"
+          class="uploadDeskTopLogo"
           name="thumbnailfile"
           :action="uploadUrl()"
           :headers="headers"
@@ -59,8 +59,8 @@
       </el-form-item>
       <el-form-item label="移动端Logo" class="logoClass">
         <el-upload
-          class="uploadMobileLogo"
           ref="uploadMobileLogo"
+          class="uploadMobileLogo"
           name="thumbnailfile"
           :action="uploadUrl()"
           :headers="headers"
@@ -88,7 +88,7 @@
       </el-form-item>
     </el-form>
     <div id="btnGroup">
-      <el-button type="primary" v-no-more-click @click="onSubmit('form')">提交</el-button>
+      <el-button v-no-more-click type="primary" @click="onSubmit('form')">提交</el-button>
       <el-button type="primary" plain @click="cancel('form')">取消</el-button>
     </div>
     <!-- vueCropper 剪裁图片实现-->
@@ -128,7 +128,7 @@
         </div>
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" v-no-more-click @click="finish">确认</el-button>
+        <el-button v-no-more-click type="primary" @click="finish">确认</el-button>
         <el-button @click="closeUpload">取 消</el-button>
       </div>
     </el-dialog>
@@ -270,6 +270,17 @@ export default {
       }
     }
   },
+  watch: {
+    // 监听表单数据变化
+    form: {
+      handler(val) {
+        if (val) {
+          this.dataIsChange++
+        }
+      },
+      deep: true // 深层次监听
+    }
+  },
   methods: {
     // 提交
     onSubmit(formName) {
@@ -402,17 +413,6 @@ export default {
     // 校验最大用户数为正整数
     intNum(val) {
       this.form.userCount = validIntNum(val)
-    }
-  },
-  watch: {
-    // 监听表单数据变化
-    form: {
-      handler(val) {
-        if (val) {
-          this.dataIsChange++
-        }
-      },
-      deep: true // 深层次监听
     }
   },
   beforeRouteLeave(to, from, next) {

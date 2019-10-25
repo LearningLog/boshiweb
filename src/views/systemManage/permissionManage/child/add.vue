@@ -24,7 +24,7 @@
       </el-form-item>
     </el-form>
     <div id="btnGroup">
-      <el-button type="primary" v-no-more-click @click="save('form')">提交</el-button>
+      <el-button v-no-more-click type="primary" @click="save('form')">提交</el-button>
       <el-button type="primary" plain @click="cancel('form')">取消</el-button>
     </div>
     <!--菜单选择列表-->
@@ -121,6 +121,17 @@ export default {
           { required: true, message: '请选择权限类别', trigger: 'change' }
         ]
       }
+    }
+  },
+  watch: {
+    // 监听表单数据变化
+    form: {
+      handler(val) {
+        if (val) {
+          this.dataIsChange++
+        }
+      },
+      deep: true // 深层次监听
     }
   },
   mounted() {
@@ -296,15 +307,15 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           if (this.form.permissionbelongmenu === []) {
-            this.$message.error('请选择菜单')
+            this.$message.error('请选择菜单！')
             return
           }
           if (this.form.permissionmanage === '') {
-            this.$message.error('请选择权限类别')
+            this.$message.warning('请选择权限类别！')
             return
           }
           permission_add(this.form).then(response => {
-            this.$message.success('添加成功')
+            this.$message.success('新增权限成功！')
             this.noLeaveprompt = true
             const resId = response.data.resId
             this.$router.push({ path: '/systemManage/permissionManage/detail', query: { ids: resId }})
@@ -315,17 +326,6 @@ export default {
     // 取消权限添加
     cancel(formName) {
       this.$router.push({ path: '/systemManage/permissionManage/list' })
-    }
-  },
-  watch: {
-    // 监听表单数据变化
-    form: {
-      handler(val) {
-        if (val) {
-          this.dataIsChange++
-        }
-      },
-      deep: true // 深层次监听
     }
   },
   beforeRouteLeave(to, from, next) {
@@ -362,8 +362,4 @@ export default {
       width: 100%;
     }
   }
-  /*#app /deep/ .el-dialog--center .el-dialog__body{*/
-    /*padding: 10px 25px 10px !important;*/
-  /*}*/
-
 </style>

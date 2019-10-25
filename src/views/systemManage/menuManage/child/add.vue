@@ -41,6 +41,17 @@ export default {
       'menuType'
     ])
   },
+  watch: {
+    // 监听表单数据变化
+    form: {
+      handler(val) {
+        if (val) {
+          this.dataIsChange++
+        }
+      },
+      deep: true // 深层次监听
+    }
+  },
   created() {
     this.pid = this.$route.query.pid
     this.pname = this.$route.query.pname
@@ -101,17 +112,6 @@ export default {
     // 取消
     cancel() {
       this.$router.push({ path: '/systemManage/menuManage/list' })
-    }
-  },
-  watch: {
-    // 监听表单数据变化
-    form: {
-      handler(val) {
-        if (val) {
-          this.dataIsChange++
-        }
-      },
-      deep: true // 深层次监听
     }
   },
   beforeRouteLeave(to, from, next) {

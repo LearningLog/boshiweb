@@ -8,7 +8,7 @@
         <span>{{ form.newscategory_desc }}</span>
       </el-form-item>
       <el-form-item class="website" label="网站：">
-        <p class="websiteItem" v-for="item in form.net_list" :key="item._id">{{ item.website_name }}</p>
+        <p v-for="item in form.net_list" :key="item._id" class="websiteItem">{{ item.website_name }}</p>
       </el-form-item>
     </el-form>
     <div id="btnGroup">

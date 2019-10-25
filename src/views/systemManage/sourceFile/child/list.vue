@@ -49,20 +49,16 @@
       fit
       highlight-current-row
     >
-      <el-table-column align="center" label="名称" show-overflow-tooltip prop="name">
-      </el-table-column>
-      <el-table-column label="代码" min-width="120" align="center" show-overflow-tooltip prop="code">
-      </el-table-column>
+      <el-table-column align="center" label="名称" show-overflow-tooltip prop="name" />
+      <el-table-column label="代码" min-width="120" align="center" show-overflow-tooltip prop="code" />
       <el-table-column label="状态" min-width="80" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
-          <el-tag type="success" v-if="scope.row.enable_status === 1">{{ scope.row.status_txt }}</el-tag>
-          <el-tag type="danger" v-else>{{ scope.row.status_txt }}</el-tag>
+          <el-tag v-if="scope.row.enable_status === 1" type="success">{{ scope.row.status_txt }}</el-tag>
+          <el-tag v-else type="danger">{{ scope.row.status_txt }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="创建人" min-width="100" align="center" show-overflow-tooltip prop="username">
-      </el-table-column>
-      <el-table-column align="center" label="创建时间" min-width="130" show-overflow-tooltip prop="c_time">
-      </el-table-column>
+      <el-table-column class-name="status-col" label="创建人" min-width="100" align="center" show-overflow-tooltip prop="username" />
+      <el-table-column align="center" label="创建时间" min-width="130" show-overflow-tooltip prop="c_time" />
       <el-table-column class-name="status-col" label="操作" width="230" align="center" fixed="right" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-button size="mini" @click="go_edit_fn(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>

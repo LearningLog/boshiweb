@@ -15,7 +15,7 @@
       </el-form-item>
     </el-form>
     <div id="btnGroup">
-      <el-button type="primary" v-no-more-click @click="save('form')">提交</el-button>
+      <el-button v-no-more-click type="primary" @click="save('form')">提交</el-button>
       <el-button type="primary" plain @click="cancel('form')">取消</el-button>
     </div>
   </div>
@@ -49,6 +49,17 @@ export default {
       }
     }
   },
+  watch: {
+    // 监听表单数据变化
+    form: {
+      handler(val) {
+        if (val) {
+          this.dataIsChange++
+        }
+      },
+      deep: true // 深层次监听
+    }
+  },
   created() {
   },
   methods: {
@@ -67,17 +78,6 @@ export default {
     // 取消添加文件来源
     cancel(formName) {
       this.$router.push({ path: '/systemManage/sourceFile/list' })
-    }
-  },
-  watch: {
-    // 监听表单数据变化
-    form: {
-      handler(val) {
-        if (val) {
-          this.dataIsChange++
-        }
-      },
-      deep: true // 深层次监听
     }
   },
   beforeRouteLeave(to, from, next) {

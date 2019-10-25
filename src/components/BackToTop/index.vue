@@ -8,7 +8,7 @@
 <template>
   <transition :name="transitionName">
     <div v-show="visible" :style="customStyle" class="back-to-ceiling" @click="backToTop">
-      <i class="backToTop iconfont iconfanhuidingbu"></i>
+      <i class="backToTop iconfont iconfanhuidingbu" />
     </div>
   </transition>
 </template>

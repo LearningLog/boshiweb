@@ -51,21 +51,16 @@
         type="selection"
         width="55"
         :selectable="selectable"
-      >
-      </el-table-column>
+      />
       <el-table-column align="center" label="名称" show-overflow-tooltip>
         <template slot-scope="scope">
           <span class="pointer" @click="detail(scope.row)">{{ scope.row.rolename }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="描述" min-width="100" align="center" show-overflow-tooltip prop="desc">
-      </el-table-column>
-      <el-table-column label="创建人" min-width="100" align="center" show-overflow-tooltip prop="createuser">
-      </el-table-column>
-      <el-table-column align="center" label="创建时间" min-width="130" show-overflow-tooltip prop="createtime">
-      </el-table-column>
-      <el-table-column align="center" label="所属租户" min-width="140" show-overflow-tooltip prop="customname">
-      </el-table-column>
+      <el-table-column label="描述" min-width="100" align="center" show-overflow-tooltip prop="desc" />
+      <el-table-column label="创建人" min-width="100" align="center" show-overflow-tooltip prop="createuser" />
+      <el-table-column align="center" label="创建时间" min-width="130" show-overflow-tooltip prop="createtime" />
+      <el-table-column align="center" label="所属租户" min-width="140" show-overflow-tooltip prop="customname" />
       <el-table-column align="center" label="是否默认" min-width="80" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-tag v-if="scope.row.defaultRole === '1'" type="success">是</el-tag>

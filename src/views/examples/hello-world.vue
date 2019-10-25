@@ -146,9 +146,6 @@ export default {
   directives: {
     clipboard
   },
-  created() {
-    this.btnPermission = JSON.parse(this.$store.getters.currentButtonPermission)
-  },
   data() {
     return {
       msg: 'Welcome to Your Vue.js App',
@@ -167,6 +164,9 @@ export default {
       // customizable button style, show/hide critical point, return position
       btnPermission: {}
     }
+  },
+  created() {
+    this.btnPermission = JSON.parse(this.$store.getters.currentButtonPermission)
   },
   beforeDestroy() {
     // 销毁video实例，避免出现节点不存在 但是flash一直在执行,也避免重新进入页面video未重新声明
