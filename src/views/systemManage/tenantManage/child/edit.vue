@@ -328,9 +328,26 @@ export default {
     },
     // 上传按钮   限制图片大小
     changeUpload(file, fileList) {
+      const suffixs = ['.png', '.jpg', '.gif', '.jepg', '.jpeg']
+      const i = file.name.lastIndexOf('.')
+      const suffix = file.name.slice(i)
+      if (suffixs.indexOf(suffix) === -1) {
+        this.$message.error('文件格式错误！')
+        if (this.logoType === 1) {
+          this.fileList1 = []
+        } else {
+          this.fileList2 = []
+        }
+        return false
+      }
       const isLt5M = file.size / 1024 / 1024 < 5
       if (!isLt5M) {
         this.$message.error('上传文件大小不能超过 5MB！')
+        if (this.logoType === 1) {
+          this.fileList1 = []
+        } else {
+          this.fileList2 = []
+        }
         return false
       }
       this.fileName = file.name
