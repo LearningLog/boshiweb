@@ -11,7 +11,7 @@
         </el-dropdown-item>
       </router-link>
       <el-dropdown-item divided>
-        <span style="display:block;" @click="logout">Log Out</span>
+        <span style="display:block;" @click="logout">退出</span>
       </el-dropdown-item>
     </el-dropdown-menu>
   </el-dropdown>
@@ -54,6 +54,8 @@ export default {
 <style lang="scss" scoped>
 	.avatar-container {
 		margin-right: 30px;
+    padding: 0 8px;
+    transition: background 0.5s;
 
 		.avatar-wrapper {
 			margin-top: 5px;
@@ -75,5 +77,9 @@ export default {
 				font-size: 12px;
 			}
 		}
+    &:hover {
+      background-color: #f9f9f9;
+      cursor: pointer;
+    }
 	}
 </style>

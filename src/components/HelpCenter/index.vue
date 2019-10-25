@@ -1,7 +1,7 @@
 <template>
-  <div class="help-center">
-    <a :href="helpUrl" target="_blank"><i class="iconfont iconbangzhuzhongxin" />帮助中心</a>
-  </div>
+  <el-tooltip class="item" effect="dark" content="帮助中心" placement="bottom">
+    <a class="help-center" :href="helpUrl" target="_blank"><i class="iconfont iconbangzhuzhongxin" /></a>
+  </el-tooltip>
 </template>
 
 <script>
@@ -22,19 +22,20 @@ export default {
 		display: inline-block;
 		height: 50px;
 		line-height: 50px;
-		margin-right: 20px;
+    padding: 0 8px;
 		float: left;
+    transition: background 0.5s;
+    font-size: 14px;
 
-    & a {
-      font-size: 14px;
-
-      i.iconbangzhuzhongxin {
-        margin-right: 4px;
-      }
+    i.iconbangzhuzhongxin {
+      margin-right: 0px;
+      font-size: 18px;
     }
 
-    & a:hover {
+    &:hover {
       color: $themeColor;
+      background-color: #f9f9f9;
+      cursor: pointer;
     }
 }
 </style>
