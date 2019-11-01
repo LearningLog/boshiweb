@@ -23,7 +23,7 @@ export function isCurrentEgroupManager(egroup) {
   } else {
     egroup = []
   }
-  const allEgroup = store.state.egroup.allEgroup || []
+  const allEgroup = store.state.user.allEgroup || []
   for (var i = 0; i < egroup.length; i++) {
     if (allEgroup.findIndex(value => { return (value.inc + '') === egroup[i] }) > -1) {
       return true
@@ -42,9 +42,7 @@ export function hasThisBtnPermission(permissionCode, isCurrentEgroupManager) {
   const userPermission = store.state.permission.userPermission
   const allPermissionCode = store.state.permission.allPermissionCode
   const userPermissionDetailList = store.state.permission.userPermissionDetailList
-  // const isGroupNamage = false
-  debugger
-  if (userPermission.isAdmin1 || isCurrentEgroupManager) { // 判断数据库是否设置了当前权限code，如果没有设置则表示当前按钮没有设置特定权限
+  if (userPermission.isAdmin || isCurrentEgroupManager) { // 判断数据库是否设置了当前权限code，如果没有设置则表示当前按钮没有设置特定权限
     return true
   } else {
     if ((allPermissionCode.indexOf(permissionCode) > -1)) {

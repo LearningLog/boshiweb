@@ -47,3 +47,12 @@ export function getAllEgroup() {
     data: {}
   })
 }
+
+// 获取应用信息
+export function getUserApplicationInfo() {
+  return request({
+    url: '/system/user/getUserApplicationInfo',
+    method: 'post',
+    data: {}
+  })
+}
