@@ -1,32 +1,24 @@
 <template>
   <div class="form-edit">
     <el-form ref="form" class="form" :model="form" :rules="rules" :status-icon="true" label-width="120px">
-      <el-form-item class="required" label="技能名称" prop="skill_name">
-        <el-input v-model="form.skill_name" placeholder="请输入技能名称" clearable />
+      <el-form-item class="required" label="分组名称" prop="groupName">
+        <el-input v-model="form.groupName" placeholder="请输入分组名称" clearable />
       </el-form-item>
-      <el-form-item label="技能描述">
-        <el-input v-model="form.skill_desc" placeholder="请输入技能描述" clearable />
+      <el-form-item label="分组描述">
+        <el-input v-model="form.desc" placeholder="请输入分组描述" clearable />
       </el-form-item>
-      <el-form-item label="所属租户" prop="groupId">
-        <el-select v-model="form.groupId" placeholder="请选择所属租户" clearable filterable>
-          <el-option
-            v-for="item in custom_list"
-            :key="item._id"
-            :label="item.customname"
-            :value="item._id"
-          />
-        </el-select>
+      <el-form-item label="分组排序" prop="order">
+        <el-input v-model.number="form.order" placeholder="请输入分组排序" clearable />
       </el-form-item>
-    </el-form>
-    <div id="btnGroup">
-      <el-button v-no-more-click type="primary" @click="save('form')">保存</el-button>
-      <el-button type="primary" plain @click="cancel('form')">取消</el-button>
-    </div>
-  </div>
+      <div id="btnGroup">
+        <el-button v-no-more-click type="primary" @click="save('form')">保存</el-button>
+        <el-button type="primary" plain @click="cancel('form')">取消</el-button>
+      </div>
+    </el-form></div>
 </template>
 
 <script>
-import { addItem, getCustomManageList } from '@/api/userCenter-skillManage'
+import { addItem } from '@/api/userCenter-groupManage'
 
 export default {
   data() {
@@ -35,17 +27,23 @@ export default {
       noLeaveprompt: false, // 表单提交后，设置为true，据此判断提交不再弹出离开提示
       id: '', // 查询id
       form: {
-        skill_name: '', // 技能名称
-        desc: '', // 技能描述
+        skill_name: '', // 分组名称
+        desc: '', // 分组描述
         groupId: '' // 所属租户
       },
       custom_list: [], // 所属租户list
       rules: {
         skill_name: [
-          { required: true, message: '请输入技能名称（长度在 2 到 20 个字符）', trigger: 'blur' },
-          { required: true, message: '请输入技能名称（长度在 2 到 20 个字符）', trigger: 'change' },
+          { required: true, message: '请输入分组名称（长度在 2 到 20 个字符）', trigger: 'blur' },
+          { required: true, message: '请输入分组名称（长度在 2 到 20 个字符）', trigger: 'change' },
           { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' },
           { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'change' }
+        ],
+        order: [
+          { required: true, type: 'number', message: '请输入数字', trigger: 'blur' },
+          { required: true, type: 'number', message: '请输入数字', trigger: 'change' },
+          { min: 0, max: 100, type: 'number', message: '最大输入两位数', trigger: 'blur' },
+          { min: 0, max: 100, type: 'number', message: '最大输入两位数', trigger: 'change' }
         ],
         groupId: [
           { required: true, message: '请选择所属租户', trigger: 'blur' },
@@ -54,43 +52,25 @@ export default {
       }
     }
   },
-  watch: {
-    // 监听表单数据变化
-    form: {
-      handler(val) {
-        if (val) {
-          this.dataIsChange++
-        }
-      },
-      deep: true // 深层次监听
-    }
-  },
   created() {
     // this.id = this.$route.query.id
-    this.getCustomManageList()
   },
   methods: {
-    // 获取所属租户list
-    getCustomManageList() {
-      getCustomManageList().then(res => {
-        this.custom_list = res.data
-      })
-    },
     // 保存
     save(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           addItem(this.form).then(response => {
-            this.$message.success('新增技能成功！')
+            this.$message.success('新建分组成功！')
             this.noLeaveprompt = true
-            this.$router.push({ path: '/user-center/skill-manager/list' })
+            this.$router.push({ path: '/user-center/group-manage/list' })
           })
         }
       })
     },
     // 取消
     cancel(formName) {
-      this.$router.push({ path: '/user-center/skill-manager/list' })
+      this.$router.push({ path: '/user-center/group-manage/list' })
     }
   },
   beforeRouteLeave(to, from, next) {

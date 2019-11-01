@@ -55,6 +55,45 @@ const userCenter = {
         }
 
       ]
+    },
+    {
+      path: 'group-manage',
+      component: () => import('@/views/user-center/group-manage/index'),
+      redirect: '/user-center/group-manage/list',
+      name: 'group-manage',
+      meta: { title: '分组管理', icon: '', activeMenu: '/user-center/group-manage' },
+      children: [
+        {
+          path: 'list',
+          name: 'roleList',
+          hidden: true,
+          component: () => import('@/views/user-center/group-manage/child/list.vue'),
+          meta: { title: '分组管理列表', icon: '', activeMenu: '/user-center/group-manage' }
+        },
+        {
+          path: 'edit',
+          name: 'roleEdit',
+          hidden: true,
+          component: () => import('@/views/user-center/group-manage/child/edit'),
+          meta: { title: '修改分组', icon: '', activeMenu: '/user-center/group-manage' }
+        },
+        {
+          path: 'add',
+          component: () => import('@/views/user-center/group-manage/child/add.vue'),
+          name: 'roleAdd',
+          hidden: true,
+          meta: { title: '新增分组', icon: '', activeMenu: '/user-center/group-manage' }
+        },
+
+        {
+          path: 'detail',
+          name: 'roleDetail',
+          hidden: true,
+          component: () => import('@/views/user-center/group-manage/child/detail'),
+          meta: { title: '分组详情', icon: '', activeMenu: '/user-center/group-manage' }
+        }
+
+      ]
     }
   ]
 }
