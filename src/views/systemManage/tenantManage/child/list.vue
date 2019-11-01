@@ -246,6 +246,8 @@ export default {
     getInformation(row) {
       this.setInformationId = row._id
       getInformationList({ groupId: row._id }).then(response => {
+        this.noList = []
+        this.hasList = []
         this.noList = response.data.noList.concat(response.data.hasList)
         response.data.hasList.forEach((item, index) => {
           this.hasList.push(item._id)

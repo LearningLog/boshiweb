@@ -84,7 +84,7 @@
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="get_list" />
     <div id="bottomOperation">
-      <el-button v-show="total>0" type="primary" @click="batch_del_fn"><i class="iconfont iconshanchu" />批量删除</el-button>
+      <el-button v-show="total>0" type="danger" plain @click="batch_del_fn"><i class="iconfont iconshanchu" />批量删除</el-button>
     </div>
   </div>
 </template>

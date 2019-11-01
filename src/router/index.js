@@ -26,7 +26,6 @@ import systemManage from './modules/systemManage'
     icon: 'iconfont'             设置该路由的图标
     breadcrumb: false            如果设置为false，则不会在breadcrumb面包屑中显示(default is true)
     activeMenu: '/example/list'  if set path, the sidebar will highlight the path you set
-    btnPermissionId: ''          页面按钮权限id
   }
  */
 

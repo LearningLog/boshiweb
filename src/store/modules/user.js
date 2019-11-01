@@ -93,7 +93,11 @@ const actions = {
         response.data = response.data || {}
         routes.systemRoutes = response.data.systemMenus || []
         routes.backstageRoutes = response.data.tenementMenus || []
-        routes.allButtonPermission = response.data.allButtonPermission ? response.data.allButtonPermission : {}
+        routes.allButtonPermission = {
+          allPermissionCode: response.data.allPermissionCode,
+          userPermission: response.data.userPermission,
+          userPermissionDetailList: response.data.userPermissionDetailList
+        }
         resolve(routes)
       }).catch(error => {
         reject(error)
