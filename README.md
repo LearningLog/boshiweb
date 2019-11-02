@@ -128,7 +128,7 @@
 - 使用 [Mock.js](https://github.com/nuysoft/Mock) 进行模拟请求数据
 - 使用 [nprogress](http://ricostacruz.com/nprogress/) 轻量的全局进度条控制
 - 使用 [vue-i18n](http://kazupon.github.io/vue-i18n/zh/) 实现国际化
-- 使用 [iconfont字体图标](https://www.iconfont.cn/manage/index?spm=a313x.7781069.1998910419.11&manage_type=myprojects&projectId=1441544&keyword=)
+- 使用iconfont字体图标 [仓库地址](https://www.iconfont.cn/manage/index?spm=a313x.7781069.1998910419.11&manage_type=myprojects&projectId=1441544&keyword=)
 
 ## Build Setup
 
@@ -297,6 +297,7 @@ vue-element-admin 配套了系列教程文章，如何从零构建后一个完�
 
 ## 全局规范
 
+- 全局使用到主题色的地方，都必须统一使用 `@import "~@/styles/theme.scss"; color: $themeColor;` 
 - 为后期可支持添加布局大小组件，全局除列表页的操作部分可使用 `size="mini"` 其余地方的element组件均不可设置 `size` 属性
 - 所有表单都支持 `clearable`
 - 所有表单内不可以出现 `<button></button>`（为了大家的统一习惯）
