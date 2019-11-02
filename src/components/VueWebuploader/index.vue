@@ -1,3 +1,4 @@
+<!--文件分片断点续传UI组件-->
 <template>
   <div class="page">
     <div id="filePicker">选择文件</div>

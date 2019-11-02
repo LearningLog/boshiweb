@@ -1,3 +1,4 @@
+<!--文件分片断点续传底层组件-->
 <template>
   <div>
     <div class="upload" />
