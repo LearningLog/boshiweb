@@ -56,7 +56,7 @@
         fixed
         :selectable="selectable"
       />
-      <el-table-column align="center" label="用户名" min-width="120"  show-overflow-tooltip>
+      <el-table-column align="center" label="用户名" min-width="120" show-overflow-tooltip>
         <template slot-scope="scope">
           <span class="pointer" @click="detail(scope.row)">{{ scope.row.username }}</span>
         </template>
@@ -123,17 +123,62 @@
       </div>
     </el-dialog>
     <el-dialog v-el-drag-dialog class="setRolesDialog" width="650px" title="分配小组" :visible.sync="setEgroupsDialogVisible">
-      <el-transfer v-model="einc" class="setEgroups" :data="noList2" :titles="['未分配小组', '已分配小组']" :props="defaultProps2" @change="handleTransferChange2"></el-transfer>
+      <el-transfer v-model="einc" class="setEgroups" :data="noList2" :titles="['未分配小组', '已分配小组']" :props="defaultProps2" @change="handleTransferChange2" />
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="setEgroups">确定</el-button>
         <el-button @click="setEgroupsDialogVisible = false">取 消</el-button>
       </div>
     </el-dialog>
+    <el-dialog
+      v-el-drag-dialog
+      title="错误原因"
+      :visible.sync="dialogVisible"
+    >
+      <el-table
+        :data="errorList"
+        style="width: 100%"
+      >
+        <el-table-column
+          prop="name"
+          label="姓名"
+          align="center"
+          show-overflow-tooltip
+          min-width="120"
+        />
+        <el-table-column
+          prop="phone"
+          label="手机号"
+          align="center"
+          show-overflow-tooltip
+          min-width="80"
+        />
+        <el-table-column
+          prop="egroup"
+          label="部门"
+          align="center"
+          show-overflow-tooltip
+          min-width="100"
+        />
+        <el-table-column
+          prop="role"
+          label="角色"
+          align="center"
+          show-overflow-tooltip
+          min-width="100"
+        />
+        <el-table-column
+          prop="error_log"
+          label="失败原因"
+          align="center"
+          min-width="100"
+        />
+      </el-table>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getUserList, deleteUser, deleteMultiRole, updateUserStatus, leadingIn, batchAssignRole, batchGroupsManage} from '@/api/userCenter-userManage'
+import { getUserList, deleteUser, deleteMultiRole, updateUserStatus, leadingIn, batchAssignRole, batchGroupsManage } from '@/api/userCenter-userManage'
 import { getAllRole } from '@/api/systemManage-roleManage'
 import { getAllEmployeeGroup } from '@/api/userCenter-groupManage'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -147,6 +192,7 @@ export default {
       listLoading: false,
       setRolesDialogVisible: false,
       setEgroupsDialogVisible: false,
+      dialogVisible: false,
       noList: [], // 未分配的角色
       roleIdList: [], // 已分配的角色
       noList2: [], // 未分配的小组
@@ -163,6 +209,7 @@ export default {
       headers: {
         Authorization: getToken() // 图片上传 header
       },
+      errorList: [], // 导入错误列表
       listQuery: {
         currentPage: 1, // 当前页码
         pageSize: 10, // 当前列表请求条数
@@ -220,8 +267,13 @@ export default {
     // 导入成功
     handleUploadSuccess(data) {
       leadingIn({ fileId: data.data.fileId, url: data.data.saveHttpPath }).then(res => {
-        this.$message.success('模板导入成功！')
-        this.get_list()
+        if (res.code === 1) {
+          this.errorList = res.data
+          this.dialogVisible = true
+        } else {
+          this.$message.success('模板导入成功！')
+          this.get_list()
+        }
       })
     },
     // 详情
