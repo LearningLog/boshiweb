@@ -63,7 +63,7 @@
       <el-table-column align="center" label="管理员" min-width="140" show-overflow-tooltip prop="customname" />
       <el-table-column align="center" label="来源" min-width="140" show-overflow-tooltip prop="dataTypeName" />
       <el-table-column align="center" label="成员人数" min-width="140" show-overflow-tooltip prop="usercount" />
-      <el-table-column class-name="status-col" label="操作" width="230" align="center" fixed="right" show-overflow-tooltip>
+      <el-table-column class-name="status-col" label="操作" width="250" align="center" fixed="right" show-overflow-tooltip>
         <template slot-scope="scope">
           <div>
             <el-button size="mini" @click="go_edit_fn(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
@@ -89,9 +89,8 @@
 </template>
 
 <script>
-import { findEmployeeGroupList, deleteItem, deleteMultiRole } from '@/api/userCenter-groupManage'
+import { findEmployeeGroupList, deleteItem, deleteMultiRole, egroupskill, saveGroupSkill } from '@/api/userCenter-groupManage'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
-import { getAllTenantList, delTenant, batchDelTenant, getInformationList, setInformation, setCustomStatus } from '@/api/systemManage-tenantManage'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 export default {
   components: { Pagination },
@@ -102,9 +101,10 @@ export default {
       transforBoxVisible: false, // 穿梭框显示隐藏
       noList: [], // 穿梭框未分配
       hasList: [], // 穿梭框已分配
+      setInformationId: '',
       defaultProps: { // 穿梭框节点别名
-        key: '_id',
-        label: 'newscategory_name'
+        key: 'increase_id',
+        label: 'skill_name'
       },
       listQuery: {
         currentPage: 1, // 当前页码
@@ -215,14 +215,12 @@ export default {
     // 授权
     // 穿梭框
     getInformation(row) {
-      this.transforBoxVisible = true
-
       this.setInformationId = row._id
-      getInformationList({ groupId: row._id }).then(response => {
+      egroupskill({ _id: row._id }).then(response => {
         console.log(response)
         this.noList = response.data.noList.concat(response.data.hasList)
         response.data.hasList.forEach((item, index) => {
-          this.hasList.push(item._id)
+          this.hasList.push(item.increase_id)
         })
       })
       this.transforBoxVisible = true
@@ -232,12 +230,12 @@ export default {
     },
     // 设置资讯
     setInformation() {
-      const data = { _id: this.setInformationId, categoryinfo: this.hasList.join() }
-      setInformation(data).then(response => {
+      const data = { _id: this.setInformationId, skillinfo: this.hasList.join() }
+      saveGroupSkill(data).then(response => {
         this.transforBoxVisible = false
         this.noList = []
         this.hasList = []
-        this.$message.success('设置资讯成功！')
+        this.$message.success('设置技能成功！')
         this.get_list()
       })
     }
@@ -246,5 +244,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+  .setInformationDialog /deep/ .el-transfer {
+    margin: 0 auto;
+    text-align: center;
+  }
+  .setInformationDialog /deep/ .el-transfer-panel {
+    text-align: left;
+  }
 </style>

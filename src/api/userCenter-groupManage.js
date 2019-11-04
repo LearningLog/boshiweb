@@ -63,6 +63,13 @@ export function egroupskill(data) {
     data
   })
 }
+export function saveGroupSkill(data) {
+  return request({
+    url: '/system/employeeGroup/groupskill',
+    method: 'post',
+    data
+  })
+}
 
 // /////////////////////////////
 // 批量删除
