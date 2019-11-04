@@ -11,7 +11,7 @@ import Layout from '@/layout/layout2'
 import systemManage from './modules/systemManage'
 import userCenter from './modules/user-center'
 import evaluatingManage  from './modules/evaluating-manage'
-
+import systemSetting  from './modules/system-setting'
 /**
  * 注意: 菜单项sub-menu 仅在 route children.length >= 1 时显示
  * 详情请看此地址: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
@@ -108,6 +108,7 @@ export const asyncRoutes = [
   systemManage,
   userCenter,
   evaluatingManage,
+  systemSetting,
   {
     path: '/enterpriseData',
     component: Layout,

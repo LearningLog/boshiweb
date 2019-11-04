@@ -1,7 +1,7 @@
 <template>
   <div class="list-box">
     <div id="topSearch">
-      <el-input v-model="listQuery.skill_name" placeholder="请输入技能名称" clearable @keyup.enter.native="topSearch">
+      <el-input v-model="listQuery.content" placeholder="请输入技能名称" clearable @keyup.enter.native="topSearch">
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
       </el-input>
       <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">高级搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
@@ -9,11 +9,8 @@
         <el-row v-show="popoverVisible">
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
-              <el-form-item label="创建人">
-                <el-input v-model="listQuery.creater" placeholder="请输入创建人" clearable @keyup.enter.native="topSearch" />
-              </el-form-item>
-              <el-form-item label="所属租户">
-                <el-input v-model="listQuery.customname" placeholder="请输入所属租户" clearable @keyup.enter.native="topSearch" />
+              <el-form-item label="技能ID">
+                <el-input v-model="listQuery.skillInc" placeholder="请输入技能ID" clearable @keyup.enter.native="topSearch" />
               </el-form-item>
               <el-form-item label="创建时间">
                 <el-date-picker
@@ -29,7 +26,6 @@
             </el-form>
             <div id="searchPopoverBtn">
               <el-button type="primary" @click="topSearch">搜索</el-button>
-              <el-button type="primary" plain @click="reset">重置</el-button>
             </div>
           </el-card>
         </el-row>
@@ -42,7 +38,7 @@
       border
       fit
       highlight-current-row
-      @selection-change="select_fn"
+   
     >
       <el-table-column
         type="selection"
@@ -59,14 +55,11 @@
       <el-table-column align="center" label="创建时间" min-width="130" show-overflow-tooltip prop="createtime" />
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="get_list" />
-    <div id="bottomOperation">
-      <el-button v-show="total>0" type="danger" plain @click="batch_del_fn"><i class="iconfont iconshanchu" />批量删除</el-button>
-    </div>
   </div>
 </template>
 
 <script>
-import { skillManagerList, deleteItem, deleteMultiRole } from '@/api/userCenter-skillManage'
+import { skillManagerList} from '@/api/userCenter-skillManage'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 export default {
   components: { Pagination },
@@ -76,7 +69,8 @@ export default {
       listQuery: {
         currentPage: 1, // 当前页码
         pageSize: 10, // 当前列表请求条数
-        skill_name: '', // 技能名称
+        content: '', // 技能名称
+        skillInc:'',//技能ID
         creater: '', // 创建人
         startTime: '', // 开始时间
         endtTime: '', // 结束时间
@@ -98,23 +92,41 @@ export default {
       this.get_list()
     },
     // 获取技能列表
-    get_list() {
-      this.time_range = this.time_range || []
-      this.skill_name=this.
-      this.listQuery.startTime = this.time_range[0]
-      this.listQuery.endtTime = this.time_range[1]
+     get_list() {
+      const that = this
+      const param = {}
+      let stime = ''
+      let edtime = ''
+      if (that.listQuery.time_range && that.listQuery.time_range[0]) {
+        stime = that.listQuery.time_range[0]
+      }
+      if (that.listQuery.time_range && that.listQuery.time_range[1]) {
+        edtime = that.listQuery.time_range[1]
+      }
+      param.content = that.listQuery.content ? that.listQuery.content : ''
+      param.skillInc = that.listQuery.skillInc ? that.listQuery.skillInc : ''
+      param.startTime = stime
+      param.endTime = edtime
+      param.currentPage = that.listQuery.currentPage ? that.listQuery.currentPage : 1
+      param.pageSize = that.listQuery.pageSize ? that.listQuery.pageSize : 10
       this.listLoading = true
-      skillManagerList(this.listQuery).then(response => {
+      skillManagerList(param).then(res => {
         this.listLoading = false
-        this.list = response.data.page.list
-        this.total = response.data.page.totalCount
+        that.list = res.data.page.list
+        that.total = res.data.page.totalCount
+        that.page_count = res.data.page.pageCount
+      }).catch(error => {
+        console.log(error)
       })
     },
     selectable(row, index) {
       return row.auth
     },
-  },
-   
+    // 授权
+    authorize_fn(row) {
+      this.$router.push({ path: '/user-center/skill-manager/authorize', query: { id: row._id }})
+    }
+  }
 }
 </script>
 

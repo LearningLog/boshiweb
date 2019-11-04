@@ -17,7 +17,7 @@ export function getCustomManageList() {
 // 获取技能列表
 export function skillManagerList(data) {
   return request({
-    url: '/system/skill/list',
+    url: '/system/skill/listV2',
     method: 'post',
     data
   })
