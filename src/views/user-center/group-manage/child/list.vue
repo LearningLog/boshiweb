@@ -13,7 +13,14 @@
                 <el-input v-model="listQuery.creater" placeholder="请输入创建人" clearable @keyup.enter.native="topSearch" />
               </el-form-item>
               <el-form-item label="所属租户">
-                <el-input v-model="listQuery.customname" placeholder="请输入所属租户" clearable @keyup.enter.native="topSearch" />
+                <el-select v-model="listQuery.customname" placeholder="请选择所属租户" clearable filterable>
+                  <el-option
+                    v-for="item in custom_list"
+                    :key="item._id"
+                    :label="item.customname"
+                    :value="item._id"
+                  />
+                </el-select>
               </el-form-item>
               <el-form-item label="创建时间">
                 <el-date-picker
@@ -68,7 +75,7 @@
           <div>
             <el-button size="mini" @click="go_edit_fn(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
             <el-button size="mini" @click="delete_fn(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
-            <el-button size="mini" @click.native="getInformation(scope.row)"><i class="iconfont iconshouquan" />分配技能</el-button>
+            <el-button size="mini" @click="getTranstorInformation(scope.row)"><i class="iconfont iconshouquan" />分配技能</el-button>
           </div>
         </template>
       </el-table-column>
@@ -81,7 +88,7 @@
     <el-dialog v-el-drag-dialog class="setInformationDialog" width="650px" title="分配技能" :visible.sync="transforBoxVisible">
       <el-transfer v-model="hasList" :data="noList" :titles="['未分配类别', '已分配类别']" :props="defaultProps" @change="handleTransferChange" />
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="setInformation">确定</el-button>
+        <el-button type="primary" @click="setTranstorInformation">确定</el-button>
         <el-button @click="transforBoxVisible = false">取 消</el-button>
       </div>
     </el-dialog>
@@ -89,7 +96,7 @@
 </template>
 
 <script>
-import { findEmployeeGroupList, deleteItem, deleteMultiRole, egroupskill, saveGroupSkill } from '@/api/userCenter-groupManage'
+import { findEmployeeGroupList, getCustomManageList, deleteItem, deleteMultiRole, egroupskill, saveGroupSkill } from '@/api/userCenter-groupManage'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 export default {
@@ -98,6 +105,7 @@ export default {
   data() {
     return {
       listLoading: false,
+      custom_list: [], // 所属租户下拉列表
       transforBoxVisible: false, // 穿梭框显示隐藏
       noList: [], // 穿梭框未分配
       hasList: [], // 穿梭框已分配
@@ -122,10 +130,22 @@ export default {
       popoverVisible: false // 高级搜索是否展开
     }
   },
+  computed: {
+    isSystemManage() {
+      return this.$store.state.user.isSystemManage
+    }
+  },
   created() {
     this.get_list()
+    this.getCustomManageList()
   },
   methods: {
+    // 获取所属租户list
+    getCustomManageList() {
+      getCustomManageList().then(res => {
+        this.custom_list = res.data
+      })
+    },
     // 搜索
     topSearch() {
       this.get_list()
@@ -153,7 +173,8 @@ export default {
       })
     },
     selectable(row, index) {
-      return row.auth
+      return true
+      // return row.auth
     },
     // 修改
     go_edit_fn(row) {
@@ -214,13 +235,18 @@ export default {
 
     // 授权
     // 穿梭框
-    getInformation(row) {
+    getTranstorInformation(row) {
+      debugger
       this.setInformationId = row._id
       egroupskill({ _id: row._id }).then(response => {
         console.log(response)
         this.noList = response.data.noList.concat(response.data.hasList)
+        console.log(this.noList)
+        this.hasList = []
         response.data.hasList.forEach((item, index) => {
           this.hasList.push(item.increase_id)
+          debugger
+          console.log(this.hasList)
         })
       })
       this.transforBoxVisible = true
@@ -228,8 +254,8 @@ export default {
     handleTransferChange(value, direction, movedKeys) {
       this.hasList = value
     },
-    // 设置资讯
-    setInformation() {
+    // 保存穿梭框-技能信息
+    setTranstorInformation() {
       const data = { _id: this.setInformationId, skillinfo: this.hasList.join() }
       saveGroupSkill(data).then(response => {
         this.transforBoxVisible = false
