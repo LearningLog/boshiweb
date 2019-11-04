@@ -1,15 +1,6 @@
 <!--文件分片断点续传底层组件-->
 <template>
-  <div>
-    <div class="upload" />
-    <div id="upload_cont" class="upload_cont" style="visibility: hidden;position: fixed;top: -1000px; right: -1000px;z-index: -1;">
-      <div class="upload_div">
-        <div id="upload_btn" class="upload_btn">
-          <div id="picker">点击我上传</div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <div class="upload" />
 </template>
 
 <script>
@@ -180,14 +171,8 @@ export default {
 
             fileUpload(qs.stringify(params), that.url).then(res => {
               const { data } = res
-              var status = data.status
               file.path = data.path
               task.resolve()
-              if (status === 1) {
-                that.UploadComlate(file, this.fileMd5MarkMap.get(file.id))
-              } else {
-                that.UploadFail(file)
-              }
               that.uniqueFileNameMap.remove(file.id)
               that.fileMd5MarkMap.remove(file.id)
             }).catch(err => {
@@ -293,24 +278,24 @@ export default {
       })
     },
 
-    UploadComlate(file, md5) {
-      var path = file.path
-      var fileId = path.split('ZmlsZUlk=')[1]
-      file.fileId = fileId
-      if (typeof (file.onUploadFileSuccess) !== 'function') {
-        console.error('上传成功, 回调方法执行异常')
-      } else {
-        file.onUploadFileSuccess(file.callbackDate, file, md5)
-      }
-    },
-
-    UploadFail(file) {
-      if (typeof (file.onUploadFileErr) !== 'function') {
-        console.error('上传失败, 回调方法执行异常')
-      } else {
-        file.onUploadFileErr(file.callbackDate, file)
-      }
-    },
+    // UploadComlate(file, md5) {
+    //   var path = file.path
+    //   var fileId = path.split('ZmlsZUlk=')[1]
+    //   file.fileId = fileId
+    //   if (typeof (file.onUploadFileSuccess) !== 'function') {
+    //     console.error('上传成功, 回调方法执行异常')
+    //   } else {
+    //     file.onUploadFileSuccess(file.callbackDate, file, md5)
+    //   }
+    // },
+    //
+    // UploadFail(file) {
+    //   if (typeof (file.onUploadFileErr) !== 'function') {
+    //     console.error('上传失败, 回调方法执行异常')
+    //   } else {
+    //     file.onUploadFileErr(file.callbackDate, file)
+    //   }
+    // },
 
     upload(file) {
       this.uploader.upload(file)
