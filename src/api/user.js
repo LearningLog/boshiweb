@@ -39,6 +39,15 @@ export function logout() {
   })
 }
 
+// 获取所有角色
+export function getAllRoles() {
+  return request({
+    url: '/system/roleV2/findRoleListV2',
+    method: 'post',
+    data: {}
+  })
+}
+
 // 获取所有小组
 export function getAllEgroup() {
   return request({

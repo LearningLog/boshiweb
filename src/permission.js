@@ -33,8 +33,9 @@ router.beforeEach(async(to, from, next) => {
         next()
       } else {
         try {
-          await store.dispatch('user/getUserApplicationInfo')
+          await store.dispatch('user/getAllRoles')
           await store.dispatch('user/getAllEgroup')
+          await store.dispatch('user/getUserApplicationInfo')
           const { systemRoutes, backstageRoutes, allButtonPermission } = await store.dispatch('user/getInfo')
           // 设置全部按钮权限
           await store.dispatch('permission/setAllBtnMermission', allButtonPermission)

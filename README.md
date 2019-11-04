@@ -492,6 +492,10 @@ export default {
 
 ## Vuex 公用数据
 
+- 当前用户和系统信息 `this.$store.state.user.userSystemInfo`
+- 获取所有角色 `this.$store.state.user.allRoles`
+- 获取所有小组 `this.$store.state.user.allEgroup`
+- 获取应用信息 `this.$store.state.user.applicationInfo`
 - 是否为系统管理员 `this.$store.state.user.isSystemManage`
 
 ## Browsers support

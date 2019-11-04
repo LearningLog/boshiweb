@@ -48,28 +48,37 @@
       border
       fit
       highlight-current-row
-      @selection-change="select_fn"
+      @selection-change="handleSelectionChange"
     >
       <el-table-column
         type="selection"
         width="55"
-        :selectable="selectable"
+        fixed
       />
-      <el-table-column align="center" label="名称" show-overflow-tooltip>
+      <el-table-column align="center" label="用户名" show-overflow-tooltip>
         <template slot-scope="scope">
-          <span class="pointer" @click="detail(scope.row)">{{ scope.row.rolename }}</span>
+          <span class="pointer" @click="detail(scope.row)">{{ scope.row.username }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="描述" min-width="100" align="center" show-overflow-tooltip prop="desc" />
-      <el-table-column label="创建人" min-width="100" align="center" show-overflow-tooltip prop="createuser" />
-      <el-table-column align="center" label="创建时间" min-width="130" show-overflow-tooltip prop="createtime" />
-      <el-table-column align="center" label="所属租户" min-width="140" show-overflow-tooltip prop="nickname" />
-      <el-table-column align="center" label="是否默认" min-width="80" show-overflow-tooltip>
+      <el-table-column label="昵称" min-width="100" align="center" show-overflow-tooltip prop="nickname" />
+      <el-table-column label="手机号" min-width="100" align="center" show-overflow-tooltip prop="phone" />
+      <el-table-column align="center" label="角色" min-width="130" show-overflow-tooltip>
         <template slot-scope="scope">
-          <el-tag v-if="scope.row.defaultRole === '1'" type="success">是</el-tag>
-          <el-tag v-else type="danger">否</el-tag>
+          {{ scope.row.bs_roles && scope.row.bs_roles.join() }}
         </template>
       </el-table-column>
+      <el-table-column align="center" label="组别" min-width="140" show-overflow-tooltip>
+        <template slot-scope="scope">
+          {{ scope.row.egroups && scope.row.egroups.join() }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="状态" min-width="80" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <el-tag v-if="scope.row.status === 1" type="success">生效</el-tag>
+          <el-tag v-else type="danger">失效</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column label="来源" min-width="100" align="center" show-overflow-tooltip prop="dataTypeName" />
       <el-table-column class-name="status-col" label="操作" width="230" align="center" fixed="right" show-overflow-tooltip>
         <template slot-scope="scope">
           <div v-if="scope.row.auth">
@@ -93,7 +102,7 @@
 </template>
 
 <script>
-import { getUserList, role_delete, deleteMultiRole } from '@/api/userCenter-userManage'
+import { getUserList, deleteUser, deleteMultiRole } from '@/api/userCenter-userManage'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 export default {
   components: { Pagination },
@@ -111,8 +120,8 @@ export default {
         groupName: '', // 分组
         userStatus: null // 用户状态
       },
-      userStatus: [], // 用户状态
-      delCheckedList: [], // 选中的数据
+      userStatus: [{ id: 1, name: '生效' }, { id: 2, name: '失效' }], // 用户状态
+      checkedList: [], // 选中的数据
       list: null, // 列表数据
       total: 0, // 总条数
       popoverVisible: false // 高级搜索是否展开
@@ -137,11 +146,8 @@ export default {
       this.listQuery.userStatus = null
       this.get_list()
     },
-    // 获取角色列表
+    // 获取用户列表
     get_list() {
-      this.time_range = this.time_range || []
-      this.listQuery.startTime = this.time_range[0]
-      this.listQuery.endtTime = this.time_range[1]
       this.listLoading = true
       getUserList(this.listQuery).then(response => {
         this.listLoading = false
@@ -149,25 +155,23 @@ export default {
         this.total = response.data.page.totalCount
       })
     },
-    selectable(row, index) {
-      return row.auth
-    },
     // 详情
     detail(row) {
-      this.$router.push({ path: '/systemManage/roleManage/detail', query: { id: row._id }})
+      this.$router.push({ path: '/user-center/user-manage/detail', query: { id: row._id }})
     },
     // 新增
     add() {
-      this.$router.push({ path: '/systemManage/roleManage/add' })
+      this.$router.push({ path: '/user-center/user-manage/add' })
     },
     // 删除单个角色
     delete_fn(row) {
-      this.$confirm('确定要删除【' + row.rolename + '】吗？', '删除角色', {
+      debugger
+      this.$confirm('确定要删除【' + row.username + '】吗？', '删除用户', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        role_delete({ _id: row._id }).then(response => {
+        deleteUser({ _id: row._id }).then(response => {
           this.$message.success('删除成功！')
           if ((this.list.length - 1) === 0) { // 如果当前页数据已删完，则去往上一页
             this.listQuery.currentPage -= 1
@@ -177,27 +181,27 @@ export default {
       }).catch(() => {})
     },
     // 选中数据
-    select_fn(row) {
-      this.delCheckedList = row
+    handleSelectionChange(row) {
+      this.checkedList = row
     },
     // 批量删除
     batch_del_fn() {
-      if (!this.delCheckedList.length) {
-        this.$message.warning('请选择角色！')
+      if (!this.checkedList.length) {
+        this.$message.warning('请选择用户！')
         return false
       }
-      this.$confirm('确定要删除选中的角色吗？', '批量删除角色', {
+      this.$confirm('确定要删除选中的用户吗？', '批量删除用户', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
         const _ids = []
-        this.delCheckedList.forEach(item => {
+        this.checkedList.forEach(item => {
           _ids.push(item._id)
         })
         deleteMultiRole({ _ids: _ids }).then(response => {
           this.$message.success('批量删除成功！')
-          if ((this.list.length - this.delCheckedList.length) === 0) { // 如果当前页数据已删完，则去往上一页
+          if ((this.list.length - this.checkedList.length) === 0) { // 如果当前页数据已删完，则去往上一页
             this.listQuery.currentPage -= 1
           }
           this.get_list()
@@ -206,7 +210,7 @@ export default {
     },
     // 修改
     go_edit_fn(row) {
-      this.$router.push({ path: '/systemManage/roleManage/edit', query: { id: row._id }})
+      this.$router.push({ path: '/user-center/user-manage/edit', query: { id: row._id }})
     },
     // 授权
     authorize_fn(row) {
