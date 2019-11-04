@@ -17,7 +17,7 @@ export function getCustomManageList() {
 // 获取分组列表
 export function findEmployeeGroupList(data) {
   return request({
-    url: 'system/employeeGroup/findEmployeeGroupList',
+    url: 'system/employeeGroupV2/findEmployeeGroupList',
     method: 'post',
     data
   })

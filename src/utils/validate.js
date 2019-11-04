@@ -73,6 +73,48 @@ export function regUName(param) {
   }
 }
 
+/**
+ * 校验用户名称 2 到 20 位字母或数字的组合
+ * @param {string} param
+ * @returns {Boolean}
+ */
+export function validUserName(param) {
+  const userNameRule = /^[0-9a-zA-Z]{2,20}$/
+  if (userNameRule.test(param)) {
+    return true
+  } else {
+    return false
+  }
+}
+
+/**
+ * 校验手机号 2 到 20 位字母或数字的组合
+ * @param {string} param
+ * @returns {Boolean}
+ */
+export function validPhone(param) {
+  const phoneRule = /^1[3456789]\d{9}$/
+  if (phoneRule.test(param)) {
+    return true
+  } else {
+    return false
+  }
+}
+
+/**
+ * 校验用户密码，长度 6 到 50 位，字母和数字组成
+ * @param {string} param
+ * @returns {Boolean}
+ */
+export function validPassword(param) {
+  const pvalidPasswordRule = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,50}$/
+  if (pvalidPasswordRule.test(param)) {
+    return true
+  } else {
+    return false
+  }
+}
+
 // input键入小数限制
 export function onKeyValid(val, num) {
   val = val === undefined ? '' : val

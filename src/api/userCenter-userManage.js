@@ -14,3 +14,30 @@ export function getUserList(data) {
     data
   })
 }
+
+// 新增用户
+export function createUser(data) {
+  return request({
+    url: '/system/userV2/createUser',
+    method: 'post',
+    data
+  })
+}
+
+// 删除用户
+export function deleteUser(data) {
+  return request({
+    url: '/system/userV2/deleteUser',
+    method: 'post',
+    data
+  })
+}
+
+// 用户详情
+export function getUserById(data) {
+  return request({
+    url: '/system/userV2/getUserById',
+    method: 'post',
+    data
+  })
+}

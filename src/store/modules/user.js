@@ -1,4 +1,4 @@
-import { login, logout, getInfo, getMenuList, getAllEgroup, getUserApplicationInfo } from '@/api/user'
+import { login, logout, getInfo, getMenuList, getAllRoles, getAllEgroup, getUserApplicationInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
 import Cookies from 'js-cookie'
@@ -26,6 +26,8 @@ const state = {
   avatar: '',
   logo: '',
   logo_name: logo_name,
+  userSystemInfo: {}, // 当前用户和系统信息
+  allRoles: [], // 所有角色
   allEgroup: [], // 所有小组
   applicationInfo: {}, // 应用信息
   isSystemManage: false
@@ -46,6 +48,12 @@ const mutations = {
   },
   SET_LOGO_NAME: (state, logo_name) => {
     state.logo_name = logo_name
+  },
+  SET_USER_SYSTEM_INFO: (state, userSystemInfo) => {
+    state.userSystemInfo = userSystemInfo
+  },
+  SET_ALL_ROLES: (state, allEgroup) => {
+    state.allRoles = allEgroup
   },
   SET_ALL_EGROUP: (state, allEgroup) => {
     state.allEgroup = allEgroup
@@ -104,6 +112,7 @@ const actions = {
             commit('SET_AVATAR', userInfo.user_img)
           }
           commit('SET_NAME', userInfo.nickname)
+          commit('SET_USER_SYSTEM_INFO', res.data)
         })
         const routes = {}
         response.data = response.data || {}
@@ -147,6 +156,13 @@ const actions = {
     })
   },
 
+  // 获取所有角色
+  getAllRoles({ commit }) {
+    getAllRoles().then(res => {
+      commit('SET_ALL_ROLES', res.data.manageEgroupInfo)
+    })
+  },
+
   // 获取所有小组
   getAllEgroup({ commit }) {
     getAllEgroup().then(res => {
@@ -154,7 +170,7 @@ const actions = {
     })
   },
 
-  // 获取所有小组
+  // 获取应用信息
   getUserApplicationInfo({ commit }) {
     getUserApplicationInfo().then(res => {
       commit('APPLICATION_INFO', res.data)

@@ -14,6 +14,23 @@ export function role_list(data) {
     data
   })
 }
+// 获取所有角色
+export function getAllRole(data) {
+  return request({
+    url: 'system/roleV2/getAllRole',
+    method: 'post',
+    data
+  })
+}
+
+// 分配角色
+export function saveRole(data) {
+  return request({
+    url: 'system/userV2/saveRole',
+    method: 'post',
+    data
+  })
+}
 // 所属租户列表
 export function getCustomManageList() {
   return request({

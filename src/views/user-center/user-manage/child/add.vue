@@ -1,14 +1,28 @@
 <template>
   <div class="form-edit">
-    <el-form ref="form" class="form" :model="form" :rules="rules" :status-icon="true" label-width="120px">
-      <el-form-item class="required" label="角色名称" prop="rolename">
-        <el-input v-model="form.rolename" placeholder="请输入角色名称" clearable />
+    <el-form
+      ref="form"
+      class="form"
+      :model="form"
+      :rules="rules"
+      :status-icon="true"
+      label-width="120px"
+    >
+      <el-form-item class="required" label="用户名称" prop="username">
+        <el-input
+          v-model="form.username"
+          placeholder="请输入用户名称"
+          :max-length="20"
+          clearable
+        />
       </el-form-item>
-      <el-form-item label="角色描述">
-        <el-input v-model="form.desc" placeholder="请输入角色描述" clearable />
-      </el-form-item>
-      <el-form-item label="所属租户" prop="roleGroupId">
-        <el-select v-model="form.roleGroupId" placeholder="请选择所属租户" clearable filterable>
+      <el-form-item label="所属企业" prop="groupId">
+        <el-select
+          v-model="form.groupId"
+          placeholder="请选择所属企业"
+          clearable
+          filterable
+        >
           <el-option
             v-for="item in custom_list"
             :key="item._id"
@@ -17,37 +31,166 @@
           />
         </el-select>
       </el-form-item>
+      <el-form-item label="昵称" prop="nickname">
+        <el-input v-model="form.nickname" placeholder="请输入昵称" :max-length="20" clearable />
+      </el-form-item>
+      <el-form-item label="手机号" prop="phone">
+        <el-input v-model="form.phone" placeholder="请输入手机号" clearable />
+      </el-form-item>
+      <el-form-item label="密码" prop="password">
+        <el-input
+          v-model="form.password"
+          placeholder="请输入密码"
+          type="password"
+          autocomplete="new-password"
+          maxlength="50"
+          clearable
+        />
+      </el-form-item>
+      <el-form-item label="用户状态" prop="userStatus">
+        <el-radio-group v-model="form.userStatus">
+          <el-radio :label="1">生效</el-radio>
+          <el-radio :label="0">失效</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="邮箱" prop="email">
+        <el-input v-model="form.email" placeholder="请输入邮箱地址" clearable />
+      </el-form-item>
+      <el-form-item label="描述" prop="desc">
+        <el-input
+          v-model="form.desc"
+          type="textarea"
+          placeholder="请输入描述"
+          :max-length="256"
+          clearable
+        />
+      </el-form-item>
+      <el-form-item label="角色" prop="falseRole">
+        <el-input
+          v-show="false"
+          v-model="form.falseRole"
+        />
+        <span v-for="role in roles" :key="role.id">{{ role.name }}</span>
+        <span @click="getAllRoles" class="pointer">修改</span>
+      </el-form-item>
+      <el-form-item label="小组" prop="einc">
+        <span v-for="egroup in egroups" :key="egroup.id">{{
+          egroup.name
+        }}</span>
+        <span @click="editEgroups" class="pointer">修改</span>
+      </el-form-item>
     </el-form>
     <div id="btnGroup">
-      <el-button v-no-more-click type="primary" @click="save('form')">提交</el-button>
+      <el-button
+        v-no-more-click
+        type="primary"
+        @click="save('form')"
+      >提交</el-button>
       <el-button type="primary" plain @click="cancel('form')">取消</el-button>
     </div>
+    <el-dialog v-el-drag-dialog class="setRolesDialog" width="650px" title="分配角色" :visible.sync="setRolesDialogVisible">
+      <el-transfer v-model="hasList" :data="noList" :titles="['未分配角色', '已分配角色']" :props="defaultProps" @change="handleTransferChange" />
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="setRoles">确定</el-button>
+        <el-button @click="setRolesDialogVisible = false">取 消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getCustomManageList, role_add } from '@/api/systemManage-roleManage'
+import { getCustomManageList, getAllRole, saveRole } from '@/api/systemManage-roleManage'
+import { createUser, setRoles } from '@/api/userCenter-userManage'
+import { validUserName, validPhone, validPassword } from '@/utils/validate'
+import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
+
 export default {
+  directives: { elDragDialog },
   data() {
+    const validUsername = (rule, value, callback) => {
+      value = value || ''
+      if (!validUserName(value)) {
+        callback(new Error('请输入用户登入平台的名称（长度在 2 到 20 位字母或数字）'))
+      } else {
+        callback()
+      }
+    }
+    const phone = (rule, value, callback) => {
+      value = value || ''
+      if (!validPhone(value)) {
+        callback(new Error('请输入用户登入平台的名称（长度在 2 到 20 位字母或数字）'))
+      } else {
+        callback()
+      }
+    }
+    const password = (rule, value, callback) => {
+      value = value || ''
+      if (!validPassword(value)) {
+        callback(new Error('请输入密码，（长度 6 到 50 位，字母和数字组成）'))
+      } else {
+        callback()
+      }
+    }
     return {
       dataIsChange: 0, // 计数器，据此判断表单是否已编辑
       noLeaveprompt: false, // 表单提交后，设置为true，据此判断提交不再弹出离开提示
+      setRolesDialogVisible: false,
       form: {
-        rolename: '', // 角色名称
-        desc: '', // 角色描述
-        roleGroupId: '' // 所属租户
+        username: '', // 用户名称
+        groupId: '', // 所属企业
+        nickname: '', // 昵称
+        phone: '', // 手机号
+        password: '', // 密码
+        userStatus: 1, // 状态
+        email: '', // 邮箱
+        desc: '', // 描述
+        roleIdList: [], // 角色id集合
+        einc: [], // 角色
+        minc: [] // 角色
       },
-      custom_list: [], // 所属租户list
+      custom_list: [], // 所属企业list
+      roles: [], // 加入小组inc集合
+      egroups: [], // 管理小组inc集合
+      defaultProps: { // 穿梭框节点别名
+        key: '_id',
+        label: 'rolename'
+      },
+      noList: [], // 未分配的角色
+      hasList: [], // 已分配的角色
       rules: {
-        rolename: [
-          { required: true, message: '请输入角色名称（长度在 2 到 20 个字符）', trigger: 'blur' },
-          { required: true, message: '请输入角色名称（长度在 2 到 20 个字符）', trigger: 'change' },
-          { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' },
-          { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'change' }
+        username: [
+          { required: true, validator: validUsername, message: '请输入用户登入平台的名称（长度在 2 到 20 位字母或数字）', trigger: 'blur' },
+          { required: true, validator: validUsername, message: '请输入用户登入平台的名称（长度在 2 到 20 位字母或数字）', trigger: 'change' },
+          { min: 2, max: 20, message: '长度在 2 到 20 位字符', trigger: 'blur' },
+          { min: 2, max: 20, message: '长度在 2 到 20 位字符', trigger: 'change' }
         ],
-        roleGroupId: [
-          { required: true, message: '请选择所属租户', trigger: 'blur' },
-          { required: true, message: '请选择所属租户', trigger: 'change' }
+        groupId: [
+          { required: true, message: '请选择所属企业', trigger: 'blur' },
+          { required: true, message: '请选择所属企业', trigger: 'change' }
+        ],
+        nickname: [
+          { required: true, message: '请输入用户登入平台后显示的名称（长度在 2 到 20 位字符）', trigger: 'blur' },
+          { required: true, message: '请输入用户登入平台后显示的名称（长度在 2 到 20 位字符）', trigger: 'change' },
+          { min: 2, max: 20, message: '长度在 2 到 20 位字符', trigger: 'blur' },
+          { min: 2, max: 20, message: '长度在 2 到 20 位字符', trigger: 'change' }
+        ],
+        phone: [
+          { required: true, validator: phone, message: '请输入11位手机号', trigger: 'blur' },
+          { required: true, validator: phone, message: '请输入11位手机号', trigger: 'change' }
+        ],
+        password: [
+          { required: true, validator: password, message: '请输入密码，（长度 6 到 50 位，字母和数字组成）', trigger: 'blur' },
+          { required: true, validator: password, message: '请输入密码，（长度 6 到 50 位，字母和数字组成）', trigger: 'change' },
+          { min: 6, max: 50, message: '长度在 6 到 50 位字符', trigger: 'blur' },
+          { min: 6, max: 50, message: '长度在 6 到 50 位字符', trigger: 'change' }
+        ],
+        userStatus: [
+          { required: true, message: '请输入11位手机号', trigger: 'blur' },
+          { required: true, message: '请输入11位手机号', trigger: 'change' }
+        ],
+        falseRole: [
+          { required: true, message: '请选择角色', trigger: 'blur' },
+          { required: true, message: '请选择角色', trigger: 'change' }
         ]
       }
     }
@@ -67,7 +210,7 @@ export default {
     this.getCustomManageList()
   },
   methods: {
-    // 获取所属租户list
+    // 获取所属企业list
     getCustomManageList() {
       getCustomManageList().then(res => {
         this.custom_list = res.data
@@ -75,33 +218,70 @@ export default {
     },
     // 提交
     save(formName) {
-      this.$refs[formName].validate((valid) => {
+      this.$refs[formName].validate(valid => {
         if (valid) {
-          role_add(this.form).then(response => {
-            this.$message.success('添加角色成功！')
+          createUser(this.form).then(response => {
+            this.$message.success('添加用户成功！')
             this.noLeaveprompt = true
-            this.$router.push({ path: '/systemManage/roleManage/detail', query: { id: response.data._id }})
+            this.$router.push({
+              path: '/user-center/user-manage/detail',
+              query: { id: response.data._id }
+            })
           })
         }
       })
     },
     // 取消
-    cancel(formName) {
-      this.$router.push({ path: '/systemManage/roleManage/list' })
+    cancel() {
+      this.$router.push({ path: '/user-center/user-manage/list' })
+    },
+    // 获取全部角色
+    getAllRoles() {
+      getAllRole({}).then(response => {
+        this.noList = response.data.allRoleList
+      })
+      this.setRolesDialogVisible = true
+    },
+    handleTransferChange(value, direction, movedKeys) {
+      this.hasList = value
+    },
+    setRoles() {
+      const data = { roleIdList: this.hasList }
+      saveRole(data).then(response => {
+        this.setRolesDialogVisible = false
+        this.$message.success('分配角色成功！')
+        if (this.hasList.length) {
+          this.noList.forEach(item => {
+            this.hasList.forEach(item1 => {
+              if (item1 === item._id) {
+                this.roles.push(item.rolename)
+              }
+            })
+          })
+        }
+      })
+    },
+    // 修改小组
+    editEgroups() {
+      debugger
     }
   },
   beforeRouteLeave(to, from, next) {
-    if (this.dataIsChange && !this.noLeaveprompt) { // 判断表单数据是否变化，以及提交后不进行此保存提示
-      setTimeout(() => { // 此处必须要加延迟执行，主要解决浏览器前进后退带来的闪现
+    if (this.dataIsChange && !this.noLeaveprompt) {
+      // 判断表单数据是否变化，以及提交后不进行此保存提示
+      setTimeout(() => {
+        // 此处必须要加延迟执行，主要解决浏览器前进后退带来的闪现
         this.$confirm('您的数据尚未保存，是否离开？', '离开页面', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
-        }).then(() => {
-          next()
-        }).catch(() => {
-          next(false)
         })
+          .then(() => {
+            next()
+          })
+          .catch(() => {
+            next(false)
+          })
       }, 200)
     } else {
       next()
@@ -111,7 +291,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  #btnGroup{
-    padding-left: 120px;
+  @import "~@/styles/theme.scss";
+#btnGroup {
+  padding-left: 120px;
+}
+.setRolesDialog /deep/ .el-transfer {
+  margin: 0 auto;
+  text-align: center;
+}
+.setRolesDialog /deep/ .el-transfer-panel {
+  text-align: left;
+}
+  .pointer {
+    color: $themeColor;
   }
 </style>
