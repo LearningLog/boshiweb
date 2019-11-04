@@ -7,11 +7,11 @@
 
 import Layout from '@/layout/layout2'
 
-const evaludatingManage = {
-  path: '/evaludatingManage',
+const evaluatingManage = {
+  path: '/evaluatingManage',
   component: Layout,
   redirect: 'noRedirect',
-  name: 'evaludatingManage',
+  name: 'evaluatingManage',
   meta: {
     title: '评测管理',
     icon: 'iconshouquan'
@@ -19,21 +19,21 @@ const evaludatingManage = {
   children: [
     {
       path: 'skillManage',
-      component: () => import('@/views/evaludatingManage/skillManage/index'),
-      redirect: '/evaludatingManage/skillManage/list',
+      component: () => import('@/views/evaluating-manage/skill-manage/index'),
+      redirect: '/evaluatingManage/skillManage/list',
       name: 'skillManage',
-      meta: { title: '技能管理', icon: '', activeMenu: '/evaludatingManage/skillManage' },
+      meta: { title: '技能管理', icon: '', activeMenu: '/evaluatingManage/skillManage' },
       children: [
         {
           path: 'list',
           name: 'skillList',
           hidden: true,
-          component: () => import('@/views/evaludatingManage/skillManage/child/list.vue'),
-          meta: { title: '技能管理列表', icon: '', activeMenu: '/evaludatingManage/skillManage' }
+          component: () => import('@/views/evaluating-manage/skill-manage/child/list.vue'),
+          meta: { title: '技能管理列表', icon: '', activeMenu: '/evaluatingManage/skillManage' }
         }
       ]
     }
   ]
 }
 
-export default evaludatingManage
+export default evaluatingManage
