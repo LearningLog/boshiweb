@@ -9,7 +9,7 @@ import request from '@/utils/request'
 // 获取用户列表
 export function getUserList(data) {
   return request({
-    url: '/system/user/listUserV2',
+    url: '/system/userV2/listUser',
     method: 'post',
     data
   })
@@ -37,6 +37,42 @@ export function deleteUser(data) {
 export function getUserById(data) {
   return request({
     url: '/system/userV2/getUserById',
+    method: 'post',
+    data
+  })
+}
+
+// 生效/失效
+export function updateUserStatus(data) {
+  return request({
+    url: '/system/userV2/updateUserStatus',
+    method: 'post',
+    data
+  })
+}
+
+// 导入模板
+export function leadingIn(data) {
+  return request({
+    url: '/system/userImport/importUsers/',
+    method: 'post',
+    data
+  })
+}
+
+// 批量分配角色
+export function batchAssignRole(data) {
+  return request({
+    url: '/system/userV2/saveRole',
+    method: 'post',
+    data
+  })
+}
+
+// 批量管理小组
+export function batchGroupsManage(data) {
+  return request({
+    url: '/system/user/saveEmployeeGroup',
     method: 'post',
     data
   })

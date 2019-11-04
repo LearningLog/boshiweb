@@ -247,6 +247,9 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.form.minc = this.chargemanList
+          delete this.form.falseRole
+          delete this.form.noList
+          delete this.form.noList2
           createUser(this.form).then(response => {
             this.$message.success('添加用户成功！')
             this.noLeaveprompt = true

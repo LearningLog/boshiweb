@@ -10,16 +10,16 @@
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
               <el-form-item label="企业">
-                <el-input v-model="listQuery.customname" placeholder="请输入企业名称" clearable @keyup.enter.native="topSearch" />
+                <el-input v-model="listQuery.customName" placeholder="请输入企业名称" clearable @keyup.enter.native="topSearch" />
               </el-form-item>
               <el-form-item label="用户昵称">
-                <el-input v-model="listQuery.nickname" placeholder="请输入用户昵称" clearable @keyup.enter.native="topSearch" />
+                <el-input v-model="listQuery.nickName" placeholder="请输入用户昵称" clearable @keyup.enter.native="topSearch" />
               </el-form-item>
               <el-form-item label="手机号">
                 <el-input v-model="listQuery.phone" placeholder="请输入手机号" clearable @keyup.enter.native="topSearch" />
               </el-form-item>
               <el-form-item label="角色">
-                <el-input v-model="listQuery.rolename" placeholder="请输入角色" clearable @keyup.enter.native="topSearch" />
+                <el-input v-model="listQuery.roleName" placeholder="请输入角色" clearable @keyup.enter.native="topSearch" />
               </el-form-item>
               <el-form-item label="组别">
                 <el-input v-model="listQuery.groupName" placeholder="请输入组别" clearable @keyup.enter.native="topSearch" />
@@ -54,69 +54,123 @@
         type="selection"
         width="55"
         fixed
+        :selectable="selectable"
       />
-      <el-table-column align="center" label="用户名" show-overflow-tooltip>
+      <el-table-column align="center" label="用户名" min-width="120"  show-overflow-tooltip>
         <template slot-scope="scope">
           <span class="pointer" @click="detail(scope.row)">{{ scope.row.username }}</span>
         </template>
       </el-table-column>
       <el-table-column label="昵称" min-width="100" align="center" show-overflow-tooltip prop="nickname" />
-      <el-table-column label="手机号" min-width="100" align="center" show-overflow-tooltip prop="phone" />
-      <el-table-column align="center" label="角色" min-width="130" show-overflow-tooltip>
+      <el-table-column label="手机号" min-width="80" align="center" show-overflow-tooltip prop="phone" />
+      <el-table-column align="center" label="角色" min-width="100" show-overflow-tooltip>
         <template slot-scope="scope">
-          {{ scope.row.bs_roles && scope.row.bs_roles.join() }}
+          {{ scope.row.bs_roles }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="组别" min-width="140" show-overflow-tooltip>
+      <el-table-column align="center" label="组别" min-width="100" show-overflow-tooltip>
         <template slot-scope="scope">
-          {{ scope.row.egroups && scope.row.egroups.join() }}
+          {{ scope.row.egroups }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="状态" min-width="80" show-overflow-tooltip>
+      <el-table-column align="center" label="状态" min-width="60" show-overflow-tooltip>
         <template slot-scope="scope">
-          <el-tag v-if="scope.row.status === 1" type="success">生效</el-tag>
+          <el-tag v-if="scope.row.userStatus === 1" type="success">生效</el-tag>
           <el-tag v-else type="danger">失效</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="来源" min-width="100" align="center" show-overflow-tooltip prop="dataTypeName" />
+      <el-table-column label="来源" min-width="90" align="center" show-overflow-tooltip prop="dataTypeName" />
       <el-table-column class-name="status-col" label="操作" width="230" align="center" fixed="right" show-overflow-tooltip>
         <template slot-scope="scope">
           <div v-if="scope.row.auth">
             <el-button size="mini" @click="go_edit_fn(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
-            <el-button size="mini" @click="delete_fn(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
-            <el-button size="mini" @click="authorize_fn(scope.row)"><i class="iconfont iconshouquan" />授权</el-button>
+            <el-button v-if="scope.row.userStatus === 1" size="mini" @click="enable(scope.row, 2)"><i class="iconfont iconshixiao" />失效</el-button>
+            <el-button v-else size="mini" @click="enable(scope.row, 1)"><i class="iconfont iconshengxiao" />生效</el-button>
+            <el-button size="mini" @click="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
           </div>
           <div v-else>
             <el-button size="mini" :disabled="true"><i class="iconfont iconxiugai" />修改</el-button>
+            <el-button v-if="scope.row.userStatus === 1" size="mini" :disabled="true"><i class="iconfont iconshixiao" />失效</el-button>
+            <el-button v-else size="mini" :disabled="true"><i class="iconfont iconshengxiao" />生效</el-button>
             <el-button size="mini" :disabled="true"><i class="iconfont iconshanchu" />删除</el-button>
-            <el-button size="mini" :disabled="true"><i class="iconfont iconshouquan" />授权</el-button>
           </div>
         </template>
       </el-table-column>
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="get_list" />
     <div id="bottomOperation">
-      <el-button v-show="total>0" type="danger" plain @click="batch_del_fn"><i class="iconfont iconshanchu" />批量删除</el-button>
+      <a href="basicUser/img/import_user_ttemplates.xlsx" download="企业员工导入模版.xlsx">
+        <el-button v-show="total>0" type="primary" plain><i class="iconfont iconwechaticon16" />模板下载</el-button>
+      </a>
+      <el-upload
+        class="upload-demo"
+        :action="uploadUrl()"
+        :headers="headers"
+        accept=".xlsx,.xls"
+        :show-file-list="false"
+        :on-success="handleUploadSuccess"
+      >
+        <el-button v-show="total>0" type="primary" plain><i class="iconfont iconziyuan" />模板导入</el-button>
+      </el-upload>
+      <el-button v-show="total>0" type="primary" plain @click="assignRole"><i class="iconfont icondaifenpeifuwushang" />分配角色</el-button>
+      <el-button v-show="total>0" type="primary" plain @click="groupsManage"><i class="iconfont iconjia" />小组管理</el-button>
     </div>
+    <el-dialog v-el-drag-dialog class="setRolesDialog" width="650px" title="分配角色" :visible.sync="setRolesDialogVisible">
+      <el-transfer v-model="roleIdList" :data="noList" :titles="['未分配角色', '已分配角色']" :props="defaultProps" @change="handleTransferChange" />
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="setRoles">确定</el-button>
+        <el-button @click="setRolesDialogVisible = false">取 消</el-button>
+      </div>
+    </el-dialog>
+    <el-dialog v-el-drag-dialog class="setRolesDialog" width="650px" title="分配小组" :visible.sync="setEgroupsDialogVisible">
+      <el-transfer v-model="einc" class="setEgroups" :data="noList2" :titles="['未分配小组', '已分配小组']" :props="defaultProps2" @change="handleTransferChange2"></el-transfer>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="setEgroups">确定</el-button>
+        <el-button @click="setEgroupsDialogVisible = false">取 消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getUserList, deleteUser, deleteMultiRole } from '@/api/userCenter-userManage'
+import { getUserList, deleteUser, deleteMultiRole, updateUserStatus, leadingIn, batchAssignRole, batchGroupsManage} from '@/api/userCenter-userManage'
+import { getAllRole } from '@/api/systemManage-roleManage'
+import { getAllEmployeeGroup } from '@/api/userCenter-groupManage'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
+import { getToken } from '@/utils/auth'
 export default {
   components: { Pagination },
+  directives: { elDragDialog },
   data() {
     return {
       listLoading: false,
+      setRolesDialogVisible: false,
+      setEgroupsDialogVisible: false,
+      noList: [], // 未分配的角色
+      roleIdList: [], // 已分配的角色
+      noList2: [], // 未分配的小组
+      einc: [], // 已分配的小组
+      chargemanList: [], // 已分配的小组
+      defaultProps: { // 穿梭框节点别名
+        key: '_id',
+        label: 'rolename'
+      },
+      defaultProps2: { // 穿梭框节点别名
+        key: 'inc',
+        label: 'groupName'
+      },
+      headers: {
+        Authorization: getToken() // 图片上传 header
+      },
       listQuery: {
         currentPage: 1, // 当前页码
         pageSize: 10, // 当前列表请求条数
         username: '', // 用户名称
-        customname: '', // 企业名称
-        nickname: '', // 用户昵称,
+        customName: '', // 企业名称
+        nickName: '', // 用户昵称,
         phone: '', // 手机号,
-        rolename: '', // 角色名称
+        roleName: '', // 角色名称
         groupName: '', // 分组
         userStatus: null // 用户状态
       },
@@ -131,6 +185,10 @@ export default {
     this.get_list()
   },
   methods: {
+    // 上传路径
+    uploadUrl() {
+      return process.env.VUE_APP_BASE_API + 'system/file/upload/'
+    },
     // 搜索
     topSearch() {
       this.get_list()
@@ -138,10 +196,10 @@ export default {
     // 重置
     reset() {
       this.listQuery.username = ''
-      this.listQuery.customname = ''
-      this.listQuery.nickname = ''
+      this.listQuery.customName = ''
+      this.listQuery.nickName = ''
       this.listQuery.phone = ''
-      this.listQuery.rolename = ''
+      this.listQuery.roleName = ''
       this.listQuery.groupName = ''
       this.listQuery.userStatus = null
       this.get_list()
@@ -155,6 +213,17 @@ export default {
         this.total = response.data.page.totalCount
       })
     },
+    // 是否可选择
+    selectable(row, index) {
+      return row.auth
+    },
+    // 导入成功
+    handleUploadSuccess(data) {
+      leadingIn({ fileId: data.data.fileId, url: data.data.saveHttpPath }).then(res => {
+        this.$message.success('模板导入成功！')
+        this.get_list()
+      })
+    },
     // 详情
     detail(row) {
       this.$router.push({ path: '/user-center/user-manage/detail', query: { id: row._id }})
@@ -163,9 +232,28 @@ export default {
     add() {
       this.$router.push({ path: '/user-center/user-manage/add' })
     },
+    // 生效/失效
+    enable(row, type) {
+      if (type === 2) {
+        this.$confirm('失效用户将不能进行所有本系统内的操作，请问是否对该用户失效？', '失效用户', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          updateUserStatus({ _id: row._id, userStatus: type }).then(response => {
+            this.$message.success('失效用户成功！')
+            this.get_list()
+          })
+        }).catch(() => {})
+      } else {
+        updateUserStatus({ _id: row._id, userStatus: type }).then(response => {
+          this.$message.success('生效用户成功！')
+          this.get_list()
+        })
+      }
+    },
     // 删除单个角色
-    delete_fn(row) {
-      debugger
+    del(row) {
       this.$confirm('确定要删除【' + row.username + '】吗？', '删除用户', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -179,6 +267,10 @@ export default {
           this.get_list()
         })
       }).catch(() => {})
+    },
+    // 修改
+    go_edit_fn(row) {
+      this.$router.push({ path: '/user-center/user-manage/edit', query: { id: row._id }})
     },
     // 选中数据
     handleSelectionChange(row) {
@@ -208,18 +300,70 @@ export default {
         })
       }).catch(() => {})
     },
-    // 修改
-    go_edit_fn(row) {
-      this.$router.push({ path: '/user-center/user-manage/edit', query: { id: row._id }})
+    // 获取全部角色
+    assignRole() {
+      if (!this.checkedList.length) {
+        this.$message.warning('请选择用户！')
+        return false
+      }
+      getAllRole({}).then(response => {
+        this.noList = response.data.allRoleList
+        this.setRolesDialogVisible = true
+      })
     },
-    // 授权
-    authorize_fn(row) {
-      this.$router.push({ path: '/systemManage/roleManage/authorize', query: { id: row._id }})
+    handleTransferChange(value, direction, movedKeys) {
+      this.roleIdList = value
+    },
+    handleTransferChange2(value, direction, movedKeys) {
+      this.einc = value
+    },
+    // 设置角色
+    setRoles() {
+      const _ids = []
+      this.checkedList.forEach(item => {
+        _ids.push(item._id)
+      })
+      batchAssignRole({ roleIdList: this.roleIdList, _ids }).then(res => {
+        this.$message.success('批量分配角色成功！')
+        this.setRolesDialogVisible = false
+      })
+    },
+
+    // 获取所有小组
+    groupsManage() {
+      if (!this.checkedList.length) {
+        this.$message.warning('请选择用户！')
+        return false
+      }
+      getAllEmployeeGroup({}).then(response => {
+        this.noList2 = response.data.allEmployeeGroupList
+        this.setEgroupsDialogVisible = true
+      })
+    },
+    // 设置小组
+    setEgroups() {
+      const _ids = []
+      this.checkedList.forEach(item => {
+        _ids.push(item._id)
+      })
+      batchGroupsManage({ einc: this.einc, _ids }).then(res => {
+        this.$message.success('批量分配小组成功！')
+        this.setEgroupsDialogVisible = false
+      })
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-
+.upload-demo {
+  display: inline-block;
+}
+.setRolesDialog /deep/ .el-transfer {
+  margin: 0 auto;
+  text-align: center;
+}
+.setRolesDialog /deep/ .el-transfer-panel {
+  text-align: left;
+}
 </style>
