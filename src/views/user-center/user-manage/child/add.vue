@@ -70,14 +70,14 @@
           v-show="false"
           v-model="form.falseRole"
         />
-        <span v-for="role in roles" :key="role.id">{{ role.name }}</span>
-        <span @click="getAllRoles" class="pointer">修改</span>
+        <span v-for="role in roles" :key="role._id" class="role">{{ role.rolename }}</span>
+        <span class="pointer" @click="getAllRoles">修改</span>
       </el-form-item>
       <el-form-item label="小组" prop="einc">
-        <span v-for="egroup in egroups" :key="egroup.id">{{
-          egroup.name
+        <span v-for="egroup in egroups" :key="egroup._id" class="role">{{
+          egroup.groupName
         }}</span>
-        <span @click="editEgroups" class="pointer">修改</span>
+        <span class="pointer" @click="getEgroups">修改</span>
       </el-form-item>
     </el-form>
     <div id="btnGroup">
@@ -89,18 +89,35 @@
       <el-button type="primary" plain @click="cancel('form')">取消</el-button>
     </div>
     <el-dialog v-el-drag-dialog class="setRolesDialog" width="650px" title="分配角色" :visible.sync="setRolesDialogVisible">
-      <el-transfer v-model="hasList" :data="noList" :titles="['未分配角色', '已分配角色']" :props="defaultProps" @change="handleTransferChange" />
+      <el-transfer v-model="form.roleIdList" :data="form.noList" :titles="['未分配角色', '已分配角色']" :props="defaultProps" @change="handleTransferChange" />
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="setRoles">确定</el-button>
         <el-button @click="setRolesDialogVisible = false">取 消</el-button>
+      </div>
+    </el-dialog>
+    <el-dialog v-el-drag-dialog class="setRolesDialog" width="650px" title="分配小组" :visible.sync="setEgroupsDialogVisible">
+      <el-transfer v-model="form.einc" class="setEgroups" :data="form.noList2" :titles="['未分配小组', '已分配小组']" :props="defaultProps2" @change="handleTransferChange2">
+        <span slot-scope="{ option }">{{ option.label }}
+          <span class="groupName">{{ option.groupName }}</span>
+          <div class="fr eincs">
+            <el-checkbox-group v-model="chargemanList">
+              <el-checkbox :label="option.inc">组长</el-checkbox>
+            </el-checkbox-group>
+          </div>
+        </span>
+      </el-transfer>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="setEgroups">确定</el-button>
+        <el-button @click="setEgroupsDialogVisible = false">取 消</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { getCustomManageList, getAllRole, saveRole } from '@/api/systemManage-roleManage'
-import { createUser, setRoles } from '@/api/userCenter-userManage'
+import { getCustomManageList, getAllRole } from '@/api/systemManage-roleManage'
+import { getAllEmployeeGroup } from '@/api/userCenter-groupManage.js'
+import { createUser } from '@/api/userCenter-userManage'
 import { validUserName, validPhone, validPassword } from '@/utils/validate'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 
@@ -135,6 +152,7 @@ export default {
       dataIsChange: 0, // 计数器，据此判断表单是否已编辑
       noLeaveprompt: false, // 表单提交后，设置为true，据此判断提交不再弹出离开提示
       setRolesDialogVisible: false,
+      setEgroupsDialogVisible: false,
       form: {
         username: '', // 用户名称
         groupId: '', // 所属企业
@@ -145,8 +163,9 @@ export default {
         email: '', // 邮箱
         desc: '', // 描述
         roleIdList: [], // 角色id集合
-        einc: [], // 角色
-        minc: [] // 角色
+        falseRole: '', // 假的角色，用于角色校验
+        einc: [], // 加入的小组
+        minc: [] // 小组管理员
       },
       custom_list: [], // 所属企业list
       roles: [], // 加入小组inc集合
@@ -155,8 +174,15 @@ export default {
         key: '_id',
         label: 'rolename'
       },
+      defaultProps2: { // 穿梭框节点别名
+        key: 'inc',
+        label: 'groupName'
+      },
       noList: [], // 未分配的角色
-      hasList: [], // 已分配的角色
+      roleIdList: [], // 已分配的角色
+      noList2: [], // 未分配的小组
+      einc: [], // 已分配的小组
+      chargemanList: [], // 已分配的小组
       rules: {
         username: [
           { required: true, validator: validUsername, message: '请输入用户登入平台的名称（长度在 2 到 20 位字母或数字）', trigger: 'blur' },
@@ -220,6 +246,7 @@ export default {
     save(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
+          this.form.minc = this.chargemanList
           createUser(this.form).then(response => {
             this.$message.success('添加用户成功！')
             this.noLeaveprompt = true
@@ -238,32 +265,54 @@ export default {
     // 获取全部角色
     getAllRoles() {
       getAllRole({}).then(response => {
-        this.noList = response.data.allRoleList
+        this.form.noList = response.data.allRoleList
+        this.setRolesDialogVisible = true
       })
-      this.setRolesDialogVisible = true
     },
     handleTransferChange(value, direction, movedKeys) {
-      this.hasList = value
+      this.form.roleIdList = value
     },
+    handleTransferChange2(value, direction, movedKeys) {
+      this.form.einc = value
+    },
+    // 设置角色
     setRoles() {
-      const data = { roleIdList: this.hasList }
-      saveRole(data).then(response => {
-        this.setRolesDialogVisible = false
-        this.$message.success('分配角色成功！')
-        if (this.hasList.length) {
-          this.noList.forEach(item => {
-            this.hasList.forEach(item1 => {
-              if (item1 === item._id) {
-                this.roles.push(item.rolename)
-              }
-            })
+      this.setRolesDialogVisible = false
+      this.roles = []
+      if (this.form.roleIdList.length) {
+        this.form.falseRole = '11111'
+        this.form.noList.forEach((item, index) => {
+          this.form.roleIdList.forEach(item1 => {
+            if (item1 === item._id) {
+              this.roles.push(item)
+            }
           })
-        }
+        })
+      } else {
+        this.form.falseRole = ''
+      }
+    },
+
+    // 获取所有小组
+    getEgroups() {
+      getAllEmployeeGroup({}).then(response => {
+        this.form.noList2 = response.data.allEmployeeGroupList
+        this.setEgroupsDialogVisible = true
       })
     },
-    // 修改小组
-    editEgroups() {
-      debugger
+    // 设置小组
+    setEgroups() {
+      this.setEgroupsDialogVisible = false
+      this.egroups = []
+      if (this.form.einc.length) {
+        this.form.noList2.forEach((item, index) => {
+          this.form.einc.forEach(item1 => {
+            if (item1 === item.inc) {
+              this.egroups.push(item)
+            }
+          })
+        })
+      }
     }
   },
   beforeRouteLeave(to, from, next) {
@@ -304,5 +353,31 @@ export default {
 }
   .pointer {
     color: $themeColor;
+  }
+  .role {
+    margin-right: 6px;
+  }
+  .setEgroups /deep/ .el-transfer-panel:first-child .eincs {
+    display: none;
+  }
+  .setEgroups /deep/ .el-transfer-panel:last-child {
+    width: 250px;
+  }
+  .setEgroups /deep/ .el-transfer-panel:last-child .el-checkbox {
+    margin-right: 0!important;
+  }
+  /deep/ .groupName {
+    max-width: 150px;
+    display: inline-block;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+  }
+  .eincs {
+    display: inline-block;
+    position: absolute;
+    right: 0;
+    z-index: 2;
+    margin-right: 6px;
   }
 </style>

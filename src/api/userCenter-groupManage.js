@@ -22,6 +22,14 @@ export function findEmployeeGroupList(data) {
     data
   })
 }
+// 获取所有小组列表
+export function getAllEmployeeGroup(data) {
+  return request({
+    url: 'system/employeeGroup/getAllEmployeeGroup',
+    method: 'post',
+    data
+  })
+}
 // 单个分组详情 system/skill/one
 export function getItem(data) {
   return request({
