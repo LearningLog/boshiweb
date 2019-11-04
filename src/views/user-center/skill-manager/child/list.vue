@@ -12,7 +12,7 @@
               <el-form-item label="创建人">
                 <el-input v-model="listQuery.creater" placeholder="请输入创建人" clearable @keyup.enter.native="topSearch" />
               </el-form-item>
-              <el-form-item label="所属租户">
+              <el-form-item v-if="isSystemManage" label="所属租户">
                 <el-input v-model="listQuery.customname" placeholder="请输入所属租户" clearable @keyup.enter.native="topSearch" />
               </el-form-item>
               <el-form-item label="创建时间">
@@ -52,7 +52,6 @@
         width="55"
         :selectable="selectable"
       />
-      <el-table-column label="技能ID" min-width="100" align="center" show-overflow-tooltip prop="increase_id" />
       <el-table-column align="center" label="技能名称" show-overflow-tooltip>
         <template slot-scope="scope">
           <span class="pointer" @click="detail(scope.row)">{{ scope.row.skill_name }}</span>
@@ -101,6 +100,11 @@ export default {
       popoverVisible: false // 高级搜索是否展开
     }
   },
+  computed: {
+    isSystemManage() {
+      return this.$store.state.user.isSystemManage
+    }
+  },
   created() {
     this.get_list()
   },
@@ -132,7 +136,8 @@ export default {
       })
     },
     selectable(row, index) {
-      return row.auth
+      return true
+      // return row.auth
     },
     // 修改
     go_edit_fn(row) {

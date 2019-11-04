@@ -68,7 +68,7 @@
           <div>
             <el-button size="mini" @click="go_edit_fn(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
             <el-button size="mini" @click="delete_fn(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
-            <el-button size="mini" @click.native="getInformation(scope.row)"><i class="iconfont iconshouquan" />分配技能</el-button>
+            <el-button size="mini" @click="getTranstorInformation(scope.row)"><i class="iconfont iconshouquan" />分配技能</el-button>
           </div>
         </template>
       </el-table-column>
@@ -81,7 +81,7 @@
     <el-dialog v-el-drag-dialog class="setInformationDialog" width="650px" title="分配技能" :visible.sync="transforBoxVisible">
       <el-transfer v-model="hasList" :data="noList" :titles="['未分配类别', '已分配类别']" :props="defaultProps" @change="handleTransferChange" />
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="setInformation">确定</el-button>
+        <el-button type="primary" @click="setTranstorInformation">确定</el-button>
         <el-button @click="transforBoxVisible = false">取 消</el-button>
       </div>
     </el-dialog>
@@ -153,7 +153,8 @@ export default {
       })
     },
     selectable(row, index) {
-      return row.auth
+      return true
+      // return row.auth
     },
     // 修改
     go_edit_fn(row) {
@@ -214,13 +215,18 @@ export default {
 
     // 授权
     // 穿梭框
-    getInformation(row) {
+    getTranstorInformation(row) {
+      debugger
       this.setInformationId = row._id
       egroupskill({ _id: row._id }).then(response => {
         console.log(response)
         this.noList = response.data.noList.concat(response.data.hasList)
+        console.log(this.noList)
+        this.hasList = []
         response.data.hasList.forEach((item, index) => {
           this.hasList.push(item.increase_id)
+          debugger
+          console.log(this.hasList)
         })
       })
       this.transforBoxVisible = true
@@ -228,8 +234,8 @@ export default {
     handleTransferChange(value, direction, movedKeys) {
       this.hasList = value
     },
-    // 设置资讯
-    setInformation() {
+    // 保存穿梭框-技能信息
+    setTranstorInformation() {
       const data = { _id: this.setInformationId, skillinfo: this.hasList.join() }
       saveGroupSkill(data).then(response => {
         this.transforBoxVisible = false

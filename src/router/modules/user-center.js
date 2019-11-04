@@ -26,14 +26,14 @@ const userCenter = {
       children: [
         {
           path: 'list',
-          name: 'roleList',
+          name: 'skilllist',
           hidden: true,
           component: () => import('@/views/user-center/skill-manager/child/list.vue'),
           meta: { title: '技能管理列表', icon: '', activeMenu: '/user-center/skill-manager' }
         },
         {
           path: 'edit',
-          name: 'roleEdit',
+          name: 'skilledit',
           hidden: true,
           component: () => import('@/views/user-center/skill-manager/child/edit'),
           meta: { title: '修改技能', icon: '', activeMenu: '/user-center/skill-manager' }
@@ -41,14 +41,14 @@ const userCenter = {
         {
           path: 'add',
           component: () => import('@/views/user-center/skill-manager/child/add.vue'),
-          name: 'roleAdd',
+          name: 'skilladd',
           hidden: true,
           meta: { title: '新增技能', icon: '', activeMenu: '/user-center/skill-manager' }
         },
 
         {
           path: 'detail',
-          name: 'roleDetail',
+          name: 'skilldetail',
           hidden: true,
           component: () => import('@/views/user-center/skill-manager/child/detail'),
           meta: { title: '技能详情', icon: '', activeMenu: '/user-center/skill-manager' }
@@ -65,14 +65,14 @@ const userCenter = {
       children: [
         {
           path: 'list',
-          name: 'roleList',
+          name: 'grouplist',
           hidden: true,
           component: () => import('@/views/user-center/group-manage/child/list.vue'),
           meta: { title: '分组管理列表', icon: '', activeMenu: '/user-center/group-manage' }
         },
         {
           path: 'edit',
-          name: 'roleEdit',
+          name: 'groupedit',
           hidden: true,
           component: () => import('@/views/user-center/group-manage/child/edit'),
           meta: { title: '修改分组', icon: '', activeMenu: '/user-center/group-manage' }
@@ -80,14 +80,14 @@ const userCenter = {
         {
           path: 'add',
           component: () => import('@/views/user-center/group-manage/child/add.vue'),
-          name: 'roleAdd',
+          name: 'groupadd',
           hidden: true,
           meta: { title: '新增分组', icon: '', activeMenu: '/user-center/group-manage' }
         },
 
         {
           path: 'detail',
-          name: 'roleDetail',
+          name: 'groupdetail',
           hidden: true,
           component: () => import('@/views/user-center/group-manage/child/detail'),
           meta: { title: '分组详情', icon: '', activeMenu: '/user-center/group-manage' }
