@@ -9,6 +9,8 @@
     <el-button type="primary" plain @click="add()">addCookie</el-button>
     <el-button type="primary" plain @click="get()">getCookie</el-button>
     <el-button type="primary" plain @click="del()">delCookie</el-button>
+
+    <file-uploader :belongs="{ data_type: 3 }" />
     <br><br>
     <!--引入组件-->
     <tinymce :id="content" v-model="content" class="tinymce" :height="300" :width="900" :value="content" />
@@ -139,10 +141,11 @@ import clip from '@/utils/clipboard'
 import clipboard from '@/directive/clipboard/index.js'
 import Tinymce from '@/components/Tinymce'
 import Footer from '@/components/Footer'
+import FileUploader from '@/components/VueWebuploader'
 const $ = window.$
 export default {
   name: 'HelloWorld',
-  components: { Tinymce, Footer },
+  components: { Tinymce, Footer, FileUploader },
   directives: {
     clipboard
   },
@@ -158,16 +161,13 @@ export default {
       // 背景透明度，默认透明 0
       backgroundAlpha: 1,
       inputData: 'copy123456',
-      content: 'Tinymce',
+      content: 'Tinymce'
       // toolbar: ['searchreplace bold italic underline strikethrough alignleft aligncenter alignright outdent indent  blockquote undo redo removeformat subscript superscript code codesample', 'hr bullist numlist link charmap preview anchor pagebreak insertdatetime table emoticons forecolor backcolor fullscreen fontsizeselect fontselect'],
       // plugins: ['advlist anchor autolink autosave code codesample colorpicker colorpicker contextmenu directionality emoticons fullscreen hr imagetools insertdatetime link lists nonbreaking noneditable pagebreak paste preview print save searchreplace spellchecker tabfocus table template textcolor textpattern visualblocks visualchars wordcount'],
       // customizable button style, show/hide critical point, return position
-      btnPermission: {}
     }
   },
-  created() {
-    this.btnPermission = JSON.parse(this.$store.getters.currentButtonPermission)
-  },
+  created() {},
   beforeDestroy() {
     // 销毁video实例，避免出现节点不存在 但是flash一直在执行,也避免重新进入页面video未重新声明
     $('#video').dispose({ id: 'myVideo' })

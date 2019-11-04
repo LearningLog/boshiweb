@@ -29,50 +29,16 @@ router.beforeEach(async(to, from, next) => {
       // determine whether the user has obtained his permission routes through getInfo
       const hasPermission = store.getters.permission_routes && store.getters.permission_routes.length > 0
       if (hasPermission) { // 当有用户权限的时候，说明所有可访问路由已生成 如访问没权限的页面会自动进入404页面
-        // 设置当前菜单下按钮权限
-        const currentButtonPermission = to.meta.btnPermissionId ? JSON.parse(store.getters.allButtonPermission)[to.meta.btnPermissionId] : {}
-        await store.dispatch('permission/setCurrentBtnMermission', currentButtonPermission)
         sessionStorage.setItem('defaultActive', JSON.stringify(to.path))
         next()
       } else {
         try {
-          // get user info
-          // note: responseRoutes must be a object array! such as:
-          // [
-          //   {
-          //     path: '/nested', // 组件路径
-          //     children: [ // 子菜单
-          //       {
-          //         path: 'menu1',
-          //         children: [
-          //           {
-          //             path: 'menu1-1'
-          //           },
-          //           {
-          //             path: 'menu1-2',
-          //             children: [
-          //               {
-          //                 path: 'menu1-2-1'
-          //               },
-          //               {
-          //                 path: 'menu1-2-2'
-          //               }
-          //             ]
-          //           },
-          //           {
-          //             path: 'menu1-3'
-          //           }
-          //         ]
-          //       }
-          //     ]
-          //   }
-          // ]
+          await store.dispatch('user/getUserApplicationInfo')
+          await store.dispatch('user/getAllEgroup')
           const { systemRoutes, backstageRoutes, allButtonPermission } = await store.dispatch('user/getInfo')
           // 设置全部按钮权限
-          await store.dispatch('permission/setAllCurrentBtnMermission', allButtonPermission)
-          const currentButtonPermission = to.meta.btnPermissionId ? JSON.parse(store.getters.allButtonPermission)[to.meta.btnPermissionId] : {}
-          // 设置当前菜单下按钮权限
-          await store.dispatch('permission/setCurrentBtnMermission', currentButtonPermission)
+          await store.dispatch('permission/setAllBtnMermission', allButtonPermission)
+
           // generate accessible routes map based on responseRoutes
           // const accessRoutes = await store.dispatch('permission/generateRoutes', { systemRoutes, backstageRoutes })
           await store.dispatch('permission/generateRoutes', { systemRoutes, backstageRoutes, fullPath: to.fullPath })

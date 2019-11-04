@@ -5,7 +5,7 @@
       <router-view :key="key" />
     </transition>
     <!--</el-scrollbar>-->
-    <el-tooltip placement="top" content="tooltip">
+    <el-tooltip placement="top" content="返回顶部">
       <back-to-top :custom-style="myBackToTopStyle" :visibility-height="mainContentHeight" :back-position="0" transition-name="fade" />
     </el-tooltip>
   </section>
@@ -37,7 +37,8 @@ export default {
     }
   },
   mounted() {
-    this.mainContentHeight = document.body.offsetHeight - 100
+    // 动态设置返回顶部出现位置
+    this.mainContentHeight = (document.body.offsetHeight - 100) / 2
   }
 }
 </script>

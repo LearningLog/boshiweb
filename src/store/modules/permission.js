@@ -66,17 +66,17 @@ export function getCurrentSystem(path) {
 }
 
 const state = {
-  routes: [],
-  addRoutes: [],
-  currentPath: '',
-  currentSystem: Cookies.get('currentSystem') ? Cookies.get('currentSystem') : '',
-  systemRoutes: [],
-  backstageRoutes: [],
-  homePath: Cookies.get('homePath') ? Cookies.get('homePath') : '',
-  systemHomePath: Cookies.get('systemHomePath') ? Cookies.get('systemHomePath') : '',
-  backstageHomePath: Cookies.get('backstageHomePath') ? Cookies.get('backstageHomePath') : '',
-  allButtonPermission: Cookies.get('allButtonPermission') ? !!+JSON.parse(Cookies.get('allButtonPermission')) : '',
-  currentButtonPermission: Cookies.get('currentButtonPermission') ? !!+JSON.parse(Cookies.get('currentButtonPermission')) : ''
+  routes: [], // 当前完整路由
+  addRoutes: [], // 当前权限路由
+  currentPath: '', // 当前path
+  currentSystem: Cookies.get('currentSystem') ? Cookies.get('currentSystem') : '', // 当前所在系统
+  systemRoutes: [], // 系统管理路由
+  backstageRoutes: [], // 后台管理路由
+  systemHomePath: Cookies.get('systemHomePath') ? Cookies.get('systemHomePath') : '', // 系统管理首页
+  backstageHomePath: Cookies.get('backstageHomePath') ? Cookies.get('backstageHomePath') : '', // 后台管理首页
+  allPermissionCode: Cookies.get('allPermissionCode') ? JSON.parse(Cookies.get('allPermissionCode')) : '', // 系统设置的所有权限code
+  userPermission: Cookies.get('userPermission') ? JSON.parse(Cookies.get('userPermission')) : '', // 当前用户的身份权限信息
+  userPermissionDetailList: Cookies.get('userPermissionDetailList') ? JSON.parse(Cookies.get('userPermissionDetailList')) : '' // 当前用户所拥有的所有权限
 }
 
 const mutations = {
@@ -120,15 +120,11 @@ const mutations = {
   SET_CURRENT_SYSTEM: (state, type) => {
     state.currentSystem = type
   },
+
+  // 登出清除路由
   CLEAR_ROUTER: (state) => {
     state.addRoutes = []
     state.routes = []
-  },
-
-  // 设置首页path
-  SET_HOME_PATH: (state, path) => {
-    state.homePath = path
-    Cookies.set('homePath', path)
   },
 
   // 设置当前组件path
@@ -136,24 +132,34 @@ const mutations = {
     state.currentPath = path
   },
 
+  // 设置系统管理首页
   SET_SYSTEM_HOME_PATH: (state, path) => {
     state.systemHomePath = path
     Cookies.set('systemHomePath', path)
   },
 
+  // 设置后台管理首页
   SET_BACKSTAGE__HOME_PATH: (state, path) => {
     state.backstageHomePath = path
     Cookies.set('backstageHomePath', path)
   },
 
-  SET_ALL_CURRENT_BTN_PERMISSION: (state, allButtonPermission) => {
-    state.allButtonPermission = JSON.stringify(allButtonPermission)
-    Cookies.set('allButtonPermission', JSON.stringify(allButtonPermission))
+  // 系统设置的所有按钮code
+  SET_ALL_PERMISSION_CODE: (state, allPermissionCode) => {
+    state.allPermissionCode = allPermissionCode
+    Cookies.set('allPermissionCode', JSON.stringify(allPermissionCode))
   },
 
-  SET_CURRENT_BTN_PERMISSION: (state, currentButtonPermission) => {
-    state.currentButtonPermission = JSON.stringify(currentButtonPermission)
-    Cookies.set('currentButtonPermission', JSON.stringify(currentButtonPermission))
+  // 当前用户的身份权限信息
+  SET_USER_PERMISSION_INFO: (state, userPermission) => {
+    state.allPermissionCode = userPermission
+    Cookies.set('userPermission', JSON.stringify(userPermission))
+  },
+
+  // 当前用户所拥有的所有权限
+  SET_USER_HAS_PERMISSION_LIST: (state, userPermissionDetailList) => {
+    state.allPermissionCode = userPermissionDetailList
+    Cookies.set('userPermissionDetailList', JSON.stringify(userPermissionDetailList))
   }
 }
 
@@ -195,8 +201,10 @@ const actions = {
     commit('CLEAR_ROUTER')
   },
 
-  setAllCurrentBtnMermission({ commit }, allButtonPermission) {
-    commit('SET_ALL_CURRENT_BTN_PERMISSION', allButtonPermission)
+  setAllBtnMermission({ commit }, allButtonPermission) {
+    commit('SET_ALL_PERMISSION_CODE', allButtonPermission.allPermissionCode)
+    commit('SET_USER_PERMISSION_INFO', allButtonPermission.userPermission)
+    commit('SET_USER_HAS_PERMISSION_LIST', allButtonPermission.userPermissionDetailList)
   },
 
   setCurrentBtnMermission({ commit }, currentButtonPermission) {

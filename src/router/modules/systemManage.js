@@ -1,7 +1,7 @@
 /**
 * @Author: YanHuaKang
 * @Date: 2019/10/14
-* @Description: 系统配置路由表
+* @Description: 租户配置路由表
 * @remarks:
 */
 
@@ -13,7 +13,7 @@ const systemManage = {
   redirect: 'noRedirect',
   name: 'systemManage',
   meta: {
-    title: '系统配置',
+    title: '租户配置',
     icon: 'iconxitong'
   },
   children: [

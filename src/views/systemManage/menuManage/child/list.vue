@@ -92,6 +92,7 @@ import Pagination from '@/components/Pagination' // secondary package based on e
 import { getAllMenuList, findMenuList, delMenu, moveMenu } from '@/api/systemManage-menuManage'
 import { mapGetters } from 'vuex'
 import { updateMenuRoute } from '@/utils/update-menu-router'
+import { hasThisBtnPermission } from '@/utils/permission.js'
 
 export default {
   components: { Pagination },
@@ -124,6 +125,7 @@ export default {
     }
   },
   created() {
+    hasThisBtnPermission('egroup-delete')
     this.listQuery.pid = this.$store.state.menuManage.pid || 'firstMenu'
     this.getAllMenuList()
     this.getMenuList()

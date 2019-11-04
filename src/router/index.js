@@ -27,7 +27,6 @@ import userCenter from './modules/user-center'
     icon: 'iconfont'             设置该路由的图标
     breadcrumb: false            如果设置为false，则不会在breadcrumb面包屑中显示(default is true)
     activeMenu: '/example/list'  if set path, the sidebar will highlight the path you set
-    btnPermissionId: ''          页面按钮权限id
   }
  */
 
@@ -69,6 +68,28 @@ export const constantRoutes = [
       component: () => import('@/views/door/index'),
       meta: { title: '主页' }
     }]
+  },
+
+  {
+    path: '/example',
+    component: Layout,
+    redirect: '/example/hello-world',
+    name: 'Example',
+    meta: { title: 'Example', icon: 'iconqiye' },
+    children: [
+      {
+        path: 'fileUpload',
+        name: 'fileUpload',
+        component: () => import('@/views/examples/fileUpload'),
+        meta: { title: 'fileUpload', icon: '' }
+      },
+      {
+        path: 'hello-world',
+        name: 'Hello-world',
+        component: () => import('@/views/examples/hello-world'),
+        meta: { title: 'Hello World', icon: '' }
+      }
+    ]
   },
 
   {
@@ -128,13 +149,13 @@ export const asyncRoutes = [
         path: 'hello-world',
         name: 'Hello-world',
         component: () => import('@/views/examples/hello-world'),
-        meta: { title: 'Hello World', icon: 'hello-world', btnPermissionId: 'example' }
+        meta: { title: 'Hello World', icon: '' }
       },
       {
         path: 'vue-cropper',
         name: 'Vue-cropper',
         component: () => import('@/views/examples/vue-cropper'),
-        meta: { title: 'Vue Cropper', icon: 'vue-cropper', btnPermissionId: 'example' }
+        meta: { title: 'Vue Cropper', icon: '' }
       }
     ]
   },

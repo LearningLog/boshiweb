@@ -38,3 +38,21 @@ export function logout() {
     method: 'get'
   })
 }
+
+// 获取所有小组
+export function getAllEgroup() {
+  return request({
+    url: '/system/user/getUserEgroupInfo',
+    method: 'post',
+    data: {}
+  })
+}
+
+// 获取应用信息
+export function getUserApplicationInfo() {
+  return request({
+    url: '/system/user/getUserApplicationInfo',
+    method: 'post',
+    data: {}
+  })
+}

@@ -6,15 +6,40 @@
 */
 
 import request from '@/utils/request'
+import axios from 'axios'
 
-// 文件上传
+// 租户logo上传
 export function uploadFile(data) {
   return request({
     url: '/system/file/upload/',
     method: 'post',
-    // contentType: false,
-    // processData: false,
-    // headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    data
+  })
+}
+
+// 大文件上传，校验接口
+export function fileUpload(data, baseUrl) {
+  return axios({
+    url: baseUrl + '/fileUploadCheck',
+    method: 'post',
+    data
+  })
+}
+
+// 工作台文件上传接口
+export function deskAddFile(data) {
+  return request({
+    url: '/workDeskFileList/addFile',
+    method: 'post',
+    data
+  })
+}
+
+// 知识库文件上传接口
+export function knowledgeCreateFile(data) {
+  return request({
+    url: '/knowledgeDirFile/createFile',
+    method: 'post',
     data
   })
 }
