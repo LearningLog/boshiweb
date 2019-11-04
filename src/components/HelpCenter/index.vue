@@ -10,7 +10,7 @@ export default {
   props: {
     helpUrl: {
       type: String,
-      default: 'https://help.yunshicloud.com/boshi/'
+      default: 'https://easydoc.xyz/#/doc/96161216/qzQt5Mmz/LI9XTXYC'
     }
   }
 }

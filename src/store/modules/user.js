@@ -27,7 +27,8 @@ const state = {
   logo: '',
   logo_name: logo_name,
   allEgroup: [], // 所有小组
-  applicationInfo: {} // 应用信息
+  applicationInfo: {}, // 应用信息
+  isSystemManage: false
 }
 
 const mutations = {
@@ -51,6 +52,13 @@ const mutations = {
   },
   APPLICATION_INFO: (state, applicationInfo) => {
     state.applicationInfo = applicationInfo
+  },
+  IS_SYSTEN_MANAGE: (state, userPermission) => {
+    if (userPermission.manageType === 1) {
+      state.isSystemManage = true
+    } else {
+      state.isSystemManage = false
+    }
   }
 }
 
@@ -101,6 +109,7 @@ const actions = {
         response.data = response.data || {}
         routes.systemRoutes = response.data.systemMenus || []
         routes.backstageRoutes = response.data.tenementMenus || []
+        commit('IS_SYSTEN_MANAGE', response.data.userPermission)
         routes.allButtonPermission = {
           allPermissionCode: response.data.allPermissionCode,
           userPermission: response.data.userPermission,

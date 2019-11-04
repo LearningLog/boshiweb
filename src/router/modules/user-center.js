@@ -18,6 +18,43 @@ const userCenter = {
   },
   children: [
     {
+      path: 'user-manage',
+      component: () => import('@/views/user-center/user-manage/index'),
+      redirect: '/user-center/user-manage/list',
+      name: 'user-manage',
+      meta: { title: '用户管理', icon: '', activeMenu: '/user-center/user-manage' },
+      children: [
+        {
+          path: 'list',
+          name: 'user-list',
+          hidden: true,
+          component: () => import('@/views/user-center/user-manage/child/list.vue'),
+          meta: { title: '用户列表', icon: '', activeMenu: '/user-center/user-manage' }
+        },
+        {
+          path: 'add',
+          component: () => import('@/views/user-center/user-manage/child/add.vue'),
+          name: 'user-add',
+          hidden: true,
+          meta: { title: '新增用户', icon: '', activeMenu: '/user-center/user-manage' }
+        },
+        {
+          path: 'edit',
+          name: 'user-eait',
+          hidden: true,
+          component: () => import('@/views/user-center/user-manage/child/edit'),
+          meta: { title: '修改用户', icon: '', activeMenu: '/user-center/user-manage' }
+        },
+        {
+          path: 'detail',
+          name: 'user-detail',
+          hidden: true,
+          component: () => import('@/views/user-center/user-manage/child/detail'),
+          meta: { title: '用户详情', icon: '', activeMenu: '/user-center/user-manage' }
+        }
+      ]
+    },
+    {
       path: 'skill-manager',
       component: () => import('@/views/user-center/skill-manager/index'),
       redirect: '/user-center/skill-manager/list',

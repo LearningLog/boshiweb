@@ -490,6 +490,10 @@ export default {
 - 左侧为字段名称，带有冒号（：）
 - 底部为 `确定` 按钮，点击返回列表页
 
+## Vuex 公用数据
+
+- 是否为系统管理员 `this.$store.state.user.isSystemManage`
+
 ## Browsers support
 
 Modern browsers and Internet Explorer 10+.
