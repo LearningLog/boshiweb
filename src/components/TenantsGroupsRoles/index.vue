@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <el-form-item label="所属租户" v-if="isSystemManage">
+  <div class="tenantsGroupsRoles" :style="{ width: widths }">
+    <el-form-item v-if="isSystemManage" label="所属租户" :style="{ width: itemWidth }">
       <el-select
         v-model="companyIds"
         placeholder="请选择所属租户"
@@ -16,7 +16,7 @@
         />
       </el-select>
     </el-form-item>
-    <el-form-item label="小组" v-if="isRenderGroup">
+    <el-form-item v-if="isRenderGroup" label="小组" :style="{ width: itemWidth }">
       <el-select
         v-model="groupId"
         placeholder="请选择小组"
@@ -32,7 +32,7 @@
         />
       </el-select>
     </el-form-item>
-    <el-form-item label="角色" v-if="isRenderRole">
+    <el-form-item v-if="isRenderRole" label="角色" :style="{ width: itemWidth }">
       <el-select
         v-model="roleId"
         placeholder="请选择角色"
@@ -81,19 +81,55 @@ export default {
     }
   },
   computed: {
-    pageSize: {
-      get() {
-        return this.limit
-      },
-      set(val) {
-        this.$emit('update:limit', val)
+    widths: function() {
+      var num = 0
+      if (this.isSystemManage) {
+        num++
+      }
+      if (this.isRenderGroup) {
+        num++
+      }
+      if (this.isRenderRole) {
+        num++
+      }
+      switch (num) {
+        case 1:
+          return '33%'
+        case 2:
+          return '66.2%'
+        case 3:
+          return '100%'
+      }
+    },
+    itemWidth: function() {
+      var num = 0
+      if (this.isSystemManage) {
+        num++
+      }
+      if (this.isRenderGroup) {
+        num++
+      }
+      if (this.isRenderRole) {
+        num++
+      }
+      switch (num) {
+        case 1:
+          return '100%'
+        case 2:
+          return '49.7%'
+        case 3:
+          return '33%'
       }
     }
   },
   created() {
     this.getCustomManageList()
-    this.getEgroups()
-    this.getAllRoles()
+    if (this.isRenderGroup) {
+      this.getEgroups()
+    }
+    if (this.isRenderRole) {
+      this.getAllRoles()
+    }
   },
   methods: {
     // 获取所属租户list
@@ -137,5 +173,7 @@ export default {
 </script>
 
 <style scoped>
-
+.tenantsGroupsRoles {
+  display: inline-block;
+}
 </style>

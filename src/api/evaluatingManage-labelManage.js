@@ -15,3 +15,12 @@ export function getLabelList(data) {
     data
   })
 }
+
+// 获取标签列表，不分组
+export function labelAllList(data) {
+  return request({
+    url: '/evaluation/automatic/labelList',
+    method: 'post',
+    data
+  })
+}

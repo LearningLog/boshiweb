@@ -9,10 +9,52 @@
         <el-row v-show="popoverVisible">
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
-              <tenants-groups-roles @tenantsGroupsRolesVal="tenantsGroupsRolesVal"></tenants-groups-roles>
-              <el-form-item label="试题类型">
-                <el-input v-model="listQuery.topic_type" placeholder="请输入试题类型" clearable @keyup.enter.native="topSearch" />
-              </el-form-item>
+              <tenants-groups-roles :is-render-role="false" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" />
+              <!--<el-form-item label="试题标签">-->
+              <!--<el-select-->
+              <!--v-model="listQuery.topic_label"-->
+              <!--placeholder="请选择试题标签"-->
+              <!--clearable-->
+              <!--filterable-->
+              <!--&gt;-->
+              <!--<el-option-->
+              <!--v-for="item in topic_label"-->
+              <!--:key="item._id"-->
+              <!--:label="item.topicName"-->
+              <!--:value="item._id"-->
+              <!--/>-->
+              <!--</el-select>-->
+              <!--</el-form-item>-->
+              <!--<el-form-item label="试题技能">-->
+              <!--<el-select-->
+              <!--v-model="listQuery.topic_skill"-->
+              <!--placeholder="请选择试题技能"-->
+              <!--clearable-->
+              <!--filterable-->
+              <!--&gt;-->
+              <!--<el-option-->
+              <!--v-for="item in topic_skill"-->
+              <!--:key="item._id"-->
+              <!--:label="item.skill_name"-->
+              <!--:value="item._id"-->
+              <!--/>-->
+              <!--</el-select>-->
+              <!--</el-form-item>-->
+              <!--<el-form-item label="试题类型">-->
+              <!--<el-select-->
+              <!--v-model="listQuery.topicType"-->
+              <!--placeholder="请选择试题类型"-->
+              <!--clearable-->
+              <!--filterable-->
+              <!--&gt;-->
+              <!--<el-option-->
+              <!--v-for="item in topicType"-->
+              <!--:key="item._id"-->
+              <!--:label="item.typeName"-->
+              <!--:value="item._id"-->
+              <!--/>-->
+              <!--</el-select>-->
+              <!--</el-form-item>-->
               <el-form-item label="创建时间">
                 <el-date-picker
                   v-model="time_range"
@@ -22,10 +64,6 @@
                   end-placeholder="结束日期"
                   value-format="yyyy-MM-dd"
                 />
-              </el-form-item>
-              <el-form-item label="状态">
-                <el-radio v-model="listQuery.customStatus" label="1">生效</el-radio>
-                <el-radio v-model="listQuery.customStatus" label="0">失效</el-radio>
               </el-form-item>
             </el-form>
             <div id="searchPopoverBtn">
@@ -109,6 +147,8 @@ import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import { delTenant, batchDelTenant, getInformationList, setInformation, setCustomStatus } from '@/api/systemManage-tenantManage'
 import { evaluationTopicList } from '@/api/question-bank-manage'
+import { skillAllList } from '@/api/userCenter-skillManage'
+import { labelAllList } from '@/api/evaluatingManage-labelManage'
 export default {
   components: { Pagination, TenantsGroupsRoles },
   directives: { elDragDialog },
@@ -119,28 +159,37 @@ export default {
         currentPage: 1, // 当前页
         pageSize: 10, // 当前页请求条数
         content: '', // 租户名称
-        topic_type: null, // 试题类型
+        topic_label: null, // 试题标签
+        topic_skill: null, // 试题技能
+        topicType: null, // 试题类型
+        selectGroupId: null, // 租户
+        egroup: null, // 租户
         startTime: null, // 创建开始时间
         endTime: null, // 创建结束时间
         customStatus: null // 状态
       },
+      topic_label: [], // 试题标签
+      topic_skill: [], // 试题技能
+      topicType: [{ _id: 1, topicName: '简单' }, { _id: 2, topicName: '一般' }, { _id: 3, topicName: '困难' }],
       time_range: [], // 创建时间
       list: [], // 表格数据
       listLoading: true, // 是否开启表格遮罩
       popoverVisible: false, // 是否开启高级搜索
-      setInformationDialogVisible: false, // 是否打开设置资讯弹窗
-      noList: [], // 未分配的资讯
-      hasList: [], // 已分配的资讯
       checkedDelList: [], // 选择删除的list
-      defaultProps: { // 穿梭框节点别名
-        key: '_id',
-        label: 'newscategory_name'
-      },
       setInformationId: '' // 当前设置资讯的id
+    }
+  },
+  watch: {
+    // 监听表单数据变化
+    'listQuery.selectGroupId': function(curVal, oldVal) {
+      this.get_topic_label_list()
+      this.get_topic_skill_list()
     }
   },
   created() {
     this.get_list()
+    this.get_topic_label_list()
+    this.get_topic_skill_list()
   },
   methods: {
     // 获取初始化数据
@@ -150,6 +199,18 @@ export default {
         this.listLoading = false
         this.list = response.data.page.list
         this.total = response.data.page.totalCount
+      })
+    },
+    // 获取标签list
+    get_topic_label_list() {
+      labelAllList({}).then(res => {
+        this.topic_label = res.data
+      })
+    },
+    // 获取技能list
+    get_topic_skill_list() {
+      skillAllList({ }).then(res => {
+        this.topic_skill = res.data
       })
     },
     // 搜索
@@ -171,7 +232,7 @@ export default {
     },
     // 监听三组数据变化
     tenantsGroupsRolesVal(val) {
-      this.listQuery.companyIds = val.companyIds
+      this.listQuery.selectGroupId = val.companyIds
       this.listQuery.egroup = val.egroupId
       this.listQuery.roleId = val.roleId
     },
@@ -263,20 +324,6 @@ export default {
         })
       })
       this.setInformationDialogVisible = true
-    },
-    handleTransferChange(value, direction, movedKeys) {
-      this.hasList = value
-    },
-    // 设置资讯
-    setInformation() {
-      const data = { _id: this.setInformationId, categoryinfo: this.hasList.join() }
-      setInformation(data).then(response => {
-        this.setInformationDialogVisible = false
-        this.noList = []
-        this.hasList = []
-        this.$message.success('设置资讯成功！')
-        this.get_list()
-      })
     }
   }
 }

@@ -22,6 +22,15 @@ export function skillManagerList(data) {
     data
   })
 }
+
+// 获取所有技能列表
+export function skillAllList(data) {
+  return request({
+    url: '/evaluation/automatic/skillList',
+    method: 'post',
+    data
+  })
+}
 // 单个技能详情 system/skill/one
 export function getItem(data) {
   return request({
@@ -89,4 +98,3 @@ export function setRoleAuthority(data) {
     data
   })
 }
-
