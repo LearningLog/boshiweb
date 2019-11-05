@@ -55,35 +55,56 @@ const evaluatingManage = {
       ]
     },
     {
-      path: 'skillManage',
+      path: 'skill-manage',
       component: () => import('@/views/evaluating-manage/skill-manage/index'),
-      redirect: '/evaluating-manage/skillManage/list',
-      name: 'skillManage',
-      meta: { title: '技能管理', icon: '', activeMenu: '/evaluating-manage/skillManage' },
+      redirect: '/evaluating-manage/skill-manage/list',
+      name: 'skill-manage',
+      meta: { title: '技能管理', icon: '', activeMenu: '/evaluating-manage/skill-manage' },
       children: [
         {
           path: 'list',
           name: 'skillList',
           hidden: true,
           component: () => import('@/views/evaluating-manage/skill-manage/child/list'),
-          meta: { title: '技能管理列表', icon: '', activeMenu: '/evaluating-manage/skillManage' }
+          meta: { title: '技能管理列表', icon: '', activeMenu: '/evaluating-manage/skill-manage' }
         }
       ]
     },
     {
-      path: 'labelManage',
-      name: 'labelManage',
+      path: 'label-manage',
+      name: 'label-manage',
       component: () => import('@/views/evaluating-manage/label-manage/index'),
-      redirect: '/evaluating-manage/labelManage/list',
-      meta: { title: '标签管理', icon: '', activeMenu: '/evaluating-manage/labelManage' },
+      redirect: '/evaluating-manage/label-manage/list',
+      meta: { title: '标签管理', icon: '', activeMenu: '/evaluating-manage/label-manage' },
       children: [
         {
+          path: 'add',
+          name: 'label-add',
+          hidden: true,
+          component: () => import('@/views/evaluating-manage/label-manage/child/add'),
+          meta: { title: '新增标签', icon: '', activeMenu: '/evaluating-manage/label-manage' }
+        },
+        {
+          path: 'edit',
+          name: 'label-edit',
+          hidden: true,
+          component: () => import('@/views/evaluating-manage/label-manage/child/edit'),
+          meta: { title: '修改标签', icon: '', activeMenu: '/evaluating-manage/label-manage' }
+        },
+        {
+          path: 'detail',
+          name: 'label-detail',
+          hidden: true,
+          component: () => import('@/views/evaluating-manage/label-manage/child/detail'),
+          meta: { title: '标签详情', icon: '', activeMenu: '/evaluating-manage/label-manage' }
+        },
+        {
           path: 'list',
-          name: 'labelList',
+          name: 'label-list',
           hidden: true,
           component: () => import('@/views/evaluating-manage/label-manage/child/list'),
-          meta: { title: '标签列表', icon: '', activeMenu: '/evaluatingManage/labelManage' }
-        }
+          meta: { title: '标签列表', icon: '', activeMenu: '/evaluating-manage/label-manage' }
+        },
       ]
     }
   ]

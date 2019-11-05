@@ -8,18 +8,18 @@
       :status-icon="true"
       label-width="120px"
     >
-      <el-form-item class="required" label="用户名称" prop="username">
+      <el-form-item class="required" label="标签名称" prop="username">
         <el-input
           v-model="form.username"
-          placeholder="请输入用户名称"
+          placeholder="请输入标签名称"
           :max-length="20"
           clearable
         />
       </el-form-item>
-      <el-form-item label="所属企业" prop="groupId">
+      <el-form-item label="所属小组" prop="groupId">
         <el-select
           v-model="form.groupId"
-          placeholder="请选择所属企业"
+          placeholder="请选择所属小组"
           clearable
           filterable
         >
@@ -31,31 +31,7 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="昵称" prop="nickname">
-        <el-input v-model="form.nickname" placeholder="请输入昵称" :max-length="20" clearable />
-      </el-form-item>
-      <el-form-item label="手机号" prop="phone">
-        <el-input v-model="form.phone" placeholder="请输入手机号" clearable />
-      </el-form-item>
-      <el-form-item label="密码" prop="password">
-        <el-input
-          v-model="form.password"
-          placeholder="请输入密码"
-          type="password"
-          autocomplete="new-password"
-          maxlength="50"
-          clearable
-        />
-      </el-form-item>
-      <el-form-item label="用户状态" prop="userStatus">
-        <el-radio-group v-model="form.userStatus">
-          <el-radio :label="1">生效</el-radio>
-          <el-radio :label="0">失效</el-radio>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="邮箱" prop="email">
-        <el-input v-model="form.email" placeholder="请输入邮箱地址" clearable />
-      </el-form-item>
+
       <el-form-item label="描述" prop="desc">
         <el-input
           v-model="form.desc"
@@ -64,20 +40,6 @@
           :max-length="256"
           clearable
         />
-      </el-form-item>
-      <el-form-item label="角色" prop="falseRole">
-        <el-input
-          v-show="false"
-          v-model="form.falseRole"
-        />
-        <span v-for="role in roles" :key="role._id" class="role">{{ role.rolename }}</span>
-        <span class="pointer" @click="getAllRoles">修改</span>
-      </el-form-item>
-      <el-form-item label="小组" prop="einc">
-        <span v-for="egroup in egroups" :key="egroup._id" class="role">{{
-          egroup.groupName
-        }}</span>
-        <span class="pointer" @click="getEgroups">修改</span>
       </el-form-item>
     </el-form>
     <div id="btnGroup">
@@ -88,29 +50,6 @@
       >提交</el-button>
       <el-button type="primary" plain @click="cancel('form')">取消</el-button>
     </div>
-    <el-dialog v-el-drag-dialog class="setRolesDialog" width="650px" title="分配角色" :visible.sync="setRolesDialogVisible">
-      <el-transfer v-model="form.roleIdList" :data="form.noList" :titles="['未分配角色', '已分配角色']" :props="defaultProps" @change="handleTransferChange" />
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="setRoles">确定</el-button>
-        <el-button @click="setRolesDialogVisible = false">取 消</el-button>
-      </div>
-    </el-dialog>
-    <el-dialog v-el-drag-dialog class="setRolesDialog" width="650px" title="分配小组" :visible.sync="setEgroupsDialogVisible">
-      <el-transfer v-model="form.einc" class="setEgroups" :data="form.noList2" :titles="['未分配小组', '已分配小组']" :props="defaultProps2" @change="handleTransferChange2">
-        <span slot-scope="{ option }">{{ option.label }}
-          <span class="groupName">{{ option.groupName }}</span>
-          <div class="fr eincs">
-            <el-checkbox-group v-model="chargemanList">
-              <el-checkbox :label="option.inc">组长</el-checkbox>
-            </el-checkbox-group>
-          </div>
-        </span>
-      </el-transfer>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="setEgroups">确定</el-button>
-        <el-button @click="setEgroupsDialogVisible = false">取 消</el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 

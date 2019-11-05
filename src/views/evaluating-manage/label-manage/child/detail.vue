@@ -5,38 +5,14 @@
       :model="form"
       label-width="120px"
     >
-      <el-form-item label="用户名称：">
+      <el-form-item label="标签名称：">
         <span>{{ form.username }}</span>
       </el-form-item>
-      <el-form-item label="所属企业：">
+      <el-form-item label="所属小组：">
         <span>{{ form.customname }}</span>
       </el-form-item>
-      <el-form-item label="昵称：">
-        <span>{{ form.nickname }}</span>
-      </el-form-item>
-      <el-form-item label="手机号：">
-        <span>{{ form.phone }}</span>
-      </el-form-item>
-      <el-form-item label="密码：">
-        <span>{{ form.password }}</span>
-      </el-form-item>
-      <el-form-item label="用户状态：">
-        <span>{{ form.userStatusName }}</span>
-      </el-form-item>
-      <el-form-item label="邮箱：">
-        <span>{{ form.email }}</span>
-      </el-form-item>
       <el-form-item label="描述：">
-        <span class="pre-wrap">{{ form.desc }}</span>
-      </el-form-item>
-      <el-form-item label="角色：">
-        <span>{{ form.rolename.join(',') }}</span>
-      </el-form-item>
-      <el-form-item label="小组：">
-        <span>{{ form.egroups.join(',') }}</span>
-      </el-form-item>
-      <el-form-item label="管理小组：">
-        <span>{{ form.incName.join(',') }}</span>
+        <span>{{ form.nickname }}</span>
       </el-form-item>
     </el-form>
     <div id="btnGroup">
@@ -95,7 +71,7 @@ export default {
     },
     // 确定
     confirm() {
-      this.$router.push({ path: '/user-center/user-manage/list' })
+      this.$router.push({ path: '/evaluating-manage/label-manage/list' })
     }
   }
 }

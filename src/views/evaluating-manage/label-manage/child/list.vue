@@ -1,7 +1,7 @@
 <template>
-  <div class="list-box">
+  <div class="tenant-list-box">
     <div id="topSearch">
-      <el-input v-model="listQuery.groupName" placeholder="请输入分组名称" clearable @keyup.enter.native="topSearch">
+      <el-input v-model="listQuery.customname" placeholder="请输入标签名称" clearable @keyup.enter.native="topSearch">
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
       </el-input>
       <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">高级搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
@@ -9,24 +9,13 @@
         <el-row v-show="popoverVisible">
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
-              <el-form-item label="创建人">
-                <el-input v-model="listQuery.creater" placeholder="请输入创建人" clearable @keyup.enter.native="topSearch" />
-              </el-form-item>
-              <el-form-item label="所属租户">
-                <el-select v-model="listQuery.customname" placeholder="请选择所属租户" clearable filterable>
-                  <el-option
-                    v-for="item in custom_list"
-                    :key="item._id"
-                    :label="item.customname"
-                    :value="item._id"
-                  />
-                </el-select>
+              <el-form-item label="标签ID">
+                <el-input v-model="listQuery.createUser" placeholder="请输入标签" clearable @keyup.enter.native="topSearch" />
               </el-form-item>
               <el-form-item label="创建时间">
                 <el-date-picker
                   v-model="time_range"
                   type="daterange"
-                  clearable
                   range-separator="至"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
@@ -52,151 +41,128 @@
       border
       fit
       highlight-current-row
-      @selection-change="select_fn"
+      @selection-change="handleSelectionChange"
     >
       <el-table-column
         type="selection"
-        width="55"
-        :selectable="selectable"
+        width="50"
+        fixed
       />
-      <el-table-column label="序号" min-width="100" align="center" show-overflow-tooltip prop="desc" />
-      <el-table-column align="center" label="名称" show-overflow-tooltip>
+      <el-table-column align="center" label="序号" min-width="100" prop="createuser" />
+      <el-table-column align="center" label="名称" min-width="150">
         <template slot-scope="scope">
-          <span class="pointer" @click="detail(scope.row)">{{ scope.row.groupName }}</span>
+          <span class="pointer" @click="detail(scope.row)">{{ scope.row.customname }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="描述" min-width="100" align="center" show-overflow-tooltip prop="desc" />
-      <el-table-column align="center" label="创建时间" min-width="130" show-overflow-tooltip prop="createtime" />
-      <el-table-column align="center" label="所属企业" min-width="140" show-overflow-tooltip prop="customname" />
-      <el-table-column align="center" label="管理员" min-width="140" show-overflow-tooltip prop="customname" />
-      <el-table-column align="center" label="来源" min-width="140" show-overflow-tooltip prop="dataTypeName" />
-      <el-table-column align="center" label="成员人数" min-width="140" show-overflow-tooltip prop="usercount" />
-      <el-table-column class-name="status-col" label="操作" width="250" align="center" fixed="right" show-overflow-tooltip>
+      <el-table-column class-name="status-col" label="小组" min-width="150" align="center" prop="customSystemName" />
+      <el-table-column align="center" label="创建时间" min-width="120" prop="createtime" />
+ 
+      <el-table-column class-name="status-col" label="操作" width="230" align="center" fixed="right">
         <template slot-scope="scope">
-          <div>
-            <el-button size="mini" @click="go_edit_fn(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
-            <el-button size="mini" @click="delete_fn(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
-            <el-button size="mini" @click="getTranstorInformation(scope.row)"><i class="iconfont iconshouquan" />分配技能</el-button>
-          </div>
+          <el-button size="mini" @click="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
+          <el-button size="mini" @click="del(scope.row)"><i class="iconfont iconxiugai" />删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="get_list" />
     <div id="bottomOperation">
-      <el-button v-show="total>0" type="danger" plain @click="batch_del_fn"><i class="iconfont iconshanchu" />批量删除</el-button>
+      <el-button v-show="total>0" type="danger" plain @click="batchDel"><i class="iconfont iconshanchu" />批量删除</el-button>
     </div>
-
-    <el-dialog v-el-drag-dialog class="setInformationDialog" width="650px" title="分配技能" :visible.sync="transforBoxVisible">
+    <el-dialog v-el-drag-dialog class="setInformationDialog" width="650px" title="资讯管理" :visible.sync="setInformationDialogVisible">
       <el-transfer v-model="hasList" :data="noList" :titles="['未分配类别', '已分配类别']" :props="defaultProps" @change="handleTransferChange" />
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="setTranstorInformation">确定</el-button>
-        <el-button @click="transforBoxVisible = false">取 消</el-button>
+        <el-button type="primary" @click="setInformation">确定</el-button>
+        <el-button @click="setInformationDialogVisible = false">取 消</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { findEmployeeGroupList, getCustomManageList, deleteItem, deleteMultiRole, egroupskill, saveGroupSkill } from '@/api/userCenter-groupManage'
-import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
+import { getAllTenantList, delTenant, batchDelTenant, getInformationList, setInformation, setCustomStatus } from '@/api/systemManage-tenantManage'
+import { getLabelList} from '@/api/evaluatingManage-labelManage'
 export default {
   components: { Pagination },
   directives: { elDragDialog },
   data() {
     return {
-      listLoading: false,
-      custom_list: [], // 所属租户下拉列表
-      transforBoxVisible: false, // 穿梭框显示隐藏
-      noList: [], // 穿梭框未分配
-      hasList: [], // 穿梭框已分配
-      setInformationId: '',
-      defaultProps: { // 穿梭框节点别名
-        key: 'increase_id',
-        label: 'skill_name'
-      },
-      listQuery: {
-        currentPage: 1, // 当前页码
-        pageSize: 10, // 当前列表请求条数
-        groupName: '', // 分组名称
-        creater: '', // 创建人
-        startTime: '', // 开始时间
-        endtTime: '', // 结束时间
-        customname: '' // 所属租户
-      },
-      time_range: [],
-      delCheckedList: [], // 选中的数据
-      list: null, // 列表数据
       total: 0, // 总条数
-      popoverVisible: false // 高级搜索是否展开
-    }
-  },
-  computed: {
-    isSystemManage() {
-      return this.$store.state.user.isSystemManage
+      listQuery: { // 查询条件
+        currentPage: 1, // 当前页
+        pageSize: 10, // 当前页请求条数
+        customname: '', // 租户名称
+        createUser: null, // 创建人
+        startTime: null, // 创建开始时间
+        endTime: null, // 创建结束时间
+        customStatus: null // 状态
+      },
+      time_range: [], // 创建时间
+      list: [], // 表格数据
+      listLoading: true, // 是否开启表格遮罩
+      popoverVisible: false, // 是否开启高级搜索
+      setInformationDialogVisible: false, // 是否打开设置资讯弹窗
+      noList: [], // 未分配的资讯
+      hasList: [], // 已分配的资讯
+      checkedDelList: [], // 选择删除的list
+      defaultProps: { // 穿梭框节点别名
+        key: '_id',
+        label: 'newscategory_name'
+      },
+      setInformationId: '' // 当前设置资讯的id
     }
   },
   created() {
     this.get_list()
-    this.getCustomManageList()
   },
   methods: {
-    // 获取所属租户list
-    getCustomManageList() {
-      getCustomManageList().then(res => {
-        this.custom_list = res.data
-      })
-    },
-    // 搜索
-    topSearch() {
-      this.get_list()
-    },
-    // 重置
-    reset() {
-      this.listQuery.groupName = ''
-      this.listQuery.creater = ''
-      this.listQuery.startTime = ''
-      this.listQuery.endtTime = ''
-      this.time_range = []
-      this.listQuery.customname = ''
-      this.get_list()
-    },
-    // 获取分组列表
+    // 获取初始化数据
     get_list() {
-      this.time_range = this.time_range || []
-      this.listQuery.startTime = this.time_range[0]
-      this.listQuery.endtTime = this.time_range[1]
       this.listLoading = true
-      findEmployeeGroupList(this.listQuery).then(response => {
+      getLabelList(this.listQuery).then(response => {
         this.listLoading = false
         this.list = response.data.page.list
         this.total = response.data.page.totalCount
       })
     },
-    selectable(row, index) {
-      return true
-      // return row.auth
+    // 搜索
+    topSearch() {
+      this.time_range = this.time_range || []
+      this.listQuery.startTime = this.time_range[0]
+      this.listQuery.endTime = this.time_range[1]
+      this.get_list()
     },
-    // 修改
-    go_edit_fn(row) {
-      this.$router.push({ path: '/user-center/group-manage/edit', query: { id: row._id }})
+    // 重置
+    reset() {
+      this.listQuery.customname = ''
+      this.listQuery.createUser = ''
+      this.time_range = []
+      this.listQuery.startTime = ''
+      this.listQuery.endTime = ''
+      this.listQuery.customStatus = ''
+      this.get_list()
     },
-    // 详情
-    detail(row) {
-      this.$router.push({ path: '/user-center/group-manage/detail', query: { id: row._id }})
+    // 选中数据
+    handleSelectionChange(row) {
+      this.checkedDelList = row
     },
     // 新增
     add() {
-      this.$router.push({ path: '/user-center/group-manage/add' })
+      this.$router.push({ path: '/systemManage/tenantManage/add' })
     },
-    // 删除单个分组
-    delete_fn(row) {
-      this.$confirm('确定要删除【' + row.groupName + '】吗？', '删除分组', {
+    // 详情
+    detail(row) {
+      this.$router.push({ path: '/systemManage/tenantManage/detail', query: { _id: row._id }})
+    },
+    // 单个删除
+    del(row) {
+      this.$confirm('确定要删除【' + row.customname + '】吗？', '删除租户', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        deleteItem({ _id: row._id }).then(response => {
+        delTenant({ _id: row._id }).then(response => {
           this.$message.success('删除成功！')
           if ((this.list.length - 1) === 0) { // 如果当前页数据已删完，则去往上一页
             this.listQuery.currentPage -= 1
@@ -205,64 +171,78 @@ export default {
         })
       }).catch(() => {})
     },
-    // 选中数据
-    select_fn(row) {
-      this.delCheckedList = row
-    },
     // 批量删除
-    batch_del_fn() {
-      if (!this.delCheckedList.length) {
-        this.$message.warning('请选择分组！')
+    batchDel() {
+      if (!this.checkedDelList.length) {
+        this.$message.warning('请选择租户！')
         return false
       }
-      this.$confirm('确定要删除选中的分组吗？', '批量删除分组', {
+      this.$confirm('确定要删除选中的租户吗？', '批量删除租户', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
         const _ids = []
-        this.delCheckedList.forEach(item => {
+        this.checkedDelList.forEach(item => {
           _ids.push(item._id)
         })
-        deleteMultiRole({ _ids: _ids }).then(response => {
+        batchDelTenant({ _ids: _ids }).then(response => {
           this.$message.success('批量删除成功！')
-          if ((this.list.length - this.delCheckedList.length) === 0) { // 如果当前页数据已删完，则去往上一页
+          if ((this.list.length - this.checkedDelList.length) === 0) { // 如果当前页数据已删完，则去往上一页
             this.listQuery.currentPage -= 1
           }
           this.get_list()
         })
       }).catch(() => {})
     },
-
-    // 授权
-    // 穿梭框
-    getTranstorInformation(row) {
-      debugger
+    // 编辑
+    edit(row) {
+      this.$router.push({ path: '/systemManage/tenantManage/edit', query: { _id: row._id }})
+    },
+    // 生效/失效
+    enable(row, type) {
+      if (type === 0) {
+        this.$confirm('失效用户将不能进行所有本系统内的操作，请问是否对该用户失效？', '失效租户', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          setCustomStatus({ _id: row._id, customStatus: type }).then(response => {
+            this.$message.success('失效用户成功！')
+            this.get_list()
+          })
+        }).catch(() => {})
+      } else {
+        setCustomStatus({ _id: row._id, customStatus: type }).then(response => {
+          this.$message.success('生效用户成功！')
+          this.get_list()
+        })
+      }
+    },
+    // 获取资讯数据
+    getInformation(row) {
       this.setInformationId = row._id
-      egroupskill({ _id: row._id }).then(response => {
-        console.log(response)
-        this.noList = response.data.noList.concat(response.data.hasList)
-        console.log(this.noList)
+      getInformationList({ groupId: row._id }).then(response => {
+        this.noList = []
         this.hasList = []
+        this.noList = response.data.noList.concat(response.data.hasList)
         response.data.hasList.forEach((item, index) => {
-          this.hasList.push(item.increase_id)
-          debugger
-          console.log(this.hasList)
+          this.hasList.push(item._id)
         })
       })
-      this.transforBoxVisible = true
+      this.setInformationDialogVisible = true
     },
     handleTransferChange(value, direction, movedKeys) {
       this.hasList = value
     },
-    // 保存穿梭框-技能信息
-    setTranstorInformation() {
-      const data = { _id: this.setInformationId, skillinfo: this.hasList.join() }
-      saveGroupSkill(data).then(response => {
-        this.transforBoxVisible = false
+    // 设置资讯
+    setInformation() {
+      const data = { _id: this.setInformationId, categoryinfo: this.hasList.join() }
+      setInformation(data).then(response => {
+        this.setInformationDialogVisible = false
         this.noList = []
         this.hasList = []
-        this.$message.success('设置技能成功！')
+        this.$message.success('设置资讯成功！')
         this.get_list()
       })
     }
@@ -277,5 +257,13 @@ export default {
   }
   .setInformationDialog /deep/ .el-transfer-panel {
     text-align: left;
+  }
+  img.logoImg {
+    width: 70px;
+    height: 70px;
+    vertical-align: middle;
+  }
+  .el-table /deep/ .el-table__body tr {
+    height: 90px!important;
   }
 </style>
