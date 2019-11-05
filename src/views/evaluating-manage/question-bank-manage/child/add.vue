@@ -1,6 +1,36 @@
 <template>
   <div class="form-edit">
-    <el-form ref="form" class="form" :model="form" :rules="rules" label-width="140px" :status-icon="true">
+    <el-form ref="form" class="form" :model="form" :rules="rules" label-width="120px" :status-icon="true">
+      <el-form-item label="租户名称" prop="customname">
+        <el-input v-model="form.customname" placeholder="请输入租户名称" maxlength="64" clearable />
+      </el-form-item>
+      <el-form-item label="租户描述" prop="desc">
+        <el-input v-model="form.desc" placeholder="请输入租户描述" maxlength="100" clearable />
+      </el-form-item>
+      <el-form-item label="最大用户数" prop="userCount">
+        <el-input v-model="form.userCount" placeholder="请输入最大用户数" clearable @keyup.native="intNum(form.userCount)" />
+      </el-form-item>
+      <el-form-item label="租户状态" prop="customStatus">
+        <el-radio-group v-model="form.customStatus">
+          <el-radio :label="1">生效</el-radio>
+          <el-radio :label="0">失效</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="开通智能搜索" prop="text_extraction">
+        <el-radio-group v-model="form.text_extraction">
+          <el-radio :label="1">开启</el-radio>
+          <el-radio :label="0">关闭</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="租户管理员" prop="uName">
+        <el-input v-model="form.uName" placeholder="请输入租户管理员" maxlength="64" clearable />
+      </el-form-item>
+      <el-form-item label="管理员昵称" prop="uNickname">
+        <el-input v-model="form.uNickname" placeholder="请输入管理员昵称" maxlength="20" clearable />
+      </el-form-item>
+      <el-form-item label="管理员密码" prop="uPwd">
+        <el-input v-model="form.uPwd" placeholder="请输入管理员密码" type="password" autocomplete="new-password" maxlength="50" clearable />
+      </el-form-item>
       <el-form-item label="平台Logo" class="logoClass">
         <el-upload
           ref="uploadDeskTopLogo"
@@ -23,6 +53,7 @@
           :on-remove="handleRemove"
           @click.native="logoTypes(1)"
         >
+          <!--<img v-if="deskTopImageUrl" :src="deskTopImageUrl" class="avatar">-->
           <i class="el-icon-plus avatar-uploader-icon" />
         </el-upload>
       </el-form-item>
@@ -48,23 +79,17 @@
           :on-remove="handleRemove"
           @click.native="logoTypes(2)"
         >
+          <!--<img v-if="mobileImageUrl" :src="mobileImageUrl" class="avatar">-->
           <i class="el-icon-plus avatar-uploader-icon" />
         </el-upload>
       </el-form-item>
-      <el-form-item label="系统名称">
-        <el-input v-model="form.logo_name" maxlength="64" placeholder="请输入系统名称" clearable />
-      </el-form-item>
-      <el-form-item label="描述">
-        <el-input
-          v-model="form.logo_desc"
-          type="textarea"
-          :rows="2"
-          placeholder="请输入内容"
-        />
+      <el-form-item label="个性化系统名称">
+        <el-input v-model="form.customSystemName" maxlength="64" placeholder="请输入系统名称" clearable />
       </el-form-item>
     </el-form>
     <div id="btnGroup">
-      <el-button v-no-more-click type="primary" @click="onSubmit('form')">保存</el-button>
+      <el-button v-no-more-click type="primary" @click="onSubmit('form')">提交</el-button>
+      <el-button type="primary" plain @click="cancel('form')">取消</el-button>
     </div>
     <!-- vueCropper 剪裁图片实现-->
     <el-dialog v-el-drag-dialog title="图片剪裁" :visible.sync="cropperDialogVisible" append-to-body :close-on-click-modal="false" @close="closeUpload">
@@ -114,26 +139,59 @@
 </template>
 
 <script>
-import { validIntNum } from '@/utils/validate'
+import { validIntNum, regUName, regPwd } from '@/utils/validate'
 import { VueCropper } from 'vue-cropper'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
-import { getOneTenant, editTenant, setTenant } from '@/api/systemManage-tenantManage'
+import { addTenant } from '@/api/systemManage-tenantManage'
 import { uploadFile } from '@/api/uploadFile'
 import { getToken } from '@/utils/auth'
 const $ = window.$
 
 export default {
   components: {
-    VueCropper
+    VueCropper // 图片裁剪组件
   },
   directives: { elDragDialog },
   data() {
+    // 校验租户管理员
+    var validateUName = (rule, value, callback) => {
+      if (!value && value !== 0) {
+        callback(new Error('请输入租户管理员（长度在 2 到 64 个字符）'))
+      } else if (!regUName(value)) {
+        callback(new Error('2 到 64 位字母和数字的组合，不能连续11位数字'))
+      } else {
+        callback()
+      }
+    }
+    // 校验管理员密码
+    var validatePass = (rule, value, callback) => {
+      if (!value && value !== 0) {
+        callback(new Error('请输入管理员密码'))
+      } else if (!regPwd(value)) {
+        callback(new Error('6 到 50 位字母和数字的组合'))
+      } else {
+        callback()
+      }
+    }
     return {
       dataIsChange: 0, // 计数器，据此判断表单是否已编辑
       noLeaveprompt: false, // 表单提交后，设置为true，据此判断提交不再弹出离开提示
-      id: '', // 查询id
-      form: {}, // 表单数据
-      isChangeTuser: 0, // 是否修改租户管理员
+      form: { // 表单数据
+        customname: '', // 租户名称
+        desc: '', // 描述
+        userCount: '', // 最大用户数量
+        customStatus: 1, // 租户状态
+        text_extraction: 1, // 开通智能搜索
+        uName: '', // 租户管理员
+        uNickname: '', // 管理员昵称
+        uPwd: '', // 管理员密码
+        pcLogoFileId: '', // 平台Logo id
+        pcLogoFileUrl: '', // 平台Logo url
+        mobileLogoFileId: '', // 移动端Logo id
+        mobileLogoFileUrl: '', // 移动端Logo url
+        customSystemName: '' // 个性化系统名称
+      },
+      loading: false, // 防止重复提交
       headers: {
         Authorization: getToken() // 图片上传 header
       },
@@ -194,8 +252,8 @@ export default {
           { required: true, message: '请选择是否开通智能搜索', trigger: 'change' }
         ],
         uName: [
-          { required: true, message: '请输入租户管理员（长度在 2 到 64 个字符）', trigger: 'blur' },
-          { required: true, message: '请输入租户管理员（长度在 2 到 64 个字符）', trigger: 'change' },
+          { required: true, validator: validateUName, trigger: 'blur' },
+          { required: true, validator: validateUName, trigger: 'change' },
           { min: 2, max: 64, message: '长度在 2 到 64 个字符', trigger: 'blur' },
           { min: 2, max: 64, message: '长度在 2 到 64 个字符', trigger: 'change' }
         ],
@@ -206,10 +264,8 @@ export default {
           { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'change' }
         ],
         uPwd: [
-          { required: true, message: '请输入管理员密码（长度在 6 到 50 个字符）', trigger: 'blur' },
-          { required: true, message: '请输入管理员密码（长度在 6 到 50 个字符）', trigger: 'change' },
-          { min: 6, max: 50, message: '长度在 6 到 50 个字符', trigger: 'blur' },
-          { min: 6, max: 50, message: '长度在 6 到 50 个字符', trigger: 'change' }
+          { required: true, validator: validatePass, trigger: 'blur' },
+          { required: true, validator: validatePass, trigger: 'change' }
         ]
       }
     }
@@ -225,51 +281,23 @@ export default {
       deep: true // 深层次监听
     }
   },
-  created() {
-    this.id = this.$store.state.user.userSystemInfo.userInfo._id
-    this.getTenant()
-  },
   methods: {
-    // 获取初始数据
-    getTenant() {
-      getOneTenant({ _id: this.id }).then(response => {
-        const obj = {
-          platform_url: response.data.custom.pcLogoFileUrl,
-          mobile_url: response.data.custom.mobileLogoFileUrl,
-          logo_name: response.data.custom.customSystemName,
-          logo_desc: response.data.custom.desc
-        }
-        if (response.data.custom.pcLogoFileUrl) {
-          this.fileList1 = [{ name: '', url: response.data.custom.pcLogoFileUrl }]
-          $('.uploadDeskTopLogo .el-upload--picture-card').hide()
-        }
-        if (response.data.custom.mobileLogoFileUrl) {
-          this.fileList2 = [{ name: '', url: response.data.custom.mobileLogoFileUrl }]
-          $('.uploadMobileLogo .el-upload--picture-card').hide()
-        }
-        this.form = obj
-        this.dataIsChange = -1
-      })
-    },
     // 提交
     onSubmit(formName) {
+      console.log(process.env.VUE_APP_BASE_API)
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          switch (this.isChangeTuser) {
-            case 0:
-              this.form.isChangeTuser = 'n'
-              break
-            case 1:
-              this.form.isChangeTuser = 'y'
-              break
-          }
-          setTenant(this.form).then(response => {
-            this.$message.success('修改租户成功！')
+          addTenant(this.form).then(response => {
+            this.$message.success('新增租户成功！')
             this.noLeaveprompt = true
-            this.$router.push({ path: '/systemManage/tenantManage/detail', query: { _id: this.id }})
+            this.$router.push({ path: '/systemManage/tenantManage/detail', query: { _id: response.data.id }})
           })
         }
       })
+    },
+    // 取消
+    cancel(formName) {
+      this.$router.push({ path: '/systemManage/tenantManage/list' })
     },
     // 上传路径
     uploadUrl() {
@@ -356,6 +384,7 @@ export default {
       this.$refs.cropper.getCropBlob((data) => {
         formData.append('thumbnailfile', data, this.fileName)
         uploadFile(formData).then(response => {
+          this.$message.success('上传成功！')
           if (this.logoType === 1) {
             this.deskTopImageUrl = response.data.saveHttpPath
             this.form.pcLogoFileUrl = response.data.saveHttpPath
@@ -374,7 +403,6 @@ export default {
         })
       })
     },
-
     // 关闭上传及裁剪
     closeUpload() {
       if (this.clearFiles) {
@@ -425,15 +453,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  #btnGroup {
-    padding-left: 140px;
+  #btnGroup{
+    padding-left: 120px;
   }
   /deep/ .el-upload-dragger {
-    border: none;
-    width: auto;
-    height: auto;
+     border: none;
+     width: auto;
+     height: auto;
   }
-  [class^="el-icon-"], [class*=" el-icon-"] {
+  [class^="el-icon-"], [class*=" el-icon-"]{
     line-height: 60px!important;
   }
   .vueCropper {

@@ -43,7 +43,7 @@
           <el-radio :label="0">否</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="新密码" prop="password" v-if="form.setUpPwd">
+      <el-form-item v-if="form.setUpPwd" label="新密码" prop="password">
         <el-input
           v-model="form.password"
           placeholder="请输入密码"
@@ -106,7 +106,7 @@
         <span slot-scope="{ option }">{{ option.label }}
           <span class="groupName">{{ option.groupName }}</span>
           <div class="fr eincs">
-            <el-checkbox-group v-model="chargemanList" >
+            <el-checkbox-group v-model="chargemanList">
               <el-checkbox :label="option.inc" :checked="option.manage">组长</el-checkbox>
             </el-checkbox-group>
           </div>

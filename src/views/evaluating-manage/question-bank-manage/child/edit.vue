@@ -1,6 +1,44 @@
 <template>
   <div class="form-edit">
     <el-form ref="form" class="form" :model="form" :rules="rules" label-width="140px" :status-icon="true">
+      <el-form-item label="租户名称" prop="customname">
+        <el-input v-model="form.customname" placeholder="请输入租户名称" maxlength="64" clearable />
+      </el-form-item>
+      <el-form-item label="租户描述" prop="desc">
+        <el-input v-model="form.desc" placeholder="请输入租户描述" maxlength="100" clearable />
+      </el-form-item>
+      <el-form-item label="最大用户数" prop="userCount">
+        <el-input v-model="form.userCount" placeholder="请输入最大用户数" clearable @keyup.native="intNum(form.userCount)" />
+      </el-form-item>
+      <el-form-item label="租户状态" prop="customStatus">
+        <el-radio-group v-model="form.customStatus">
+          <el-radio :label="1">生效</el-radio>
+          <el-radio :label="0">失效</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="开通智能搜索" prop="text_extraction">
+        <el-radio-group v-model="form.text_extraction">
+          <el-radio :label="1">开启</el-radio>
+          <el-radio :label="0">关闭</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="更新租户管理员信息">
+        <el-radio-group v-model="isChangeTuser">
+          <el-radio :label="1">是</el-radio>
+          <el-radio :label="0">否</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <div v-if="isChangeTuser === 1">
+        <el-form-item label="租户管理员" prop="uName">
+          <el-input v-model="form.uName" :disabled="true" placeholder="请输入租户管理员" maxlength="64" clearable />
+        </el-form-item>
+        <el-form-item label="管理员昵称" prop="uNickname">
+          <el-input v-model="form.uNickname" placeholder="请输入管理员昵称" maxlength="20" clearable />
+        </el-form-item>
+        <el-form-item label="管理员密码" prop="uPwd">
+          <el-input v-model="form.uPwd" placeholder="请输入管理员密码" type="password" autocomplete="off" maxlength="50" clearable />
+        </el-form-item>
+      </div>
       <el-form-item label="平台Logo" class="logoClass">
         <el-upload
           ref="uploadDeskTopLogo"
@@ -23,6 +61,7 @@
           :on-remove="handleRemove"
           @click.native="logoTypes(1)"
         >
+          <!--<img v-if="deskTopImageUrl" :src="deskTopImageUrl" class="avatar">-->
           <i class="el-icon-plus avatar-uploader-icon" />
         </el-upload>
       </el-form-item>
@@ -48,23 +87,17 @@
           :on-remove="handleRemove"
           @click.native="logoTypes(2)"
         >
+          <!--<img v-if="mobileImageUrl" :src="mobileImageUrl" class="avatar">-->
           <i class="el-icon-plus avatar-uploader-icon" />
         </el-upload>
       </el-form-item>
-      <el-form-item label="系统名称">
-        <el-input v-model="form.logo_name" maxlength="64" placeholder="请输入系统名称" clearable />
-      </el-form-item>
-      <el-form-item label="描述">
-        <el-input
-          v-model="form.logo_desc"
-          type="textarea"
-          :rows="2"
-          placeholder="请输入内容"
-        />
+      <el-form-item label="个性化系统名称">
+        <el-input v-model="form.customSystemName" maxlength="64" placeholder="请输入系统名称" clearable />
       </el-form-item>
     </el-form>
     <div id="btnGroup">
       <el-button v-no-more-click type="primary" @click="onSubmit('form')">保存</el-button>
+      <el-button type="primary" plain @click="cancel('form')">取消</el-button>
     </div>
     <!-- vueCropper 剪裁图片实现-->
     <el-dialog v-el-drag-dialog title="图片剪裁" :visible.sync="cropperDialogVisible" append-to-body :close-on-click-modal="false" @close="closeUpload">
@@ -117,7 +150,7 @@
 import { validIntNum } from '@/utils/validate'
 import { VueCropper } from 'vue-cropper'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
-import { getOneTenant, editTenant, setTenant } from '@/api/systemManage-tenantManage'
+import { getOneTenant, editTenant } from '@/api/systemManage-tenantManage'
 import { uploadFile } from '@/api/uploadFile'
 import { getToken } from '@/utils/auth'
 const $ = window.$
@@ -226,7 +259,7 @@ export default {
     }
   },
   created() {
-    this.id = this.$store.state.user.userSystemInfo.userInfo._id
+    this.id = this.$route.query._id
     this.getTenant()
   },
   methods: {
@@ -234,10 +267,21 @@ export default {
     getTenant() {
       getOneTenant({ _id: this.id }).then(response => {
         const obj = {
-          platform_url: response.data.custom.pcLogoFileUrl,
-          mobile_url: response.data.custom.mobileLogoFileUrl,
-          logo_name: response.data.custom.customSystemName,
-          logo_desc: response.data.custom.desc
+          uUserId: response.data.user._id,
+          _id: response.data.custom._id,
+          customname: response.data.custom.customname,
+          desc: response.data.custom.desc,
+          userCount: response.data.custom.userCount,
+          customStatus: response.data.custom.customStatus,
+          text_extraction: response.data.custom.text_extraction,
+          uName: response.data.user.username,
+          uNickname: response.data.user.nickname,
+          uPwd: '',
+          pcLogoFileId: response.data.custom.pcLogoFileId,
+          pcLogoFileUrl: response.data.custom.pcLogoFileUrl,
+          mobileLogoFileId: response.data.custom.mobileLogoFileId,
+          mobileLogoFileUrl: response.data.custom.mobileLogoFileUrl,
+          customSystemName: response.data.custom.customSystemName
         }
         if (response.data.custom.pcLogoFileUrl) {
           this.fileList1 = [{ name: '', url: response.data.custom.pcLogoFileUrl }]
@@ -263,13 +307,17 @@ export default {
               this.form.isChangeTuser = 'y'
               break
           }
-          setTenant(this.form).then(response => {
+          editTenant(this.form).then(response => {
             this.$message.success('修改租户成功！')
             this.noLeaveprompt = true
             this.$router.push({ path: '/systemManage/tenantManage/detail', query: { _id: this.id }})
           })
         }
       })
+    },
+    // 取消
+    cancel(formName) {
+      this.$router.push({ path: '/systemManage/tenantManage/list' })
     },
     // 上传路径
     uploadUrl() {
@@ -374,7 +422,6 @@ export default {
         })
       })
     },
-
     // 关闭上传及裁剪
     closeUpload() {
       if (this.clearFiles) {

@@ -32,7 +32,7 @@ const systemSetting = {
           meta: { title: '个性化设置', icon: '', activeMenu: '/systemSetting/tenantSetting' }
         }
       ]
-    },
+    }
   ]
 }
 

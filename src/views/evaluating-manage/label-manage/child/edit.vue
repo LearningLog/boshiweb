@@ -43,7 +43,7 @@
           <el-radio :label="0">否</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="新密码" prop="password" v-if="isChangePwd">
+      <el-form-item v-if="isChangePwd" label="新密码" prop="password">
         <el-input
           v-model="form.password"
           placeholder="请输入密码"
