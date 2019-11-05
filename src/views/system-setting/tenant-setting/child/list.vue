@@ -117,7 +117,7 @@
 import { validIntNum } from '@/utils/validate'
 import { VueCropper } from 'vue-cropper'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
-import { getOneTenant, editTenant, setTenant} from '@/api/systemManage-tenantManage'
+import { getTenant, setTenant} from '@/api/systemManage-tenantManage'
 import { uploadFile } from '@/api/uploadFile'
 import { getToken } from '@/utils/auth'
 const $ = window.$
@@ -232,23 +232,25 @@ export default {
   methods: {
     // 获取初始数据
     getTenant() {
-      getOneTenant({ _id: this.id }).then(response => {
+      console.log(this.$store.state.user.userSystemInfo.userInfo._id)
+      getTenant({ _id: this.id }).then(response => {
         const obj = {
-          platform_url: response.data.custom.pcLogoFileUrl,
-          mobile_url: response.data.custom.mobileLogoFileUrl,
-          logo_name: response.data.custom.customSystemName,
-          logo_desc: response.data.custom.desc,
+          platform_url: response.data.platform_url,
+          mobile_url: response.data.mobile_url,
+          logo_name: response.data.logo_name,
+          logo_desc: response.data.logo_desc,
         }
-        if (response.data.custom.pcLogoFileUrl) {
-          this.fileList1 = [{ name: '', url: response.data.custom.pcLogoFileUrl }]
+        if (response.data.platform_url) {
+          this.fileList1 = [{ name: '', url: response.data.platform_url }]
           $('.uploadDeskTopLogo .el-upload--picture-card').hide()
         }
-        if (response.data.custom.mobileLogoFileUrl) {
-          this.fileList2 = [{ name: '', url: response.data.custom.mobileLogoFileUrl }]
+        if (response.data.mobile_url) {
+          this.fileList2 = [{ name: '', url: response.data.mobile_url }]
           $('.uploadMobileLogo .el-upload--picture-card').hide()
         }
         this.form = obj
         this.dataIsChange = -1
+        console.log(obj.logo_name,3323)
       })
     },
     // 提交
@@ -266,7 +268,6 @@ export default {
           setTenant(this.form).then(response => {
             this.$message.success('修改租户成功！')
             this.noLeaveprompt = true
-            this.$router.push({ path: '/systemManage/tenantManage/detail', query: { _id: this.id }})
           })
         }
       })
@@ -334,12 +335,10 @@ export default {
     handleRemove(file, fileList) {
       console.log(file, fileList)
       if (this.logoType === 1) {
-        this.form.pcLogoFileId = ''
-        this.form.pcLogoFileUrl = ''
+        this.form.platform_url = ''
         $('.uploadDeskTopLogo .el-upload--picture-card').show()
       } else {
-        this.form.mobileLogoFileId = ''
-        this.form.mobileLogoFileUrl = ''
+        this.form.mobile_url = ''
         $('.uploadMobileLogo .el-upload--picture-card').show()
       }
     },
@@ -358,14 +357,12 @@ export default {
         uploadFile(formData).then(response => {
           if (this.logoType === 1) {
             this.deskTopImageUrl = response.data.saveHttpPath
-            this.form.pcLogoFileUrl = response.data.saveHttpPath
-            this.form.pcLogoFileId = response.data.id
+            this.form.platform_url = response.data.saveHttpPath
             this.fileList1 = [{ name: response.data.originalFilename, url: response.data.saveHttpPath }]
             $('.uploadDeskTopLogo .el-upload--picture-card').hide()
           } else {
             this.mobileImageUrl = response.data.saveHttpPath
-            this.form.mobileLogoFileUrl = response.data.saveHttpPath
-            this.form.mobileLogoFileId = response.data.id
+            this.form.mobile_url = response.data.saveHttpPath
             this.fileList2 = [{ name: response.data.originalFilename, url: response.data.saveHttpPath }]
             $('.uploadMobileLogo .el-upload--picture-card').hide()
           }

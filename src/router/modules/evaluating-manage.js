@@ -44,7 +44,7 @@ const evaluatingManage = {
           path: 'list',
           name: 'labelList',
           hidden: true,
-          component: () => import('@/views/evaluating-manage/skill-manage/child/list'),
+          component: () => import('@/views/evaluating-manage/label-manage/child/list'),
           meta: { title: '标签列表', icon: '', activeMenu: '/evaluatingManage/labelManage' }
         }
       ]

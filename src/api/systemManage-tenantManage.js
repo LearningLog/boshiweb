@@ -87,3 +87,11 @@ export function setTenant(data) {
     data
   })
 }
+// 获取单个租户详情
+export function getTenant(data) {
+  return request({
+    url: '/system/user/onload',
+    method: 'post',
+    data
+  })
+}
