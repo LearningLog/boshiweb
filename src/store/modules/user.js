@@ -175,6 +175,12 @@ const actions = {
     getUserApplicationInfo().then(res => {
       commit('APPLICATION_INFO', res.data)
     })
+  },
+
+  // 设置系统logo和名称
+  setLogo_Name({ commit }, data) {
+    commit('SET_LOGO', data.platform_url)
+    commit('SET_LOGO_NAME', data.logo_name)
   }
 }
 

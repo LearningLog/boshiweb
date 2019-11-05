@@ -1,7 +1,7 @@
 <template>
   <div class="list-box">
     <div id="topSearch">
-      <el-input v-model="listQuery.username" placeholder="请输入用户名称" clearable @keyup.enter.native="topSearch">
+      <el-input v-model="listQuery.userName" placeholder="请输入用户名称" clearable @keyup.enter.native="topSearch">
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
       </el-input>
       <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">高级搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
@@ -206,7 +206,7 @@ export default {
       listQuery: {
         currentPage: 1, // 当前页码
         pageSize: 10, // 当前列表请求条数
-        username: '', // 用户名称
+        userName: '', // 用户名称
         selectCompanyId: '', // 企业名称
         nickName: '', // 用户昵称,
         phone: '', // 手机号,
@@ -235,7 +235,7 @@ export default {
     },
     // 重置
     reset() {
-      this.listQuery.username = ''
+      this.listQuery.userName = ''
       this.listQuery.selectCompanyId = ''
       this.listQuery.nickName = ''
       this.listQuery.phone = ''

@@ -120,6 +120,7 @@ import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import { getTenant, setTenant} from '@/api/systemManage-tenantManage'
 import { uploadFile } from '@/api/uploadFile'
 import { getToken } from '@/utils/auth'
+import store from '@/store'
 const $ = window.$
 
 export default {
@@ -131,7 +132,7 @@ export default {
     return {
       dataIsChange: 0, // 计数器，据此判断表单是否已编辑
       noLeaveprompt: false, // 表单提交后，设置为true，据此判断提交不再弹出离开提示
-      id:'', // 查询id
+      id: '', // 查询id
       form: {}, // 表单数据
       isChangeTuser: 0, // 是否修改租户管理员
       headers: {
@@ -265,9 +266,11 @@ export default {
               this.form.isChangeTuser = 'y'
               break
           }
+          debugger
           setTenant(this.form).then(response => {
-            this.$message.success('修改租户成功！')
+            this.$message.success('设置成功！')
             this.noLeaveprompt = true
+            store.dispatch('user/setLogo_Name', { platform_url: this.form.platform_url, logo_name: this.form.logo_name })
           })
         }
       })
