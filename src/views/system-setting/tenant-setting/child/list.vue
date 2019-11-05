@@ -1,7 +1,6 @@
 <template>
   <div class="form-edit">
     <el-form ref="form" class="form" :model="form" :rules="rules" label-width="140px" :status-icon="true">
-    
       <el-form-item label="平台Logo" class="logoClass">
         <el-upload
           ref="uploadDeskTopLogo"
@@ -24,7 +23,6 @@
           :on-remove="handleRemove"
           @click.native="logoTypes(1)"
         >
-          <!--<img v-if="deskTopImageUrl" :src="deskTopImageUrl" class="avatar">-->
           <i class="el-icon-plus avatar-uploader-icon" />
         </el-upload>
       </el-form-item>
@@ -50,19 +48,18 @@
           :on-remove="handleRemove"
           @click.native="logoTypes(2)"
         >
-          <!--<img v-if="mobileImageUrl" :src="mobileImageUrl" class="avatar">-->
           <i class="el-icon-plus avatar-uploader-icon" />
         </el-upload>
       </el-form-item>
       <el-form-item label="系统名称">
-        <el-input v-model="form.customSystemName" maxlength="64" placeholder="请输入系统名称" clearable />
+        <el-input v-model="form.logo_name" maxlength="64" placeholder="请输入系统名称" clearable />
       </el-form-item>
       <el-form-item label="描述">
         <el-input
           type="textarea"
           :rows="2"
           placeholder="请输入内容"
-          v-model="form.desc">
+          v-model="form.logo_desc">
         </el-input>
       </el-form-item>
     </el-form>
@@ -120,7 +117,7 @@
 import { validIntNum } from '@/utils/validate'
 import { VueCropper } from 'vue-cropper'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
-import { getOneTenant, editTenant } from '@/api/systemManage-tenantManage'
+import { getOneTenant, editTenant, setTenant} from '@/api/systemManage-tenantManage'
 import { uploadFile } from '@/api/uploadFile'
 import { getToken } from '@/utils/auth'
 const $ = window.$
@@ -134,7 +131,7 @@ export default {
     return {
       dataIsChange: 0, // 计数器，据此判断表单是否已编辑
       noLeaveprompt: false, // 表单提交后，设置为true，据此判断提交不再弹出离开提示
-      id: "5da676d09a301f2568fa625a", // 查询id
+      id:'', // 查询id
       form: {}, // 表单数据
       isChangeTuser: 0, // 是否修改租户管理员
       headers: {
@@ -229,21 +226,18 @@ export default {
     }
   },
   created() {
-    this.id = "5da676d09a301f2568fa625a"
+    this.id = this.$store.state.user.userSystemInfo.userInfo._id
     this.getTenant()
-    console.log(this.$store.state.user.userSystemInfo)
   },
   methods: {
     // 获取初始数据
     getTenant() {
       getOneTenant({ _id: this.id }).then(response => {
         const obj = {
-          pcLogoFileId: response.data.custom.pcLogoFileId,
-          pcLogoFileUrl: response.data.custom.pcLogoFileUrl,
-          mobileLogoFileId: response.data.custom.mobileLogoFileId,
-          mobileLogoFileUrl: response.data.custom.mobileLogoFileUrl,
-          customSystemName: response.data.custom.customSystemName,
-          desc: response.data.custom.desc,
+          platform_url: response.data.custom.pcLogoFileUrl,
+          mobile_url: response.data.custom.mobileLogoFileUrl,
+          logo_name: response.data.custom.customSystemName,
+          logo_desc: response.data.custom.desc,
         }
         if (response.data.custom.pcLogoFileUrl) {
           this.fileList1 = [{ name: '', url: response.data.custom.pcLogoFileUrl }]
@@ -269,17 +263,13 @@ export default {
               this.form.isChangeTuser = 'y'
               break
           }
-          editTenant(this.form).then(response => {
+          setTenant(this.form).then(response => {
             this.$message.success('修改租户成功！')
             this.noLeaveprompt = true
             this.$router.push({ path: '/systemManage/tenantManage/detail', query: { _id: this.id }})
           })
         }
       })
-    },
-    // 取消
-    cancel(formName) {
-      this.$router.push({ path: '/systemManage/tenantManage/list' })
     },
     // 上传路径
     uploadUrl() {

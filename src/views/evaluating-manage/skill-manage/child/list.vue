@@ -26,6 +26,7 @@
             </el-form>
             <div id="searchPopoverBtn">
               <el-button type="primary" @click="topSearch">搜索</el-button>
+              <el-button type="primary" plain @click="reset">重置</el-button>
             </div>
           </el-card>
         </el-row>
@@ -38,13 +39,7 @@
       border
       fit
       highlight-current-row
-   
     >
-      <el-table-column
-        type="selection"
-        width="55"
-        :selectable="selectable"
-      />
       <el-table-column label="技能ID" min-width="100" align="center" show-overflow-tooltip prop="increase_id" />
       <el-table-column align="center" label="技能名称" show-overflow-tooltip>
         <template slot-scope="scope">
@@ -71,13 +66,10 @@ export default {
         pageSize: 10, // 当前列表请求条数
         content: '', // 技能名称
         skillInc:'',//技能ID
-        creater: '', // 创建人
         startTime: '', // 开始时间
         endtTime: '', // 结束时间
-        customname: '' // 所属租户
       },
       time_range: [],
-      delCheckedList: [], // 选中的数据
       list: null, // 列表数据
       total: 0, // 总条数
       popoverVisible: false // 高级搜索是否展开
@@ -91,22 +83,24 @@ export default {
     topSearch() {
       this.get_list()
     },
+    // 重置
+    reset() {
+      this.listQuery.skillInc = ''
+      this.listQuery.content = ''
+      this.listQuery.startTime = ''
+      this.listQuery.endtTime = ''
+      this.time_range = []
+      this.get_list()
+    },
     // 获取技能列表
      get_list() {
       const that = this
       const param = {}
-      let stime = ''
-      let edtime = ''
-      if (that.listQuery.time_range && that.listQuery.time_range[0]) {
-        stime = that.listQuery.time_range[0]
-      }
-      if (that.listQuery.time_range && that.listQuery.time_range[1]) {
-        edtime = that.listQuery.time_range[1]
-      }
       param.content = that.listQuery.content ? that.listQuery.content : ''
       param.skillInc = that.listQuery.skillInc ? that.listQuery.skillInc : ''
-      param.startTime = stime
-      param.endTime = edtime
+      param.time_range = this.time_range || []
+      param.startTime = this.time_range[0]
+      param.endtTime = this.time_range[1]
       param.currentPage = that.listQuery.currentPage ? that.listQuery.currentPage : 1
       param.pageSize = that.listQuery.pageSize ? that.listQuery.pageSize : 10
       this.listLoading = true
@@ -119,13 +113,6 @@ export default {
         console.log(error)
       })
     },
-    selectable(row, index) {
-      return row.auth
-    },
-    // 授权
-    authorize_fn(row) {
-      this.$router.push({ path: '/user-center/skill-manager/authorize', query: { id: row._id }})
-    }
   }
 }
 </script>
