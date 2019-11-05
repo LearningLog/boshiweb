@@ -26,7 +26,7 @@ const systemSetting = {
       children: [
         {
           path: 'list',
-          name: 'tenantSet',
+          name: 'tenantList',
           hidden: true,
           component: () => import('@/views/system-setting/tenant-setting/child/list'),
           meta: { title: '个性化设置', icon: '', activeMenu: '/systemSetting/tenantSetting' }

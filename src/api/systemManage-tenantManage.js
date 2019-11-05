@@ -79,3 +79,11 @@ export function setInformation(data) {
     data
   })
 }
+// 设置租户
+export function setTenant(data) {
+  return request({
+    url: '/system/user/upload',
+    method: 'post',
+    data
+  })
+}

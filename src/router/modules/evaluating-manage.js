@@ -28,11 +28,27 @@ const evaluatingManage = {
           path: 'list',
           name: 'skillList',
           hidden: true,
-          component: () => import('@/views/evaluating-manage/skill-manage/child/list.vue'),
+          component: () => import('@/views/evaluating-manage/skill-manage/child/list'),
           meta: { title: '技能管理列表', icon: '', activeMenu: '/evaluatingManage/skillManage' }
         }
       ]
-    }
+    },
+    {
+      path: 'labelManage',
+      name: 'labelManage',
+      component: () => import('@/views/evaluating-manage/label-manage/index'),
+      redirect: '/evaluatingManage/labelManage/list',
+      meta: { title: '标签管理', icon: '', activeMenu: '/evaluatingManage/labelManage' },
+      children: [
+        {
+          path: 'list',
+          name: 'labelList',
+          hidden: true,
+          component: () => import('@/views/evaluating-manage/skill-manage/child/list'),
+          meta: { title: '标签列表', icon: '', activeMenu: '/evaluatingManage/labelManage' }
+        }
+      ]
+    },
   ]
 }
 

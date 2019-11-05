@@ -125,7 +125,6 @@ export default {
       this.time_range = this.time_range || []
       this.listQuery.startTime = this.time_range[0]
       this.listQuery.endTime = this.time_range[1]
-
       this.time_range = this.effectTime || []
       this.listQuery.effectStartTime = this.effectTime[0]
       this.listQuery.effectEndTime = this.effectTime[1]
