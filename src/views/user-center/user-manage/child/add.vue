@@ -178,10 +178,6 @@ export default {
         key: 'inc',
         label: 'groupName'
       },
-      noList: [], // 未分配的角色
-      roleIdList: [], // 已分配的角色
-      noList2: [], // 未分配的小组
-      einc: [], // 已分配的小组
       chargemanList: [], // 已分配的小组
       rules: {
         username: [
@@ -213,6 +209,9 @@ export default {
         userStatus: [
           { required: true, message: '请输入11位手机号', trigger: 'blur' },
           { required: true, message: '请输入11位手机号', trigger: 'change' }
+        ],
+        email: [
+          { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
         ],
         falseRole: [
           { required: true, message: '请选择角色', trigger: 'blur' },

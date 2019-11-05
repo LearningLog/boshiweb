@@ -267,12 +267,13 @@ export default {
     // 导入成功
     handleUploadSuccess(data) {
       leadingIn({ fileId: data.data.fileId, url: data.data.saveHttpPath }).then(res => {
-        if (res.code === 1) {
-          this.errorList = res.data
-          this.dialogVisible = true
-        } else {
+        if (res.data.importStatus) {
           this.$message.success('模板导入成功！')
           this.get_list()
+        } else {
+          this.$message.error('模板导入失败！')
+          this.errorList = res.data.data
+          this.dialogVisible = true
         }
       })
     },

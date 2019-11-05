@@ -54,7 +54,7 @@ export function updateUserStatus(data) {
 // 导入模板
 export function leadingIn(data) {
   return request({
-    url: '/system/userImport/importUsers/',
+    url: 'system/userImport/importUsersV2',
     method: 'post',
     data
   })

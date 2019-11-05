@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import { skillManagerList} from '@/api/userCenter-skillManage'
+import { skillManagerList } from '@/api/userCenter-skillManage'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 export default {
   components: { Pagination },
@@ -65,9 +65,9 @@ export default {
         currentPage: 1, // 当前页码
         pageSize: 10, // 当前列表请求条数
         content: '', // 技能名称
-        skillInc:'',//技能ID
+        skillInc: '', // 技能ID
         startTime: '', // 开始时间
-        endtTime: '', // 结束时间
+        endtTime: '' // 结束时间
       },
       time_range: [],
       list: null, // 列表数据
@@ -93,7 +93,7 @@ export default {
       this.get_list()
     },
     // 获取技能列表
-     get_list() {
+    get_list() {
       const that = this
       const param = {}
       param.content = that.listQuery.content ? that.listQuery.content : ''
@@ -112,7 +112,7 @@ export default {
       }).catch(error => {
         console.log(error)
       })
-    },
+    }
   }
 }
 </script>

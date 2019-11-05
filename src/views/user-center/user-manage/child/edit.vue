@@ -38,12 +38,12 @@
         <el-input v-model="form.phone" placeholder="请输入手机号" clearable />
       </el-form-item>
       <el-form-item label="是否修改密码">
-        <el-radio-group v-model="isChangePwd">
+        <el-radio-group v-model="form.setUpPwd">
           <el-radio :label="1">是</el-radio>
           <el-radio :label="0">否</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="新密码" prop="password" v-if="isChangePwd">
+      <el-form-item v-if="form.setUpPwd" label="新密码" prop="password">
         <el-input
           v-model="form.password"
           placeholder="请输入密码"
@@ -95,19 +95,19 @@
       <el-button type="primary" plain @click="cancel('form')">取消</el-button>
     </div>
     <el-dialog v-el-drag-dialog class="setRolesDialog" width="650px" title="分配角色" :visible.sync="setRolesDialogVisible">
-      <el-transfer v-model="form.roleIdList" :data="form.noList" :titles="['未分配角色', '已分配角色']" :props="defaultProps" @change="handleTransferChange" />
+      <el-transfer v-model="roleIdList" :data="form.noList" :titles="['未分配角色', '已分配角色']" :props="defaultProps" @change="handleTransferChange" />
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="setRoles">确定</el-button>
         <el-button @click="setRolesDialogVisible = false">取 消</el-button>
       </div>
     </el-dialog>
     <el-dialog v-el-drag-dialog class="setRolesDialog" width="650px" title="分配小组" :visible.sync="setEgroupsDialogVisible">
-      <el-transfer v-model="form.einc" class="setEgroups" :data="form.noList2" :titles="['未分配小组', '已分配小组']" :props="defaultProps2" @change="handleTransferChange2">
+      <el-transfer v-model="einc" class="setEgroups" :data="form.noList2" :titles="['未分配小组', '已分配小组']" :props="defaultProps2" @change="handleTransferChange2">
         <span slot-scope="{ option }">{{ option.label }}
           <span class="groupName">{{ option.groupName }}</span>
           <div class="fr eincs">
             <el-checkbox-group v-model="chargemanList">
-              <el-checkbox :label="option.inc">组长</el-checkbox>
+              <el-checkbox :label="option.inc" :checked="option.manage">组长</el-checkbox>
             </el-checkbox-group>
           </div>
         </span>
@@ -165,6 +165,7 @@ export default {
         nickname: '', // 昵称
         phone: '', // 手机号
         password: '', // 密码
+        setUpPwd: 0, // 默认不修改密码
         userStatus: 1, // 状态
         email: '', // 邮箱
         desc: '', // 描述
@@ -173,7 +174,6 @@ export default {
         einc: [], // 加入的小组
         minc: [] // 小组管理员
       },
-      isChangePwd: 0, // 默认不修改密码
       custom_list: [], // 所属企业list
       roles: [], // 加入小组inc集合
       egroups: [], // 管理小组inc集合
@@ -185,9 +185,7 @@ export default {
         key: 'inc',
         label: 'groupName'
       },
-      noList: [], // 未分配的角色
-      roleIdList: [], // 已分配的角色
-      noList2: [], // 未分配的小组
+      roleIdList: [], // 角色id集合
       einc: [], // 已分配的小组
       chargemanList: [], // 已分配的小组
       rules: {
@@ -218,8 +216,11 @@ export default {
           { min: 6, max: 50, message: '长度在 6 到 50 位字符', trigger: 'change' }
         ],
         userStatus: [
-          { required: true, message: '请输入11位手机号', trigger: 'blur' },
-          { required: true, message: '请输入11位手机号', trigger: 'change' }
+          { required: true, message: '请选择用户状态', trigger: 'blur' },
+          { required: true, message: '请选择用户状态', trigger: 'change' }
+        ],
+        email: [
+          { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
         ],
         falseRole: [
           { required: true, message: '请选择角色', trigger: 'blur' },
@@ -248,7 +249,21 @@ export default {
     getUserById() {
       getUserById({ _id: this.id }).then(res => {
         this.form = res.data.user
-        this.form.roleIdList = res.data.user.roleList
+        this.roleIdList = []
+        res.data.user.roleList.forEach(item => {
+          this.roleIdList.push(item._id)
+        })
+        this.roles = this.form.roleList
+        if (this.roles.length) {
+          this.form.falseRole = '11111'
+        }
+        this.egroups = this.form.groupList
+        res.data.user.groupList.forEach(item => {
+          this.einc.push(item.inc)
+          if (item.manage) {
+            this.chargemanList.push(item.inc)
+          }
+        })
       })
     },
     // 获取所属企业list
@@ -262,7 +277,13 @@ export default {
     save(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
+          if (this.form.setUpPwd === 0) {
+            this.form.setUpPwd = 'N'
+          } else {
+            this.form.setUpPwd = 'Y'
+          }
           this.form.minc = this.chargemanList
+          this.form.roleIdList = this.roleIdList
           delete this.form.falseRole
           delete this.form.noList
           delete this.form.noList2
@@ -289,7 +310,7 @@ export default {
       })
     },
     handleTransferChange(value, direction, movedKeys) {
-      this.form.roleIdList = value
+      this.roleIdList = value
     },
     handleTransferChange2(value, direction, movedKeys) {
       this.form.einc = value
@@ -298,10 +319,10 @@ export default {
     setRoles() {
       this.setRolesDialogVisible = false
       this.roles = []
-      if (this.form.roleIdList.length) {
+      if (this.roleIdList.length) {
         this.form.falseRole = '11111'
         this.form.noList.forEach((item, index) => {
-          this.form.roleIdList.forEach(item1 => {
+          this.roleIdList.forEach(item1 => {
             if (item1 === item._id) {
               this.roles.push(item)
             }
