@@ -15,6 +15,7 @@ export function getLabelList(data) {
     data
   })
 }
+<<<<<<< HEAD
 // 修改
 export function label_edit(data) {
   return request({
@@ -43,6 +44,13 @@ export function getOneLabel(data) {
 export function label_add(data) {
   return request({
     url: '/evaluation/label/add',
+=======
+
+// 获取标签列表，不分组
+export function labelAllList(data) {
+  return request({
+    url: '/evaluation/automatic/labelList',
+>>>>>>> ddecb0d2aea9de114f81b3dca61354819fd151a3
     method: 'post',
     data
   })
