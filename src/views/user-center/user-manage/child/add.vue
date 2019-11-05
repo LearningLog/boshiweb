@@ -214,6 +214,9 @@ export default {
           { required: true, message: '请输入11位手机号', trigger: 'blur' },
           { required: true, message: '请输入11位手机号', trigger: 'change' }
         ],
+        email: [
+          { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
+        ],
         falseRole: [
           { required: true, message: '请选择角色', trigger: 'blur' },
           { required: true, message: '请选择角色', trigger: 'change' }
