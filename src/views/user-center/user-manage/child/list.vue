@@ -46,7 +46,6 @@
         type="selection"
         width="55"
         fixed
-        :selectable="selectable"
       />
       <el-table-column align="center" label="用户名" min-width="120" show-overflow-tooltip>
         <template slot-scope="scope">

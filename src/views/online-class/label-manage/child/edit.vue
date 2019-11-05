@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { getOneLabel,label_edit } from '@/api/evaluatingManage-labelManage.js'
+import { getOneLabel,label_edit } from '@/api/online-class.js'
 import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
 export default {
   data() {
@@ -42,8 +42,9 @@ export default {
       form: {
         lname: '', // 角色名称
         ldesc: '', // 角色描述
+        roleGroupId: '', // 所属租户
         _id:'',
-        egroup:'',//所属小组
+        egroup:'',
       },
       groupList: [], // 所属小组list
       rules: {
@@ -76,7 +77,7 @@ export default {
     // 获取初始数据
     getInitData() {
       getOneLabel({ _id: this.id }).then(response => {
-        this.form = response.data.label
+        this.form = response.data
         this.dataIsChange = -1
       })
     },
@@ -95,14 +96,14 @@ export default {
         label_edit(this.form).then(response => {
             this.$message.success('修改角色成功！')
             this.noLeaveprompt = true
-            this.$router.push({ path: '/evaluating-manage/label-manage/detail', query: { id: this.id }})
+            this.$router.push({ path: '/online-class/label-manage/detail', query: { id: this.id }})
           })
         }
       })
     },
     // 取消
     cancel(formName) {
-      this.$router.push({ path: '/evaluating-manage/label-manage/list' })
+      this.$router.push({ path: '/online-class/label-manage/list' })
     }
   },
   beforeRouteLeave(to, from, next) {

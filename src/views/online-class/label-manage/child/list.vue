@@ -1,7 +1,7 @@
 <template>
   <div class="list-box">
     <div id="topSearch">
-      <el-input v-model="listQuery.content" placeholder="请输入标签名称" clearable @keyup.enter.native="topSearch">
+      <el-input v-model="listQuery.lname" placeholder="请输入标签名称" clearable @keyup.enter.native="topSearch">
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
       </el-input>
       <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">高级搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
@@ -71,7 +71,7 @@
       <el-table-column label="序号" min-width="100" align="center" show-overflow-tooltip prop="linc" />
       <el-table-column align="center" label="名称" show-overflow-tooltip>
         <template slot-scope="scope">
-          <span class="pointer" @click="detail(scope.row)">{{ scope.row.lname }}</span>
+          <span class="pointer" @click="detail(scope.row)">{{ scope.row.customname }}</span>
         </template>
       </el-table-column>
       <el-table-column label="描述" min-width="100" align="center" show-overflow-tooltip prop="ldesc" />
@@ -92,7 +92,7 @@
 </template>
 
 <script>
-import { getLabelList,label_list,label_delete, deleteMultiRole } from '@/api/evaluatingManage-labelManage.js'
+import { getLabelList,label_list,label_delete, deleteMultiRole } from '@/api/online-class.js'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { getCustomManageList} from '@/api/systemManage-roleManage'
 import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
@@ -104,13 +104,12 @@ export default {
       listQuery: {
         currentPage: 1, // 当前页码
         pageSize: 10, // 当前列表请求条数
-        startTime: '', // 开始时间
-        endtTime: '', // 结束时间
-        content: '', // 标签名称
-        labelIncs: '', //标签ID
-        selectCompanyId:'',// 所属租户
+        createTimebegin: '', // 开始时间
+        createTimeend: '', // 结束时间
+        lname: '', // 标签名称
+        linc: '',//标签ID
+        selectCompanyId:'',//租户名称
         egroup: '', // 所属小组
-
       },
       group_list: [], // 所属小组list
       custom_list: [], // 所属租户list
@@ -145,19 +144,19 @@ export default {
     },
     // 重置
     reset() {
-      this.listQuery.content = ''
-      this.listQuery.startTime = ''
-      this.listQuery.endTime = ''
-      this.listQuery.selectCompanyId	= ''
+      this.listQuery.lname = ''
+      this.listQuery.selectCompanyId = ''
       this.listQuery.egroup = ''
       this.time_range = []
+      this.listQuery.createTimebegin = ''
+      this.listQuery.createTimeend = ''
       this.get_list()
     },
     // 获取标签列表
     get_list() {
       this.time_range = this.time_range || []
-      this.listQuery.startTime = this.time_range[0]
-      this.listQuery.endtTime = this.time_range[1]
+      this.listQuery.createTimebegin = this.time_range[0]
+      this.listQuery.createTimeend = this.time_range[1]
       this.listQuery.selectCompanyId	= this.listQuery.selectCompanyId
       this.listQuery.egroup = this.listQuery.egroup
       this.listLoading = true
@@ -172,15 +171,15 @@ export default {
     },
     // 详情
     detail(row) {
-      this.$router.push({ path: '/evaluating-manage/label-manage/detail', query: { id: row._id }})
+      this.$router.push({ path: '/online-class/label-manage/detail', query: { id: row._id }})
     },
     // 新增
     add() {
-      this.$router.push({ path: '/evaluating-manage/label-manage/add' })
+      this.$router.push({ path: '/online-class/label-manage/add' })
     },
     // 删除单个角色
     delete_fn(row) {
-      this.$confirm('确定要删除【' + row.userNickName + '】吗？', '删除角色', {
+      this.$confirm('确定要删除【' + row.groupName + '】吗？', '删除角色', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -224,7 +223,7 @@ export default {
     },
     // 修改
     go_edit_fn(row) {
-      this.$router.push({ path: '/evaluating-manage/label-manage/edit', query: { id: row._id }})
+      this.$router.push({ path: '/online-class/label-manage/edit', query: { id: row._id }})
     },
 
   }

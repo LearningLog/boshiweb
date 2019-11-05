@@ -10,7 +10,7 @@ import request from '@/utils/request'
 // 获取标签列表
 export function getLabelList(data) {
   return request({
-    url: '/evaluation/label/listV2',
+    url: '/cr/label/findPageV2',
     method: 'post',
     data
   })
@@ -18,7 +18,7 @@ export function getLabelList(data) {
 // 修改
 export function label_edit(data) {
   return request({
-    url: '/evaluation/label/update',
+    url: '/cr/label/update',
     method: 'post',
     data
   })
@@ -26,7 +26,7 @@ export function label_edit(data) {
 // 删除
 export function label_delete(data) {
   return request({
-    url: '/evaluation/label/del',
+    url: '/cr/label/delete',
     method: 'post',
     data
   })
@@ -34,7 +34,7 @@ export function label_delete(data) {
 // 单个分组详情
 export function getOneLabel(data) {
   return request({
-    url: '/evaluation/label/one',
+    url: '/cr/label/findById',
     method: 'post',
     data
   })
@@ -42,7 +42,7 @@ export function getOneLabel(data) {
 // 新增标签
 export function label_add(data) {
   return request({
-    url: '/evaluation/label/add',
+    url: '/cr/label/create',
     method: 'post',
     data
   })
