@@ -185,9 +185,7 @@ export default {
         key: 'inc',
         label: 'groupName'
       },
-      noList: [], // 未分配的角色
       roleIdList: [], // 角色id集合
-      noList2: [], // 未分配的小组
       einc: [], // 已分配的小组
       chargemanList: [], // 已分配的小组
       rules: {
