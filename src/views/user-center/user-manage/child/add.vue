@@ -16,7 +16,7 @@
           clearable
         />
       </el-form-item>
-      <el-form-item label="所属企业" prop="groupId">
+      <el-form-item label="所属企业" prop="groupId" v-if="isSystemManage">
         <el-select
           v-model="form.groupId"
           placeholder="请选择所属企业"
@@ -31,6 +31,7 @@
           />
         </el-select>
       </el-form-item>
+
       <el-form-item label="昵称" prop="nickname">
         <el-input v-model="form.nickname" placeholder="请输入昵称" :max-length="20" clearable />
       </el-form-item>
@@ -116,7 +117,7 @@
 
 <script>
 import { getCustomManageList, getAllRole } from '@/api/systemManage-roleManage'
-import { getAllEmployeeGroup } from '@/api/userCenter-groupManage.js'
+import { getAllEmployeeGroup } from '@/api/userCenter-groupManage'
 import { createUser } from '@/api/userCenter-userManage'
 import { validUserName, validPhone, validPassword } from '@/utils/validate'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
@@ -149,13 +150,14 @@ export default {
       }
     }
     return {
+      isSystemManage: this.$store.state.user.isSystemManage,
       dataIsChange: 0, // 计数器，据此判断表单是否已编辑
       noLeaveprompt: false, // 表单提交后，设置为true，据此判断提交不再弹出离开提示
       setRolesDialogVisible: false,
       setEgroupsDialogVisible: false,
       form: {
         username: '', // 用户名称
-        groupId: '', // 所属企业
+        groupId: this.$store.state.user.userSystemInfo.userInfo.groupId, // 所属企业
         nickname: '', // 昵称
         phone: '', // 手机号
         password: '', // 密码
@@ -266,7 +268,7 @@ export default {
     },
     // 获取全部角色
     getAllRoles() {
-      getAllRole({}).then(response => {
+      getAllRole({ companyIds: this.form.groupId ? [this.form.groupId] : [] }).then(response => {
         this.form.noList = response.data.allRoleList
         this.setRolesDialogVisible = true
       })
@@ -297,7 +299,7 @@ export default {
 
     // 获取所有小组
     getEgroups() {
-      getAllEmployeeGroup({}).then(response => {
+      getAllEmployeeGroup({ companyIds: this.form.groupId ? [this.form.groupId] : [] }).then(response => {
         this.form.noList2 = response.data.allEmployeeGroupList
         this.setEgroupsDialogVisible = true
       })
