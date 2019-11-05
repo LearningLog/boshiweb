@@ -9,26 +9,18 @@
         <el-row v-show="popoverVisible">
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
-              <el-form-item label="企业">
-                <el-input v-model="listQuery.customName" placeholder="请输入企业名称" clearable @keyup.enter.native="topSearch" />
-              </el-form-item>
               <el-form-item label="用户昵称">
                 <el-input v-model="listQuery.nickName" placeholder="请输入用户昵称" clearable @keyup.enter.native="topSearch" />
               </el-form-item>
               <el-form-item label="手机号">
                 <el-input v-model="listQuery.phone" placeholder="请输入手机号" clearable @keyup.enter.native="topSearch" />
               </el-form-item>
-              <el-form-item label="角色">
-                <el-input v-model="listQuery.roleName" placeholder="请输入角色" clearable @keyup.enter.native="topSearch" />
-              </el-form-item>
-              <el-form-item label="组别">
-                <el-input v-model="listQuery.groupName" placeholder="请输入组别" clearable @keyup.enter.native="topSearch" />
-              </el-form-item>
               <el-form-item label="用户状态">
                 <el-select v-model="listQuery.userStatus" placeholder="请选择用户状态" clearable @keyup.enter.native="topSearch">
                   <el-option v-for="item in userStatus" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
+              <tenants-groups-roles @tenantsGroupsRolesVal="tenantsGroupsRolesVal"></tenants-groups-roles>
             </el-form>
             <div id="searchPopoverBtn">
               <el-button type="primary" @click="topSearch">搜索</el-button>
@@ -178,14 +170,15 @@
 </template>
 
 <script>
-import { getUserList, deleteUser, deleteMultiRole, updateUserStatus, leadingIn, batchAssignRole, batchGroupsManage } from '@/api/userCenter-userManage'
+import { getUserList, deleteUser, updateUserStatus, leadingIn, batchAssignRole, batchGroupsManage } from '@/api/userCenter-userManage'
 import { getAllRole } from '@/api/systemManage-roleManage'
 import { getAllEmployeeGroup } from '@/api/userCenter-groupManage'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import { getToken } from '@/utils/auth'
 export default {
-  components: { Pagination },
+  components: { Pagination, TenantsGroupsRoles },
   directives: { elDragDialog },
   data() {
     return {
@@ -214,11 +207,11 @@ export default {
         currentPage: 1, // 当前页码
         pageSize: 10, // 当前列表请求条数
         username: '', // 用户名称
-        customName: '', // 企业名称
+        selectCompanyId: '', // 企业名称
         nickName: '', // 用户昵称,
         phone: '', // 手机号,
-        roleName: '', // 角色名称
-        groupName: '', // 分组
+        roleId: '', // 角色
+        egroup: '', // 分组
         userStatus: null // 用户状态
       },
       userStatus: [{ id: 1, name: '生效' }, { id: 2, name: '失效' }], // 用户状态
@@ -243,11 +236,11 @@ export default {
     // 重置
     reset() {
       this.listQuery.username = ''
-      this.listQuery.customName = ''
+      this.listQuery.selectCompanyId = ''
       this.listQuery.nickName = ''
       this.listQuery.phone = ''
-      this.listQuery.roleName = ''
-      this.listQuery.groupName = ''
+      this.listQuery.roleId = ''
+      this.listQuery.egroup = ''
       this.listQuery.userStatus = null
       this.get_list()
     },
@@ -259,6 +252,12 @@ export default {
         this.list = response.data.page.list
         this.total = response.data.page.totalCount
       })
+    },
+    // 监听三组数据变化
+    tenantsGroupsRolesVal(val) {
+      this.listQuery.selectCompanyId = val.companyIds
+      this.listQuery.egroup = val.egroupId
+      this.listQuery.roleId = val.roleId
     },
     // 是否可选择
     selectable(row, index) {
@@ -329,37 +328,18 @@ export default {
     handleSelectionChange(row) {
       this.checkedList = row
     },
-    // 批量删除
-    batch_del_fn() {
-      if (!this.checkedList.length) {
-        this.$message.warning('请选择用户！')
-        return false
-      }
-      this.$confirm('确定要删除选中的用户吗？', '批量删除用户', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        const _ids = []
-        this.checkedList.forEach(item => {
-          _ids.push(item._id)
-        })
-        deleteMultiRole({ _ids: _ids }).then(response => {
-          this.$message.success('批量删除成功！')
-          if ((this.list.length - this.checkedList.length) === 0) { // 如果当前页数据已删完，则去往上一页
-            this.listQuery.currentPage -= 1
-          }
-          this.get_list()
-        })
-      }).catch(() => {})
-    },
     // 获取全部角色
     assignRole() {
       if (!this.checkedList.length) {
         this.$message.warning('请选择用户！')
         return false
       }
-      getAllRole({}).then(response => {
+      let companyIds = []
+      this.checkedList.forEach(item => {
+        companyIds.push(item.groupId)
+      })
+      companyIds = [...new Set(companyIds)]
+      getAllRole({ companyIds }).then(response => {
         this.noList = response.data.allRoleList
         this.setRolesDialogVisible = true
       })
@@ -388,6 +368,11 @@ export default {
         this.$message.warning('请选择用户！')
         return false
       }
+      let companyIds = []
+      this.checkedList.forEach(item => {
+        companyIds.push(item.groupId)
+      })
+      companyIds = [...new Set(companyIds)]
       getAllEmployeeGroup({}).then(response => {
         this.noList2 = response.data.allEmployeeGroupList
         this.setEgroupsDialogVisible = true

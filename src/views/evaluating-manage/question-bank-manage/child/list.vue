@@ -1,7 +1,7 @@
 <template>
   <div class="tenant-list-box">
     <div id="topSearch">
-      <el-input v-model="listQuery.customname" placeholder="请输入租户名称" clearable @keyup.enter.native="topSearch">
+      <el-input v-model="listQuery.content" placeholder="请输入试题名称" clearable @keyup.enter.native="topSearch">
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
       </el-input>
       <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">高级搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
@@ -9,8 +9,9 @@
         <el-row v-show="popoverVisible">
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
-              <el-form-item label="创建人">
-                <el-input v-model="listQuery.createUser" placeholder="请输入创建人" clearable @keyup.enter.native="topSearch" />
+              <tenants-groups-roles @tenantsGroupsRolesVal="tenantsGroupsRolesVal"></tenants-groups-roles>
+              <el-form-item label="试题类型">
+                <el-input v-model="listQuery.topic_type" placeholder="请输入试题类型" clearable @keyup.enter.native="topSearch" />
               </el-form-item>
               <el-form-item label="创建时间">
                 <el-date-picker
@@ -54,7 +55,7 @@
       />
       <el-table-column align="center" label="名称" min-width="150">
         <template slot-scope="scope">
-          <span class="pointer" @click="detail(scope.row)">{{ scope.row.customname }}</span>
+          <span class="pointer" @click="detail(scope.row)">{{ scope.row.content }}</span>
         </template>
       </el-table-column>
       <el-table-column label="Logo" min-width="90" align="center">
@@ -104,10 +105,12 @@
 
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
-import { getAllTenantList, delTenant, batchDelTenant, getInformationList, setInformation, setCustomStatus } from '@/api/systemManage-tenantManage'
+import { delTenant, batchDelTenant, getInformationList, setInformation, setCustomStatus } from '@/api/systemManage-tenantManage'
+import { evaluationTopicList } from '@/api/question-bank-manage'
 export default {
-  components: { Pagination },
+  components: { Pagination, TenantsGroupsRoles },
   directives: { elDragDialog },
   data() {
     return {
@@ -115,8 +118,8 @@ export default {
       listQuery: { // 查询条件
         currentPage: 1, // 当前页
         pageSize: 10, // 当前页请求条数
-        customname: '', // 租户名称
-        createUser: null, // 创建人
+        content: '', // 租户名称
+        topic_type: null, // 试题类型
         startTime: null, // 创建开始时间
         endTime: null, // 创建结束时间
         customStatus: null // 状态
@@ -143,7 +146,7 @@ export default {
     // 获取初始化数据
     get_list() {
       this.listLoading = true
-      getAllTenantList(this.listQuery).then(response => {
+      evaluationTopicList(this.listQuery).then(response => {
         this.listLoading = false
         this.list = response.data.page.list
         this.total = response.data.page.totalCount
@@ -158,13 +161,19 @@ export default {
     },
     // 重置
     reset() {
-      this.listQuery.customname = ''
+      this.listQuery.content = ''
       this.listQuery.createUser = ''
       this.time_range = []
       this.listQuery.startTime = ''
       this.listQuery.endTime = ''
       this.listQuery.customStatus = ''
       this.get_list()
+    },
+    // 监听三组数据变化
+    tenantsGroupsRolesVal(val) {
+      this.listQuery.companyIds = val.companyIds
+      this.listQuery.egroup = val.egroupId
+      this.listQuery.roleId = val.roleId
     },
     // 选中数据
     handleSelectionChange(row) {
@@ -180,7 +189,7 @@ export default {
     },
     // 单个删除
     del(row) {
-      this.$confirm('确定要删除【' + row.customname + '】吗？', '删除租户', {
+      this.$confirm('确定要删除【' + row.content + '】吗？', '删除租户', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

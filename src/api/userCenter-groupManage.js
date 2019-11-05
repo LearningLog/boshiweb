@@ -30,6 +30,14 @@ export function getAllEmployeeGroup(data) {
     data
   })
 }
+// 获取所有小组列表
+export function getUserEgroupInfo(data) {
+  return request({
+    url: 'system/user/getUserEgroupInfo',
+    method: 'post',
+    data
+  })
+}
 // 单个分组详情 system/skill/one
 export function getItem(data) {
   return request({

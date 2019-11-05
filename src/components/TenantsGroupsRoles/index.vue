@@ -120,19 +120,17 @@ export default {
       this.companyIds = val
       this.getAllRoles()
       this.getEgroups()
-      this.$emit('tenantsGroupsRolesVal', { companyIds: this.companyIds, groupId: this.groupId, roleId: this.roleId })
+      this.$emit('tenantsGroupsRolesVal', { companyIds: this.companyIds, egroupId: this.groupId, roleId: this.roleId })
     },
     // 更改小组
     changeGroup(val) {
       this.groupId = val
-      this.getAllRoles()
-      this.getEgroups()
-      this.$emit('tenantsGroupsRolesVal', { companyIds: this.companyIds, groupId: this.groupId, roleId: this.roleId })
+      this.$emit('tenantsGroupsRolesVal', { companyIds: this.companyIds, egroupId: this.groupId, roleId: this.roleId })
     },
     // 更改角色
     changeRole(val) {
       this.roleId = val
-      this.$emit('tenantsGroupsRolesVal', { companyIds: this.companyIds, groupId: this.groupId, roleId: this.roleId })
+      this.$emit('tenantsGroupsRolesVal', { companyIds: this.companyIds, egroupId: this.groupId, roleId: this.roleId })
     }
   }
 }

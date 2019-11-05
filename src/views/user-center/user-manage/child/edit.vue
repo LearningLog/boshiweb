@@ -8,28 +8,17 @@
       :status-icon="true"
       label-width="120px"
     >
-      <el-form-item class="required" label="用户名称" prop="username">
+      <el-form-item label="用户名称">
         <el-input
           v-model="form.username"
-          placeholder="请输入用户名称"
-          :max-length="20"
-          clearable
+          :disabled="true"
         />
       </el-form-item>
-      <el-form-item label="所属企业" prop="groupId">
-        <el-select
-          v-model="form.groupId"
-          placeholder="请选择所属企业"
-          clearable
-          filterable
-        >
-          <el-option
-            v-for="item in custom_list"
-            :key="item._id"
-            :label="item.customname"
-            :value="item._id"
-          />
-        </el-select>
+      <el-form-item label="所属企业">
+        <el-input
+          v-model="form.customname"
+          :disabled="true"
+        />
       </el-form-item>
       <el-form-item label="昵称" prop="nickname">
         <el-input v-model="form.nickname" placeholder="请输入昵称" :max-length="20" clearable />
@@ -38,12 +27,12 @@
         <el-input v-model="form.phone" placeholder="请输入手机号" clearable />
       </el-form-item>
       <el-form-item label="是否修改密码">
-        <el-radio-group v-model="form.setUpPwd">
+        <el-radio-group v-model="setUpPwd">
           <el-radio :label="1">是</el-radio>
           <el-radio :label="0">否</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item v-if="form.setUpPwd" label="新密码" prop="password">
+      <el-form-item v-if="setUpPwd" label="新密码" prop="password">
         <el-input
           v-model="form.password"
           placeholder="请输入密码"
@@ -130,14 +119,6 @@ import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 export default {
   directives: { elDragDialog },
   data() {
-    const validUsername = (rule, value, callback) => {
-      value = value || ''
-      if (!validUserName(value)) {
-        callback(new Error('请输入用户登入平台的名称（长度在 2 到 20 位字母或数字）'))
-      } else {
-        callback()
-      }
-    }
     const phone = (rule, value, callback) => {
       value = value || ''
       if (!validPhone(value)) {
@@ -159,6 +140,7 @@ export default {
       noLeaveprompt: false, // 表单提交后，设置为true，据此判断提交不再弹出离开提示
       setRolesDialogVisible: false,
       setEgroupsDialogVisible: false,
+      id: '', // 查询id
       form: {
         username: '', // 用户名称
         groupId: '', // 所属企业
@@ -174,6 +156,7 @@ export default {
         einc: [], // 加入的小组
         minc: [] // 小组管理员
       },
+      setUpPwd: 0, // 默认不修改密码
       custom_list: [], // 所属企业list
       roles: [], // 加入小组inc集合
       egroups: [], // 管理小组inc集合
@@ -189,16 +172,6 @@ export default {
       einc: [], // 已分配的小组
       chargemanList: [], // 已分配的小组
       rules: {
-        username: [
-          { required: true, validator: validUsername, message: '请输入用户登入平台的名称（长度在 2 到 20 位字母或数字）', trigger: 'blur' },
-          { required: true, validator: validUsername, message: '请输入用户登入平台的名称（长度在 2 到 20 位字母或数字）', trigger: 'change' },
-          { min: 2, max: 20, message: '长度在 2 到 20 位字符', trigger: 'blur' },
-          { min: 2, max: 20, message: '长度在 2 到 20 位字符', trigger: 'change' }
-        ],
-        groupId: [
-          { required: true, message: '请选择所属企业', trigger: 'blur' },
-          { required: true, message: '请选择所属企业', trigger: 'change' }
-        ],
         nickname: [
           { required: true, message: '请输入用户登入平台后显示的名称（长度在 2 到 20 位字符）', trigger: 'blur' },
           { required: true, message: '请输入用户登入平台后显示的名称（长度在 2 到 20 位字符）', trigger: 'change' },
@@ -277,10 +250,13 @@ export default {
     save(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          if (this.form.setUpPwd === 0) {
-            this.form.setUpPwd = 'N'
-          } else {
-            this.form.setUpPwd = 'Y'
+          switch (this.setUpPwd) {
+            case 0:
+              this.form.setUpPwd = 'N'
+              break
+            case 1:
+              this.form.setUpPwd = 'Y'
+              break
           }
           this.form.minc = this.chargemanList
           this.form.roleIdList = this.roleIdList
@@ -304,7 +280,7 @@ export default {
     },
     // 获取全部角色
     getAllRoles() {
-      getAllRole({}).then(response => {
+      getAllRole({ _id: this.id }).then(response => {
         this.form.noList = response.data.allRoleList
         this.setRolesDialogVisible = true
       })
@@ -335,7 +311,7 @@ export default {
 
     // 获取所有小组
     getEgroups() {
-      getAllEmployeeGroup({}).then(response => {
+      getAllEmployeeGroup({ _id: this.id }).then(response => {
         this.form.noList2 = response.data.allEmployeeGroupList
         this.setEgroupsDialogVisible = true
       })
