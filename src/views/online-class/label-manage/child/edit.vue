@@ -4,11 +4,11 @@
       <el-form-item class="required" label="标签名称" prop="lname">
         <el-input v-model="form.lname" placeholder="请输入标签名称" clearable />
       </el-form-item>
-      <el-form-item label="所属小组" prop="roleGroupId">
+      <el-form-item label="所属小组">
         <el-select v-model="form.egroup" placeholder="请选择所属小组" clearable filterable>
           <el-option
             v-for="item in groupList"
-            :key="item._id"
+            :key="item.inc"
             :label="item.groupName"
             :value="item.inc"
           />
@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { getOneLabel,label_edit } from '@/api/online-class.js'
+import { getOneLabel,label_edit } from '@/api/onlineclass-label-manage.js'
 import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
 export default {
   data() {
@@ -40,9 +40,8 @@ export default {
       noLeaveprompt: false, // 表单提交后，设置为true，据此判断提交不再弹出离开提示
       id: '', // 查询id
       form: {
-        lname: '', // 角色名称
-        ldesc: '', // 角色描述
-        roleGroupId: '', // 所属租户
+        lname: '', // 标签名称
+        ldesc: '', // 标签描述
         _id:'',
         egroup:'',
       },
@@ -94,7 +93,7 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
         label_edit(this.form).then(response => {
-            this.$message.success('修改角色成功！')
+            this.$message.success('修改标签成功！')
             this.noLeaveprompt = true
             this.$router.push({ path: '/online-class/label-manage/detail', query: { id: this.id }})
           })

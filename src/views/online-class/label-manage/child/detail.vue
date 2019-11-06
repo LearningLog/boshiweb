@@ -9,7 +9,7 @@
         <span>{{ form.lname }}</span>
       </el-form-item>
       <el-form-item label="所属小组：">
-        <span>{{ form.customname }}</span>
+        <span>{{ form.groupName[0] }}</span>
       </el-form-item>
       <el-form-item label="描述：">
         <span>{{ form.ldesc }}</span>
@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { getOneLabel } from '@/api/online-class.js'
+import { getOneLabel } from '@/api/onlineclass-label-manage.js'
 
 export default {
   data() {

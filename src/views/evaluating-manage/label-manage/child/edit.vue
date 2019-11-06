@@ -4,11 +4,11 @@
       <el-form-item class="required" label="标签名称" prop="lname">
         <el-input v-model="form.lname" placeholder="请输入标签名称" clearable />
       </el-form-item>
-      <el-form-item label="所属小组" prop="roleGroupId">
+      <el-form-item label="所属小组" prop="egroup">
         <el-select v-model="form.egroup" placeholder="请选择所属小组" clearable filterable>
           <el-option
             v-for="item in groupList"
-            :key="item._id"
+            :key="item.inc"
             :label="item.groupName"
             :value="item.inc"
           />
@@ -82,7 +82,7 @@ export default {
     },
     // 获取所有小组
     getEgroups() {
-      getUserEgroupInfo({ selectCompanyId: this.companyIds }).then(response => {
+      getUserEgroupInfo().then(response => {
         this.groupList = response.data.egroupInfo
       })
     },

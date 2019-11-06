@@ -7,7 +7,7 @@
       <el-form-item label="标签描述">
         <el-input v-model="form.ldesc" placeholder="请输入标签描述" clearable />
       </el-form-item>
-      <el-form-item label="所属小组" prop="roleId">
+      <el-form-item label="所属小组" prop="egroup">
       <el-select v-model="form.egroup" placeholder="请选择所属小组" clearable filterable>
           <el-option
             v-for="item in groupList"
@@ -17,7 +17,7 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="所属租户" prop="GroupId">
+      <el-form-item label="所属租户" prop="selectCompanyId">
           <el-select v-model="form.selectCompanyId" placeholder="请选择所属租户" clearable filterable>
             <el-option
               v-for="item in custom_list"
@@ -45,10 +45,11 @@ export default {
       dataIsChange: 0, // 计数器，据此判断表单是否已编辑
       noLeaveprompt: false, // 表单提交后，设置为true，据此判断提交不再弹出离开提示
       form: {
-        lname: '', // 角色名称
-        ldesc: '', // 角色描述
+        lname: '', // 标签名称
+        ldesc: '', //标签描述
         egroup: '', // 分组
         selectCompanyId:'',//租户
+
       },
       groupList: [], // 所属小组list
       custom_list: [], // 所属租户list
@@ -95,9 +96,9 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           label_add(this.form).then(response => {
-            this.$message.success('添加角色成功！')
+            this.$message.success('添加标签成功！')
             this.noLeaveprompt = true
-            this.$router.push({ path: '/online-class/label-manage/detail', query: { id: response.data._id }})
+            this.$router.push({ path: '/evaluating-manage/label-manage/list'})
           })
         }
       })

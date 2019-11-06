@@ -8,17 +8,17 @@
         <el-input v-model="form.ldesc" placeholder="请输入标签描述" clearable />
       </el-form-item>
       <el-form-item label="所属小组" prop="roleId">
-      <el-select v-model="form.roleId" placeholder="请选择所属小组" clearable filterable>
+      <el-select v-model="form.egroup" placeholder="请选择所属小组" clearable filterable>
           <el-option
             v-for="item in groupList"
             :key="item._id"
             :label="item.groupName"
-            :value="item._id"
+            :value="item.inc"
           />
         </el-select>
       </el-form-item>
       <el-form-item label="所属租户" prop="GroupId">
-          <el-select v-model="form.GroupId" placeholder="请选择所属租户" clearable filterable>
+          <el-select v-model="form.selectCompanyId" placeholder="请选择所属租户" clearable filterable>
             <el-option
               v-for="item in custom_list"
               :key="item._id"
@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import { label_add } from '@/api/evaluatingManage-labelManage.js'
+import { label_add } from '@/api/onlineclass-label-manage.js'
 import { getCustomManageList} from '@/api/systemManage-roleManage'
 import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
 export default {
@@ -45,10 +45,10 @@ export default {
       dataIsChange: 0, // 计数器，据此判断表单是否已编辑
       noLeaveprompt: false, // 表单提交后，设置为true，据此判断提交不再弹出离开提示
       form: {
-        lname: '', // 角色名称
-        ldesc: '', // 角色描述
-        GroupId: '', // 角色
-        roleId: '', // 分组
+        name: '', // 标签名称
+        ldesc: '', //标签描述
+        egroup: '', // 分组
+        selectCompanyId:'',//租户
       },
       groupList: [], // 所属小组list
       custom_list: [], // 所属租户list
@@ -58,14 +58,6 @@ export default {
           { required: true, message: '请输入标签名称（长度在 2 到 20 个字符）', trigger: 'change' },
           { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' },
           { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'change' }
-        ],
-        roleId: [
-          { required: true, message: '请选择所属小组', trigger: 'blur' },
-          { required: true, message: '请选择所属小组 ', trigger: 'change' }
-        ],
-        GroupId: [
-          { required: true, message: '请选择所属租户', trigger: 'blur' },
-          { required: true, message: '请选择所属租户 ', trigger: 'change' }
         ]
       }
     }
@@ -103,9 +95,9 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           label_add(this.form).then(response => {
-            this.$message.success('添加角色成功！')
+            this.$message.success('添加标签成功！')
             this.noLeaveprompt = true
-            this.$router.push({ path: '/online-class/label-manage/detail', query: { id: response.data._id }})
+            this.$router.push({ path: '/online-class/label-manage/list'})
           })
         }
       })
