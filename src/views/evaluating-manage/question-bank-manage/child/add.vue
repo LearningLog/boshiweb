@@ -265,23 +265,24 @@
                   </el-form-item>
                   <el-form-item class="required" label="题目选项">
                     <el-table
-                        class="topicOption"
-                        :data="topic3.topic_option"
-                        border
-                        style="width: 100%"
+                      class="topicOption"
+                      :data="topic3.topic_option"
+                      border
+                      style="width: 100%"
                     >
                       <el-table-column
-                          prop="option_content"
-                          align="center"
-                          label="选项内容">
-                      </el-table-column>
+                        prop="option_content"
+                        align="center"
+                        label="选项内容"
+                      />
                       <el-table-column
-                          prop="correct_option"
-                          label="正确选项"
-                          align="center"
-                          width="90">
+                        prop="correct_option"
+                        label="正确选项"
+                        align="center"
+                        width="90"
+                      >
                         <template slot-scope="scope">
-                          <el-radio v-model="radio2" :label="scope.row.option_id" @change="isTrueChange(scope.$index)"></el-radio>
+                          <el-radio v-model="radio2" :label="scope.row.option_id" @change="isTrueChange(scope.$index)" />
                         </template>
                       </el-table-column>
                     </el-table>
@@ -302,13 +303,13 @@
                   <el-form-item label="添加标签" class="addLabel">
                     <div v-if="currentLabels.length" class="tag">
                       <el-tag
-                          v-for="(tag, index) in currentLabels"
-                          :key="tag.linc"
-                          closable
-                          size="medium"
-                          :disable-transitions="false"
-                          type="success"
-                          @close="handleLabelDel(index)"
+                        v-for="(tag, index) in currentLabels"
+                        :key="tag.linc"
+                        closable
+                        size="medium"
+                        :disable-transitions="false"
+                        type="success"
+                        @close="handleLabelDel(index)"
                       >
                         {{ tag.lname }}
                       </el-tag>
@@ -318,13 +319,13 @@
                   <el-form-item label="题目考核技能" class="addSkill">
                     <div v-if="currentSkills.length" class="tag">
                       <el-tag
-                          v-for="(tag, index) in currentSkills"
-                          :key="tag.increase_id"
-                          closable
-                          size="medium"
-                          :disable-transitions="false"
-                          type="success"
-                          @close="handleSkillDel(index)"
+                        v-for="(tag, index) in currentSkills"
+                        :key="tag.increase_id"
+                        closable
+                        size="medium"
+                        :disable-transitions="false"
+                        type="success"
+                        @close="handleSkillDel(index)"
                       >
                         {{ tag.skill_name }}
                       </el-tag>
@@ -394,6 +395,7 @@ export default {
       },
       dataIsChange: 0, // 计数器，据此判断表单是否已编辑
       noLeaveprompt: false, // 表单提交后，设置为true，据此判断提交不再弹出离开提示
+      canLeave: false, // 是否可以离开
       visible: false, // 弹出选择文件
       visible2: false, // 弹出选择标签
       visible3: false, // 弹出选择技能
@@ -420,12 +422,12 @@ export default {
             option_content: '',
             option_img: '',
             correct_option: 2, // 1正确答案 2错误
-            option_id: null
+            option_id: this.guid()
           }, {
             option_content: '',
             option_img: '',
             correct_option: 2,
-            option_id: null
+            option_id: this.guid()
           }
         ], // 题目选项
         topic_resource: '', // 选择的图片
@@ -447,13 +449,13 @@ export default {
             option_img: '',
             correct_option: 2, // 1正确答案 2错误
             check: false,
-            option_id: null
+            option_id: this.guid()
           }, {
             option_content: '',
             option_img: '',
             correct_option: 2,
             check: false,
-            option_id: null
+            option_id: this.guid()
           }
         ], // 题目选项
         topic_resource: '', // 选择的图片
@@ -474,12 +476,12 @@ export default {
             option_content: '正确',
             option_img: '',
             correct_option: 2, // 1正确答案 2错误
-            option_id: null
+            option_id: this.guid()
           }, {
             option_content: '错误',
             option_img: '',
             correct_option: 2,
-            option_id: null
+            option_id: this.guid()
           }
         ], // 题目选项
         topic_resource: '', // 选择的图片
@@ -501,15 +503,53 @@ export default {
       return this.addType + '-topic' + this.topic_type
     }
   },
+  watch: {
+    // 监听表单数据变化
+    topic1: {
+      handler(val) {
+        if (val && !this.canLeave) {
+          this.dataIsChange++
+        }
+      },
+      deep: true // 深层次监听
+    },
+    topic2: {
+      handler(val) {
+        if (val && !this.canLeave) {
+          this.dataIsChange++
+        }
+      },
+      deep: true // 深层次监听
+    },
+    topic3: {
+      handler(val) {
+        if (val && !this.canLeave) {
+          this.dataIsChange++
+        }
+      },
+      deep: true // 深层次监听
+    },
+    topics: {
+      handler(val) {
+        if (val && !this.canLeave) {
+          this.dataIsChange++
+        }
+      },
+      deep: true // 深层次监听
+    },
+    saveSet(val, val2) {
+      this.dataIsChange++
+    }
+  },
   created() {
-    this.topic1.topic_option[0].option_id = this.guid()
-    this.topic1.topic_option[1].option_id = this.guid()
-
-    this.topic2.topic_option[0].option_id = this.guid()
-    this.topic2.topic_option[1].option_id = this.guid()
-
-    this.topic3.topic_option[0].option_id = this.guid()
-    this.topic3.topic_option[1].option_id = this.guid()
+    // this.topic1.topic_option[0].option_id = this.guid()
+    // this.topic1.topic_option[1].option_id = this.guid()
+    //
+    // this.topic2.topic_option[0].option_id = this.guid()
+    // this.topic2.topic_option[1].option_id = this.guid()
+    //
+    // this.topic3.topic_option[0].option_id = this.guid()
+    // this.topic3.topic_option[1].option_id = this.guid()
   },
   mounted() {
     // 动态设置高度
@@ -529,7 +569,26 @@ export default {
 
     // 切换手动添加与Excel导入离开前的逻辑
     beforeLeaveTabs1(item) {
-
+      if(this.dataIsChange){
+        var p = new Promise((resolve, reject) => {
+          this.$confirm('您还有正在编辑尚未保存的内容哦，确定要离开吗？', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            this.canLeave = true
+            this.dataIsChange = 0
+            this.topics=[];
+            // 清空所有topic数据
+            this.clearAllTopic();
+            resolve()
+          }).catch(err => {
+            // 你可以在这儿做些操作
+            reject(err)
+          })
+        })
+        return p
+      }
     },
     // 切换题型
     beforeLeaveTabs2(item) {
@@ -812,41 +871,41 @@ export default {
       this.topics.push($.extend(true, {}, this[this.topic0]))
 
       // 保存设置
-      if(this.saveSet){
-        this.topic1.topic_level=this[this.topic0].topic_level * 1
-        this.topic1.topic_score=this[this.topic0].topic_score * 1
-        this.topic1.currentLabels=this[this.topic0].currentLabels
-        this.topic1.currentSkills=this[this.topic0].currentSkills
+      if (this.saveSet) {
+        this.topic1.topic_level = this[this.topic0].topic_level * 1
+        this.topic1.topic_score = this[this.topic0].topic_score * 1
+        this.topic1.currentLabels = this[this.topic0].currentLabels
+        this.topic1.currentSkills = this[this.topic0].currentSkills
 
-        this.topic2.topic_level=this[this.topic0].topic_level * 1
-        this.topic2.topic_score=this[this.topic0].topic_score * 1
-        this.topic2.currentLabels=this[this.topic0].currentLabels
-        this.topic2.currentSkills=this[this.topic0].currentSkills
+        this.topic2.topic_level = this[this.topic0].topic_level * 1
+        this.topic2.topic_score = this[this.topic0].topic_score * 1
+        this.topic2.currentLabels = this[this.topic0].currentLabels
+        this.topic2.currentSkills = this[this.topic0].currentSkills
 
-        this.topic3.topic_level=this[this.topic0].topic_level * 1
-        this.topic3.topic_score=this[this.topic0].topic_score * 1
-        this.topic3.currentLabels=this[this.topic0].currentLabels
-        this.topic3.currentSkills=this[this.topic0].currentSkills
+        this.topic3.topic_level = this[this.topic0].topic_level * 1
+        this.topic3.topic_score = this[this.topic0].topic_score * 1
+        this.topic3.currentLabels = this[this.topic0].currentLabels
+        this.topic3.currentSkills = this[this.topic0].currentSkills
       } else {
-        this[this.topic0].topic_level=1
-        this[this.topic0].topic_score=1
-        this[this.topic0].currentLabels=[]
-        this[this.topic0].currentSkills=[]
+        this[this.topic0].topic_level = 1
+        this[this.topic0].topic_score = 1
+        this[this.topic0].currentLabels = []
+        this[this.topic0].currentSkills = []
         this.currentLabels = []
         this.currentSkills = []
       }
       // 保存试题后清空表单===begin====
-      this[this.topic0].topic_type=''
-      this[this.topic0].topic_content=''
-      this[this.topic0].topic_label=''
-      this[this.topic0].topic_skill=''
-      this[this.topic0].topic_resolve=''
-      this[this.topic0].topic_resource=''
-      this[this.topic0].topic_resource_id=''
-      this[this.topic0].check=''
-      this[this.topic0].id=''
+      this[this.topic0].topic_type = ''
+      this[this.topic0].topic_content = ''
+      this[this.topic0].topic_label = ''
+      this[this.topic0].topic_skill = ''
+      this[this.topic0].topic_resolve = ''
+      this[this.topic0].topic_resource = ''
+      this[this.topic0].topic_resource_id = ''
+      this[this.topic0].check = ''
+      this[this.topic0].id = ''
       if (this.topic0 === 'topic1' || this.topic0 === 'topic2') {
-        this[this.topic0].topic_option=[ // 题目选项
+        this[this.topic0].topic_option = [ // 题目选项
           {
             option_content: '',
             option_img: '',
@@ -863,7 +922,7 @@ export default {
         ]
         this.radio1 = ''
       } else {
-        this[this.topic0].topic_option=[ // 题目选项
+        this[this.topic0].topic_option = [ // 题目选项
           {
             option_content: '正确',
             option_img: '',
@@ -973,7 +1032,24 @@ export default {
     },
 
     addTopics() {
-
+      this.noLeaveprompt = true
+    }
+  },
+  beforeRouteLeave(to, from, next) {
+    if (this.dataIsChange && !this.noLeaveprompt) { // 判断表单数据是否变化，以及提交后不进行此保存提示
+      setTimeout(() => { // 此处必须要加延迟执行，主要解决浏览器前进后退带来的闪现
+        this.$confirm('您的数据尚未保存，是否离开？', '离开页面', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          next()
+        }).catch(() => {
+          next(false)
+        })
+      }, 200)
+    } else {
+      next()
     }
   }
 }

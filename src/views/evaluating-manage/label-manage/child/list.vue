@@ -107,9 +107,9 @@ export default {
         startTime: '', // 开始时间
         endtTime: '', // 结束时间
         content: '', // 标签名称
-        labelIncs: [], //标签ID
-        selectCompanyId:'',// 所属租户
-        egroup: '', // 所属小组
+        labelIncs: [], // 标签ID
+        selectCompanyId: '', // 所属租户
+        egroup: '' // 所属小组
       },
       group_list: [], // 所属小组list
       custom_list: [], // 所属租户list
