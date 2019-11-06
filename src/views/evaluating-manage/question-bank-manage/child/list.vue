@@ -131,13 +131,6 @@
     <div id="bottomOperation">
       <el-button v-show="total>0" type="danger" plain @click="batchDel"><i class="iconfont iconshanchu" />批量删除</el-button>
     </div>
-    <el-dialog v-el-drag-dialog class="setInformationDialog" width="650px" title="资讯管理" :visible.sync="setInformationDialogVisible">
-      <el-transfer v-model="hasList" :data="noList" :titles="['未分配类别', '已分配类别']" :props="defaultProps" @change="handleTransferChange" />
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="setInformation">确定</el-button>
-        <el-button @click="setInformationDialogVisible = false">取 消</el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
@@ -145,7 +138,7 @@
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
-import { delTenant, batchDelTenant, getInformationList, setInformation, setCustomStatus } from '@/api/systemManage-tenantManage'
+import { delTenant, batchDelTenant, getInformationList, setCustomStatus } from '@/api/systemManage-tenantManage'
 import { evaluationTopicList } from '@/api/question-bank-manage'
 import { skillAllList } from '@/api/userCenter-skillManage'
 import { labelAllList } from '@/api/evaluatingManage-labelManage'
@@ -158,15 +151,14 @@ export default {
       listQuery: { // 查询条件
         currentPage: 1, // 当前页
         pageSize: 10, // 当前页请求条数
-        content: '', // 租户名称
+        content: '', // 试题名称
         topic_label: null, // 试题标签
         topic_skill: null, // 试题技能
         topicType: null, // 试题类型
         selectGroupId: null, // 租户
-        egroup: null, // 租户
+        egroup: null, // 小组
         startTime: null, // 创建开始时间
-        endTime: null, // 创建结束时间
-        customStatus: null // 状态
+        endTime: null // 创建结束时间
       },
       topic_label: [], // 试题标签
       topic_skill: [], // 试题技能
@@ -188,13 +180,15 @@ export default {
   },
   created() {
     this.get_list()
-    this.get_topic_label_list()
-    this.get_topic_skill_list()
+    // this.get_topic_label_list()
+    // this.get_topic_skill_list()
   },
   methods: {
     // 获取初始化数据
     get_list() {
       this.listLoading = true
+      this.listQuery.startTime = this.time_range[0]
+      this.listQuery.endTime = this.time_range[1]
       evaluationTopicList(this.listQuery).then(response => {
         this.listLoading = false
         this.list = response.data.page.list
@@ -223,11 +217,14 @@ export default {
     // 重置
     reset() {
       this.listQuery.content = ''
-      this.listQuery.createUser = ''
+      this.listQuery.topic_label = null
+      this.listQuery.topic_skill = null
+      this.listQuery.topicType = null
+      this.listQuery.selectGroupId = null
+      this.listQuery.egroup = null
       this.time_range = []
       this.listQuery.startTime = ''
       this.listQuery.endTime = ''
-      this.listQuery.customStatus = ''
       this.get_list()
     },
     // 监听三组数据变化
@@ -235,6 +232,7 @@ export default {
       this.listQuery.selectGroupId = val.companyIds
       this.listQuery.egroup = val.egroupId
       this.listQuery.roleId = val.roleId
+      this.group = val.group
     },
     // 选中数据
     handleSelectionChange(row) {
@@ -242,11 +240,15 @@ export default {
     },
     // 新增
     add() {
-      this.$router.push({ path: '/systemManage/tenantManage/add' })
+      if (!this.listQuery.egroup) {
+        this.$message.warning('请先选择分许信息再尝试添加试题！')
+        return false
+      }
+      this.$router.push({ path: '/evaluating-manage/question-bank-manage/add', query: { egroup: this.listQuery.egroup, selectCompanyId: this.group.groupId }})
     },
     // 详情
     detail(row) {
-      this.$router.push({ path: '/systemManage/tenantManage/detail', query: { _id: row._id }})
+      this.$router.push({ path: '/evaluating-manage/question-bank-manage/detail', query: { _id: row._id }})
     },
     // 单个删除
     del(row) {
@@ -290,7 +292,7 @@ export default {
     },
     // 编辑
     edit(row) {
-      this.$router.push({ path: '/systemManage/tenantManage/edit', query: { _id: row._id }})
+      this.$router.push({ path: '/evaluating-manage/question-bank-manage/edit', query: { _id: row._id }})
     },
     // 生效/失效
     enable(row, type) {

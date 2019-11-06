@@ -15,3 +15,12 @@ export function evaluationTopicList(data) {
     data
   })
 }
+
+// 新增题库
+export function addTopic(data) {
+  return request({
+    url: '/evaluation/topic/add',
+    method: 'post',
+    data
+  })
+}
