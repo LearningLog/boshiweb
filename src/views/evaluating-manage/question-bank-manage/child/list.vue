@@ -91,39 +91,40 @@
         width="50"
         fixed
       />
-      <el-table-column align="center" label="名称" min-width="150">
+      <el-table-column align="center" label="题型" min-width="40">
         <template slot-scope="scope">
-          <span class="pointer" @click="detail(scope.row)">{{ scope.row.content }}</span>
+          <span class="pointer">{{ switchTopicTypeToName(scope.row.topic_type) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Logo" min-width="90" align="center">
+      <el-table-column label="题目内容" min-width="120" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
-          <img v-if="scope.row.pcLogoFileUrl" class="logoImg" :src="scope.row.pcLogoFileUrl" alt="">
+          <span class="pointer" @click="detail(scope.row)">{{ scope.row.topic_content }}</span>
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="个性化系统名称" min-width="150" align="center" prop="customSystemName" />
-      <el-table-column align="center" label="创建人" min-width="100" prop="createuser" />
-      <el-table-column align="center" label="创建时间" min-width="120" prop="createtime" />
-      <el-table-column align="center" label="状态" min-width="70">
+      <el-table-column class-name="status-col" label="难度" min-width="40" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
-          <el-tag v-if="scope.row.customStatus === 1" type="success">{{ scope.row.customStatusName }}</el-tag>
-          <el-tag v-else type="danger">{{ scope.row.customStatusName }}</el-tag>
+          <span class="pointer">{{ switchTopicLevelToName(scope.row.topic_type) }}</span>
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="操作" width="230" align="center" fixed="right">
+      <el-table-column align="center" label="标签" min-width="100" prop="createuser" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <span class="pointer">{{ scope.row.topic_label.join() }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="小组" min-width="100" prop="groupName" show-overflow-tooltip>
+      </el-table-column>
+      <el-table-column align="center" label="技能" min-width="100" prop="createuser" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <span class="pointer">{{ scope.row.topic_skill.join() }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="创建时间" min-width="130" prop="c_time" show-overflow-tooltip />
+      <el-table-column align="center" label="引用次数" min-width="80" prop="quote_count" show-overflow-tooltip>
+      </el-table-column>
+      <el-table-column class-name="status-col" label="操作" width="160" align="center" fixed="right">
         <template slot-scope="scope">
           <el-button size="mini" @click="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
-          <el-button v-if="scope.row.customStatus === 1" size="mini" @click="enable(scope.row, 0)"><i class="iconfont iconshixiao" />失效</el-button>
-          <el-button v-else size="mini" @click="enable(scope.row, 1)"><i class="iconfont iconshengxiao" />生效</el-button>
-          <el-dropdown trigger="click">
-            <el-button size="mini">
-              <i class="iconfont icongengduo" />更多
-            </el-button>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item @click.native="getInformation(scope.row)"><i class="iconfont iconzixun" />资讯</el-dropdown-item>
-              <el-dropdown-item @click.native="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
+          <el-button size="mini" @click="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -138,8 +139,7 @@
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
-import { delTenant, batchDelTenant, getInformationList, setCustomStatus } from '@/api/systemManage-tenantManage'
-import { evaluationTopicList } from '@/api/question-bank-manage'
+import { evaluationTopicList, delTopic } from '@/api/question-bank-manage'
 import { skillAllList } from '@/api/userCenter-skillManage'
 import { labelAllList } from '@/api/evaluatingManage-labelManage'
 export default {
@@ -162,7 +162,7 @@ export default {
       },
       topic_label: [], // 试题标签
       topic_skill: [], // 试题技能
-      topicType: [{ _id: 1, topicName: '简单' }, { _id: 2, topicName: '一般' }, { _id: 3, topicName: '困难' }],
+      topicType: [{ _id: 1, topicName: '简单' }, { _id: 2, topicName: '普通' }, { _id: 3, topicName: '困难' }],
       time_range: [], // 创建时间
       list: [], // 表格数据
       listLoading: true, // 是否开启表格遮罩
@@ -234,6 +234,30 @@ export default {
       this.listQuery.roleId = val.roleId
       this.group = val.group
     },
+
+    // 题型转换为name
+    switchTopicTypeToName(topic_type) {
+      switch (topic_type) {
+        case 1:
+          return '单选'
+        case 2:
+          return '多选'
+        case 3:
+          return '判断'
+      }
+    },
+    // 难度转换为name
+    switchTopicLevelToName(topic_level) {
+      switch (topic_level) {
+        case 1:
+          return '简单'
+        case 2:
+          return '普通'
+        case 3:
+          return '困难'
+      }
+    },
+
     // 选中数据
     handleSelectionChange(row) {
       this.checkedDelList = row
@@ -252,12 +276,12 @@ export default {
     },
     // 单个删除
     del(row) {
-      this.$confirm('确定要删除【' + row.content + '】吗？', '删除租户', {
+      this.$confirm('确定要删除【' + row.topic_content + '】吗？', '删除租户', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        delTenant({ _id: row._id }).then(response => {
+        delTopic({ _id: row._id }).then(response => {
           this.$message.success('删除成功！')
           if ((this.list.length - 1) === 0) { // 如果当前页数据已删完，则去往上一页
             this.listQuery.currentPage -= 1
@@ -269,19 +293,20 @@ export default {
     // 批量删除
     batchDel() {
       if (!this.checkedDelList.length) {
-        this.$message.warning('请选择租户！')
+        this.$message.warning('请选择试题！')
         return false
       }
-      this.$confirm('确定要删除选中的租户吗？', '批量删除租户', {
+      this.$confirm('确定要删除选中的试题吗？', '批量删除试题', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        const _ids = []
+        let _ids = []
         this.checkedDelList.forEach(item => {
           _ids.push(item._id)
         })
-        batchDelTenant({ _ids: _ids }).then(response => {
+        _ids = _ids.join()
+        delTopic({ _id: _ids }).then(response => {
           this.$message.success('批量删除成功！')
           if ((this.list.length - this.checkedDelList.length) === 0) { // 如果当前页数据已删完，则去往上一页
             this.listQuery.currentPage -= 1
@@ -293,58 +318,11 @@ export default {
     // 编辑
     edit(row) {
       this.$router.push({ path: '/evaluating-manage/question-bank-manage/edit', query: { _id: row._id }})
-    },
-    // 生效/失效
-    enable(row, type) {
-      if (type === 0) {
-        this.$confirm('失效用户将不能进行所有本系统内的操作，请问是否对该用户失效？', '失效租户', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          setCustomStatus({ _id: row._id, customStatus: type }).then(response => {
-            this.$message.success('失效用户成功！')
-            this.get_list()
-          })
-        }).catch(() => {})
-      } else {
-        setCustomStatus({ _id: row._id, customStatus: type }).then(response => {
-          this.$message.success('生效用户成功！')
-          this.get_list()
-        })
-      }
-    },
-    // 获取资讯数据
-    getInformation(row) {
-      this.setInformationId = row._id
-      getInformationList({ groupId: row._id }).then(response => {
-        this.noList = []
-        this.hasList = []
-        this.noList = response.data.noList.concat(response.data.hasList)
-        response.data.hasList.forEach((item, index) => {
-          this.hasList.push(item._id)
-        })
-      })
-      this.setInformationDialogVisible = true
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  .setInformationDialog /deep/ .el-transfer {
-    margin: 0 auto;
-    text-align: center;
-  }
-  .setInformationDialog /deep/ .el-transfer-panel {
-    text-align: left;
-  }
-  img.logoImg {
-    width: 70px;
-    height: 70px;
-    vertical-align: middle;
-  }
-  .el-table /deep/ .el-table__body tr {
-    height: 90px!important;
-  }
+
 </style>

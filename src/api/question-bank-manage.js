@@ -24,3 +24,20 @@ export function addTopic(data) {
     data
   })
 }
+
+// 删除试题
+export function delTopic(data) {
+  return request({
+    url: '/evaluation/topic/del',
+    method: 'post',
+    data
+  })
+}
+// 删除试题
+export function batchDelTopic(data) {
+  return request({
+    url: '/evaluation/topic/del',
+    method: 'post',
+    data
+  })
+}

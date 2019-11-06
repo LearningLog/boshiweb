@@ -90,7 +90,7 @@
                   <el-form-item class="required" label="题目难度">
                     <el-radio-group v-model="topic1.topic_level" class="topic_level">
                       <el-radio-button label="1">简单</el-radio-button>
-                      <el-radio-button label="2">一般</el-radio-button>
+                      <el-radio-button label="2">普通</el-radio-button>
                       <el-radio-button label="3">困难</el-radio-button>
                     </el-radio-group>
                   </el-form-item>
@@ -212,7 +212,7 @@
                   <el-form-item class="required" label="题目难度">
                     <el-radio-group v-model="topic2.topic_level" class="topic_level">
                       <el-radio-button label="1">简单</el-radio-button>
-                      <el-radio-button label="2">一般</el-radio-button>
+                      <el-radio-button label="2">普通</el-radio-button>
                       <el-radio-button label="3">困难</el-radio-button>
                     </el-radio-group>
                   </el-form-item>
@@ -295,7 +295,7 @@
                   <el-form-item class="required" label="题目难度">
                     <el-radio-group v-model="topic3.topic_level" class="topic_level">
                       <el-radio-button label="1">简单</el-radio-button>
-                      <el-radio-button label="2">一般</el-radio-button>
+                      <el-radio-button label="2">普通</el-radio-button>
                       <el-radio-button label="3">困难</el-radio-button>
                     </el-radio-group>
                   </el-form-item>
@@ -797,7 +797,7 @@ export default {
           topicType += '【难度：简单】'
           break
         case '2':
-          topicType += '【难度：一般】'
+          topicType += '【难度：普通】'
           break
         case '3':
           topicType += '【难度：困难】'
