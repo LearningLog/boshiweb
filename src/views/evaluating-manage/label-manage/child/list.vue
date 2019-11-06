@@ -92,11 +92,7 @@
 </template>
 
 <script>
-<<<<<<< HEAD
-import { getLabelList,label_delete,} from '@/api/evaluatingManage-labelManage.js'
-=======
 import { getLabelList, label_delete } from '@/api/evaluatingManage-labelManage.js'
->>>>>>> 5b5dc1361defff7af6b31787bbbe7c7af7dd6591
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { getCustomManageList } from '@/api/systemManage-roleManage'
 import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
@@ -111,16 +107,9 @@ export default {
         startTime: '', // 开始时间
         endtTime: '', // 结束时间
         content: '', // 标签名称
-<<<<<<< HEAD
         labelIncs: [], //标签ID
         selectCompanyId:'',// 所属租户
         egroup: '', // 所属小组
-=======
-        labelIncs: '', // 标签ID
-        selectCompanyId: '', // 所属租户
-        egroup: '' // 所属小组
->>>>>>> 5b5dc1361defff7af6b31787bbbe7c7af7dd6591
-
       },
       group_list: [], // 所属小组list
       custom_list: [], // 所属租户list
