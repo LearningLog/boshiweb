@@ -110,6 +110,23 @@
                     </div>
                     <i class="el-icon-circle-plus-outline" @click="addLabels" />
                   </el-form-item>
+                  <el-form-item label="题目考核技能" class="addSkill">
+                    <div v-if="currentSkills.length" class="tag">
+                      <el-tag
+                        v-for="(tag, index) in currentSkills"
+                        :key="tag.increase_id"
+                        closable
+                        size="medium"
+                        :disable-transitions="false"
+                        type="success"
+                        @close="handleSkillDel(index)"
+                      >
+                        {{ tag.skill_name }}
+                      </el-tag>
+                    </div>
+                    <i class="el-icon-circle-plus-outline" @click="addSkills" />
+                  </el-form-item>
+                  <el-checkbox class="saveSet" v-model="saveSet">保存设置（分值、难度、标签、技能）</el-checkbox>
                 </el-form>
               </div>
             </el-tab-pane>
@@ -130,20 +147,23 @@
         222
       </el-tab-pane>
     </el-tabs>
-    <select-file :visible="visible" :file-type-list="['pic']" @checkedFile="checkedFile" @visible="onvisible" />
-    <add-labels :visible2="visible2" :current-labels="currentLabels" @addLabels="getLabels" @visible2="onvisible2" />
+    <select-file :visible.sync="visible" :file-type-list="['pic']" @checkedFile="checkedFile" @visible="onvisible" />
+    <add-labels :visible2.sync="visible2" :current-labels.sync="currentLabels" @addLabels="getLabels" @visible2="onvisible2" />
+    <add-skills :visible3.sync="visible3" :current-skills.sync="currentSkills" @addSkills="getSkills" @visible3="onvisible3" />
   </div>
 </template>
 
 <script>
 import SelectFile from '@/components/SelectFile'
-import AddLabels from '@/components/AddLabels'
+import AddLabels from '@/components/AddEvalLabels'
+import AddSkills from '@/components/AddEvalSkills'
 import { getToken } from '@/utils/auth'
 
 export default {
   components: {
     SelectFile,
-    AddLabels
+    AddLabels,
+    AddSkills
   },
   data() {
     return {
@@ -154,10 +174,12 @@ export default {
       noLeaveprompt: false, // 表单提交后，设置为true，据此判断提交不再弹出离开提示
       visible: false, // 弹出选择文件
       visible2: false, // 弹出选择标签
+      visible3: false, // 弹出选择技能
       addType: 'hand', // 默认手动添加
       topic_type: '1', // 默认单选题
       uploadOptionIndex: null, // 上传图片的选项index
       currentLabels: [], // 当前要回显的标签
+      currentSkills: [], // 当前要回显的技能
       topic1: { // 单选题
         topic_type: '', // 题目类型 1单选，2多选，3判断
         topic_content: '', // 题目
@@ -182,6 +204,7 @@ export default {
         topic_resource: '', // 选择的图片
         topic_resource_id: '' // 主文件id
       }, // 单题数据
+      saveSet: '', // 保存设置
       radio1: '', // 单选题目选项
       radio2: '', // 判断题目选项
       check2: '' // 多选题目选项
@@ -360,10 +383,26 @@ export default {
     onvisible2(val) {
       this.visible2 = val.visible
     },
-
     // 删除标签
     handleLabelDel(index) {
       this.currentLabels.splice(index, 1)
+    },
+
+    // 添加技能
+    addSkills() {
+      this.visible3 = true
+    },
+    // 监听选择技能组件返回数据
+    getSkills(val) {
+      this.currentSkills = val
+    },
+    // 监听选择技能组件返回数据
+    onvisible3(val) {
+      this.visible3 = val.visible
+    },
+    // 删除技能
+    handleSkillDel(index) {
+      this.currentSkills.splice(index, 1)
     },
 
     addTopics() {
@@ -495,5 +534,8 @@ export default {
   }
   /deep/ .el-tag .el-icon-close::before {
     margin: 0;
+  }
+  .saveSet {
+    margin-left: 34px;
   }
 </style>

@@ -106,14 +106,10 @@ import Pagination from '@/components/Pagination'
 import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
 import elDragDialog from '@/directive/el-drag-dialog'
 export default {
-  name: 'AddLabels',
+  name: 'AddEvalLabels',
   components: { Pagination, TenantsGroupsRoles },
   directives: { elDragDialog },
   props: {
-    fileTypeList: {
-      type: Array,
-      default: null
-    },
     visible2: {
       type: Boolean,
       default: false
@@ -141,8 +137,7 @@ export default {
       time_range: [],
       checkedList: [], // 选中的数据
       list: [], // 列表数据
-      total: 0, // 总条数
-      popoverVisible: false // 高级搜索是否展开
+      total: 0 // 总条数
     }
   },
   watch: {
@@ -183,9 +178,8 @@ export default {
               }
             }
           }
+          this.selectLabelsVisible = true
         })
-
-        this.selectLabelsVisible = true
       })
     },
     // 选中数据
