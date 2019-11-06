@@ -497,6 +497,7 @@ export default {
 - 获取所有小组 `this.$store.state.user.allEgroup`
 - 获取应用信息 `this.$store.state.user.applicationInfo`
 - 是否为系统管理员 `this.$store.state.user.isSystemManage`
+- 分页序号 `<span>{{ scope.$index + (listQuery.currentPage - 1) * listQuery.pageSize + 1}} </span>`
 
 ## Browsers support
 

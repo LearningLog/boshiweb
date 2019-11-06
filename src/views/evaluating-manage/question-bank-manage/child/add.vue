@@ -12,15 +12,103 @@
             <el-tab-pane label="单选题" name="1">
               <div class="edit-hand-topic1">
                 <el-form ref="form" label-width="100px">
-                  <el-form-item class="content" label="题目内容">
+                  <el-form-item class="required content" label="题目内容">
                     <el-input v-model="topic1.topic_content" class="topicName" placeholder="请输入题目" clearable />
-                    <select-file :visible="visible" :file-type-list="['pic']" @checkedFile="checkedFile" @visible="onvisible" />
                     <div v-show="topic1.topic_resource" class="img-group">
                       <div class="imgCover" :style="{backgroundImage:'url(' + topic1.topic_resource + ')'}"> <i class="close iconfont iconfalse-circle" @click="delTopicImg" /></div>
                     </div>
-                    <div class="selectPic" @click="topicImg">
-                      添加图片
+                    <div class="selectPic" @click="topicImg">添加图片</div>
+                  </el-form-item>
+                  <el-form-item class="required" label="题目选项">
+                    <el-table
+                      class="topicOption"
+                      :data="topic1.topic_option"
+                      border
+                      style="width: 100%"
+                    >
+                      <el-table-column
+                        prop="option_content"
+                        align="center"
+                        label="选项内容"
+                      >
+                        <template slot-scope="scope">
+                          <el-input v-model="scope.row.option_content" size="small" class="option_content" placeholder="请输入选项内容，字数不超过100个字" maxlength="100" />
+                        </template>
+                      </el-table-column>
+                      <el-table-column
+                        prop="option_img"
+                        label="图片"
+                        align="center"
+                        width="60"
+                      >
+                        <template slot-scope="scope">
+                          <el-upload
+                            ref="upload"
+                            class="avatar-uploader"
+                            :action="uploadUrl()"
+                            :headers="headers"
+                            accept=".jpg,.png,.gif,.jepg,.jpeg"
+                            :show-file-list="false"
+                            :on-success="handleImgSuccess"
+                            :before-upload="beforeImgUpload"
+                          >
+                            <img v-if="scope.row.option_img" :src="scope.row.option_img" class="avatar">
+                            <i v-else class="el-icon-plus avatar-uploader-icon" @click="optionConcentIndex(scope.$index)" />
+                          </el-upload>
+                          <i v-if="scope.row.option_img" class="closeOptionImg iconfont iconfalse-circle" @click="delOptionImg" />
+                        </template>
+                      </el-table-column>
+                      <el-table-column
+                        prop="correct_option"
+                        label="正确选项"
+                        align="center"
+                        width="90"
+                      >
+                        <template slot-scope="scope">
+                          <el-radio v-model="radio1" class="radio" :label="scope.row.option_id" @change="isTrueChange(scope.$index, scope.row.option_id)" />
+                        </template>
+                      </el-table-column>
+                      <el-table-column
+                        prop="addOrdelOption"
+                        label="操作"
+                        align="center"
+                        width="90"
+                      >
+                        <template slot-scope="scope">
+                          <i class="pointer el-icon-plus" @click="addOption" />
+                          <i class="pointer el-icon-minus" @click="delTheOption(scope.$index)" />
+                        </template>
+                      </el-table-column>
+                    </el-table>
+                  </el-form-item>
+                  <el-form-item label="题目解析">
+                    <el-input v-model="topic1.topic_resolve" size="small" type="textarea" :autosize="{ minRows: 1, maxRows: 4}" />
+                  </el-form-item>
+                  <el-form-item class="required" label="题目分值">
+                    <el-input-number v-model="topic1.topic_score" class="topic_score" controls-position="right" :min="1" />
+                  </el-form-item>
+                  <el-form-item class="required" label="题目难度">
+                    <el-radio-group v-model="topic1.topic_level" class="topic_level">
+                      <el-radio-button label="1">简单</el-radio-button>
+                      <el-radio-button label="2">一般</el-radio-button>
+                      <el-radio-button label="3">困难</el-radio-button>
+                    </el-radio-group>
+                  </el-form-item>
+                  <el-form-item label="添加标签" class="addLabel">
+                    <div v-if="currentLabels.length" class="tag">
+                      <el-tag
+                        v-for="(tag, index) in currentLabels"
+                        :key="tag.linc"
+                        closable
+                        size="medium"
+                        :disable-transitions="false"
+                        type="success"
+                        @close="handleLabelDel(index)"
+                      >
+                        {{ tag.lname }}
+                      </el-tag>
                     </div>
+                    <i class="el-icon-circle-plus-outline" @click="addLabels" />
                   </el-form-item>
                 </el-form>
               </div>
@@ -42,22 +130,34 @@
         222
       </el-tab-pane>
     </el-tabs>
+    <select-file :visible="visible" :file-type-list="['pic']" @checkedFile="checkedFile" @visible="onvisible" />
+    <add-labels :visible2="visible2" :current-labels="currentLabels" @addLabels="getLabels" @visible2="onvisible2" />
   </div>
 </template>
 
 <script>
 import SelectFile from '@/components/SelectFile'
+import AddLabels from '@/components/AddLabels'
+import { getToken } from '@/utils/auth'
+
 export default {
   components: {
-    SelectFile
+    SelectFile,
+    AddLabels
   },
   data() {
     return {
+      headers: {
+        Authorization: getToken() // 图片上传 header
+      },
       dataIsChange: 0, // 计数器，据此判断表单是否已编辑
       noLeaveprompt: false, // 表单提交后，设置为true，据此判断提交不再弹出离开提示
       visible: false, // 弹出选择文件
+      visible2: false, // 弹出选择标签
       addType: 'hand', // 默认手动添加
       topic_type: '1', // 默认单选题
+      uploadOptionIndex: null, // 上传图片的选项index
+      currentLabels: [], // 当前要回显的标签
       topic1: { // 单选题
         topic_type: '', // 题目类型 1单选，2多选，3判断
         topic_content: '', // 题目
@@ -81,19 +181,37 @@ export default {
         ], // 题目选项
         topic_resource: '', // 选择的图片
         topic_resource_id: '' // 主文件id
-      } // 单题数据
+      }, // 单题数据
+      radio1: '', // 单选题目选项
+      radio2: '', // 判断题目选项
+      check2: '' // 多选题目选项
     }
   },
   computed: {
 
   },
   created() {
+    this.topic1.topic_option[0].option_id = this.guid()
+    this.topic1.topic_option[1].option_id = this.guid()
 
+    // this.topic2.topic_option[0].option_id = this.guid()
+    // this.topic2.topic_option[1].option_id = this.guid()
+
+    // this.topic3.topic_option[0].option_id = this.guid()
+    // this.topic3.topic_option[1].option_id = this.guid()
   },
   mounted() {
 
   },
   methods: {
+    // 用于生成uuid
+    S4: function() {
+      return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1)
+    },
+    guid: function() {
+      return (this.S4() + this.S4() + '-' + this.S4() + '-' + this.S4() + '-' + this.S4() + '-' + this.S4() + this.S4() + this.S4())
+    },
+
     // 切换手动添加与Excel导入离开前的逻辑
     beforeLeaveTabs1(item) {
 
@@ -110,31 +228,142 @@ export default {
     handleTabsClick2: function() {
 
     },
-    checkedFile(val) {
-      this.topic1.topic_resource = val.fileUrl
-      this.topic1.topic_resource_id = val.mainFileId
-    },
-    onvisible(val) {
-      this.visible = val.visible
-    },
-
     // 题干添加图片
     topicImg() {
       this.visible = true
     },
+    // 监听选择文件组件返回数据
+    checkedFile(val) {
+      this.topic1.topic_resource = val.fileUrl
+      this.topic1.topic_resource_id = val.mainFileId
+    },
+    // 监听选择文件组件返回数据
+    onvisible(val) {
+      this.visible = val.visible
+    },
+
     // 删除题干图片
     delTopicImg() {
-      this.$confirm('确定删除该图片吗?', '提示', {
+      this.$confirm('确定删除该图片吗？', '删除图片', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
         this.topic1.topic_resource = ''
         this.topic1.topic_resource_id = ''
-        this.$message.success('删除成功')
+        this.$message.success('删除成功！')
       }).catch(() => {
 
       })
+    },
+
+    // 上传路径
+    uploadUrl() {
+      return process.env.VUE_APP_BASE_API + 'system/file/upload/'
+    },
+
+    // 获取上传图片选项index
+    optionConcentIndex(index) {
+      this.uploadOptionIndex = index
+    },
+
+    // 上传选项图片之前
+    beforeImgUpload(file) {
+      const suffixs = ['.png', '.jpg', '.gif', '.jepg', '.jpeg']
+      const i = file.name.lastIndexOf('.')
+      const suffix = file.name.slice(i)
+      if (suffixs.indexOf(suffix) === -1) {
+        this.$message.error('文件格式错误！')
+        this.$refs.upload.clearFiles()
+        return false
+      }
+      const isLt5M = file.size / 1024 / 1024 < 5
+      if (!isLt5M) {
+        this.$message.error('上传文件大小不能超过 5MB！')
+        this.$refs.upload.clearFiles()
+        return false
+      }
+      return true
+    },
+
+    // 成功上传选项图片
+    handleImgSuccess(res, file) {
+      debugger
+      this.topic1.topic_option[this.uploadOptionIndex].option_img = res.data.saveHttpPath
+    },
+
+    // 删除选项图片
+    delOptionImg(row) {
+      this.$confirm('确定删除该图片吗？', '删除图片', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        row.option_img = ''
+        this.$message.success('删除成功！')
+      }).catch(() => {
+
+      })
+    },
+
+    // 题目选项单选
+    isTrueChange: function(index, option_id) {
+      this.topic1.topic_option.forEach(item => {
+        item.correct_option = 2
+      })
+      this.radio1 = option_id
+      this.topic1.topic_option[index].correct_option = 1
+      console.log(this.topic1.topic_option)
+    },
+
+    // 添加题目选项
+    addOption: function() {
+      if (this.topic1.topic_option.length === 20) {
+        this.$message.warning('选项不可以超过20条！')
+        return false
+      }
+      this.topic1.topic_option.push({
+        option_content: '',
+        option_img: '',
+        correct_option: 2,
+        option_id: this.guid()
+      })
+    },
+
+    // 删除当前题目选项
+    delTheOption: function(index) {
+      if (this.topic1.topic_option.length === 2) {
+        this.$message.warning('选项不得少于两项！')
+        return false
+      }
+      this.$confirm('确定删除该选项？', '删除选项', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.topic1.topic_option.splice(index, 1)
+        this.$message.success('删除成功！')
+      }).catch(() => {
+
+      })
+    },
+
+    // 添加标签
+    addLabels() {
+      this.visible2 = true
+    },
+    // 监听选择标签组件返回数据
+    getLabels(val) {
+      this.currentLabels = val
+    },
+    // 监听选择标签组件返回数据
+    onvisible2(val) {
+      this.visible2 = val.visible
+    },
+
+    // 删除标签
+    handleLabelDel(index) {
+      this.currentLabels.splice(index, 1)
     },
 
     addTopics() {
@@ -202,6 +431,8 @@ export default {
   .selectPic {
     display: inline-block;
     width: 80px;
+    height: 32px;
+    line-height: 32px;
     cursor: pointer;
     text-align: center;
     margin-left: 6px;
@@ -229,5 +460,40 @@ export default {
   }
   .content {
     line-height: 40px;
+    height: 40px;
+
+    > /deep/ .el-form-item__label, /deep/ .el-form-item__content {
+      height: 40px;
+      line-height: 40px;
+    }
+  }
+  .avatar {
+    width: 40px;
+    vertical-align: middle;
+  }
+  .closeOptionImg {
+    position: absolute;
+    top: 0;
+    right: -1px;
+    cursor: pointer;
+  }
+  .topicOption .radio /deep/ .el-radio__label {
+    display: none;
+  }
+  i {
+    cursor: pointer;
+  }
+  .tag {
+    display: inline-block;
+  }
+  /deep/ .el-tag {
+    margin-right: 10px;
+  }
+  /deep/ .el-tag .el-icon-close {
+    vertical-align: middle;
+    margin: 0;
+  }
+  /deep/ .el-tag .el-icon-close::before {
+    margin: 0;
   }
 </style>
