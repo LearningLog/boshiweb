@@ -808,73 +808,76 @@ export default {
       this[this.topic0].topicTypeTitle = topicType
 
       this[this.topic0].id = this.guid() // 设置题id
-      this[this.topic0].timeStamp = new Date().getTime() // 设置题id
+      this[this.topic0].timeStamp = new Date().getTime() // 设置题key
       this.topics.push($.extend(true, {}, this[this.topic0]))
+
+      // 保存设置
+      if(this.saveSet){
+        this.topic1.topic_level=this[this.topic0].topic_level * 1
+        this.topic1.topic_score=this[this.topic0].topic_score * 1
+        this.topic1.currentLabels=this[this.topic0].currentLabels
+        this.topic1.currentSkills=this[this.topic0].currentSkills
+
+        this.topic2.topic_level=this[this.topic0].topic_level * 1
+        this.topic2.topic_score=this[this.topic0].topic_score * 1
+        this.topic2.currentLabels=this[this.topic0].currentLabels
+        this.topic2.currentSkills=this[this.topic0].currentSkills
+
+        this.topic3.topic_level=this[this.topic0].topic_level * 1
+        this.topic3.topic_score=this[this.topic0].topic_score * 1
+        this.topic3.currentLabels=this[this.topic0].currentLabels
+        this.topic3.currentSkills=this[this.topic0].currentSkills
+      } else {
+        this[this.topic0].topic_level=1
+        this[this.topic0].topic_score=1
+        this[this.topic0].currentLabels=[]
+        this[this.topic0].currentSkills=[]
+        this.currentLabels = []
+        this.currentSkills = []
+      }
       // 保存试题后清空表单===begin====
+      this[this.topic0].topic_type=''
+      this[this.topic0].topic_content=''
+      this[this.topic0].topic_label=''
+      this[this.topic0].topic_skill=''
+      this[this.topic0].topic_resolve=''
+      this[this.topic0].topic_resource=''
+      this[this.topic0].topic_resource_id=''
+      this[this.topic0].check=''
+      this[this.topic0].id=''
       if (this.topic0 === 'topic1' || this.topic0 === 'topic2') {
-        this[this.topic0] = { // 单选题
-          topic_type: '', // 题目类型 1单选，2多选，3判断
-          topic_content: '', // 题目
-          topic_level: 1, // 难度
-          topic_label: '', // 标签
-          topic_skill: '', // 技能
-          currentLabels: [], // 标签obj
-          currentSkills: [], // 技能obj
-          topic_resolve: '', // 试题解析
-          topic_score: '', // 分值
-          topic_option: [ // 题目选项
-            {
-              option_content: '',
-              option_img: '',
-              correct_option: 2, // 1正确答案 2错误
-              check: false,
-              option_id: this.guid()
-            }, {
-              option_content: '',
-              option_img: '',
-              correct_option: 2,
-              check: false,
-              option_id: this.guid()
-            }
-          ], // 题目选项
-          topic_resource: '', // 选择的图片
-          topic_resource_id: '', // 主文件id
-          check: '',
-          id: ''
-        }
+        this[this.topic0].topic_option=[ // 题目选项
+          {
+            option_content: '',
+            option_img: '',
+            correct_option: 2, // 1正确答案 2错误
+            check: false,
+            option_id: this.guid()
+          }, {
+            option_content: '',
+            option_img: '',
+            correct_option: 2,
+            check: false,
+            option_id: this.guid()
+          }
+        ]
         this.radio1 = ''
       } else {
-        this[this.topic0] = { // 单选题
-          topic_type: '', // 题目类型 1单选，2多选，3判断
-          topic_content: '', // 题目
-          topic_level: 1, // 难度
-          topic_label: '', // 标签
-          topic_skill: '', // 技能
-          currentLabels: [], // 标签obj
-          currentSkills: [], // 技能obj
-          topic_resolve: '', // 试题解析
-          topic_score: '', // 分值
-          topic_option: [ // 题目选项
-            {
-              option_content: '正确',
-              option_img: '',
-              correct_option: 2, // 1正确答案 2错误
-              option_id: this.guid()
-            }, {
-              option_content: '错误',
-              option_img: '',
-              correct_option: 2,
-              option_id: this.guid()
-            }
-          ], // 题目选项
-          topic_resource: '', // 选择的图片
-          topic_resource_id: '', // 主文件id
-          id: ''
-        }
+        this[this.topic0].topic_option=[ // 题目选项
+          {
+            option_content: '正确',
+            option_img: '',
+            correct_option: 2, // 1正确答案 2错误
+            option_id: this.guid()
+          }, {
+            option_content: '错误',
+            option_img: '',
+            correct_option: 2,
+            option_id: this.guid()
+          }
+        ]
         this.radio2 = ''
       }
-      this.currentLabels = []
-      this.currentSkills = []
     },
 
     // 清空所有topic数据
@@ -888,7 +891,7 @@ export default {
         currentLabels: [], // 标签obj
         currentSkills: [], // 技能obj
         topic_resolve: '', // 试题解析
-        topic_score: '', // 分值
+        topic_score: 1, // 分值
         topic_option: [ // 题目选项
           {
             option_content: '',
@@ -916,7 +919,7 @@ export default {
         currentLabels: [], // 标签obj
         currentSkills: [], // 技能obj
         topic_resolve: '', // 试题解析
-        topic_score: '', // 分值
+        topic_score: 1, // 分值
         topic_option: [ // 题目选项
           {
             option_content: '',
@@ -944,7 +947,7 @@ export default {
         currentLabels: [], // 标签obj
         currentSkills: [], // 技能obj
         topic_resolve: '', // 试题解析
-        topic_score: '', // 分值
+        topic_score: 1, // 分值
         topic_option: [ // 题目选项
           {
             option_content: '正确',
