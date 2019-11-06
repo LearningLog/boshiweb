@@ -92,7 +92,7 @@
 </template>
 
 <script>
-import { getLabelList,label_list,label_delete, deleteMultiRole } from '@/api/online-class.js'
+import { getLabelList,label_delete} from '@/api/onlineclass-label-manage.js'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { getCustomManageList} from '@/api/systemManage-roleManage'
 import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
@@ -145,6 +145,7 @@ export default {
     // 重置
     reset() {
       this.listQuery.lname = ''
+      this.listQuery.linc = ''
       this.listQuery.selectCompanyId = ''
       this.listQuery.egroup = ''
       this.time_range = []
@@ -157,8 +158,6 @@ export default {
       this.time_range = this.time_range || []
       this.listQuery.createTimebegin = this.time_range[0]
       this.listQuery.createTimeend = this.time_range[1]
-      this.listQuery.selectCompanyId	= this.listQuery.selectCompanyId
-      this.listQuery.egroup = this.listQuery.egroup
       this.listLoading = true
       getLabelList(this.listQuery).then(response => {
         this.listLoading = false

@@ -9,7 +9,7 @@
         <span>{{ form.lname }}</span>
       </el-form-item>
       <el-form-item label="所属小组：">
-        <span>{{ form.groupName }}</span>
+        <span>{{ form.groupName[0] }}</span>
       </el-form-item>
       <el-form-item label="描述：">
         <span>{{ form.ldesc }}</span>

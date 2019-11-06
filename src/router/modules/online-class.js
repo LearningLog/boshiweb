@@ -53,6 +53,43 @@ const onlineClass = {
           meta: { title: '标签列表', icon: '', activeMenu: '/online-class/label-manage' }
         },
       ]
+    },
+    {
+      path: 'direct-manage',
+      name: 'direct-manage',
+      component: () => import('@/views/online-class/direct-manage/index'),
+      redirect: '/online-class/direct-manage/list',
+      meta: { title: '直播课堂', icon: '', activeMenu: '/online-class/direct-manage' },
+      children: [
+        {
+          path: 'add',
+          name: 'direct-add',
+          hidden: true,
+          component: () => import('@/views/online-class/direct-manage/child/add'),
+          meta: { title: '新增课堂', icon: '', activeMenu: '/online-class/direct-manage' }
+        },
+        {
+          path: 'edit',
+          name: 'direct-edit',
+          hidden: true,
+          component: () => import('@/views/online-class/direct-manage/child/edit'),
+          meta: { title: '修改课堂', icon: '', activeMenu: '/online-class/direct-manage' }
+        },
+        {
+          path: 'detail',
+          name: 'direct-detail',
+          hidden: true,
+          component: () => import('@/views/online-class/direct-manage/child/detail'),
+          meta: { title: '课堂详情', icon: '', activeMenu: '/online-class/direct-manage' }
+        },
+        {
+          path: 'list',
+          name: 'direct-list',
+          hidden: true,
+          component: () => import('@/views/online-class/direct-manage/child/list'),
+          meta: { title: '课堂列表', icon: '', activeMenu: '/online-class/direct-manage' }
+        },
+      ]
     }
   ]
 }

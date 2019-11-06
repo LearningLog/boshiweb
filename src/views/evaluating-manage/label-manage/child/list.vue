@@ -10,7 +10,7 @@
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
               <el-form-item label="标签ID">
-                <el-input v-model="listQuery.linc" placeholder="请输入标签ID" clearable @keyup.enter.native="topSearch" />
+                <el-input v-model="listQuery.labelIncs[0]" placeholder="请输入标签ID" clearable @keyup.enter.native="topSearch" />
               </el-form-item>
               <el-form-item label="所属租户">
               <el-select v-model="listQuery.selectCompanyId" placeholder="请选择所属租户" clearable filterable>
@@ -92,7 +92,7 @@
 </template>
 
 <script>
-import { getLabelList,label_list,label_delete, deleteMultiRole } from '@/api/evaluatingManage-labelManage.js'
+import { getLabelList,label_delete,} from '@/api/evaluatingManage-labelManage.js'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { getCustomManageList} from '@/api/systemManage-roleManage'
 import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
@@ -107,7 +107,7 @@ export default {
         startTime: '', // 开始时间
         endtTime: '', // 结束时间
         content: '', // 标签名称
-        labelIncs: '', //标签ID
+        labelIncs: [], //标签ID
         selectCompanyId:'',// 所属租户
         egroup: '', // 所属小组
 
@@ -150,6 +150,7 @@ export default {
       this.listQuery.endTime = ''
       this.listQuery.selectCompanyId	= ''
       this.listQuery.egroup = ''
+      this.listQuery.labelIncs = []
       this.time_range = []
       this.get_list()
     },
@@ -158,8 +159,6 @@ export default {
       this.time_range = this.time_range || []
       this.listQuery.startTime = this.time_range[0]
       this.listQuery.endtTime = this.time_range[1]
-      this.listQuery.selectCompanyId	= this.listQuery.selectCompanyId
-      this.listQuery.egroup = this.listQuery.egroup
       this.listLoading = true
       getLabelList(this.listQuery).then(response => {
         this.listLoading = false
