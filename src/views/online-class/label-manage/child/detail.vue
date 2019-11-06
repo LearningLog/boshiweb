@@ -9,7 +9,7 @@
         <span>{{ form.lname }}</span>
       </el-form-item>
       <el-form-item label="所属小组：">
-        <span>{{ form.groupName }}</span>
+        <span>{{ form.customname }}</span>
       </el-form-item>
       <el-form-item label="描述：">
         <span>{{ form.ldesc }}</span>
@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { getOneLabel } from '@/api/evaluatingManage-labelManage.js'
+import { getOneLabel } from '@/api/online-class.js'
 
 export default {
   data() {
@@ -44,12 +44,12 @@ export default {
     // 获取初始数据
     getInitData() {
       getOneLabel({ _id: this.id }).then(response => {
-        this.form = response.data.label
+        this.form = response.data
       })
     },
     // 确定
     confirm() {
-      this.$router.push({ path: '/evaluating-manage/label-manage/list' })
+      this.$router.push({ path: '/online-class/label-manage/list' })
     }
   }
 }

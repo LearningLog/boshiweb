@@ -4,54 +4,68 @@
       <el-form-item class="required" label="标签名称" prop="lname">
         <el-input v-model="form.lname" placeholder="请输入标签名称" clearable />
       </el-form-item>
-      <el-form-item label="所属小组" prop="roleGroupId">
-        <el-select v-model="form.egroup" placeholder="请选择所属小组" clearable filterable>
+      <el-form-item label="标签描述">
+        <el-input v-model="form.ldesc" placeholder="请输入标签描述" clearable />
+      </el-form-item>
+      <el-form-item label="所属小组" prop="roleId">
+      <el-select v-model="form.roleId" placeholder="请选择所属小组" clearable filterable>
           <el-option
             v-for="item in groupList"
             :key="item._id"
             :label="item.groupName"
-            :value="item.inc"
+            :value="item._id"
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="描述">
-        <el-input
-          type="textarea"
-          :rows="2"
-          placeholder="请输入内容"
-          v-model="form.ldesc">
-        </el-input>
+      <el-form-item label="所属租户" prop="GroupId">
+          <el-select v-model="form.GroupId" placeholder="请选择所属租户" clearable filterable>
+            <el-option
+              v-for="item in custom_list"
+              :key="item._id"
+              :label="item.customname"
+              :value="item._id"
+            />
+          </el-select>
       </el-form-item>
     </el-form>
     <div id="btnGroup">
-      <el-button v-no-more-click type="primary" @click="save('form')">保存</el-button>
+      <el-button v-no-more-click type="primary" @click="save('form')">提交</el-button>
       <el-button type="primary" plain @click="cancel('form')">取消</el-button>
     </div>
   </div>
 </template>
 
 <script>
-import { getOneLabel,label_edit } from '@/api/evaluatingManage-labelManage.js'
+import { label_add } from '@/api/evaluatingManage-labelManage.js'
+import { getCustomManageList} from '@/api/systemManage-roleManage'
 import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
 export default {
   data() {
     return {
       dataIsChange: 0, // 计数器，据此判断表单是否已编辑
       noLeaveprompt: false, // 表单提交后，设置为true，据此判断提交不再弹出离开提示
-      id: '', // 查询id
       form: {
         lname: '', // 角色名称
         ldesc: '', // 角色描述
-        _id:'',
-        egroup:'',//所属小组
+        GroupId: '', // 角色
+        roleId: '', // 分组
       },
       groupList: [], // 所属小组list
+      custom_list: [], // 所属租户list
       rules: {
         lname: [
           { required: true, message: '请输入标签名称（长度在 2 到 20 个字符）', trigger: 'blur' },
           { required: true, message: '请输入标签名称（长度在 2 到 20 个字符）', trigger: 'change' },
           { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' },
           { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'change' }
+        ],
+        roleId: [
+          { required: true, message: '请选择所属小组', trigger: 'blur' },
+          { required: true, message: '请选择所属小组 ', trigger: 'change' }
+        ],
+        GroupId: [
+          { required: true, message: '请选择所属租户', trigger: 'blur' },
+          { required: true, message: '请选择所属租户 ', trigger: 'change' }
         ]
       }
     }
@@ -68,41 +82,38 @@ export default {
     }
   },
   created() {
-    this.id = this.$route.query.id
-    this.getInitData()
+    this.getCustomManageList()
     this.getEgroups()
   },
   methods: {
-    // 获取初始数据
-    getInitData() {
-      getOneLabel({ _id: this.id }).then(response => {
-        this.form = response.data.label
-        this.dataIsChange = -1
-      })
-    },
     // 获取所有小组
     getEgroups() {
       getUserEgroupInfo({ selectCompanyId: this.companyIds }).then(response => {
         this.groupList = response.data.egroupInfo
       })
     },
-   
-
-    // 保存
+    // 获取所属租户list
+    getCustomManageList() {
+      getCustomManageList().then(res => {
+        this.custom_list = res.data
+      })
+    },
+    // 提交
     save(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-        label_edit(this.form).then(response => {
-            this.$message.success('修改角色成功！')
+          label_add(this.form).then(response => {
+            this.$message.success('添加角色成功！')
             this.noLeaveprompt = true
-            this.$router.push({ path: '/evaluating-manage/label-manage/detail', query: { id: this.id }})
+            this.$router.push({ path: '/online-class/label-manage/detail', query: { id: response.data._id }})
           })
         }
       })
     },
+
     // 取消
     cancel(formName) {
-      this.$router.push({ path: '/evaluating-manage/label-manage/list' })
+      this.$router.push({ path: '/online-class/label-manage/list' })
     }
   },
   beforeRouteLeave(to, from, next) {
