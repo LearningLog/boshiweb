@@ -160,8 +160,15 @@ export default {
     },
     // 更改小组
     changeGroup(val) {
+      var group = {}
       this.groupId = val
-      this.$emit('tenantsGroupsRolesVal', { companyIds: this.companyIds, egroupId: this.groupId, roleId: this.roleId })
+      this.groupList.forEach(item => {
+        if (item.inc === val) {
+          group = item
+          return
+        }
+      })
+      this.$emit('tenantsGroupsRolesVal', { companyIds: this.companyIds, egroupId: this.groupId, roleId: this.roleId, group })
     },
     // 更改角色
     changeRole(val) {

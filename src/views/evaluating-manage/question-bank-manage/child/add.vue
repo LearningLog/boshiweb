@@ -1,493 +1,541 @@
 <template>
-  <div class="form-edit">
-    <el-form ref="form" class="form" :model="form" :rules="rules" label-width="120px" :status-icon="true">
-      <el-form-item label="租户名称" prop="customname">
-        <el-input v-model="form.customname" placeholder="请输入租户名称" maxlength="64" clearable />
-      </el-form-item>
-      <el-form-item label="租户描述" prop="desc">
-        <el-input v-model="form.desc" placeholder="请输入租户描述" maxlength="100" clearable />
-      </el-form-item>
-      <el-form-item label="最大用户数" prop="userCount">
-        <el-input v-model="form.userCount" placeholder="请输入最大用户数" clearable @keyup.native="intNum(form.userCount)" />
-      </el-form-item>
-      <el-form-item label="租户状态" prop="customStatus">
-        <el-radio-group v-model="form.customStatus">
-          <el-radio :label="1">生效</el-radio>
-          <el-radio :label="0">失效</el-radio>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="开通智能搜索" prop="text_extraction">
-        <el-radio-group v-model="form.text_extraction">
-          <el-radio :label="1">开启</el-radio>
-          <el-radio :label="0">关闭</el-radio>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="租户管理员" prop="uName">
-        <el-input v-model="form.uName" placeholder="请输入租户管理员" maxlength="64" clearable />
-      </el-form-item>
-      <el-form-item label="管理员昵称" prop="uNickname">
-        <el-input v-model="form.uNickname" placeholder="请输入管理员昵称" maxlength="20" clearable />
-      </el-form-item>
-      <el-form-item label="管理员密码" prop="uPwd">
-        <el-input v-model="form.uPwd" placeholder="请输入管理员密码" type="password" autocomplete="new-password" maxlength="50" clearable />
-      </el-form-item>
-      <el-form-item label="平台Logo" class="logoClass">
-        <el-upload
-          ref="uploadDeskTopLogo"
-          class="uploadDeskTopLogo"
-          name="thumbnailfile"
-          :action="uploadUrl()"
-          :headers="headers"
-          accept=".jpg,.png,.gif,.jepg,.jpeg"
-          drag
-          :data="fileInfo"
-          :limit="2"
-          :file-list="fileList1"
-          list-type="picture-card"
-          :auto-upload="false"
-          :on-change="changeUpload"
-          :on-success="handleSuccess"
-          :on-error="handleUploadError"
-          :on-preview="handlePreview"
-          :before-remove="beforeRemove"
-          :on-remove="handleRemove"
-          @click.native="logoTypes(1)"
-        >
-          <!--<img v-if="deskTopImageUrl" :src="deskTopImageUrl" class="avatar">-->
-          <i class="el-icon-plus avatar-uploader-icon" />
-        </el-upload>
-      </el-form-item>
-      <el-form-item label="移动端Logo" class="logoClass">
-        <el-upload
-          ref="uploadMobileLogo"
-          class="uploadMobileLogo"
-          name="thumbnailfile"
-          :action="uploadUrl()"
-          :headers="headers"
-          accept=".jpg,.png,.gif,.jepg,.jpeg"
-          drag
-          :data="fileInfo"
-          :limit="2"
-          :file-list="fileList2"
-          list-type="picture-card"
-          :auto-upload="false"
-          :on-change="changeUpload"
-          :on-success="handleSuccess"
-          :on-error="handleUploadError"
-          :on-preview="handlePreview"
-          :before-remove="beforeRemove"
-          :on-remove="handleRemove"
-          @click.native="logoTypes(2)"
-        >
-          <!--<img v-if="mobileImageUrl" :src="mobileImageUrl" class="avatar">-->
-          <i class="el-icon-plus avatar-uploader-icon" />
-        </el-upload>
-      </el-form-item>
-      <el-form-item label="个性化系统名称">
-        <el-input v-model="form.customSystemName" maxlength="64" placeholder="请输入系统名称" clearable />
-      </el-form-item>
-    </el-form>
-    <div id="btnGroup">
-      <el-button v-no-more-click type="primary" @click="onSubmit('form')">提交</el-button>
-      <el-button type="primary" plain @click="cancel('form')">取消</el-button>
+  <div id="addTopicVue" class="form-edit">
+    <div class="fr submit">
+      <p>（小提示：保存的试题记得保存至题库哦）</p>
+      <el-button class="addTopic" type="primary" @click="addTopics"><i class="iconfont iconhao" />保存至题库</el-button>
     </div>
-    <!-- vueCropper 剪裁图片实现-->
-    <el-dialog v-el-drag-dialog title="图片剪裁" :visible.sync="cropperDialogVisible" append-to-body :close-on-click-modal="false" @close="closeUpload">
-      <div class="cropper-content">
-        <div class="cropper" style="text-align:center">
-          <vueCropper
-            ref="cropper"
-            :img="option.img"
-            :output-size="option.size"
-            :output-type="option.outputType"
-            :info="option.info"
-            :full="option.full"
-            :fixed="option.fixed"
-            :fixed-number="option.fixedNumber"
-            :can-move="option.canMove"
-            :can-move-box="option.canMoveBox"
-            :fixed-box="option.fixedBox"
-            :original="option.original"
-            :auto-crop="option.autoCrop"
-            :auto-crop-width="option.autoCropWidth"
-            :auto-crop-height="option.autoCropHeight"
-            :center-box="option.centerBox"
-            :high="option.high"
-            @realTime="realTime"
-            @imgLoad="imgLoad"
-          />
-          <!--下载图片的a链接-->
-          <a v-show="false" ref="downLoadImg" href="javascript:;" />
+
+    <el-tabs v-model="addType" :before-leave="beforeLeaveTabs1" class="addType" @tab-click="handleTabsClick1">
+      <el-tab-pane class="hand" label="手动添加" name="hand">
+        <div class="fl edit">
+          <el-tabs v-model="topic_type" class="topicType" type="card" :before-leave="beforeLeaveTabs2" @tab-click="handleTabsClick2">
+            <el-tab-pane label="单选题" name="1">
+              <div class="edit-hand-topic1">
+                <el-form ref="form" label-width="100px">
+                  <el-form-item class="required content" label="题目内容">
+                    <el-input v-model="topic1.topic_content" class="topicName" placeholder="请输入题目" clearable />
+                    <div v-show="topic1.topic_resource" class="img-group">
+                      <div class="imgCover" :style="{backgroundImage:'url(' + topic1.topic_resource + ')'}"> <i class="close iconfont iconfalse-circle" @click="delTopicImg" /></div>
+                    </div>
+                    <div class="selectPic" @click="topicImg">添加图片</div>
+                  </el-form-item>
+                  <el-form-item class="required" label="题目选项">
+                    <el-table
+                      class="topicOption"
+                      :data="topic1.topic_option"
+                      border
+                      style="width: 100%"
+                    >
+                      <el-table-column
+                        prop="option_content"
+                        align="center"
+                        label="选项内容"
+                      >
+                        <template slot-scope="scope">
+                          <el-input v-model="scope.row.option_content" size="small" class="option_content" placeholder="请输入选项内容，字数不超过100个字" maxlength="100" />
+                        </template>
+                      </el-table-column>
+                      <el-table-column
+                        prop="option_img"
+                        label="图片"
+                        align="center"
+                        width="60"
+                      >
+                        <template slot-scope="scope">
+                          <el-upload
+                            ref="upload"
+                            class="avatar-uploader"
+                            :action="uploadUrl()"
+                            :headers="headers"
+                            accept=".jpg,.png,.gif,.jepg,.jpeg"
+                            :show-file-list="false"
+                            :on-success="handleImgSuccess"
+                            :before-upload="beforeImgUpload"
+                          >
+                            <img v-if="scope.row.option_img" :src="scope.row.option_img" class="avatar">
+                            <i v-else class="el-icon-plus avatar-uploader-icon" @click="optionConcentIndex(scope.$index)" />
+                          </el-upload>
+                          <i v-if="scope.row.option_img" class="closeOptionImg iconfont iconfalse-circle" @click="delOptionImg" />
+                        </template>
+                      </el-table-column>
+                      <el-table-column
+                        prop="correct_option"
+                        label="正确选项"
+                        align="center"
+                        width="90"
+                      >
+                        <template slot-scope="scope">
+                          <el-radio v-model="radio1" class="radio" :label="scope.row.option_id" @change="isTrueChange(scope.$index, scope.row.option_id)" />
+                        </template>
+                      </el-table-column>
+                      <el-table-column
+                        prop="addOrdelOption"
+                        label="操作"
+                        align="center"
+                        width="90"
+                      >
+                        <template slot-scope="scope">
+                          <i class="pointer el-icon-plus" @click="addOption" />
+                          <i class="pointer el-icon-minus" @click="delTheOption(scope.$index)" />
+                        </template>
+                      </el-table-column>
+                    </el-table>
+                  </el-form-item>
+                  <el-form-item label="题目解析">
+                    <el-input v-model="topic1.topic_resolve" size="small" type="textarea" :autosize="{ minRows: 1, maxRows: 4}" />
+                  </el-form-item>
+                  <el-form-item class="required" label="题目分值">
+                    <el-input-number v-model="topic1.topic_score" class="topic_score" controls-position="right" :min="1" />
+                  </el-form-item>
+                  <el-form-item class="required" label="题目难度">
+                    <el-radio-group v-model="topic1.topic_level" class="topic_level">
+                      <el-radio-button label="1">简单</el-radio-button>
+                      <el-radio-button label="2">一般</el-radio-button>
+                      <el-radio-button label="3">困难</el-radio-button>
+                    </el-radio-group>
+                  </el-form-item>
+                  <el-form-item label="添加标签" class="addLabel">
+                    <div v-if="currentLabels.length" class="tag">
+                      <el-tag
+                        v-for="(tag, index) in currentLabels"
+                        :key="tag.linc"
+                        closable
+                        size="medium"
+                        :disable-transitions="false"
+                        type="success"
+                        @close="handleLabelDel(index)"
+                      >
+                        {{ tag.lname }}
+                      </el-tag>
+                    </div>
+                    <i class="el-icon-circle-plus-outline" @click="addLabels" />
+                  </el-form-item>
+                  <el-form-item label="题目考核技能" class="addSkill">
+                    <div v-if="currentSkills.length" class="tag">
+                      <el-tag
+                        v-for="(tag, index) in currentSkills"
+                        :key="tag.increase_id"
+                        closable
+                        size="medium"
+                        :disable-transitions="false"
+                        type="success"
+                        @close="handleSkillDel(index)"
+                      >
+                        {{ tag.skill_name }}
+                      </el-tag>
+                    </div>
+                    <i class="el-icon-circle-plus-outline" @click="addSkills" />
+                  </el-form-item>
+                  <el-checkbox class="saveSet" v-model="saveSet">保存设置（分值、难度、标签、技能）</el-checkbox>
+                </el-form>
+              </div>
+            </el-tab-pane>
+            <el-tab-pane label="多选题" name="2">
+              多选题
+            </el-tab-pane>
+            <el-tab-pane label="判断题" name="3">
+              判断题
+            </el-tab-pane>
+          </el-tabs>
         </div>
-        <!--预览-->
-        <!--<div class="show-preview" :style="{'width': previews.w + 'px', 'height': previews.h + 'px', 'overflow': 'hidden', 'margin': '5px'}">-->
-        <div class="show-preview" :style="{'width':'180px', 'height':'180px', 'overflow': 'hidden', 'margin': '5px'}">
-          <div :style="previews.div" class="preview">
-            <img :src="previews.url" class="previewImg">
-          </div>
+        <div class="fr preview ">
+          <h3>预览区</h3>
+          <p class="tip" />
         </div>
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button v-no-more-click type="primary" @click="finish">确认</el-button>
-        <el-button @click="closeUpload">取 消</el-button>
-      </div>
-    </el-dialog>
-    <el-dialog v-el-drag-dialog title="图片预览" width="38%" :visible.sync="logoDialogVisible">
-      <img width="100%" :src="logoUrl" alt="">
-    </el-dialog>
+      </el-tab-pane>
+      <el-tab-pane class="excel" label="Excel添加" name="excel">
+        222
+      </el-tab-pane>
+    </el-tabs>
+    <select-file :visible.sync="visible" :file-type-list="['pic']" @checkedFile="checkedFile" @visible="onvisible" />
+    <add-labels :visible2.sync="visible2" :current-labels.sync="currentLabels" @addLabels="getLabels" @visible2="onvisible2" />
+    <add-skills :visible3.sync="visible3" :current-skills.sync="currentSkills" @addSkills="getSkills" @visible3="onvisible3" />
   </div>
 </template>
 
 <script>
-import { validIntNum, regUName, regPwd } from '@/utils/validate'
-import { VueCropper } from 'vue-cropper'
-import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
-import { addTenant } from '@/api/systemManage-tenantManage'
-import { uploadFile } from '@/api/uploadFile'
+import SelectFile from '@/components/SelectFile'
+import AddLabels from '@/components/AddEvalLabels'
+import AddSkills from '@/components/AddEvalSkills'
 import { getToken } from '@/utils/auth'
-const $ = window.$
 
 export default {
   components: {
-    VueCropper // 图片裁剪组件
+    SelectFile,
+    AddLabels,
+    AddSkills
   },
-  directives: { elDragDialog },
   data() {
-    // 校验租户管理员
-    var validateUName = (rule, value, callback) => {
-      if (!value && value !== 0) {
-        callback(new Error('请输入租户管理员（长度在 2 到 64 个字符）'))
-      } else if (!regUName(value)) {
-        callback(new Error('2 到 64 位字母和数字的组合，不能连续11位数字'))
-      } else {
-        callback()
-      }
-    }
-    // 校验管理员密码
-    var validatePass = (rule, value, callback) => {
-      if (!value && value !== 0) {
-        callback(new Error('请输入管理员密码'))
-      } else if (!regPwd(value)) {
-        callback(new Error('6 到 50 位字母和数字的组合'))
-      } else {
-        callback()
-      }
-    }
     return {
-      dataIsChange: 0, // 计数器，据此判断表单是否已编辑
-      noLeaveprompt: false, // 表单提交后，设置为true，据此判断提交不再弹出离开提示
-      form: { // 表单数据
-        customname: '', // 租户名称
-        desc: '', // 描述
-        userCount: '', // 最大用户数量
-        customStatus: 1, // 租户状态
-        text_extraction: 1, // 开通智能搜索
-        uName: '', // 租户管理员
-        uNickname: '', // 管理员昵称
-        uPwd: '', // 管理员密码
-        pcLogoFileId: '', // 平台Logo id
-        pcLogoFileUrl: '', // 平台Logo url
-        mobileLogoFileId: '', // 移动端Logo id
-        mobileLogoFileUrl: '', // 移动端Logo url
-        customSystemName: '' // 个性化系统名称
-      },
-      loading: false, // 防止重复提交
       headers: {
         Authorization: getToken() // 图片上传 header
       },
-      logoType: '', // 上传logo类型
-      fileName: '', // 上传文件名称
-      fileList1: [], // 平台Logo list
-      fileList2: [], // 移动端Logo list
-      cropperDialogVisible: false, // 是否打开图片裁剪弹窗
-      logoDialogVisible: false, // 是否打开logo预览弹窗
-      clearFiles: true, // 是否清除当前上传的logo
-      logoUrl: '', // 预览的logo url
-      deskTopImageUrl: '', // 平台Logo url
-      mobileImageUrl: '', // 移动端Logo url
-      fileInfo: {}, // 上传数据 似乎没用。。
-      // 裁剪组件的基础配置option
-      option: {
-        img: '', // 裁剪图片的地址
-        info: false, // 裁剪框的大小信息
-        outputSize: 0.8, // 裁剪生成图片的质量
-        outputType: 'png', // 裁剪生成图片的格式 jpeg、png、webp
-        canScale: false, // 图片是否允许滚轮缩放
-        fixedBox: false, // 固定截图框大小 不允许改变
-        fixed: true, // 是否开启截图框宽高固定比例
-        fixedNumber: [1, 1], // 截图框的宽高比例
-        autoCrop: true, // 是否默认生成截图框
-        autoCropWidth: 180, // 默认生成截图框宽度 只有自动截图开启 宽度高度才生效
-        autoCropHeight: 180, // 默认生成截图框高度 只有自动截图开启 宽度高度才生效
-        full: false, // 是否输出原图比例的截图
-        canMoveBox: true, // 截图框能否拖动
-        original: false, // 上传图片按照原始比例渲染
-        centerBox: true, // 截图框是否被限制在图片里面
-        infoTrue: true, // true 为展示真实输出图片宽高 false 展示看到的截图框宽高
-        high: true,
-        size: 1
-      },
-      previews: {}, // 剪切实时预览数据
-      rules: {
-        customname: [
-          { required: true, message: '请输入租户名称（长度在 1 到 64 个字符）', trigger: 'blur' },
-          { required: true, message: '请输入租户名称（长度在 1 到 64 个字符）', trigger: 'change' },
-          { min: 1, max: 64, message: '长度在 1 到 64 个字符', trigger: 'blur' },
-          { min: 1, max: 64, message: '长度在 1 到 64 个字符', trigger: 'change' }
-        ],
-        desc: [
-          { required: true, message: '请输入租户描述（长度在 1 到 100 个字符）', trigger: 'blur' },
-          { required: true, message: '请输入租户描述（长度在 1 到 100 个字符）', trigger: 'change' },
-          { min: 1, max: 100, message: '长度在 1 到 100 个字符', trigger: 'blur' },
-          { min: 1, max: 100, message: '长度在 1 到 100 个字符', trigger: 'change' }
-        ],
-        userCount: [
-          { required: true, message: '请输入最大用户数（长度在 1 到 120 个字符）', trigger: 'blur' },
-          { required: true, message: '请输入最大用户数（长度在 1 到 120 个字符）', trigger: 'change' }
-        ],
-        customStatus: [
-          { required: true, message: '请选择租户状态', trigger: 'change' }
-        ],
-        text_extraction: [
-          { required: true, message: '请选择是否开通智能搜索', trigger: 'change' }
-        ],
-        uName: [
-          { required: true, validator: validateUName, trigger: 'blur' },
-          { required: true, validator: validateUName, trigger: 'change' },
-          { min: 2, max: 64, message: '长度在 2 到 64 个字符', trigger: 'blur' },
-          { min: 2, max: 64, message: '长度在 2 到 64 个字符', trigger: 'change' }
-        ],
-        uNickname: [
-          { required: true, message: '请输入管理员昵称（长度在 2 到 20 个字符）', trigger: 'blur' },
-          { required: true, message: '请输入管理员昵称（长度在 2 到 20 个字符）', trigger: 'change' },
-          { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' },
-          { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'change' }
-        ],
-        uPwd: [
-          { required: true, validator: validatePass, trigger: 'blur' },
-          { required: true, validator: validatePass, trigger: 'change' }
-        ]
-      }
+      dataIsChange: 0, // 计数器，据此判断表单是否已编辑
+      noLeaveprompt: false, // 表单提交后，设置为true，据此判断提交不再弹出离开提示
+      visible: false, // 弹出选择文件
+      visible2: false, // 弹出选择标签
+      visible3: false, // 弹出选择技能
+      addType: 'hand', // 默认手动添加
+      topic_type: '1', // 默认单选题
+      uploadOptionIndex: null, // 上传图片的选项index
+      currentLabels: [], // 当前要回显的标签
+      currentSkills: [], // 当前要回显的技能
+      topic1: { // 单选题
+        topic_type: '', // 题目类型 1单选，2多选，3判断
+        topic_content: '', // 题目
+        topic_level: 1, // 难度
+        topic_label: '', // 标签
+        topic_skill: '', // 技能
+        topic_resolve: '', // 试题解析
+        topic_score: 1, // 分值
+        topic_option: [ // 题目选项
+          {
+            option_content: '',
+            option_img: '',
+            correct_option: 2, // 1正确答案 2错误
+            option_id: null
+          }, {
+            option_content: '',
+            option_img: '',
+            correct_option: 2,
+            option_id: null
+          }
+        ], // 题目选项
+        topic_resource: '', // 选择的图片
+        topic_resource_id: '' // 主文件id
+      }, // 单题数据
+      saveSet: '', // 保存设置
+      radio1: '', // 单选题目选项
+      radio2: '', // 判断题目选项
+      check2: '' // 多选题目选项
     }
   },
-  watch: {
-    // 监听表单数据变化
-    form: {
-      handler(val) {
-        if (val) {
-          this.dataIsChange++
-        }
-      },
-      deep: true // 深层次监听
-    }
+  computed: {
+
+  },
+  created() {
+    this.topic1.topic_option[0].option_id = this.guid()
+    this.topic1.topic_option[1].option_id = this.guid()
+
+    // this.topic2.topic_option[0].option_id = this.guid()
+    // this.topic2.topic_option[1].option_id = this.guid()
+
+    // this.topic3.topic_option[0].option_id = this.guid()
+    // this.topic3.topic_option[1].option_id = this.guid()
+  },
+  mounted() {
+
   },
   methods: {
-    // 提交
-    onSubmit(formName) {
-      console.log(process.env.VUE_APP_BASE_API)
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          addTenant(this.form).then(response => {
-            this.$message.success('新增租户成功！')
-            this.noLeaveprompt = true
-            this.$router.push({ path: '/systemManage/tenantManage/detail', query: { _id: response.data.id }})
-          })
-        }
+    // 用于生成uuid
+    S4: function() {
+      return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1)
+    },
+    guid: function() {
+      return (this.S4() + this.S4() + '-' + this.S4() + '-' + this.S4() + '-' + this.S4() + '-' + this.S4() + this.S4() + this.S4())
+    },
+
+    // 切换手动添加与Excel导入离开前的逻辑
+    beforeLeaveTabs1(item) {
+
+    },
+    // 切换题型
+    beforeLeaveTabs2(item) {
+
+    },
+    // 切换手动添加与Excel导入
+    handleTabsClick1: function() {
+
+    },
+    // 切换题型
+    handleTabsClick2: function() {
+
+    },
+    // 题干添加图片
+    topicImg() {
+      this.visible = true
+    },
+    // 监听选择文件组件返回数据
+    checkedFile(val) {
+      this.topic1.topic_resource = val.fileUrl
+      this.topic1.topic_resource_id = val.mainFileId
+    },
+    // 监听选择文件组件返回数据
+    onvisible(val) {
+      this.visible = val.visible
+    },
+
+    // 删除题干图片
+    delTopicImg() {
+      this.$confirm('确定删除该图片吗？', '删除图片', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.topic1.topic_resource = ''
+        this.topic1.topic_resource_id = ''
+        this.$message.success('删除成功！')
+      }).catch(() => {
+
       })
     },
-    // 取消
-    cancel(formName) {
-      this.$router.push({ path: '/systemManage/tenantManage/list' })
-    },
+
     // 上传路径
     uploadUrl() {
       return process.env.VUE_APP_BASE_API + 'system/file/upload/'
     },
-    logoTypes(type) {
-      this.logoType = type
+
+    // 获取上传图片选项index
+    optionConcentIndex(index) {
+      this.uploadOptionIndex = index
     },
-    // 上传按钮   限制图片大小
-    changeUpload(file, fileList) {
+
+    // 上传选项图片之前
+    beforeImgUpload(file) {
       const suffixs = ['.png', '.jpg', '.gif', '.jepg', '.jpeg']
       const i = file.name.lastIndexOf('.')
       const suffix = file.name.slice(i)
       if (suffixs.indexOf(suffix) === -1) {
         this.$message.error('文件格式错误！')
-        if (this.logoType === 1) {
-          this.fileList1 = []
-        } else {
-          this.fileList2 = []
-        }
+        this.$refs.upload.clearFiles()
         return false
       }
       const isLt5M = file.size / 1024 / 1024 < 5
       if (!isLt5M) {
         this.$message.error('上传文件大小不能超过 5MB！')
-        if (this.logoType === 1) {
-          this.fileList1 = []
-        } else {
-          this.fileList2 = []
-        }
+        this.$refs.upload.clearFiles()
         return false
       }
-      this.fileName = file.name
-      // // 上传成功后将图片地址赋值给裁剪框显示图片
-      this.$nextTick(() => {
-        this.option.img = file.url
-        this.cropperDialogVisible = true
-      })
+      return true
     },
-    // 上传成功
-    handleSuccess(response, file, fileList) {
-      console.log(file)
+
+    // 成功上传选项图片
+    handleImgSuccess(res, file) {
+      debugger
+      this.topic1.topic_option[this.uploadOptionIndex].option_img = res.data.saveHttpPath
     },
-    // 上传失败
-    handleUploadError(response, file, fileList) {
-      this.$message.error('上传文件失败！')
-      if (this.logoType === 1) {
-        this.fileList1 = []
-      } else {
-        this.fileList2 = []
-      }
-    },
-    // logo删除前
-    beforeRemove(file, fileList) {
-      return this.$confirm('您确定要删除logo吗？', '删除图片', {
+
+    // 删除选项图片
+    delOptionImg(row) {
+      this.$confirm('确定删除该图片吗？', '删除图片', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
+      }).then(() => {
+        row.option_img = ''
+        this.$message.success('删除成功！')
+      }).catch(() => {
+
       })
     },
-    // 处理文件移除
-    handleRemove(file, fileList) {
-      console.log(file, fileList)
-      if (this.logoType === 1) {
-        this.form.pcLogoFileId = ''
-        this.form.pcLogoFileUrl = ''
-        $('.uploadDeskTopLogo .el-upload--picture-card').show()
-      } else {
-        this.form.mobileLogoFileId = ''
-        this.form.mobileLogoFileUrl = ''
-        $('.uploadMobileLogo .el-upload--picture-card').show()
+
+    // 题目选项单选
+    isTrueChange: function(index, option_id) {
+      this.topic1.topic_option.forEach(item => {
+        item.correct_option = 2
+      })
+      this.radio1 = option_id
+      this.topic1.topic_option[index].correct_option = 1
+      console.log(this.topic1.topic_option)
+    },
+
+    // 添加题目选项
+    addOption: function() {
+      if (this.topic1.topic_option.length === 20) {
+        this.$message.warning('选项不可以超过20条！')
+        return false
       }
-    },
-    // 处理预览
-    handlePreview(file) {
-      // 图片预览
-      this.logoUrl = file.url
-      this.logoDialogVisible = true
-    },
-    // 点击裁剪，这一步是可以拿到处理后的地址
-    finish() {
-      this.clearFiles = false
-      const formData = new FormData()
-      this.$refs.cropper.getCropBlob((data) => {
-        formData.append('thumbnailfile', data, this.fileName)
-        uploadFile(formData).then(response => {
-          this.$message.success('上传成功！')
-          if (this.logoType === 1) {
-            this.deskTopImageUrl = response.data.saveHttpPath
-            this.form.pcLogoFileUrl = response.data.saveHttpPath
-            this.form.pcLogoFileId = response.data.id
-            this.fileList1 = [{ name: response.data.originalFilename, url: response.data.saveHttpPath }]
-            $('.uploadDeskTopLogo .el-upload--picture-card').hide()
-          } else {
-            this.mobileImageUrl = response.data.saveHttpPath
-            this.form.mobileLogoFileUrl = response.data.saveHttpPath
-            this.form.mobileLogoFileId = response.data.id
-            this.fileList2 = [{ name: response.data.originalFilename, url: response.data.saveHttpPath }]
-            $('.uploadMobileLogo .el-upload--picture-card').hide()
-          }
-          this.fileInfo = {}
-          this.cropperDialogVisible = false
-        })
+      this.topic1.topic_option.push({
+        option_content: '',
+        option_img: '',
+        correct_option: 2,
+        option_id: this.guid()
       })
     },
-    // 关闭上传及裁剪
-    closeUpload() {
-      if (this.clearFiles) {
-        if (this.logoType === 1) {
-          this.$refs['uploadDeskTopLogo'].clearFiles()
-        } else {
-          this.$refs['uploadMobileLogo'].clearFiles()
-        }
-        this.cropperDialogVisible = false
-        this.clearFiles = true
+
+    // 删除当前题目选项
+    delTheOption: function(index) {
+      if (this.topic1.topic_option.length === 2) {
+        this.$message.warning('选项不得少于两项！')
+        return false
       }
-      this.clearFiles = true
-    },
-    // 实时预览函数
-    realTime(realTimeData) {
-      this.$refs.cropper.getCropData((data) => {
-        this.previews = realTimeData
-        this.previews.url = data
+      this.$confirm('确定删除该选项？', '删除选项', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.topic1.topic_option.splice(index, 1)
+        this.$message.success('删除成功！')
+      }).catch(() => {
+
       })
     },
-    // 图片加载情况
-    imgLoad(msg) {
-      console.log(msg)
+
+    // 添加标签
+    addLabels() {
+      this.visible2 = true
     },
-    // 校验最大用户数为正整数
-    intNum(val) {
-      this.form.userCount = validIntNum(val)
-    }
-  },
-  beforeRouteLeave(to, from, next) {
-    if (this.dataIsChange && !this.noLeaveprompt) { // 判断表单数据是否变化，以及提交后不进行此保存提示
-      setTimeout(() => { // 此处必须要加延迟执行，主要解决浏览器前进后退带来的闪现
-        this.$confirm('您的数据尚未保存，是否离开？', '离开页面', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          next()
-        }).catch(() => {
-          next(false)
-        })
-      }, 200)
-    } else {
-      next()
+    // 监听选择标签组件返回数据
+    getLabels(val) {
+      this.currentLabels = val
+    },
+    // 监听选择标签组件返回数据
+    onvisible2(val) {
+      this.visible2 = val.visible
+    },
+    // 删除标签
+    handleLabelDel(index) {
+      this.currentLabels.splice(index, 1)
+    },
+
+    // 添加技能
+    addSkills() {
+      this.visible3 = true
+    },
+    // 监听选择技能组件返回数据
+    getSkills(val) {
+      this.currentSkills = val
+    },
+    // 监听选择技能组件返回数据
+    onvisible3(val) {
+      this.visible3 = val.visible
+    },
+    // 删除技能
+    handleSkillDel(index) {
+      this.currentSkills.splice(index, 1)
+    },
+
+    addTopics() {
+
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  #btnGroup{
-    padding-left: 120px;
-  }
-  /deep/ .el-upload-dragger {
-     border: none;
-     width: auto;
-     height: auto;
-  }
-  [class^="el-icon-"], [class*=" el-icon-"]{
-    line-height: 60px!important;
-  }
-  .vueCropper {
-    text-align: left;
-  }
-  // 截图
-  .cropper-content {
-    .cropper {
-      width: calc(100% - 200px);
-      height: 340px;
+  @import "~@/styles/theme.scss";
+  #addTopicVue .submit{
+    margin: 10px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 99;
+
+    > /deep/ p, .addTopic {
       display: inline-block;
     }
+    > /deep/ p {
+      font-size: 14px;
+    }
   }
-  .show-preview {
-    float: right;
-    width: 140px;
+  /deep/ .addType>.el-tabs__header .el-tabs__item {
+    font-size: 16px!important;
+    font-weight: 700!important;
+  }
+  /deep/ .addType .el-tabs__nav-wrap:after {
+    height: 0!important;
+  }
+  /deep/ .addType>.el-tabs__header>.el-tabs__nav-wrap>.el-tabs__nav-scroll>.el-tabs__nav {
+    width: 180px;
+    margin: 0 auto;
+    float: none;
+  }
+  #addTopicVue .edit {
+    width: 60%;
+  }
+  #addTopicVue .preview {
+    width: calc(40% - 10px);
+    border-left: 8px solid #e2e6ed;
+    height: 100%;
+    min-height: 500px;
+    padding: 0 10px;
+    box-sizing: border-box;
+  }
+  .topicType /deep/ .el-tabs__item.is-top.is-active {
+    border-radius: 3px;
+    padding-bottom: 38px;
+    box-shadow: inset 0 0px 2px 2px $themeColor;
+  }
+  .topicName {
+    width: calc(100% - 160px);
+  }
+  .saveTopic {
+    margin: 0 auto;
+    text-align: center;
+    margin-left: calc(50% - 49px);
+  }
+  .img-group {
     display: inline-block;
   }
-  .previewImg {
-    width: 180px;
-    height: 180px;
+  .selectPic {
+    display: inline-block;
+    width: 80px;
+    height: 32px;
+    line-height: 32px;
+    cursor: pointer;
+    text-align: center;
+    margin-left: 6px;
+    border-radius: 3px;
+    color: #FFFFFF;
+    background-color: $themeColor;
+    border-color: $themeColor;
   }
-  .logoClass /deep/ .el-form-item__content {
-    line-height: 18px;
+  .selectPic:hover {
+    opacity: 0.8;
   }
-  /deep/ .el-upload-list li {
-    margin-bottom: 0;
+  .imgCover {
+    position: relative;
+    display: inline-block;
+    background-size: cover;
+    vertical-align: middle;
+    width: 40PX;
+    height: 30px;
+  }
+  .close {
+    position: absolute;
+    top: -17px;
+    right: -8px;
+    cursor: pointer;
+  }
+  .content {
+    line-height: 40px;
+    height: 40px;
+
+    > /deep/ .el-form-item__label, /deep/ .el-form-item__content {
+      height: 40px;
+      line-height: 40px;
+    }
+  }
+  .avatar {
+    width: 40px;
+    vertical-align: middle;
+  }
+  .closeOptionImg {
+    position: absolute;
+    top: 0;
+    right: -1px;
+    cursor: pointer;
+  }
+  .topicOption .radio /deep/ .el-radio__label {
+    display: none;
+  }
+  i {
+    cursor: pointer;
+  }
+  .tag {
+    display: inline-block;
+  }
+  /deep/ .el-tag {
+    margin-right: 10px;
+  }
+  /deep/ .el-tag .el-icon-close {
+    vertical-align: middle;
+    margin: 0;
+  }
+  /deep/ .el-tag .el-icon-close::before {
+    margin: 0;
+  }
+  .saveSet {
+    margin-left: 34px;
   }
 </style>

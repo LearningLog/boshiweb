@@ -43,6 +43,18 @@ export function getOneLabel(data) {
 export function label_add(data) {
   return request({
     url: '/evaluation/label/add',
+<<<<<<< HEAD
+=======
+    method: 'post',
+    data
+  })
+}
+
+// 获取标签列表，不分组
+export function labelAllList(data) {
+  return request({
+    url: '/evaluation/automatic/labelList',
+>>>>>>> 5b5dc1361defff7af6b31787bbbe7c7af7dd6591
     method: 'post',
     data
   })
