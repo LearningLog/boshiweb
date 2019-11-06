@@ -8,7 +8,7 @@
 import Layout from '@/layout/layout2'
 
 const systemSetting = {
-  path: '/systemSetting',
+  path: '/system-setting',
   component: Layout,
   redirect: 'noRedirect',
   name: 'systemSetting',
@@ -18,18 +18,18 @@ const systemSetting = {
   },
   children: [
     {
-      path: 'tenantSetting',
-      name: 'tenantSetting',
+      path: 'tenant-setting',
+      name: 'tenant-setting',
       component: () => import('@/views/system-setting/tenant-setting/index'),
-      redirect: '/systemSetting/tenantSetting/list',
-      meta: { title: '个性化设置', icon: '', activeMenu: '/systemSetting/tenantSetting' },
+      redirect: '/system-setting/tenant-setting/list',
+      meta: { title: '个性化设置', icon: '', activeMenu: '/system-setting/tenant-setting' },
       children: [
         {
           path: 'list',
-          name: 'tenantList',
+          name: 'tenant-list',
           hidden: true,
           component: () => import('@/views/system-setting/tenant-setting/child/list'),
-          meta: { title: '个性化设置', icon: '', activeMenu: '/systemSetting/tenantSetting' }
+          meta: { title: '个性化设置', icon: '', activeMenu: '/system-setting/tenant-setting' }
         }
       ]
     }
