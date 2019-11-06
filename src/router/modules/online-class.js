@@ -18,39 +18,39 @@ const onlineClass = {
   },
   children: [
     {
-      path: 'label-manage',
-      name: 'label-manage',
-      component: () => import('@/views/online-class/label-manage/index'),
-      redirect: '/online-class/label-manage/list',
-      meta: { title: '标签管理', icon: '', activeMenu: '/online-class/label-manage' },
+      path: 'chapter-manage',
+      name: 'chapter-manage',
+      component: () => import('@/views/online-class/chapter-manage/index'),
+      redirect: '/online-class/chapter-manage/list',
+      meta: { title: '标签管理', icon: '', activeMenu: '/online-class/chapter-manage' },
       children: [
         {
           path: 'add',
-          name: 'label-add',
+          name: 'chapter-add',
           hidden: true,
-          component: () => import('@/views/online-class/label-manage/child/add'),
-          meta: { title: '新增标签', icon: '', activeMenu: '/online-class/label-manage' }
+          component: () => import('@/views/online-class/chapter-manage/child/add'),
+          meta: { title: '新增标签', icon: '', activeMenu: '/online-class/chapter-manage' }
         },
         {
           path: 'edit',
-          name: 'label-edit',
+          name: 'chapter-edit',
           hidden: true,
-          component: () => import('@/views/online-class/label-manage/child/edit'),
-          meta: { title: '修改标签', icon: '', activeMenu: '/online-class/label-manage' }
+          component: () => import('@/views/online-class/chapter-manage/child/edit'),
+          meta: { title: '修改标签', icon: '', activeMenu: '/online-class/chapter-manage' }
         },
         {
           path: 'detail',
-          name: 'label-detail',
+          name: 'chapter-detail',
           hidden: true,
-          component: () => import('@/views/online-class/label-manage/child/detail'),
-          meta: { title: '标签详情', icon: '', activeMenu: '/online-class/label-manage' }
+          component: () => import('@/views/online-class/chapter-manage/child/detail'),
+          meta: { title: '标签详情', icon: '', activeMenu: '/online-class/chapter-manage' }
         },
         {
           path: 'list',
-          name: 'label-list',
+          name: 'chapter-list',
           hidden: true,
-          component: () => import('@/views/online-class/label-manage/child/list'),
-          meta: { title: '标签列表', icon: '', activeMenu: '/online-class/label-manage' }
+          component: () => import('@/views/online-class/chapter-manage/child/list'),
+          meta: { title: '标签列表', icon: '', activeMenu: '/online-class/chapter-manage' }
         },
       ]
     },
