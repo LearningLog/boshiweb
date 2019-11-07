@@ -45,7 +45,7 @@
       <el-table-column align="center" label="操作时间" min-width="130" show-overflow-tooltip prop="createTime" />
       <el-table-column align="center" label="发送人数" min-width="50" show-overflow-tooltip prop="successCount">
         <template slot-scope="scope">
-          <span class="pointer underline" @click="operateDetail(scope.row)">{{ scope.row.successCount }}</span>
+          <span class="pointer underline" @click="operateDetail(scope.row)">{{ scope.row.successCount + scope.row.errorCount}}</span>
           <!--<el-link type="primary" @click="operateDetail(scope.row)">{{ scope.row.successCount }}</el-link>-->
         </template>
       </el-table-column>
