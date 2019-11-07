@@ -4,7 +4,7 @@
       v-el-drag-dialog
       title="选择技能"
       :visible.sync="selectSkillsVisible"
-      width="60%"
+      width="1080px"
       @close="cancel"
     >
       <div id="topSearch">
@@ -169,6 +169,9 @@ export default {
 </script>
 
 <style scoped>
+  /deep/ .el-dialog__wrapper .el-dialog__body {
+    padding: 10px 20px 0 20px;
+  }
 #topSearch /deep/ .el-form {
   width: calc(100% - 128px);
   float: left;

@@ -143,6 +143,23 @@ export const asyncRoutes = [
   },
 
   {
+    path: '/operation-log',
+    component: Layout,
+    redirect: '/operation-log/list',
+    name: 'operation-log',
+    meta: { title: '操作日志', icon: 'iconcaozuorizhi' },
+    children: [
+      {
+        path: 'list',
+        name: 'operation-log-list',
+        hidden: true,
+        component: () => import('@/views/operation-log/list.vue'),
+        meta: { title: '操作日志列表', icon: '', activeMenu: '/operation-log' }
+      }
+    ]
+  },
+
+  {
     path: '/example',
     component: Layout,
     redirect: '/example/table',

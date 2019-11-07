@@ -111,16 +111,14 @@
           <span class="pointer">{{ scope.row.topic_label.join() }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="小组" min-width="100" prop="groupName" show-overflow-tooltip>
-      </el-table-column>
+      <el-table-column align="center" label="小组" min-width="100" prop="groupName" show-overflow-tooltip />
       <el-table-column align="center" label="技能" min-width="100" prop="createuser" show-overflow-tooltip>
         <template slot-scope="scope">
           <span class="pointer">{{ scope.row.topic_skill.join() }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="创建时间" min-width="130" prop="c_time" show-overflow-tooltip />
-      <el-table-column align="center" label="引用次数" min-width="80" prop="quote_count" show-overflow-tooltip>
-      </el-table-column>
+      <el-table-column align="center" label="引用次数" min-width="80" prop="quote_count" show-overflow-tooltip />
       <el-table-column class-name="status-col" label="操作" width="160" align="center" fixed="right">
         <template slot-scope="scope">
           <el-button size="mini" @click="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
@@ -203,7 +201,7 @@ export default {
     },
     // 获取技能list
     get_topic_skill_list() {
-      skillAllList({ }).then(res => {
+      skillAllList({}).then(res => {
         this.topic_skill = res.data
       })
     },
@@ -265,7 +263,7 @@ export default {
     // 新增
     add() {
       if (!this.listQuery.egroup) {
-        this.$message.warning('请先选择分许信息再尝试添加试题！')
+        this.$message.warning('请先选择分组信息再尝试添加试题！')
         return false
       }
       this.$router.push({ path: '/evaluating-manage/question-bank-manage/add', query: { egroup: this.listQuery.egroup, selectCompanyId: this.group.groupId }})

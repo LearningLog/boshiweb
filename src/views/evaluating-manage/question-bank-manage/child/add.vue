@@ -939,6 +939,49 @@ export default {
       }
     },
 
+    topicEdit(index){
+      var topic=this.topics[index];
+      this.topic_type=topic.topic_type+'';
+      switch (this.topic_type){
+        case '1':
+          this.topic1=$.extend(true, {}, topic);
+          $.each(this.topic1.topic_option, function (index, item) {
+            if(item.correct_option==1){
+              this.radio1=item.option_id;
+            }
+          })
+          break;
+        case '2':
+          this.topic2=$.extend(true, {}, topic);
+          break;
+        case '3':
+          this.topic3=$.extend(true, {}, topic);
+          $.each(this.topic3.topic_option, function (index, item) {
+            if(item.correct_option==1){
+              this.radio2=item.option_id;
+            }
+          })
+          break;
+      }
+    },
+
+
+    // 删除试题
+    delTopic(index) {
+      this.$confirm('确定删除该试题吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.topics.splice(index, 1);
+        this.$message.success('删除成功');
+      }).catch(() => {
+
+      });
+    },
+
+    // 编辑试题
+
     // 清空所有topic数据
     clearAllTopic(topic_type) {
       this.topic1 = { // 单选题
