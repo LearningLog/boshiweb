@@ -39,27 +39,26 @@
         fit
         highlight-current-row
       >
-        <el-table-column align="center" label="消息内容" min-width="140" show-overflow-tooltip prop="content" />
-        <el-table-column label="操作类型" min-width="110" align="center" show-overflow-tooltip prop="noticeTypeDesc" />
-        <el-table-column class-name="status-col" label="操作模块" min-width="70" align="center" show-overflow-tooltip prop="moduleName" />
+        <el-table-column align="center" label="消息内容" min-width="250" show-overflow-tooltip prop="content" />
+        <el-table-column label="操作类型" min-width="90" align="center" show-overflow-tooltip prop="noticeTypeDesc" />
+        <el-table-column class-name="status-col" label="操作模块" min-width="60" align="center" show-overflow-tooltip prop="moduleName" />
         <el-table-column align="center" label="操作人" min-width="70" show-overflow-tooltip prop="userNickName" />
 
-        <el-table-column align="center" label="小组" min-width="70" show-overflow-tooltip prop="groupNameDesc" />
+        <el-table-column align="center" label="小组" min-width="100" show-overflow-tooltip prop="groupNameDesc" />
 
-        <el-table-column align="center" label="操作时间" min-width="100" show-overflow-tooltip prop="createTime" />
-        <el-table-column align="center" label="发送人数" min-width="100" show-overflow-tooltip prop="successCount">
+        <el-table-column align="center" label="操作时间" min-width="130" show-overflow-tooltip prop="createTime" />
+        <el-table-column align="center" label="发送人数" min-width="50" show-overflow-tooltip prop="successCount">
           <template slot-scope="scope">
-            <span class="pointer" @click="operateDetail(scope.row)">{{ scope.row.successCount }}</span>
-
+            <span class="pointer underline" @click="operateDetail(scope.row)">{{ scope.row.successCount }}</span>
           </template>
         </el-table-column>
       </el-table>
       <pagination v-show="total>0" :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="get_list" />
-      <el-dialog v-el-drag-dialog title="操作人详情" :visible.sync="dialogTableVisible">
+      <el-dialog v-el-drag-dialog title="操作人详情" :visible.sync="dialogTableVisible" @close="closeDetail">
         <div id="topSearch2">
           <el-form ref="form" :model="listQuery2" label-width="100px">
             <el-form-item label="状态">
-              <el-select v-model="listQuery2.smsStatus" placeholder="" clearable filterable @change="getDetailList">
+              <el-select v-model="listQuery2.smsStatus" placeholder="请选择状态" clearable filterable @change="getDetailList">
                 <el-option
                   v-for="item in smsStatusList"
                   :key="item.value"
@@ -68,14 +67,19 @@
                 />
               </el-select>
             </el-form-item>
-
           </el-form>
-
         </div>
-        <el-table :data="list2">
-          <el-table-column property="userNickName" label="接收人" width="150" />
-          <el-table-column property="groupNameDesc" label="小组" width="200" />
-          <el-table-column property="smsStatusDesc" label="短信发送状态" />
+        <el-table
+          v-loading="listLoading"
+          :data="list2"
+          element-loading-text="Loading"
+          border
+          fit
+          highlight-current-row
+        >
+          <el-table-column prop="userNickName" label="接收人" min-width="90" />
+          <el-table-column prop="groupNameDesc" label="小组" min-width="120" />
+          <el-table-column prop="smsStatusDesc" label="短信发送状态" min-width="50" />
         </el-table>
         <div class="clearfix">
           <pagination
@@ -88,7 +92,8 @@
         </div>
       </el-dialog>
     </div>
-  </div></template>
+  </div>
+</template>
 
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -183,6 +188,7 @@ export default {
     },
     // 获取操作人详情列表
     getDetailList() {
+      this.listLoading = true
       getNoticeDetail(this.listQuery2).then(response => {
         this.list2 = response.data.page.list
         this.total2 = response.data.page.totalCount
@@ -194,6 +200,9 @@ export default {
     tenantsGroupsRolesVal(val) {
       this.listQuery.selectGroupId = val.companyIds
       this.listQuery.egroup = val.egroupId
+    },
+    closeDetail() {
+      this.listQuery2.smsStatus = ''
     }
   }
 }

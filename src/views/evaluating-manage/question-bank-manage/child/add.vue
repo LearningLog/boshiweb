@@ -1625,8 +1625,8 @@ export default {
       var topics2 = []
       $.merge(topics2, this.topics)
 
-      if (topics2.length == 0) {
-        this.$message.warning('请添加试题')
+      if (topics2.length === 0) {
+        this.$message.warning('请添加试题！')
         return false
       }
 

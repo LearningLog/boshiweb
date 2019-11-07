@@ -33,7 +33,10 @@
 .pointer {
     cursor: pointer;
 }
-//回车换行（textarea）
+.underline {
+    text-decoration: underline;
+}
+    //回车换行（textarea）
 .pre-wrap {
     white-space: pre-wrap;
 }
