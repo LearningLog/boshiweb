@@ -1,97 +1,93 @@
 <template>
   <div class="app-container">
-    <div class="list-box">
-      <div id="topSearch">
-        <el-input v-model="listQuery.content" placeholder="请输入操作日志信息" clearable @keyup.enter.native="topSearch">
-          <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
-        </el-input>
-        <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">高级搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
-        <transition name="fade-advanced-search">
-          <el-row v-show="popoverVisible">
-            <el-card id="advancedSearchArea" shadow="never">
-              <el-form ref="form" :model="listQuery" label-width="100px">
-                <tenants-groups-roles :is-render-role="false" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" />
-                <el-form-item label="模块名称">
-                  <el-select v-model="listQuery.egroup" placeholder="请选择模块" clearable filterable>
-                    <el-option
-                      v-for="item in moduleList"
-                      :key="item.value"
-                      :label="item.name"
-                      :value="item.value"
-                    />
-                  </el-select>
-                </el-form-item>
-              </el-form>
-              <div id="searchPopoverBtn">
-                <el-button type="primary" @click="topSearch">搜索</el-button>
-                <el-button type="primary" plain @click="reset">重置</el-button>
-              </div>
-            </el-card>
-          </el-row>
-        </transition>
+    <div id="topSearch">
+      <el-input v-model="listQuery.content" placeholder="请输入操作日志信息" clearable @keyup.enter.native="topSearch">
+        <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
+      </el-input>
+      <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">高级搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
+      <transition name="fade-advanced-search">
+        <el-row v-show="popoverVisible">
+          <el-card id="advancedSearchArea" shadow="never">
+            <el-form ref="form" :model="listQuery" label-width="100px">
+              <tenants-groups-roles :is-render-role="false" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" />
+              <el-form-item label="模块名称">
+                <el-select v-model="listQuery.egroup" placeholder="请选择模块" clearable filterable>
+                  <el-option
+                    v-for="item in moduleList"
+                    :key="item.value"
+                    :label="item.name"
+                    :value="item.value"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-form>
+            <div id="searchPopoverBtn">
+              <el-button type="primary" @click="topSearch">搜索</el-button>
+              <el-button type="primary" plain @click="reset">重置</el-button>
+            </div>
+          </el-card>
+        </el-row>
+      </transition>
+    </div>
+    <el-table
+      v-loading="listLoading"
+      :data="list"
+      element-loading-text="Loading"
+      border
+      fit
+      highlight-current-row
+    >
+      <el-table-column align="center" label="消息内容" min-width="250" show-overflow-tooltip prop="content" />
+      <el-table-column label="操作类型" min-width="90" align="center" show-overflow-tooltip prop="noticeTypeDesc" />
+      <el-table-column class-name="status-col" label="操作模块" min-width="60" align="center" show-overflow-tooltip prop="moduleName" />
+      <el-table-column align="center" label="操作人" min-width="70" show-overflow-tooltip prop="userNickName" />
+      <el-table-column align="center" label="小组" min-width="100" show-overflow-tooltip prop="groupNameDesc" />
+      <el-table-column align="center" label="操作时间" min-width="130" show-overflow-tooltip prop="createTime" />
+      <el-table-column align="center" label="发送人数" min-width="50" show-overflow-tooltip prop="successCount">
+        <template slot-scope="scope">
+          <span class="pointer underline" @click="operateDetail(scope.row)">{{ scope.row.successCount }}</span>
+          <!--<el-link type="primary" @click="operateDetail(scope.row)">{{ scope.row.successCount }}</el-link>-->
+        </template>
+      </el-table-column>
+    </el-table>
+    <pagination v-show="total>0" :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="get_list" />
+    <el-dialog v-el-drag-dialog title="操作人详情" :visible.sync="dialogTableVisible" @close="closeDetail">
+      <div id="topSearch2">
+        <el-form ref="form" :model="listQuery2" label-width="100px">
+          <el-form-item label="状态">
+            <el-select v-model="listQuery2.smsStatus" placeholder="请选择状态" clearable filterable @change="getDetailList">
+              <el-option
+                v-for="item in smsStatusList"
+                :key="item.value"
+                :label="item.name"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+        </el-form>
       </div>
-
       <el-table
         v-loading="listLoading"
-        :data="list"
+        :data="list2"
         element-loading-text="Loading"
         border
         fit
         highlight-current-row
       >
-        <el-table-column align="center" label="消息内容" min-width="250" show-overflow-tooltip prop="content" />
-        <el-table-column label="操作类型" min-width="90" align="center" show-overflow-tooltip prop="noticeTypeDesc" />
-        <el-table-column class-name="status-col" label="操作模块" min-width="60" align="center" show-overflow-tooltip prop="moduleName" />
-        <el-table-column align="center" label="操作人" min-width="70" show-overflow-tooltip prop="userNickName" />
-
-        <el-table-column align="center" label="小组" min-width="100" show-overflow-tooltip prop="groupNameDesc" />
-
-        <el-table-column align="center" label="操作时间" min-width="130" show-overflow-tooltip prop="createTime" />
-        <el-table-column align="center" label="发送人数" min-width="50" show-overflow-tooltip prop="successCount">
-          <template slot-scope="scope">
-            <span class="pointer underline" @click="operateDetail(scope.row)">{{ scope.row.successCount }}</span>
-          </template>
-        </el-table-column>
+        <el-table-column prop="userNickName" label="接收人" min-width="90" />
+        <el-table-column prop="groupNameDesc" label="小组" min-width="120" />
+        <el-table-column prop="smsStatusDesc" label="短信发送状态" min-width="50" />
       </el-table>
-      <pagination v-show="total>0" :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="get_list" />
-      <el-dialog v-el-drag-dialog title="操作人详情" :visible.sync="dialogTableVisible" @close="closeDetail">
-        <div id="topSearch2">
-          <el-form ref="form" :model="listQuery2" label-width="100px">
-            <el-form-item label="状态">
-              <el-select v-model="listQuery2.smsStatus" placeholder="请选择状态" clearable filterable @change="getDetailList">
-                <el-option
-                  v-for="item in smsStatusList"
-                  :key="item.value"
-                  :label="item.name"
-                  :value="item.value"
-                />
-              </el-select>
-            </el-form-item>
-          </el-form>
-        </div>
-        <el-table
-          v-loading="listLoading"
-          :data="list2"
-          element-loading-text="Loading"
-          border
-          fit
-          highlight-current-row
-        >
-          <el-table-column prop="userNickName" label="接收人" min-width="90" />
-          <el-table-column prop="groupNameDesc" label="小组" min-width="120" />
-          <el-table-column prop="smsStatusDesc" label="短信发送状态" min-width="50" />
-        </el-table>
-        <div class="clearfix">
-          <pagination
-            v-show="total2 > 0"
-            :total="total2"
-            :page.sync="listQuery2.currentPage"
-            :limit.sync="listQuery2.pageSize"
-            @pagination="getDetailList"
-          />
-        </div>
-      </el-dialog>
-    </div>
+      <div class="clearfix">
+        <pagination
+          v-show="total2 > 0"
+          :total="total2"
+          :page.sync="listQuery2.currentPage"
+          :limit.sync="listQuery2.pageSize"
+          @pagination="getDetailList"
+        />
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -117,7 +113,7 @@ export default {
         noticeType: null, // 操作模块
         selectCompanyId: null, // 租户id
         module: null, // 模块标识
-        egroup: []// 小组id
+        egroup: [] // 小组id
       },
       total2: 0,
       listQuery2: { // 查询条件
@@ -134,7 +130,6 @@ export default {
       moduleList: [{ value: 'examination_exam', name: '考试管理' }, { value: 'stream_train_classroom', name: '直播课堂' }], // 模块名称列表
       listLoading: true, // 表格是否开启遮罩
       dialogTableVisible: false
-
     }
   },
   created() {
