@@ -3,7 +3,7 @@
     <el-dialog
       v-el-drag-dialog
       title="选择文件"
-      width="38%"
+      width="46%"
       :visible.sync="selectFilVisible"
       @close="cancel"
     >
@@ -35,7 +35,7 @@
         </li>
       </ul>
       <div class="clearfix">
-        <pagination v-show="total>0" :page-sizes="[10, 24]" :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="getFileList" />
+        <pagination v-show="total>0" :page-sizes="[10]" :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="getFileList" />
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="saveFile">确定</el-button>
@@ -70,7 +70,7 @@ export default {
       fileName: '', // 文件名称
       listQuery: {
         currentPage: 1,
-        pageSize: 24,
+        pageSize: 10,
         fileName: '',
         fileTypeList: this.fileTypeList || [],
         fileUseList: ['preview_pic', 'preview_file'],
@@ -120,12 +120,15 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 	.searchFile {
 		margin-bottom: 16px;
 	}
   .selectFile {
     display: inline-block;
+  }
+  /deep/ .el-dialog__wrapper .el-dialog__body {
+     padding: 10px 20px;
   }
 	.itemFile {
 		display: inline-block;

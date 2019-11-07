@@ -265,7 +265,7 @@ export default {
     // 新增
     add() {
       if (!this.listQuery.egroup) {
-        this.$message.warning('请先选择分许信息再尝试添加试题！')
+        this.$message.warning('请先选择分组信息再尝试添加试题！')
         return false
       }
       this.$router.push({ path: '/evaluating-manage/question-bank-manage/add', query: { egroup: this.listQuery.egroup, selectCompanyId: this.group.groupId }})

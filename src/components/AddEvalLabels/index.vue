@@ -4,7 +4,7 @@
       v-el-drag-dialog
       title="选择标签"
       :visible.sync="selectLabelsVisible"
-      width="60%"
+      width="1080px"
       @close="cancel"
     >
       <div id="topSearch">
@@ -21,7 +21,7 @@
               @keyup.enter.native="get_list"
             />
           </el-form-item>
-          <el-form-item label="创建时间">
+          <el-form-item label="创建时间" class="time_range">
             <el-date-picker
               v-model="time_range"
               type="daterange"
@@ -91,6 +91,7 @@
         <pagination
           v-show="total > 0"
           :total="total"
+          :page-sizes="[10]"
           :page.sync="listQuery.currentPage"
           :limit.sync="listQuery.pageSize"
           @pagination="get_list"
@@ -203,6 +204,9 @@ export default {
 </script>
 
 <style scoped>
+  /deep/ .el-dialog__wrapper .el-dialog__body {
+    padding: 10px 20px 0 20px;
+  }
 #topSearch /deep/ .el-form {
   width: calc(100% - 128px);
   float: left;
