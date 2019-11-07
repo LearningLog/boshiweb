@@ -97,7 +97,7 @@ export default {
           label_add(this.form).then(response => {
             this.$message.success('添加标签成功！')
             this.noLeaveprompt = true
-            this.$router.push({ path: '/online-class/label-manage/list'})
+            this.$router.push({ path: '/online-class/chapter-manage/list'})
           })
         }
       })
@@ -105,7 +105,7 @@ export default {
 
     // 取消
     cancel(formName) {
-      this.$router.push({ path: '/online-class/label-manage/list' })
+      this.$router.push({ path: '/online-class/chapter-manage/list' })
     }
   },
   beforeRouteLeave(to, from, next) {

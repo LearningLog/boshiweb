@@ -10,10 +10,10 @@
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
               <el-form-item label="标签名称">
-                <el-input v-model="listQuery.lname" placeholder="请输入标签名称" clearable @keyup.enter.native="topSearch" />
+                <el-input v-model="listQuery.labels[0]" placeholder="请输入标签名称" clearable @keyup.enter.native="topSearch" />
               </el-form-item>
               <el-form-item label="创建人">
-                <el-input v-model="listQuery.createUser" placeholder="请输入创建人" clearable @keyup.enter.native="topSearch" />
+                <el-input v-model="listQuery.username" placeholder="请输入创建人" clearable @keyup.enter.native="topSearch" />
               </el-form-item>
               <el-form-item label="创建时间">
                 <el-date-picker
@@ -29,7 +29,7 @@
                 <el-input v-model="listQuery.teacher" placeholder="请输入讲师" clearable @keyup.enter.native="topSearch" />
               </el-form-item>
               <el-form-item label="所属小组">
-              <el-select v-model="listQuery.egroup" placeholder="请选择所属租户" clearable filterable>
+              <el-select v-model="listQuery.egroup" placeholder="请选择所属小组" clearable filterable>
                 <el-option
                   v-for="item in group_list"
                   :key="item.inc"
@@ -65,15 +65,19 @@
         width="50"
         fixed
       />
-      <el-table-column align="center" label="信息" min-width="250">
+      <el-table-column align="center" label="课堂封面" min-width="220">
         <template slot-scope="scope">
           <img v-if="scope.row.cover_pic" class="logoImg" :src="scope.row.cover_pic" alt="">
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="课堂名称" min-width="100">
+        <template slot-scope="scope">
           <span class="pointer" @click="detail(scope.row)">{{ scope.row.cname }}</span>
         </template>
       </el-table-column>
       <el-table-column class-name="status-col" label="开始时间" min-width="150" align="center" prop="s_time" />
       <el-table-column class-name="status-col" label="发布小组" min-width="120" align="center" prop="groupName" />
-      <el-table-column class-name="status-col" label="标签" min-width="100" align="center" prop="customSystemName" />
+      <el-table-column class-name="status-col" label="标签" min-width="100" align="center" prop="labels" />
       <el-table-column align="center" label="创建人" min-width="100" prop="username" />
       <el-table-column align="center" label="创建时间" min-width="150" prop="c_time" />
       <el-table-column class-name="status-col" label="操作" width="220" align="center" fixed="right">
@@ -114,8 +118,9 @@ export default {
         currentPage: 1, // 当前页
         pageSize: 10, // 当前页请求条数
         cname: '', // 课堂名称
-        createUser: null, // 创建人
-        teacher:'',//讲师
+        username: '', // 创建人
+        labels: [],//标签
+        teacher: '',//讲师
         createTimebegin: '', // 开始时间
         createTimeend: '', // 结束时间
         egroup: '', // 所属小组
@@ -247,14 +252,9 @@ export default {
   img.logoImg {
     width: 120px;
     height: auto;
-    min-height: 70px;
-    float: left;
   }
   .el-table /deep/ .el-table__body tr {
     height: 90px!important;
   }
-  span.pointer{
-    float: left;
-    margin-left: 15px;
-  }
+
 </style>

@@ -24,6 +24,29 @@
             placeholder="选择课程开始时间">
           </el-date-picker>
         </el-form-item>
+        <el-form-item class="required content" label="题目内容">
+          <el-input v-model="topic1.topic_content" class="topicName" placeholder="请输入题目" clearable />
+          <div v-show="topic1.topic_resource" class="img-group">
+            <div class="imgCover" :style="{backgroundImage:'url(' + topic1.topic_resource + ')'}"> <i class="close iconfont iconfalse-circle" @click="delTopicImg" /></div>
+          </div>
+          <div class="selectPic" @click="topicImg">添加图片</div>
+        </el-form-item>
+        <el-form-item label="添加标签" class="addLabel">
+          <div v-if="currentLabels.length" class="tag">
+            <el-tag
+              v-for="(tag, index) in currentLabels"
+              :key="tag.linc"
+              closable
+              size="medium"
+              :disable-transitions="false"
+              type="success"
+              @close="handleLabelDel(index)"
+            >
+              {{ tag.lname }}
+            </el-tag>
+          </div>
+          <i class="el-icon-circle-plus-outline" @click="addLabels" />
+        </el-form-item>
       </el-form>
       <div class="step">
         <h5>播放设置：</h5>
@@ -67,6 +90,14 @@
             <i class="el-icon-plus avatar-uploader-icon" />
           </el-upload>
         </el-form-item>
+        <el-form-item label="课程简介">
+          <el-input
+            type="textarea"
+            :rows="2"
+            placeholder="请输入课程简介" 
+            v-model="form.brief">
+          </el-input>
+        </el-form-item>
       </el-form>
     </div>
 
@@ -76,15 +107,33 @@
         <el-button style="margin-top: 12px;float:right" @click="next">下一步</el-button>
         <el-button style="margin-top: 12px;float:right;margin-right:20px" @click="pre">上一步</el-button>
       </div>
-      <el-form ref="form" class="form" :model="form" :rules="rules" label-width="120px" :status-icon="true">
-      <el-form-item label="租户状态" prop="customStatus">
-        <el-radio-group v-model="form.customStatus">
-          <el-radio :label="1">生效</el-radio>
-          <el-radio :label="0">失效</el-radio>
-        </el-radio-group>
-      </el-form-item>
+      <el-form ref="form" class="form" :model="form" :rules="rules" :status-icon="true" label-width="120px">
+        <el-form-item label="所属租户" prop="GroupId">
+          <el-select v-model="form.selectCompanyId" placeholder="请选择所属租户" @change="changeCompany" clearable filterable>
+            <el-option
+              v-for="item in custom_list"
+              :key="item._id"
+              :label="item.customname"
+              :value="item._id"
+            />
+          </el-select>
+        </el-form-item>
+
+        <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
+        <div style="margin: 15px 0;"></div>
+        <el-checkbox-group v-model="checkedGroupId"  @change="handleCheckedCitiesChange">
+          <el-checkbox style="margin: 15px 0;display:block" v-for="item in groupList" :label="item" :key="item">{{item}}</el-checkbox>
+        </el-checkbox-group>
       </el-form>
+     
     </div>
+
+
+
+
+
+
+
     <div class="info" v-if="active==3">
       <div class="step">
         <h5>课程通知：</h5>
@@ -98,6 +147,29 @@
             <el-radio :label="0">关闭</el-radio>
           </el-radio-group>
         </el-form-item>
+
+        <el-form>
+          <el-form-item label="短信通知设置"></el-form-item>
+          <el-checkbox-group v-model="checkList">
+            <el-checkbox style="margin: 15px 0;display:block" label="课程创建后立即推送"></el-checkbox>
+            <el-checkbox style="margin: 15px 0;display:block" label="课程开始前推送"></el-checkbox>
+          </el-checkbox-group>
+          <el-form-item label="通知人员"></el-form-item>
+
+          <el-checkbox  :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
+          <div style="margin: 15px 0;"></div>
+          <el-checkbox-group  v-model="checkedGroupId" :value="groupId" @change="handleCheckedCitiesChange">
+            <el-checkbox  style="margin: 15px 0;display:block" v-for="item in groupList" :label="item" :key="item">{{item}}</el-checkbox>
+          </el-checkbox-group>
+
+          <!-- <el-checkbox style="float:right;" :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
+          <div style="margin: 15px 0;"></div>
+          <el-checkbox-group v-model="checkedGroupId" :value="groupId" @change="handleCheckedCitiesChange">
+            <el-checkbox style="margin: 15px 0;display:block" v-for="item in groupList" :label="item" :key="item">{{item}}</el-checkbox>
+          </el-checkbox-group> -->
+        </el-form>
+        
+
       </el-form>
     </div>
 
@@ -147,6 +219,9 @@
     <el-dialog v-el-drag-dialog title="图片预览" width="38%" :visible.sync="logoDialogVisible">
       <img width="100%" :src="logoUrl" alt="">
     </el-dialog>
+
+    <select-file :visible.sync="visible" :file-type-list="['pic']" @checkedFile="checkedFile" @visible="onvisible" />
+    <add-labels :visible2.sync="visible2" :current-labels.sync="currentLabels" @addLabels="getLabels" @visible2="onvisible2" />
   </div>
 </template>
 
@@ -157,10 +232,16 @@ import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import { chapetr_add } from '@/api/onlineclass-direct-manage.js'
 import { uploadFile } from '@/api/uploadFile'
 import { getToken } from '@/utils/auth'
+import { getCustomManageList,} from '@/api/systemManage-roleManage'
+import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
 const $ = window.$
+import SelectFile from '@/components/SelectFile'
+import AddLabels from '@/components/AddEvalLabels'
 
 export default {
   components: {
+    SelectFile,//添加图片
+    AddLabels,//添加标签
     VueCropper // 图片裁剪组件
   },
   directives: { elDragDialog },
@@ -187,21 +268,43 @@ export default {
     }
     return {
       active: 1,
+      visible: false, // 弹出选择文件
+      visible2: false, // 弹出选择标签
       dataIsChange: 0, // 计数器，据此判断表单是否已编辑
       noLeaveprompt: false, // 表单提交后，设置为true，据此判断提交不再弹出离开提示
+      checkList: ['课程创建后立即推送','课程开始前推送'],
+
+      checkAll: false,
+      checkedGroupId: [],
+      group_list: [],// 所属小组list
+      groupList: [],
+      checkedId: [],
+      groupId: [],
+      isIndeterminate: true,
+
+      role_list: [],// 所属小组list
+
       form: { // 表单数据
         cname: '', // 课堂名称
         teacher: '',//主讲老师
-        desc: '', // 描述
-        userCount: '', // 最大用户数量
+        brief: '',//课程简介
         live_count: 1, // 直播源
         can_discuss: 1, //评论控制
         Status:1,//课程控制
         cover_pic_id: '', // 课程封面 id
         cover_pic: '', // 课程封面 url
-        s_time:''//开始时间
+        s_time:'',//开始时间
+        selectCompanyId: ''//所属租户ID
       },
-      
+      custom_list: [], // 所属租户list
+      topic1: { //课程文件
+        topic_content: '', // 课程名称 
+        topic_label: '', // 标签
+        currentLabels: [], // 标签obj
+        topic_resource: '', // 选择的图片
+        topic_resource_id: '' // 主文件id
+      }, 
+      currentLabels: [], // 标签obj
       loading: false, // 防止重复提交
       headers: {
         Authorization: getToken() // 图片上传 header
@@ -272,6 +375,10 @@ export default {
       deep: true // 深层次监听
     }
   },
+  created() {
+    this.getCustomManageList()
+    
+  },
   methods: {
     //下一步
     next() {
@@ -281,6 +388,89 @@ export default {
     pre() {
       if (this.active-- < 2) this.active = 1;
     },
+    handleCheckAllChange(val) {
+      this.checkedGroupId = val ? this.groupList : [];
+      this.checkedId = val ? this.groupId : [];
+      this.isIndeterminate = false;
+    },
+    
+    handleCheckedCitiesChange(value) {
+      let checkedCount = value.length;
+      this.checkAll = checkedCount === this.groupList.length;
+      this.isIndeterminate = checkedCount > 0 && checkedCount < this.groupList.length;
+      console.log(this.checkedGroupId,this.checkedId )
+    },
+    // 获取所属租户list
+    getCustomManageList() {
+      getCustomManageList().then(res => {
+        this.custom_list = res.data
+      })
+    },
+    // 获取所有小组
+    getEgroups() {
+      getUserEgroupInfo({ selectCompanyId: this.selectCompanyId }).then(response => {
+        this.group_list = response.data.egroupInfo
+        this.group_list.forEach(el=>{
+            this.groupList.push(el.groupName);
+            this.groupId.push(el.inc);
+            this.checkedGroupId.push(el.groupName);
+            this.checkedId.push(el.inc)
+        })
+        console.log(this.checkedId)
+          
+      })
+    },
+    // 更改所属租户
+    changeCompany(val) {
+      this.selectCompanyId = val
+      this.getEgroups()
+    },
+
+    // 题干添加图片
+    topicImg() {
+      this.visible = true
+    },
+    // 监听选择文件组件返回数据
+    checkedFile(val) {
+      this[this.topic0].topic_resource = val.fileUrl
+      this[this.topic0].topic_resource_id = val.mainFileId
+    },
+    // 监听选择文件组件返回数据
+    onvisible(val) {
+      this.visible = val.visible
+    },
+    // 删除题干图片
+    delTopicImg() {
+      this.$confirm('确定删除该图片吗？', '删除图片', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this[this.topic0].topic_resource = ''
+        this[this.topic0].topic_resource_id = ''
+        this.$message.success('删除成功！')
+      }).catch(() => {
+
+      })
+    },
+
+     // 添加标签
+    addLabels() {
+      this.visible2 = true
+    },
+    // 监听选择标签组件返回数据
+    getLabels(val) {
+      this.currentLabels = val
+    },
+    // 监听选择标签组件返回数据
+    onvisible2(val) {
+      this.visible2 = val.visible
+    },
+    // 删除标签
+    handleLabelDel(index) {
+      this.currentLabels.splice(index, 1)
+    },
+
     // 提交
     onSubmit(formName) {
       console.log(process.env.VUE_APP_BASE_API)
@@ -432,6 +622,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "~@/styles/theme.scss";
   #btnGroup{
     padding-left: 120px;
   }
@@ -478,4 +669,42 @@ export default {
   .step h5{
     float: left;
   }
+
+  .selectPic {
+    display: inline-block;
+    width: 80px;
+    height: 32px;
+    line-height: 32px;
+    cursor: pointer;
+    text-align: center;
+    margin-left: 6px;
+    border-radius: 3px;
+    color: #FFFFFF;
+    background-color: $themeColor;
+    border-color: $themeColor;
+  }
+  .selectPic:hover {
+    opacity: 0.8;
+  }
+  .topicName {
+    width: calc(100% - 160px);
+  }
+ 
+
+  .tag {
+    display: inline-block;
+  }
+  // /deep/ .el-tag {
+  //   margin-right: 10px;
+  // }
+  // /deep/ .el-tag .el-icon-close {
+  //   vertical-align: middle;
+  //   margin: 0;
+  // }
+  // /deep/ .el-tag .el-icon-close::before {
+  //   margin: 0;
+  // }
+  [class^="el-icon-"][data-v-2774271e], [class*=" el-icon-"][data-v-2774271e] {
+    line-height: 30px !important;
+}
 </style>

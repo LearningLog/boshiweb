@@ -15,7 +15,7 @@ export function getLabelList(data) {
     data
   })
 }
-// 修改
+// 修改标签
 export function label_edit(data) {
   return request({
     url: '/cr/label/update',
@@ -23,7 +23,7 @@ export function label_edit(data) {
     data
   })
 }
-// 删除
+// 删除标签
 export function label_delete(data) {
   return request({
     url: '/cr/label/delete',
@@ -31,7 +31,7 @@ export function label_delete(data) {
     data
   })
 }
-// 单个分组详情
+// 单个标签详情
 export function getOneLabel(data) {
   return request({
     url: '/cr/label/findById',
