@@ -49,7 +49,7 @@ export default {
     },
     // 确定
     confirm() {
-      this.$router.push({ path: '/online-class/label-manage/list' })
+      this.$router.push({ path: '/online-class/chapter-manage/list' })
     }
   }
 }

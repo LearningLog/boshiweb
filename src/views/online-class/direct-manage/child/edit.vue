@@ -67,10 +67,19 @@
             <i class="el-icon-plus avatar-uploader-icon" />
           </el-upload>
         </el-form-item>
+        <el-form-item label="课程简介">
+          <el-input
+            type="textarea"
+            :rows="2"
+            
+            v-model="form.brief">
+          </el-input>
+        </el-form-item>
       </el-form>
     </div>
 
     <div class="info" v-if="active==2">
+      
       <div class="step">
         <h5>请选择小组：</h5>
         <el-button style="margin-top: 12px;float:right" @click="next">下一步</el-button>
@@ -200,7 +209,8 @@ export default {
         Status:'',//课程控制
         cover_pic_id: '', // 课程封面 id
         cover_pic: '', // 课程封面 url
-        s_time:''//开始时间
+        s_time: '',//开始时间
+        brief: ''//课程简介
       },
       live_count: 1, // 直播源
       can_discuss: 1, //评论控制

@@ -7,7 +7,7 @@
 
 import request from '@/utils/request'
 
-// 获取标签列表
+// 获取课堂列表
 export function chapetrList(data){
   return request({
     url: '/cr/chapter/findPageV2',
@@ -15,7 +15,7 @@ export function chapetrList(data){
     data
   })
 }
-//删除在线列表
+//删除课堂
 export function chapetr_del(data){
   return request({
     url: '/cr/chapter/delete',
@@ -23,7 +23,7 @@ export function chapetr_del(data){
     data
   })
 }
-//新增在线列表
+//新增课堂
 export function chapetr_add(data){
   return request({
     url: '/cr/chapter/create',
@@ -31,7 +31,7 @@ export function chapetr_add(data){
     data
   })
 }
-//修改课程
+//修改课堂
 export function chapetr_edit(data){
   return request({
     url: '/cr/chapter/update',
@@ -39,7 +39,7 @@ export function chapetr_edit(data){
     data
   })
 }
-// 单个课程详情
+// 单个课堂详情
 export function getOneChapter(data) {
   return request({
     url: '/cr/chapter/findById',

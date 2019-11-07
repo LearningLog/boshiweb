@@ -170,11 +170,11 @@ export default {
     },
     // 详情
     detail(row) {
-      this.$router.push({ path: '/online-class/label-manage/detail', query: { id: row._id }})
+      this.$router.push({ path: '/online-class/chapter-manage/detail', query: { id: row._id }})
     },
     // 新增
     add() {
-      this.$router.push({ path: '/online-class/label-manage/add' })
+      this.$router.push({ path: '/online-class/chapter-manage/add' })
     },
     // 删除单个角色
     delete_fn(row) {
@@ -222,7 +222,7 @@ export default {
     },
     // 修改
     go_edit_fn(row) {
-      this.$router.push({ path: '/online-class/label-manage/edit', query: { id: row._id }})
+      this.$router.push({ path: '/online-class/chapter-manage/edit', query: { id: row._id }})
     },
 
   }
