@@ -93,7 +93,7 @@
       />
       <el-table-column align="center" label="题型" min-width="40">
         <template slot-scope="scope">
-          <span class="pointer">{{ switchTopicTypeToName(scope.row.topic_type) }}</span>
+          <span>{{ switchTopicTypeToName(scope.row.topic_type) }}</span>
         </template>
       </el-table-column>
       <el-table-column label="题目内容" min-width="120" align="center" show-overflow-tooltip>
@@ -103,18 +103,18 @@
       </el-table-column>
       <el-table-column class-name="status-col" label="难度" min-width="40" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
-          <span class="pointer">{{ switchTopicLevelToName(scope.row.topic_type) }}</span>
+          <span>{{ switchTopicLevelToName(scope.row.topic_level) }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="标签" min-width="100" prop="createuser" show-overflow-tooltip>
+      <el-table-column align="center" label="标签" min-width="100" show-overflow-tooltip>
         <template slot-scope="scope">
-          <span class="pointer">{{ scope.row.topic_label.join() }}</span>
+          <span>{{ scope.row.labelName || '' }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="小组" min-width="100" prop="groupName" show-overflow-tooltip />
-      <el-table-column align="center" label="技能" min-width="100" prop="createuser" show-overflow-tooltip>
+      <el-table-column align="center" label="技能" min-width="100" show-overflow-tooltip>
         <template slot-scope="scope">
-          <span class="pointer">{{ scope.row.topic_skill.join() }}</span>
+          <span>{{ scope.row.skillName || '' }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="创建时间" min-width="130" prop="c_time" show-overflow-tooltip />

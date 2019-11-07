@@ -2,7 +2,7 @@
   <div id="addTopicVue" class="form-edit">
     <div class="fr submit">
       <p>（小提示：保存的试题记得保存至题库哦）</p>
-      <el-button class="addTopic" type="primary" @click="addTopics"><i class="iconfont iconhao" />保存至题库</el-button>
+      <el-button v-no-more-click class="addTopic" type="primary" @click="addTopics"><i class="addIcon iconfont iconhao" />保存至题库</el-button>
     </div>
 
     <el-tabs v-model="addType" :before-leave="beforeLeaveTabs1" class="addType" @tab-click="handleTabsClick1">
@@ -25,6 +25,7 @@
                       :data="topic1.topic_option"
                       border
                       style="width: 100%"
+                      max-height="242"
                     >
                       <el-table-column
                         prop="option_content"
@@ -128,7 +129,7 @@
                   </el-form-item>
                   <el-checkbox v-model="saveSet" class="saveSet">保存设置（分值、难度、标签、技能）</el-checkbox>
                 </el-form>
-                <el-button class="saveTopic" type="primary" @click="saveTopic">添加题目</el-button>
+                <el-button v-no-more-click class="saveTopic" type="primary" @click="saveTopic">添加题目</el-button>
               </div>
             </el-tab-pane>
             <el-tab-pane label="多选题" name="2">
@@ -250,7 +251,7 @@
                   </el-form-item>
                   <el-checkbox v-model="saveSet" class="saveSet">保存设置（分值、难度、标签、技能）</el-checkbox>
                 </el-form>
-                <el-button class="saveTopic" type="primary" @click="saveTopic">添加题目</el-button>
+                <el-button v-no-more-click class="saveTopic" type="primary" @click="saveTopic">添加题目</el-button>
               </div>
             </el-tab-pane>
             <el-tab-pane label="判断题" name="3">
@@ -334,58 +335,60 @@
                   </el-form-item>
                   <el-checkbox v-model="saveSet" class="saveSet">保存设置（分值、难度、标签、技能）</el-checkbox>
                 </el-form>
-                <el-button class="saveTopic" type="primary" @click="saveTopic">添加题目</el-button>
+                <el-button v-no-more-click class="saveTopic" type="primary" @click="saveTopic">添加题目</el-button>
               </div>
             </el-tab-pane>
           </el-tabs>
         </div>
-        <div class="fr preview ">
+        <div class="fr preview">
           <h3>预览区</h3>
           <p class="tip" />
           <div class="topics-preview">
-            <div v-for="(item, index) in topics" :key="item.id" class="topics-item">
-              <p class="topic-type">
-                <span>{{ index+1 + '、' }}{{ item.topicTypeTitle }}</span><el-tooltip class="item" effect="dark" :content="item.labelStr" placement="top"><span v-if="item.labelStr"><span class="single-line">【{{ item.labelStr }}</span><span>】</span></span></el-tooltip><el-tooltip class="item" effect="dark" :content="item.skillStr" placement="top"><span v-if="item.skillStr"><span class="single-line">【{{ item.skillStr }}</span><span>】</span></span></el-tooltip>
-              </p>
-              <p>
-                {{ item.topic_content }}
-                <img v-if="item.topic_resource" class="previewImg" :src="item.topic_resource" alt="">
-              </p>
-              <ul class="topic-options">
-                <div class="handle">
-                  <el-button size="small" type="primary" @click="topicEdit(index, item.id)">编辑</el-button>
-                  <el-button size="small" type="primary" @click="delTopic(index)">删除</el-button>
-                </div>
-                <li v-for="(item2, index2) in item.topic_option" :key="item2.option_id" class="topic-item">
-                  <el-checkbox :checked="item2.correct_option===1?true:false" :title="item2.option_content" class="single-line3" read-only>{{ getOptionOrderByIndex(index2) }}{{ item2.option_content }}</el-checkbox>
-                </li>
-              </ul>
-              <p class="topic_resolve">解析：{{ item.topic_resolve }}</p>
-            </div>
+            <el-scrollbar wrap-class="scrollbar-wrapper">
+              <div v-for="(item, index) in topics" :key="item.id" class="topics-item">
+                <p class="topic-type">
+                  <span>{{ index+1 + '、' }}{{ item.topicTypeTitle }}</span><el-tooltip class="item" effect="dark" :content="item.labelStr" placement="top"><span v-if="item.labelStr"><span class="single-line">【{{ item.labelStr }}</span><span>】</span></span></el-tooltip><el-tooltip class="item" effect="dark" :content="item.skillStr" placement="top"><span v-if="item.skillStr"><span class="single-line">【{{ item.skillStr }}</span><span>】</span></span></el-tooltip>
+                </p>
+                <p>
+                  {{ item.topic_content }}
+                  <img v-if="item.topic_resource" class="previewImg" :src="item.topic_resource" alt="">
+                </p>
+                <ul class="topic-options">
+                  <div class="handle">
+                    <el-button size="small" type="primary" @click="topicEdit(index, item.id)">编辑</el-button>
+                    <el-button size="small" type="primary" @click="delTopic(index)">删除</el-button>
+                  </div>
+                  <li v-for="(item2, index2) in item.topic_option" :key="item2.option_id" class="topic-item">
+                    <el-checkbox :checked="item2.correct_option===1?true:false" :title="item2.option_content" class="single-line3" disabled>{{ getOptionOrderByIndex(index2) }}{{ item2.option_content }}</el-checkbox>
+                  </li>
+                </ul>
+                <p class="topic_resolve">解析：{{ item.topic_resolve }}</p>
+              </div>
+            </el-scrollbar>
           </div>
         </div>
       </el-tab-pane>
       <el-tab-pane class="excel" label="Excel添加" name="excel">
-        <div class="topicFile" v-show="!topics.length">
+        <div v-show="!topics.length" class="topicFile">
           <el-button size="small" class="" type="primary" icon="el-icon-download" @click="downTemplete">下载Excel模板</el-button>
           <el-upload
-              ref="uploadExcel"
-              class="excel-uploader"
-              :action="uploadUrl()"
-              :headers="headers"
-              accept=".xls,.xlsx"
-              :show-file-list="false"
-              :on-success="handleExcelSuccess"
-              :before-upload="beforeExcelUpload"
+            ref="uploadExcel"
+            class="excel-uploader"
+            :action="uploadUrl()"
+            :headers="headers"
+            accept=".xls,.xlsx"
+            :show-file-list="false"
+            :on-success="handleExcelSuccess"
+            :before-upload="beforeExcelUpload"
           >
-            <el-button size="small" class="uploadExcel" type="primary" icon="el-icon-upload" @click="uploadExcel">上传试题文件</el-button>
+            <el-button size="small" class="uploadExcel" type="primary" icon="el-icon-upload">上传试题文件</el-button>
           </el-upload>
         </div>
         <div v-show="topics.length">
           <div class="fl edit">
             <el-tabs v-model="topic_type" class="topicType" type="card" :before-leave="beforeLeaveTabs2" @tab-click="handleTabsClick2">
               <el-tab-pane label="单选题" name="1">
-                <div class="edit-hand-topic1">
+                <div class="edit-excel-topic1">
                   <el-form ref="form" label-width="100px">
                     <el-form-item class="required content" label="题目内容">
                       <el-input v-model="topic1.topic_content" class="topicName" placeholder="请输入题目" clearable />
@@ -396,36 +399,36 @@
                     </el-form-item>
                     <el-form-item class="required" label="题目选项">
                       <el-table
-                          class="topicOption"
-                          :data="topic1.topic_option"
-                          border
-                          style="width: 100%"
+                        class="topicOption"
+                        :data="topic1.topic_option"
+                        border
+                        style="width: 100%"
                       >
                         <el-table-column
-                            prop="option_content"
-                            align="center"
-                            label="选项内容"
+                          prop="option_content"
+                          align="center"
+                          label="选项内容"
                         >
                           <template slot-scope="scope">
                             <el-input v-model="scope.row.option_content" size="small" class="option_content" placeholder="请输入选项内容，字数不超过100个字" maxlength="100" />
                           </template>
                         </el-table-column>
                         <el-table-column
-                            prop="option_img"
-                            label="图片"
-                            align="center"
-                            width="60"
+                          prop="option_img"
+                          label="图片"
+                          align="center"
+                          width="60"
                         >
                           <template slot-scope="scope">
                             <el-upload
-                                ref="upload"
-                                class="avatar-uploader"
-                                :action="uploadUrl()"
-                                :headers="headers"
-                                accept=".jpg,.png,.gif,.jepg,.jpeg"
-                                :show-file-list="false"
-                                :on-success="handleImgSuccess"
-                                :before-upload="beforeImgUpload"
+                              ref="upload"
+                              class="avatar-uploader"
+                              :action="uploadUrl()"
+                              :headers="headers"
+                              accept=".jpg,.png,.gif,.jepg,.jpeg"
+                              :show-file-list="false"
+                              :on-success="handleImgSuccess"
+                              :before-upload="beforeImgUpload"
                             >
                               <img v-if="scope.row.option_img" :src="scope.row.option_img" class="avatar">
                               <i v-else class="el-icon-plus avatar-uploader-icon" @click="optionConcentIndex(scope.$index)" />
@@ -434,20 +437,20 @@
                           </template>
                         </el-table-column>
                         <el-table-column
-                            prop="correct_option"
-                            label="正确选项"
-                            align="center"
-                            width="90"
+                          prop="correct_option"
+                          label="正确选项"
+                          align="center"
+                          width="90"
                         >
                           <template slot-scope="scope">
                             <el-radio v-model="radio1" class="radio" :label="scope.row.option_id_time_stamp" @change="isTrueChange(scope.$index, scope.row.option_id_time_stamp)" />
                           </template>
                         </el-table-column>
                         <el-table-column
-                            prop="addOrdelOption"
-                            label="操作"
-                            align="center"
-                            width="90"
+                          prop="addOrdelOption"
+                          label="操作"
+                          align="center"
+                          width="90"
                         >
                           <template slot-scope="scope">
                             <i class="pointer el-icon-plus" @click="addOption" />
@@ -472,13 +475,13 @@
                     <el-form-item label="添加标签" class="addLabel">
                       <div v-if="currentLabels.length" class="tag">
                         <el-tag
-                            v-for="(tag, index) in currentLabels"
-                            :key="tag.linc"
-                            closable
-                            size="medium"
-                            :disable-transitions="false"
-                            type="success"
-                            @close="handleLabelDel(index)"
+                          v-for="(tag, index) in currentLabels"
+                          :key="tag.linc"
+                          closable
+                          size="medium"
+                          :disable-transitions="false"
+                          type="success"
+                          @close="handleLabelDel(index)"
                         >
                           {{ tag.lname }}
                         </el-tag>
@@ -488,13 +491,13 @@
                     <el-form-item label="题目考核技能" class="addSkill">
                       <div v-if="currentSkills.length" class="tag">
                         <el-tag
-                            v-for="(tag, index) in currentSkills"
-                            :key="tag.increase_id"
-                            closable
-                            size="medium"
-                            :disable-transitions="false"
-                            type="success"
-                            @close="handleSkillDel(index)"
+                          v-for="(tag, index) in currentSkills"
+                          :key="tag.increase_id"
+                          closable
+                          size="medium"
+                          :disable-transitions="false"
+                          type="success"
+                          @close="handleSkillDel(index)"
                         >
                           {{ tag.skill_name }}
                         </el-tag>
@@ -503,11 +506,11 @@
                     </el-form-item>
                     <el-checkbox v-model="saveSet" class="saveSet">保存设置（分值、难度、标签、技能）</el-checkbox>
                   </el-form>
-                  <el-button class="saveTopic" type="primary" @click="saveTopic">添加题目</el-button>
+                  <el-button v-no-more-click class="saveTopic" type="primary" @click="saveTopic">添加题目</el-button>
                 </div>
               </el-tab-pane>
               <el-tab-pane label="多选题" name="2">
-                <div class="edit-hand-topic2">
+                <div class="edit-excel-topic2">
                   <el-form ref="form" label-width="100px">
                     <el-form-item class="required content" label="题目内容">
                       <el-input v-model="topic2.topic_content" class="topicName" placeholder="请输入题目" clearable />
@@ -518,36 +521,36 @@
                     </el-form-item>
                     <el-form-item class="required" label="题目选项">
                       <el-table
-                          class="topicOption"
-                          :data="topic2.topic_option"
-                          border
-                          style="width: 100%"
+                        class="topicOption"
+                        :data="topic2.topic_option"
+                        border
+                        style="width: 100%"
                       >
                         <el-table-column
-                            prop="option_content"
-                            align="center"
-                            label="选项内容"
+                          prop="option_content"
+                          align="center"
+                          label="选项内容"
                         >
                           <template slot-scope="scope">
                             <el-input v-model="scope.row.option_content" size="small" class="option_content" placeholder="请输入选项内容，字数不超过100个字" maxlength="100" />
                           </template>
                         </el-table-column>
                         <el-table-column
-                            prop="option_img"
-                            label="图片"
-                            align="center"
-                            width="60"
+                          prop="option_img"
+                          label="图片"
+                          align="center"
+                          width="60"
                         >
                           <template slot-scope="scope">
                             <el-upload
-                                ref="upload"
-                                class="avatar-uploader"
-                                :action="uploadUrl()"
-                                :headers="headers"
-                                accept=".jpg,.png,.gif,.jepg,.jpeg"
-                                :show-file-list="false"
-                                :on-success="handleImgSuccess"
-                                :before-upload="beforeImgUpload"
+                              ref="upload"
+                              class="avatar-uploader"
+                              :action="uploadUrl()"
+                              :headers="headers"
+                              accept=".jpg,.png,.gif,.jepg,.jpeg"
+                              :show-file-list="false"
+                              :on-success="handleImgSuccess"
+                              :before-upload="beforeImgUpload"
                             >
                               <img v-if="scope.row.option_img" :src="scope.row.option_img" class="avatar">
                               <i v-else class="el-icon-plus avatar-uploader-icon" @click="optionConcentIndex(scope.$index)" />
@@ -556,20 +559,20 @@
                           </template>
                         </el-table-column>
                         <el-table-column
-                            prop="correct_option"
-                            label="正确选项"
-                            align="center"
-                            width="90"
+                          prop="correct_option"
+                          label="正确选项"
+                          align="center"
+                          width="90"
                         >
                           <template slot-scope="scope">
                             <el-checkbox v-model="scope.row.check" @change="chcekboxChange(scope.row)" />
                           </template>
                         </el-table-column>
                         <el-table-column
-                            prop="addOrdelOption"
-                            label="操作"
-                            align="center"
-                            width="90"
+                          prop="addOrdelOption"
+                          label="操作"
+                          align="center"
+                          width="90"
                         >
                           <template slot-scope="scope">
                             <i class="pointer el-icon-plus" @click="addOption" />
@@ -594,13 +597,13 @@
                     <el-form-item label="添加标签" class="addLabel">
                       <div v-if="currentLabels.length" class="tag">
                         <el-tag
-                            v-for="(tag, index) in currentLabels"
-                            :key="tag.linc"
-                            closable
-                            size="medium"
-                            :disable-transitions="false"
-                            type="success"
-                            @close="handleLabelDel(index)"
+                          v-for="(tag, index) in currentLabels"
+                          :key="tag.linc"
+                          closable
+                          size="medium"
+                          :disable-transitions="false"
+                          type="success"
+                          @close="handleLabelDel(index)"
                         >
                           {{ tag.lname }}
                         </el-tag>
@@ -610,13 +613,13 @@
                     <el-form-item label="题目考核技能" class="addSkill">
                       <div v-if="currentSkills.length" class="tag">
                         <el-tag
-                            v-for="(tag, index) in currentSkills"
-                            :key="tag.increase_id"
-                            closable
-                            size="medium"
-                            :disable-transitions="false"
-                            type="success"
-                            @close="handleSkillDel(index)"
+                          v-for="(tag, index) in currentSkills"
+                          :key="tag.increase_id"
+                          closable
+                          size="medium"
+                          :disable-transitions="false"
+                          type="success"
+                          @close="handleSkillDel(index)"
                         >
                           {{ tag.skill_name }}
                         </el-tag>
@@ -625,11 +628,11 @@
                     </el-form-item>
                     <el-checkbox v-model="saveSet" class="saveSet">保存设置（分值、难度、标签、技能）</el-checkbox>
                   </el-form>
-                  <el-button class="saveTopic" type="primary" @click="saveTopic">添加题目</el-button>
+                  <el-button v-no-more-click class="saveTopic" type="primary" @click="saveTopic">添加题目</el-button>
                 </div>
               </el-tab-pane>
               <el-tab-pane label="判断题" name="3">
-                <div class="edit-hand-topic3">
+                <div class="edit-excel-topic3">
                   <el-form ref="form" label-width="100px">
                     <el-form-item class="required content" label="题目内容">
                       <el-input v-model="topic3.topic_content" class="topicName" placeholder="请输入题目" clearable />
@@ -640,21 +643,21 @@
                     </el-form-item>
                     <el-form-item class="required" label="题目选项">
                       <el-table
-                          class="topicOption"
-                          :data="topic3.topic_option"
-                          border
-                          style="width: 100%"
+                        class="topicOption"
+                        :data="topic3.topic_option"
+                        border
+                        style="width: 100%"
                       >
                         <el-table-column
-                            prop="option_content"
-                            align="center"
-                            label="选项内容"
+                          prop="option_content"
+                          align="center"
+                          label="选项内容"
                         />
                         <el-table-column
-                            prop="correct_option"
-                            label="正确选项"
-                            align="center"
-                            width="90"
+                          prop="correct_option"
+                          label="正确选项"
+                          align="center"
+                          width="90"
                         >
                           <template slot-scope="scope">
                             <el-radio v-model="radio2" :label="scope.row.option_id_time_stamp" @change="isTrueChange(scope.$index)" />
@@ -678,13 +681,13 @@
                     <el-form-item label="添加标签" class="addLabel">
                       <div v-if="currentLabels.length" class="tag">
                         <el-tag
-                            v-for="(tag, index) in currentLabels"
-                            :key="tag.linc"
-                            closable
-                            size="medium"
-                            :disable-transitions="false"
-                            type="success"
-                            @close="handleLabelDel(index)"
+                          v-for="(tag, index) in currentLabels"
+                          :key="tag.linc"
+                          closable
+                          size="medium"
+                          :disable-transitions="false"
+                          type="success"
+                          @close="handleLabelDel(index)"
                         >
                           {{ tag.lname }}
                         </el-tag>
@@ -694,13 +697,13 @@
                     <el-form-item label="题目考核技能" class="addSkill">
                       <div v-if="currentSkills.length" class="tag">
                         <el-tag
-                            v-for="(tag, index) in currentSkills"
-                            :key="tag.increase_id"
-                            closable
-                            size="medium"
-                            :disable-transitions="false"
-                            type="success"
-                            @close="handleSkillDel(index)"
+                          v-for="(tag, index) in currentSkills"
+                          :key="tag.increase_id"
+                          closable
+                          size="medium"
+                          :disable-transitions="false"
+                          type="success"
+                          @close="handleSkillDel(index)"
                         >
                           {{ tag.skill_name }}
                         </el-tag>
@@ -709,7 +712,7 @@
                     </el-form-item>
                     <el-checkbox v-model="saveSet" class="saveSet">保存设置（分值、难度、标签、技能）</el-checkbox>
                   </el-form>
-                  <el-button class="saveTopic" type="primary" @click="saveTopic">添加题目</el-button>
+                  <el-button v-no-more-click class="saveTopic" type="primary" @click="saveTopic">添加题目</el-button>
                 </div>
               </el-tab-pane>
             </el-tabs>
@@ -718,25 +721,30 @@
             <h3>预览区</h3>
             <p class="tip" />
             <div class="topics-preview">
-              <div v-for="(item, index) in topics" :key="item.id" class="topics-item">
-                <p class="topic-type">
-                  <span>{{ index+1 + '、' }}{{ item.topicTypeTitle }}</span><el-tooltip class="item" effect="dark" :content="item.labelStr" placement="top"><span v-if="item.labelStr"><span class="single-line">【{{ item.labelStr }}</span><span>】</span></span></el-tooltip><el-tooltip class="item" effect="dark" :content="item.skillStr" placement="top"><span v-if="item.skillStr"><span class="single-line">【{{ item.skillStr }}</span><span>】</span></span></el-tooltip>
-                </p>
-                <p>
-                  {{ item.topic_content }}
-                  <img v-if="item.topic_resource" class="previewImg" :src="item.topic_resource" alt="">
-                </p>
-                <ul class="topic-options">
-                  <div class="handle">
-                    <el-button size="small" type="primary" @click="topicEdit(index, item.id)">编辑</el-button>
-                    <el-button size="small" type="primary" @click="delTopic(index)">删除</el-button>
-                  </div>
-                  <li v-for="(item2, index2) in item.topic_option" :key="item2.option_id" class="topic-item">
-                    <el-checkbox :checked="item2.correct_option===1?true:false" :title="item2.option_content" class="single-line3" read-only>{{ getOptionOrderByIndex(index2) }}{{ item2.option_content }}</el-checkbox>
-                  </li>
-                </ul>
-                <p class="topic_resolve">解析：{{ item.topic_resolve }}</p>
-              </div>
+              <el-scrollbar wrap-class="scrollbar-wrapper">
+                <div v-for="(item, index) in topics" :key="item.id" class="topics-item">
+                  <p class="topic-type">
+                    <span>{{ index+1 + '、' }}{{ item.topicTypeTitle }}</span><el-tooltip class="item" effect="dark" :content="item.labelStr" placement="top"><span v-if="item.labelStr"><span class="single-line">【{{ item.labelStr }}</span><span>】</span></span></el-tooltip><el-tooltip class="item" effect="dark" :content="item.skillStr" placement="top"><span v-if="item.skillStr"><span class="single-line">【{{ item.skillStr }}</span><span>】</span></span></el-tooltip>
+                  </p>
+                  <p v-if="item.topic_content" class="topic-title">
+                    {{ item.topic_content }}
+                    <img v-if="item.topic_resource" class="previewImg" :src="item.topic_resource" alt="">
+                  </p>
+                  <p v-else class="topic-title" @click="topicEdit(index, item.id)" />
+                  <ul class="topic-options">
+                    <div class="handle">
+                      <el-button size="small" type="primary" @click="topicEdit(index, item.id)">编辑</el-button>
+                      <el-button size="small" type="primary" @click="delTopic(index)">删除</el-button>
+                    </div>
+                    <li v-for="(item2, index2) in item.topic_option" :key="item2.option_id" class="topic-item">
+                      <el-checkbox v-if="item2.option_content" v-model="item2.correct_option==1?true:false" :class="(!item.have_correctoption?'error-option':'')" read-only>{{ getOptionOrderByIndex(index2) }}{{ item2.option_content }}</el-checkbox>
+                      <el-checkbox v-else v-model="item2.correct_option==1?true:false" class="error-option" read-only>{{ getOptionOrderByIndex(index2) }}</el-checkbox>
+                    </li>
+                  </ul>
+                  <p class="topic_resolve">解析：{{ item.topic_resolve }}</p>
+                  <p v-if="(item.error_list && item.error_list.length)" class="error-option"><span>错误原因：</span>{{ item.error_list.join('。') }}</p>
+                </div>
+              </el-scrollbar>
             </div>
           </div>
         </div>
@@ -764,6 +772,8 @@ export default {
   },
   data() {
     return {
+      selectCompanyId: '', // 租户
+      egroup: '', // 小组
       headers: {
         Authorization: getToken() // 图片上传 header
       },
@@ -923,21 +933,8 @@ export default {
     }
   },
   created() {
-    // this.topic1.topic_option[0].option_id = this.guid()
-    // this.topic1.topic_option[1].option_id = this.guid()
-    //
-    // this.topic2.topic_option[0].option_id = this.guid()
-    // this.topic2.topic_option[1].option_id = this.guid()
-    //
-    // this.topic3.topic_option[0].option_id = this.guid()
-    // this.topic3.topic_option[1].option_id = this.guid()
-  },
-  mounted() {
-    // 动态设置高度
-    // var g_main_contHeight=$('.g_main_cont').height();
-    // $('.topicType .el-tabs__content').css('height', (g_main_contHeight-150)+'px');
-    // $('#addTopicVue .preview').css('height', (g_main_contHeight-100)+'px');
-    // $('#addTopicVue .topics-preview').css('height', (g_main_contHeight-160)+'px');
+    this.egroup = this.$route.query.egroup
+    this.selectCompanyId = this.$route.query.selectCompanyId
   },
   methods: {
     // 用于生成uuid
@@ -950,7 +947,7 @@ export default {
 
     // 切换手动添加与Excel导入离开前的逻辑
     beforeLeaveTabs1(item) {
-      if (this.dataIsChange) {
+      if (this.dataIsChange || this.topics.length) {
         var p = new Promise((resolve, reject) => {
           this.$confirm('您还有正在编辑尚未保存的内容哦，确定要离开吗？', '提示', {
             confirmButtonText: '确定',
@@ -1067,6 +1064,7 @@ export default {
       })
       this.radio1 = option_id_time_stamp
       this[this.topic0].topic_option[index].correct_option = 1
+      this[this.topic0].topic_option[index].check = true
       console.log(this[this.topic0].topic_option)
     },
 
@@ -1159,116 +1157,6 @@ export default {
       return option_order[index]
     },
 
-    // 上传excel之前
-    beforeExcelUpload(file) {
-      const suffixs = ['.xls', '.xlsx']
-      const i = file.name.lastIndexOf('.')
-      const suffix = file.name.slice(i)
-      if (suffixs.indexOf(suffix) === -1) {
-        this.$message.error('文件格式错误！')
-        this.$refs.uploadExcel.clearFiles()
-        return false
-      }
-      const isLt5M = file.size / 1024 / 1024 < 5
-      if (!isLt5M) {
-        this.$message.error('上传文件大小不能超过 5MB！')
-        this.$refs.uploadExcel.clearFiles()
-        return false
-      }
-      return true
-    },
-
-    // excel上传成功
-    handleExcelSuccess(res, file) {
-      const json = {
-        url: res.data.saveHttpPath,
-        fileId: res.data.id
-      }
-      importTopics(json).then(res => {
-        this.excelTopicUploadCallback(res)
-      })
-    },
-
-    // 试题上传后的回调
-    excelTopicUploadCallback(data) {
-      var that = this
-      if (data && data.code == 0) {
-        this.$message.success('试题上传成功！');
-        var data=data.data;
-        var arr=[]
-        arr=data.judgeList.concat(data.multiList).concat(data.singleList);
-
-        arr.forEach((item, index1) => {
-          item.id=that.guid();
-          item.timeStamp=new Date().getTime()
-          item.topicType=item.topic_type+'';
-          item.topic_resource='';
-          item.topic_resource_id='';
-
-          // 获取预览区题型中的文本===begin===
-          let topicType='';
-          switch (item.topicType) {
-            case '1':
-              topicType+='单选题';
-              break;
-            case '2':
-              topicType+='多选题';
-              break;
-            case '3':
-              topicType+='判断题';
-              break;
-          }
-          topicType+='【'+item.topic_score+'分】';
-
-          var str1 = []
-          item.labels.forEach(item => {
-            str1.push(item.lname)
-          })
-          var str2 = []
-          item.skills.forEach(item => {
-            str2.push(item.skill_name)
-          })
-
-          item.topic_level=item.topic_level+'';
-          switch (item.topic_level) {
-            case '1':
-              topicType+='【难度：简单】';
-              break;
-            case '2':
-              topicType+='【难度：一般】';
-              break;
-            case '3':
-              topicType+='【难度：困难】';
-              break;
-          }
-          item.labelStr = str1.length ? '标签：' + str1 : ''
-          item.skillStr = str2.length ? '技能：' + str2 : ''
-          item.topicTypeTitle=topicType;
-          // 获取预览区题型中的文本===end===
-
-          // 生成option_id
-          item.topic_option.forEach((item4, index4) => {
-            item4.option_id=this.guid();
-            item4.option_id_time_stamp=new Date().getTime()
-            // 根据correct_option设置check
-            if(item4.correct_option==1){
-              item4.check=true;
-            }else {
-              item4.check=false;
-              item4.correct_option=2;
-            }
-          })
-
-          item.topic_skill=item.topic_skill.length?item.topic_skill.join(','):'';
-          item.topic_label=item.topic_label.length?item.topic_label.join(','):'';
-        })
-        this.topics=arr;
-
-      } else {
-        this.$message.error('试题上传失败！');
-      }
-    },
-
     // 添加试题
     saveTopic() {
       // 如果没有id并且当前是excel添加不可以通过
@@ -1314,17 +1202,21 @@ export default {
       }
 
       var str1 = []
+      var topic_label = []
       this.currentLabels.forEach(item => {
         str1.push(item.lname)
+        topic_label.push(item.linc)
       })
       var str2 = []
+      var topic_skill = []
       this.currentSkills.forEach(item => {
         str2.push(item.skill_name)
+        topic_skill.push(item.increase_id)
       })
       // 获取标签
-      this[this.topic0].topic_label = str1.join()
+      this[this.topic0].topic_label = topic_label.join()
       // 获取技能
-      this[this.topic0].topic_skill = str2.join()
+      this[this.topic0].topic_skill = topic_skill.join()
 
       // 获取题目类型
       this[this.topic0].topic_type = this.topic_type
@@ -1360,6 +1252,14 @@ export default {
       this[this.topic0].skillStr = str2.length ? '技能：' + str2 : ''
       this[this.topic0].topicTypeTitle = topicType
 
+      // 将Excel添加的数据中的错误标识字段清除
+      if (this.addType === 'excel') {
+        if (this[this.topic0].error_list) {
+          delete this[this.topic0].error_list
+        }
+        this[this.topic0].have_correctoption = true
+      }
+
       // 通过是否已有id判断是新增的还是编辑的===begin===
       if (this[this.topic0].id) {
         var topic_ = $.extend(true, {}, this[this.topic0])
@@ -1378,7 +1278,6 @@ export default {
         })
       } else {
         this[this.topic0].id = this.guid() // 设置题id
-        this[this.topic0].timeStamp = new Date().getTime() // 设置题key
         this.topics.push($.extend(true, {}, this[this.topic0]))
       }
       // ===begin===
@@ -1460,9 +1359,8 @@ export default {
     topicEdit(index) {
       var topic = this.topics[index]
       this.topic_type = topic.topic_type + ''
-      debugger
-      this.currentLabels = topic.currentLabels
-      this.currentSkills = topic.currentSkills
+      this.currentLabels = topic.currentLabels || topic.labels
+      this.currentSkills = topic.currentSkills || topic.skills
       switch (this.topic_type) {
         case '1':
           this.topic1 = $.extend(true, {}, topic)
@@ -1502,28 +1400,127 @@ export default {
 
     // 下载试题模板
     downTemplete() {
-      // var url=getApplicationInfo('EXAM_TOPIC_IMPORT_TEMPLATE_URL');
-      var url = 'https://cdnproduce.yunshicloud.com/5ce7f5106282c91ba828e991/BOSHI/5cf739b36282c9787bfca80e/5c2a87149ed1213689894ae27023bf1c.xlsx?ZmlsZUlk=5d843b6427b2b40015234af1'
-      if(url){
-        this.templeteExcelUrl=url;
-        // this.templeteExcelUrl='https://cdnproduce.yunshicloud.com/5ce7f5106282c91ba828e991/BOSHI/5cf739b36282c9787bfca80e/5c2a87149ed1213689894ae27023bf1c.xlsx?ZmlsZUlk=5d843b6427b2b40015234af1';
-        var $eleForm = $("<form method='get'></form>");
+      var url = this.$store.state.user.applicationInfo.EXAM_TOPIC_IMPORT_TEMPLATE_URL
+      if (url) {
+        this.templeteExcelUrl = url
+        var $eleForm = $("<form method='get'></form>")
 
-        $eleForm.attr('action', this.templeteExcelUrl);
+        $eleForm.attr('action', this.templeteExcelUrl)
 
-        $(document.body).append($eleForm);
+        $(document.body).append($eleForm)
 
         // 提交表单，实现下载
         $eleForm.submit()
       } else {
         this.$message.error('批量导入模板暂不能使用，请使用手动增加试题！')
       }
-
     },
 
-    // 上传试题文件
-    uploadExcel() {
+    // 上传excel之前
+    beforeExcelUpload(file) {
+      const suffixs = ['.xls', '.xlsx']
+      const i = file.name.lastIndexOf('.')
+      const suffix = file.name.slice(i)
+      if (suffixs.indexOf(suffix) === -1) {
+        this.$message.error('文件格式错误！')
+        this.$refs.uploadExcel.clearFiles()
+        return false
+      }
+      const isLt5M = file.size / 1024 / 1024 < 5
+      if (!isLt5M) {
+        this.$message.error('上传文件大小不能超过 5MB！')
+        this.$refs.uploadExcel.clearFiles()
+        return false
+      }
+      return true
+    },
 
+    // excel上传成功
+    handleExcelSuccess(res, file) {
+      const json = {
+        url: res.data.saveHttpPath,
+        fileId: res.data.id
+      }
+      importTopics(json).then(res => {
+        this.excelTopicUploadCallback(res)
+      })
+    },
+
+    // 试题上传后的回调
+    excelTopicUploadCallback(res) {
+      var that = this
+      if (res && res.code === 0) {
+        this.$message.success('试题上传成功！')
+        const data = res.data
+        var arr = []
+        arr = data.judgeList.concat(data.multiList).concat(data.singleList)
+
+        arr.forEach((item, index1) => {
+          item.id = that.guid()
+          item.topicType = item.topic_type + ''
+          item.topic_resource = ''
+          item.topic_resource_id = ''
+
+          // 获取预览区题型中的文本===begin===
+          let topicType = ''
+          switch (item.topicType) {
+            case '1':
+              topicType += '单选题'
+              break
+            case '2':
+              topicType += '多选题'
+              break
+            case '3':
+              topicType += '判断题'
+              break
+          }
+          topicType += '【' + item.topic_score + '分】'
+
+          var str1 = []
+          item.labels.forEach(item => {
+            str1.push(item.lname)
+          })
+          var str2 = []
+          item.skills.forEach(item => {
+            str2.push(item.skill_name)
+          })
+
+          item.topic_level = item.topic_level + ''
+          switch (item.topic_level) {
+            case '1':
+              topicType += '【难度：简单】'
+              break
+            case '2':
+              topicType += '【难度：一般】'
+              break
+            case '3':
+              topicType += '【难度：困难】'
+              break
+          }
+          item.labelStr = str1.length ? '标签：' + str1 : ''
+          item.skillStr = str2.length ? '技能：' + str2 : ''
+          item.topicTypeTitle = topicType
+          // 获取预览区题型中的文本===end===
+
+          // 生成option_id
+          item.topic_option.forEach((item4, index4) => {
+            item4.option_id = this.guid()
+            item4.option_id_time_stamp = new Date().getTime() + item.topic_type + index4
+            // 根据correct_option设置check
+            if (item4.correct_option === 1) {
+              item4.check = true
+            } else {
+              item4.check = false
+              item4.correct_option = 2
+            }
+          })
+          item.topic_skill = item.topic_skill.length ? item.topic_skill.join(',') : ''
+          item.topic_label = item.topic_label.length ? item.topic_label.join(',') : ''
+        })
+        this.topics = arr
+      } else {
+        this.$message.error('试题上传失败！')
+      }
     },
 
     // 清空所有topic数据
@@ -1618,8 +1615,40 @@ export default {
       this.currentSkills = []
     },
 
+    // 保存至题库
     addTopics() {
-      this.noLeaveprompt = true
+      var topics2 = []
+      $.merge(topics2, this.topics)
+
+      if (topics2.length == 0) {
+        this.$message.warning('请添加试题')
+        return false
+      }
+
+      if (this.addType === 'excel') {
+        for (var i = 0, len = topics2.length; i < len; i++) {
+          var item = topics2[i]
+          delete item.labelStr
+          delete item.skillStr
+          delete item.topicTypeTitle
+          if (!item.have_correctoption || (item.error_list && item.error_list.length > 0)) {
+            this.$message.warning('您第' + (i + 1) + '题数据不完善，请完善后再提交！')
+            return false
+          }
+        }
+      }
+
+      const params = {
+        selectCompanyId: this.selectCompanyId,
+        egroup: this.egroup,
+        topics: topics2
+      }
+
+      addTopic(params).then(res => {
+        this.noLeaveprompt = true
+        this.$message.success('保存试题成功！')
+        this.$router.push({ path: '/evaluating-manage/question-bank-manage/list' })
+      })
     }
   },
   beforeRouteLeave(to, from, next) {
@@ -1858,5 +1887,22 @@ export default {
   }
   .excel-uploader {
     display: inline-block;
+  }
+  .error-option {
+    color: red;
+  }
+  .error-desc {
+    word-break: break-all;
+    word-wrap: break-word;
+    font-size: 14px;
+  }
+  .error-option .el-checkbox__label {
+    color: red!important;
+  }
+  .preview /deep/ .el-scrollbar {
+    height: calc(100vh - 260px);
+  }
+  .addIcon {
+    font-size: 14px;
   }
 </style>

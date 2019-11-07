@@ -1,257 +1,491 @@
 <template>
   <div class="form-edit">
-    <el-form ref="form" class="form" :model="form" :rules="rules" label-width="140px" :status-icon="true">
-      <el-form-item label="租户名称" prop="customname">
-        <el-input v-model="form.customname" placeholder="请输入租户名称" maxlength="64" clearable />
+    <el-form v-if="topic_type === 1" ref="form" class="form" label-width="100px">
+      <el-form-item class="required content" label="题目内容">
+        <el-input v-model="topic1.topic_content" class="topicName" placeholder="请输入题目" clearable />
+        <div v-show="topic1.topic_resource" class="img-group">
+          <div class="imgCover" :style="{backgroundImage:'url(' + topic1.topic_resource + ')'}"> <i class="close iconfont iconfalse-circle" @click="delTopicImg" /></div>
+        </div>
+        <div class="selectPic" @click="topicImg">添加图片</div>
       </el-form-item>
-      <el-form-item label="租户描述" prop="desc">
-        <el-input v-model="form.desc" placeholder="请输入租户描述" maxlength="100" clearable />
-      </el-form-item>
-      <el-form-item label="最大用户数" prop="userCount">
-        <el-input v-model="form.userCount" placeholder="请输入最大用户数" clearable @keyup.native="intNum(form.userCount)" />
-      </el-form-item>
-      <el-form-item label="租户状态" prop="customStatus">
-        <el-radio-group v-model="form.customStatus">
-          <el-radio :label="1">生效</el-radio>
-          <el-radio :label="0">失效</el-radio>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="开通智能搜索" prop="text_extraction">
-        <el-radio-group v-model="form.text_extraction">
-          <el-radio :label="1">开启</el-radio>
-          <el-radio :label="0">关闭</el-radio>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="更新租户管理员信息">
-        <el-radio-group v-model="isChangeTuser">
-          <el-radio :label="1">是</el-radio>
-          <el-radio :label="0">否</el-radio>
-        </el-radio-group>
-      </el-form-item>
-      <div v-if="isChangeTuser === 1">
-        <el-form-item label="租户管理员" prop="uName">
-          <el-input v-model="form.uName" :disabled="true" placeholder="请输入租户管理员" maxlength="64" clearable />
-        </el-form-item>
-        <el-form-item label="管理员昵称" prop="uNickname">
-          <el-input v-model="form.uNickname" placeholder="请输入管理员昵称" maxlength="20" clearable />
-        </el-form-item>
-        <el-form-item label="管理员密码" prop="uPwd">
-          <el-input v-model="form.uPwd" placeholder="请输入管理员密码" type="password" autocomplete="off" maxlength="50" clearable />
-        </el-form-item>
-      </div>
-      <el-form-item label="平台Logo" class="logoClass">
-        <el-upload
-          ref="uploadDeskTopLogo"
-          class="uploadDeskTopLogo"
-          name="thumbnailfile"
-          :action="uploadUrl()"
-          :headers="headers"
-          accept=".jpg,.png,.gif,.jepg,.jpeg"
-          drag
-          :data="fileInfo"
-          :limit="2"
-          :file-list="fileList1"
-          list-type="picture-card"
-          :auto-upload="false"
-          :on-change="changeUpload"
-          :on-success="handleSuccess"
-          :on-error="handleUploadError"
-          :on-preview="handlePreview"
-          :before-remove="beforeRemove"
-          :on-remove="handleRemove"
-          @click.native="logoTypes(1)"
+      <el-form-item class="required" label="题目选项">
+        <el-table
+          class="topicOption"
+          :data="topic1.topic_option"
+          border
+          style="width: 100%"
+          max-height="242"
         >
-          <!--<img v-if="deskTopImageUrl" :src="deskTopImageUrl" class="avatar">-->
-          <i class="el-icon-plus avatar-uploader-icon" />
-        </el-upload>
+          <el-table-column
+            prop="option_content"
+            align="center"
+            label="选项内容"
+          >
+            <template slot-scope="scope">
+              <el-input v-model="scope.row.option_content" size="small" class="option_content" placeholder="请输入选项内容，字数不超过100个字" maxlength="100" />
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="option_img"
+            label="图片"
+            align="center"
+            width="60"
+          >
+            <template slot-scope="scope">
+              <el-upload
+                ref="upload"
+                class="avatar-uploader"
+                :action="uploadUrl()"
+                :headers="headers"
+                accept=".jpg,.png,.gif,.jepg,.jpeg"
+                :show-file-list="false"
+                :on-success="handleImgSuccess"
+                :before-upload="beforeImgUpload"
+              >
+                <img v-if="scope.row.option_img" :src="scope.row.option_img" class="avatar">
+                <i v-else class="el-icon-plus avatar-uploader-icon" @click="optionConcentIndex(scope.$index)" />
+              </el-upload>
+              <i v-if="scope.row.option_img" class="closeOptionImg iconfont iconfalse-circle" @click="delOptionImg(scope.row)" />
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="correct_option"
+            label="正确选项"
+            align="center"
+            width="90"
+          >
+            <template slot-scope="scope">
+              <el-radio v-model="radio1" class="radio" :label="scope.row.option_id_time_stamp" @change="isTrueChange(scope.$index, scope.row.option_id_time_stamp)" />
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="addOrdelOption"
+            label="操作"
+            align="center"
+            width="90"
+          >
+            <template slot-scope="scope">
+              <i class="pointer el-icon-plus" @click="addOption" />
+              <i class="pointer el-icon-minus" @click="delTheOption(scope.$index)" />
+            </template>
+          </el-table-column>
+        </el-table>
       </el-form-item>
-      <el-form-item label="移动端Logo" class="logoClass">
-        <el-upload
-          ref="uploadMobileLogo"
-          class="uploadMobileLogo"
-          name="thumbnailfile"
-          :action="uploadUrl()"
-          :headers="headers"
-          accept=".jpg,.png,.gif,.jepg,.jpeg"
-          drag
-          :data="fileInfo"
-          :limit="2"
-          :file-list="fileList2"
-          list-type="picture-card"
-          :auto-upload="false"
-          :on-change="changeUpload"
-          :on-success="handleSuccess"
-          :on-error="handleUploadError"
-          :on-preview="handlePreview"
-          :before-remove="beforeRemove"
-          :on-remove="handleRemove"
-          @click.native="logoTypes(2)"
+      <el-form-item label="题目解析">
+        <el-input v-model="topic1.topic_resolve" size="small" type="textarea" :autosize="{ minRows: 1, maxRows: 4}" />
+      </el-form-item>
+      <el-form-item class="required" label="题目分值">
+        <el-input-number v-model="topic1.topic_score" class="topic_score" controls-position="right" :min="1" />
+      </el-form-item>
+      <el-form-item class="required" label="题目难度">
+        <el-radio-group v-model="topic1.topic_level" class="topic_level">
+          <el-radio-button label="1">简单</el-radio-button>
+          <el-radio-button label="2">普通</el-radio-button>
+          <el-radio-button label="3">困难</el-radio-button>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="添加标签" class="addLabel">
+        <div v-if="currentLabels.length" class="tag">
+          <el-tag
+            v-for="(tag, index) in currentLabels"
+            :key="tag.linc"
+            closable
+            size="medium"
+            :disable-transitions="false"
+            type="success"
+            @close="handleLabelDel(index)"
+          >
+            {{ tag.lname }}
+          </el-tag>
+        </div>
+        <i class="el-icon-circle-plus-outline" @click="addLabels" />
+      </el-form-item>
+      <el-form-item label="题目考核技能" class="addSkill">
+        <div v-if="currentSkills.length" class="tag">
+          <el-tag
+            v-for="(tag, index) in currentSkills"
+            :key="tag.increase_id"
+            closable
+            size="medium"
+            :disable-transitions="false"
+            type="success"
+            @close="handleSkillDel(index)"
+          >
+            {{ tag.skill_name }}
+          </el-tag>
+        </div>
+        <i class="el-icon-circle-plus-outline" @click="addSkills" />
+      </el-form-item>
+    </el-form>
+    <el-form v-else-if="topic_type === 2" ref="form" class="form" label-width="100px">
+      <el-form-item class="required content" label="题目内容">
+        <el-input v-model="topic2.topic_content" class="topicName" placeholder="请输入题目" clearable />
+        <div v-show="topic2.topic_resource" class="img-group">
+          <div class="imgCover" :style="{backgroundImage:'url(' + topic2.topic_resource + ')'}"> <i class="close iconfont iconfalse-circle" @click="delTopicImg" /></div>
+        </div>
+        <div class="selectPic" @click="topicImg">添加图片</div>
+      </el-form-item>
+      <el-form-item class="required" label="题目选项">
+        <el-table
+          class="topicOption"
+          :data="topic2.topic_option"
+          border
+          style="width: 100%"
         >
-          <!--<img v-if="mobileImageUrl" :src="mobileImageUrl" class="avatar">-->
-          <i class="el-icon-plus avatar-uploader-icon" />
-        </el-upload>
+          <el-table-column
+            prop="option_content"
+            align="center"
+            label="选项内容"
+          >
+            <template slot-scope="scope">
+              <el-input v-model="scope.row.option_content" size="small" class="option_content" placeholder="请输入选项内容，字数不超过100个字" maxlength="100" />
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="option_img"
+            label="图片"
+            align="center"
+            width="60"
+          >
+            <template slot-scope="scope">
+              <el-upload
+                ref="upload"
+                class="avatar-uploader"
+                :action="uploadUrl()"
+                :headers="headers"
+                accept=".jpg,.png,.gif,.jepg,.jpeg"
+                :show-file-list="false"
+                :on-success="handleImgSuccess"
+                :before-upload="beforeImgUpload"
+              >
+                <img v-if="scope.row.option_img" :src="scope.row.option_img" class="avatar">
+                <i v-else class="el-icon-plus avatar-uploader-icon" @click="optionConcentIndex(scope.$index)" />
+              </el-upload>
+              <i v-if="scope.row.option_img" class="closeOptionImg iconfont iconfalse-circle" @click="delOptionImg(scope.row)" />
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="correct_option"
+            label="正确选项"
+            align="center"
+            width="90"
+          >
+            <template slot-scope="scope">
+              <el-checkbox v-model="scope.row.check" @change="chcekboxChange(scope.row)" />
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="addOrdelOption"
+            label="操作"
+            align="center"
+            width="90"
+          >
+            <template slot-scope="scope">
+              <i class="pointer el-icon-plus" @click="addOption" />
+              <i class="pointer el-icon-minus" @click="delTheOption(scope.$index)" />
+            </template>
+          </el-table-column>
+        </el-table>
       </el-form-item>
-      <el-form-item label="个性化系统名称">
-        <el-input v-model="form.customSystemName" maxlength="64" placeholder="请输入系统名称" clearable />
+      <el-form-item label="题目解析">
+        <el-input v-model="topic2.topic_resolve" size="small" type="textarea" :autosize="{ minRows: 1, maxRows: 4}" />
+      </el-form-item>
+      <el-form-item class="required" label="题目分值">
+        <el-input-number v-model="topic2.topic_score" class="topic_score" controls-position="right" :min="1" />
+      </el-form-item>
+      <el-form-item class="required" label="题目难度">
+        <el-radio-group v-model="topic2.topic_level" class="topic_level">
+          <el-radio-button label="1">简单</el-radio-button>
+          <el-radio-button label="2">普通</el-radio-button>
+          <el-radio-button label="3">困难</el-radio-button>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="添加标签" class="addLabel">
+        <div v-if="currentLabels.length" class="tag">
+          <el-tag
+            v-for="(tag, index) in currentLabels"
+            :key="tag.linc"
+            closable
+            size="medium"
+            :disable-transitions="false"
+            type="success"
+            @close="handleLabelDel(index)"
+          >
+            {{ tag.lname }}
+          </el-tag>
+        </div>
+        <i class="el-icon-circle-plus-outline" @click="addLabels" />
+      </el-form-item>
+      <el-form-item label="题目考核技能" class="addSkill">
+        <div v-if="currentSkills.length" class="tag">
+          <el-tag
+            v-for="(tag, index) in currentSkills"
+            :key="tag.increase_id"
+            closable
+            size="medium"
+            :disable-transitions="false"
+            type="success"
+            @close="handleSkillDel(index)"
+          >
+            {{ tag.skill_name }}
+          </el-tag>
+        </div>
+        <i class="el-icon-circle-plus-outline" @click="addSkills" />
+      </el-form-item>
+    </el-form>
+    <el-form v-else-if="topic_type === 3" ref="form" class="form" label-width="100px">
+      <el-form-item class="required content" label="题目内容">
+        <el-input v-model="topic3.topic_content" class="topicName" placeholder="请输入题目" clearable />
+        <div v-show="topic3.topic_resource" class="img-group">
+          <div class="imgCover" :style="{backgroundImage:'url(' + topic3.topic_resource + ')'}"> <i class="close iconfont iconfalse-circle" @click="delTopicImg" /></div>
+        </div>
+        <div class="selectPic" @click="topicImg">添加图片</div>
+      </el-form-item>
+      <el-form-item class="required" label="题目选项">
+        <el-table
+          class="topicOption"
+          :data="topic3.topic_option"
+          border
+          style="width: 100%"
+        >
+          <el-table-column
+            prop="option_content"
+            align="center"
+            label="选项内容"
+          />
+          <el-table-column
+            prop="correct_option"
+            label="正确选项"
+            align="center"
+            width="90"
+          >
+            <template slot-scope="scope">
+              <el-radio v-model="radio2" :label="scope.row.option_id_time_stamp" @change="isTrueChange(scope.$index)" />
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-form-item>
+      <el-form-item label="题目解析">
+        <el-input v-model="topic3.topic_resolve" size="small" type="textarea" :autosize="{ minRows: 1, maxRows: 4}" />
+      </el-form-item>
+      <el-form-item class="required" label="题目分值">
+        <el-input-number v-model="topic3.topic_score" class="topic_score" controls-position="right" :min="1" />
+      </el-form-item>
+      <el-form-item class="required" label="题目难度">
+        <el-radio-group v-model="topic3.topic_level" class="topic_level">
+          <el-radio-button label="1">简单</el-radio-button>
+          <el-radio-button label="2">普通</el-radio-button>
+          <el-radio-button label="3">困难</el-radio-button>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="添加标签" class="addLabel">
+        <div v-if="currentLabels.length" class="tag">
+          <el-tag
+            v-for="(tag, index) in currentLabels"
+            :key="tag.linc"
+            closable
+            size="medium"
+            :disable-transitions="false"
+            type="success"
+            @close="handleLabelDel(index)"
+          >
+            {{ tag.lname }}
+          </el-tag>
+        </div>
+        <i class="el-icon-circle-plus-outline" @click="addLabels" />
+      </el-form-item>
+      <el-form-item label="题目考核技能" class="addSkill">
+        <div v-if="currentSkills.length" class="tag">
+          <el-tag
+            v-for="(tag, index) in currentSkills"
+            :key="tag.increase_id"
+            closable
+            size="medium"
+            :disable-transitions="false"
+            type="success"
+            @close="handleSkillDel(index)"
+          >
+            {{ tag.skill_name }}
+          </el-tag>
+        </div>
+        <i class="el-icon-circle-plus-outline" @click="addSkills" />
       </el-form-item>
     </el-form>
     <div id="btnGroup">
-      <el-button v-no-more-click type="primary" @click="onSubmit('form')">保存</el-button>
+      <el-button v-no-more-click class="saveTopic" type="primary" @click="saveTopic">保存</el-button>
       <el-button type="primary" plain @click="cancel('form')">取消</el-button>
     </div>
-    <!-- vueCropper 剪裁图片实现-->
-    <el-dialog v-el-drag-dialog title="图片剪裁" :visible.sync="cropperDialogVisible" append-to-body :close-on-click-modal="false" @close="closeUpload">
-      <div class="cropper-content">
-        <div class="cropper" style="text-align:center">
-          <vueCropper
-            ref="cropper"
-            :img="option.img"
-            :output-size="option.size"
-            :output-type="option.outputType"
-            :info="option.info"
-            :full="option.full"
-            :fixed="option.fixed"
-            :fixed-number="option.fixedNumber"
-            :can-move="option.canMove"
-            :can-move-box="option.canMoveBox"
-            :fixed-box="option.fixedBox"
-            :original="option.original"
-            :auto-crop="option.autoCrop"
-            :auto-crop-width="option.autoCropWidth"
-            :auto-crop-height="option.autoCropHeight"
-            :center-box="option.centerBox"
-            :high="option.high"
-            @realTime="realTime"
-            @imgLoad="imgLoad"
-          />
-          <!--下载图片的a链接-->
-          <a v-show="false" ref="downLoadImg" href="javascript:;" />
-        </div>
-        <!--预览-->
-        <!--<div class="show-preview" :style="{'width': previews.w + 'px', 'height': previews.h + 'px', 'overflow': 'hidden', 'margin': '5px'}">-->
-        <div class="show-preview" :style="{'width':'180px', 'height':'180px', 'overflow': 'hidden', 'margin': '5px'}">
-          <div :style="previews.div" class="preview">
-            <img :src="previews.url" class="previewImg">
-          </div>
-        </div>
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button v-no-more-click type="primary" @click="finish">确认</el-button>
-        <el-button @click="closeUpload">取 消</el-button>
-      </div>
-    </el-dialog>
-    <el-dialog v-el-drag-dialog title="图片预览" width="38%" :visible.sync="logoDialogVisible">
-      <img width="100%" :src="logoUrl" alt="">
-    </el-dialog>
+    <select-file :visible.sync="visible" :file-type-list="['pic']" @checkedFile="checkedFile" @visible="onvisible" />
+    <add-labels :visible2.sync="visible2" :current-labels.sync="currentLabels" @addLabels="getLabels" @visible2="onvisible2" />
+    <add-skills :visible3.sync="visible3" :current-skills.sync="currentSkills" @addSkills="getSkills" @visible3="onvisible3" />
   </div>
 </template>
 
 <script>
-import { validIntNum } from '@/utils/validate'
-import { VueCropper } from 'vue-cropper'
-import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
-import { getOneTenant, editTenant } from '@/api/systemManage-tenantManage'
-import { uploadFile } from '@/api/uploadFile'
+import SelectFile from '@/components/SelectFile'
+import AddLabels from '@/components/AddEvalLabels'
+import AddSkills from '@/components/AddEvalSkills'
 import { getToken } from '@/utils/auth'
+import { topicDetil, topicEdit } from '@/api/question-bank-manage'
 const $ = window.$
 
 export default {
   components: {
-    VueCropper
+    SelectFile,
+    AddLabels,
+    AddSkills
   },
-  directives: { elDragDialog },
   data() {
     return {
-      dataIsChange: 0, // 计数器，据此判断表单是否已编辑
-      noLeaveprompt: false, // 表单提交后，设置为true，据此判断提交不再弹出离开提示
-      id: '', // 查询id
-      form: {}, // 表单数据
-      isChangeTuser: 0, // 是否修改租户管理员
+      id: '', // 查询参数
+      selectCompanyId: '', // 租户
+      egroup: '', // 小组
       headers: {
         Authorization: getToken() // 图片上传 header
       },
-      logoType: '', // 上传logo类型
-      fileName: '', // 上传文件名称
-      fileList1: [], // 平台Logo list
-      fileList2: [], // 移动端Logo list
-      cropperDialogVisible: false, // 是否打开图片裁剪弹窗
-      logoDialogVisible: false, // 是否打开logo预览弹窗
-      clearFiles: true, // 是否清除当前上传的logo
-      logoUrl: '', // 预览的logo url
-      deskTopImageUrl: '', // 平台Logo url
-      mobileImageUrl: '', // 移动端Logo url
-      fileInfo: {}, // 上传数据 似乎没用。。
-      // 裁剪组件的基础配置option
-      option: {
-        img: '', // 裁剪图片的地址
-        info: false, // 裁剪框的大小信息
-        outputSize: 0.8, // 裁剪生成图片的质量
-        outputType: 'png', // 裁剪生成图片的格式 jpeg、png、webp
-        canScale: false, // 图片是否允许滚轮缩放
-        fixedBox: false, // 固定截图框大小 不允许改变
-        fixed: true, // 是否开启截图框宽高固定比例
-        fixedNumber: [1, 1], // 截图框的宽高比例
-        autoCrop: true, // 是否默认生成截图框
-        autoCropWidth: 180, // 默认生成截图框宽度 只有自动截图开启 宽度高度才生效
-        autoCropHeight: 180, // 默认生成截图框高度 只有自动截图开启 宽度高度才生效
-        full: false, // 是否输出原图比例的截图
-        canMoveBox: true, // 截图框能否拖动
-        original: false, // 上传图片按照原始比例渲染
-        centerBox: true, // 截图框是否被限制在图片里面
-        infoTrue: true, // true 为展示真实输出图片宽高 false 展示看到的截图框宽高
-        high: true,
-        size: 1
-      },
-      previews: {}, // 剪切实时预览数据
-      rules: {
-        customname: [
-          { required: true, message: '请输入租户名称（长度在 1 到 64 个字符）', trigger: 'blur' },
-          { required: true, message: '请输入租户名称（长度在 1 到 64 个字符）', trigger: 'change' },
-          { min: 1, max: 64, message: '长度在 1 到 64 个字符', trigger: 'blur' },
-          { min: 1, max: 64, message: '长度在 1 到 64 个字符', trigger: 'change' }
-        ],
-        desc: [
-          { required: true, message: '请输入租户描述（长度在 1 到 100 个字符）', trigger: 'blur' },
-          { required: true, message: '请输入租户描述（长度在 1 到 100 个字符）', trigger: 'change' },
-          { min: 1, max: 100, message: '长度在 1 到 100 个字符', trigger: 'blur' },
-          { min: 1, max: 100, message: '长度在 1 到 100 个字符', trigger: 'change' }
-        ],
-        userCount: [
-          { required: true, message: '请输入最大用户数（长度在 1 到 120 个字符）', trigger: 'blur' },
-          { required: true, message: '请输入最大用户数（长度在 1 到 120 个字符）', trigger: 'change' }
-        ],
-        customStatus: [
-          { required: true, message: '请选择租户状态', trigger: 'change' }
-        ],
-        text_extraction: [
-          { required: true, message: '请选择是否开通智能搜索', trigger: 'change' }
-        ],
-        uName: [
-          { required: true, message: '请输入租户管理员（长度在 2 到 64 个字符）', trigger: 'blur' },
-          { required: true, message: '请输入租户管理员（长度在 2 到 64 个字符）', trigger: 'change' },
-          { min: 2, max: 64, message: '长度在 2 到 64 个字符', trigger: 'blur' },
-          { min: 2, max: 64, message: '长度在 2 到 64 个字符', trigger: 'change' }
-        ],
-        uNickname: [
-          { required: true, message: '请输入管理员昵称（长度在 2 到 20 个字符）', trigger: 'blur' },
-          { required: true, message: '请输入管理员昵称（长度在 2 到 20 个字符）', trigger: 'change' },
-          { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' },
-          { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'change' }
-        ],
-        uPwd: [
-          { required: true, message: '请输入管理员密码（长度在 6 到 50 个字符）', trigger: 'blur' },
-          { required: true, message: '请输入管理员密码（长度在 6 到 50 个字符）', trigger: 'change' },
-          { min: 6, max: 50, message: '长度在 6 到 50 个字符', trigger: 'blur' },
-          { min: 6, max: 50, message: '长度在 6 到 50 个字符', trigger: 'change' }
-        ]
-      }
+      dataIsChange: 0, // 计数器，据此判断表单是否已编辑
+      noLeaveprompt: false, // 表单提交后，设置为true，据此判断提交不再弹出离开提示
+      canLeave: false, // 是否可以离开
+      visible: false, // 弹出选择文件
+      visible2: false, // 弹出选择标签
+      visible3: false, // 弹出选择技能
+      topic_type: '1', // 默认单选题
+      uploadOptionIndex: null, // 上传图片的选项index
+      currentLabels: [], // 当前要回显的标签
+      currentSkills: [], // 当前要回显的技能
+      topics: [], // 添加的所有试题
+      topics1: [], // 手动添加的所有试题
+      topics2: [], // Excel添加的所有试题
+      topic1: { // 单选题
+        topic_type: '', // 题目类型 1单选，2多选，3判断
+        topic_content: '', // 题目
+        topic_level: 1, // 难度
+        topic_label: '', // 标签
+        topic_skill: '', // 技能
+        currentLabels: [], // 标签obj
+        currentSkills: [], // 技能obj
+        topic_resolve: '', // 试题解析
+        topic_score: 1, // 分值
+        topic_option: [ // 题目选项
+          {
+            option_content: '',
+            option_img: '',
+            correct_option: 2, // 1正确答案 2错误
+            option_id: this.guid(),
+            option_id_time_stamp: new Date().getTime()
+          }, {
+            option_content: '',
+            option_img: '',
+            correct_option: 2,
+            option_id: this.guid(),
+            option_id_time_stamp: new Date().getTime() + 1
+          }
+        ], // 题目选项
+        topic_resource: '', // 选择的图片
+        topic_resource_id: '' // 主文件id
+      }, // 单题数据
+      topic2: { // 多选题
+        topic_type: '', // 题目类型 1单选，2多选，3判断
+        topic_content: '', // 题目
+        topic_level: 1, // 难度
+        topic_label: '', // 标签
+        topic_skill: '', // 技能
+        currentLabels: [], // 标签obj
+        currentSkills: [], // 技能obj
+        topic_resolve: '', // 试题解析
+        topic_score: 1, // 分值
+        topic_option: [ // 题目选项
+          {
+            option_content: '',
+            option_img: '',
+            correct_option: 2, // 1正确答案 2错误
+            check: false,
+            option_id: this.guid(),
+            option_id_time_stamp: new Date().getTime() + 2
+          }, {
+            option_content: '',
+            option_img: '',
+            correct_option: 2,
+            check: false,
+            option_id: this.guid(),
+            option_id_time_stamp: new Date().getTime() + 3
+          }
+        ], // 题目选项
+        topic_resource: '', // 选择的图片
+        topic_resource_id: '' // 主文件id
+      }, // 单题数据
+      topic3: { // 判断题
+        topic_type: '', // 题目类型 1单选，2多选，3判断
+        topic_content: '', // 题目
+        topic_level: 1, // 难度
+        topic_label: '', // 标签
+        topic_skill: '', // 技能
+        currentLabels: [], // 标签obj
+        currentSkills: [], // 技能obj
+        topic_resolve: '', // 试题解析
+        topic_score: 1, // 分值
+        topic_option: [ // 题目选项
+          {
+            option_content: '正确',
+            option_img: '',
+            correct_option: 2, // 1正确答案 2错误
+            option_id: this.guid(),
+            option_id_time_stamp: new Date().getTime() + 4
+          }, {
+            option_content: '错误',
+            option_img: '',
+            correct_option: 2,
+            option_id: this.guid(),
+            option_id_time_stamp: new Date().getTime() + 5
+          }
+        ], // 题目选项
+        topic_resource: '', // 选择的图片
+        topic_resource_id: '' // 主文件id
+      }, // 单题数据
+      radio1: '', // 单选题目选项
+      radio2: '', // 判断题目选项
+      check2: '' // 多选题目选项
+    }
+  },
+  computed: {
+    // 计算属性的 getter
+    topic0: function() {
+      return 'topic' + this.topic_type
+    },
+
+    topic_class: function() {
+      return this.addType + '-topic' + this.topic_type
     }
   },
   watch: {
     // 监听表单数据变化
-    form: {
+    topic1: {
       handler(val) {
-        if (val) {
+        if (val && !this.canLeave) {
+          this.dataIsChange++
+        }
+      },
+      deep: true // 深层次监听
+    },
+    topic2: {
+      handler(val) {
+        if (val && !this.canLeave) {
+          this.dataIsChange++
+        }
+      },
+      deep: true // 深层次监听
+    },
+    topic3: {
+      handler(val) {
+        if (val && !this.canLeave) {
+          this.dataIsChange++
+        }
+      },
+      deep: true // 深层次监听
+    },
+    topics: {
+      handler(val) {
+        if (val && !this.canLeave) {
           this.dataIsChange++
         }
       },
@@ -260,195 +494,284 @@ export default {
   },
   created() {
     this.id = this.$route.query._id
-    this.getTenant()
+    this.getDetail()
   },
   methods: {
-    // 获取初始数据
-    getTenant() {
-      getOneTenant({ _id: this.id }).then(response => {
-        const obj = {
-          uUserId: response.data.user._id,
-          _id: response.data.custom._id,
-          customname: response.data.custom.customname,
-          desc: response.data.custom.desc,
-          userCount: response.data.custom.userCount,
-          customStatus: response.data.custom.customStatus,
-          text_extraction: response.data.custom.text_extraction,
-          uName: response.data.user.username,
-          uNickname: response.data.user.nickname,
-          uPwd: '',
-          pcLogoFileId: response.data.custom.pcLogoFileId,
-          pcLogoFileUrl: response.data.custom.pcLogoFileUrl,
-          mobileLogoFileId: response.data.custom.mobileLogoFileId,
-          mobileLogoFileUrl: response.data.custom.mobileLogoFileUrl,
-          customSystemName: response.data.custom.customSystemName
+    getDetail() {
+      topicDetil({ _id: this.id }).then(res => {
+        const { data } = res
+        data.topic = data.topic || []
+        this.topic_type = data.topic[0].topic_type
+
+        data.topic[0].topic_option.forEach((item, index) => {
+          item.option_id_time_stamp = new Date().getTime() + index
+          if (item.correct_option === 1 && this.topic_type === 1) {
+            this.radio1 = item.option_id_time_stamp
+          }
+          if (item.correct_option === 1 && this.topic_type === 3) {
+            this.radio2 = item.option_id_time_stamp
+          }
+          if (item.correct_option === 1 && this.topic_type === 2) {
+            item.check = true
+          }
+        })
+        this.currentLabels = data.topic[0].labels
+        this.currentSkills = data.topic[0].skills
+        // this.currentLabels = []
+        // this.currentSkills = []
+        switch (this.topic_type) {
+          case 1:
+            this.topic1 = data.topic[0]
+            break
+          case 2:
+            this.topic2 = data.topic[0]
+            break
+          case 3:
+            this.topic3 = data.topic[0]
+            break
         }
-        if (response.data.custom.pcLogoFileUrl) {
-          this.fileList1 = [{ name: '', url: response.data.custom.pcLogoFileUrl }]
-          $('.uploadDeskTopLogo .el-upload--picture-card').hide()
-        }
-        if (response.data.custom.mobileLogoFileUrl) {
-          this.fileList2 = [{ name: '', url: response.data.custom.mobileLogoFileUrl }]
-          $('.uploadMobileLogo .el-upload--picture-card').hide()
-        }
-        this.form = obj
         this.dataIsChange = -1
       })
     },
-    // 提交
-    onSubmit(formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          switch (this.isChangeTuser) {
-            case 0:
-              this.form.isChangeTuser = 'n'
-              break
-            case 1:
-              this.form.isChangeTuser = 'y'
-              break
-          }
-          editTenant(this.form).then(response => {
-            this.$message.success('修改租户成功！')
-            this.noLeaveprompt = true
-            this.$router.push({ path: '/systemManage/tenantManage/detail', query: { _id: this.id }})
-          })
-        }
+    // 用于生成uuid
+    S4: function() {
+      return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1)
+    },
+    guid: function() {
+      return (this.S4() + this.S4() + '-' + this.S4() + '-' + this.S4() + '-' + this.S4() + '-' + this.S4() + this.S4() + this.S4())
+    },
+
+    // 题干添加图片
+    topicImg() {
+      this.visible = true
+    },
+    // 监听选择文件组件返回数据
+    checkedFile(val) {
+      this[this.topic0].topic_resource = val.fileUrl
+      this[this.topic0].topic_resource_id = val.mainFileId
+    },
+    // 监听选择文件组件返回数据
+    onvisible(val) {
+      this.visible = val.visible
+    },
+
+    // 删除题干图片
+    delTopicImg() {
+      this.$confirm('确定删除该图片吗？', '删除图片', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this[this.topic0].topic_resource = ''
+        this[this.topic0].topic_resource_id = ''
+        this.$message.success('删除成功！')
+      }).catch(() => {
+
       })
     },
-    // 取消
-    cancel(formName) {
-      this.$router.push({ path: '/systemManage/tenantManage/list' })
-    },
+
     // 上传路径
     uploadUrl() {
       return process.env.VUE_APP_BASE_API + 'system/file/upload/'
     },
-    logoTypes(type) {
-      this.logoType = type
+
+    // 获取上传图片选项index
+    optionConcentIndex(index) {
+      this.uploadOptionIndex = index
     },
-    // 上传按钮   限制图片大小
-    changeUpload(file, fileList) {
+
+    // 上传选项图片之前
+    beforeImgUpload(file) {
       const suffixs = ['.png', '.jpg', '.gif', '.jepg', '.jpeg']
       const i = file.name.lastIndexOf('.')
       const suffix = file.name.slice(i)
       if (suffixs.indexOf(suffix) === -1) {
         this.$message.error('文件格式错误！')
-        if (this.logoType === 1) {
-          this.fileList1 = []
-        } else {
-          this.fileList2 = []
-        }
+        this.$refs.upload.clearFiles()
         return false
       }
       const isLt5M = file.size / 1024 / 1024 < 5
       if (!isLt5M) {
         this.$message.error('上传文件大小不能超过 5MB！')
-        if (this.logoType === 1) {
-          this.fileList1 = []
-        } else {
-          this.fileList2 = []
-        }
+        this.$refs.upload.clearFiles()
         return false
       }
-      this.fileName = file.name
-      // // 上传成功后将图片地址赋值给裁剪框显示图片
-      this.$nextTick(() => {
-        this.option.img = file.url
-        this.cropperDialogVisible = true
-      })
+      return true
     },
-    // 上传成功
-    handleSuccess(response, file, fileList) {
-      console.log(file)
+
+    // 成功上传选项图片
+    handleImgSuccess(res, file) {
+      this[this.topic0].topic_option[this.uploadOptionIndex].option_img = res.data.saveHttpPath
     },
-    // 上传失败
-    handleUploadError(response, file, fileList) {
-      this.$message.error('上传文件失败！')
-      if (this.logoType === 1) {
-        this.fileList1 = []
-      } else {
-        this.fileList2 = []
-      }
-    },
-    // logo删除前
-    beforeRemove(file, fileList) {
-      return this.$confirm('您确定要删除logo吗？', '删除图片', {
+
+    // 删除选项图片
+    delOptionImg(row) {
+      this.$confirm('确定删除该图片吗？', '删除图片', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
+      }).then(() => {
+        row.option_img = ''
+        this.$message.success('删除成功！')
+      }).catch(() => {
+
       })
     },
-    // 处理文件移除
-    handleRemove(file, fileList) {
-      console.log(file, fileList)
-      if (this.logoType === 1) {
-        this.form.pcLogoFileId = ''
-        this.form.pcLogoFileUrl = ''
-        $('.uploadDeskTopLogo .el-upload--picture-card').show()
+
+    // 题目选项单选
+    isTrueChange(index, option_id_time_stamp) {
+      this[this.topic0].topic_option.forEach(item => {
+        item.correct_option = 2
+      })
+      this.radio1 = option_id_time_stamp
+      this[this.topic0].topic_option[index].correct_option = 1
+      this[this.topic0].topic_option[index].check = true
+      console.log(this[this.topic0].topic_option)
+    },
+
+    // 题目选项多选
+    chcekboxChange(item) {
+      if (item.check) {
+        item.correct_option = 1
       } else {
-        this.form.mobileLogoFileId = ''
-        this.form.mobileLogoFileUrl = ''
-        $('.uploadMobileLogo .el-upload--picture-card').show()
+        item.correct_option = 2
       }
     },
-    // 处理预览
-    handlePreview(file) {
-      // 图片预览
-      this.logoUrl = file.url
-      this.logoDialogVisible = true
-    },
-    // 点击裁剪，这一步是可以拿到处理后的地址
-    finish() {
-      this.clearFiles = false
-      const formData = new FormData()
-      this.$refs.cropper.getCropBlob((data) => {
-        formData.append('thumbnailfile', data, this.fileName)
-        uploadFile(formData).then(response => {
-          if (this.logoType === 1) {
-            this.deskTopImageUrl = response.data.saveHttpPath
-            this.form.pcLogoFileUrl = response.data.saveHttpPath
-            this.form.pcLogoFileId = response.data.id
-            this.fileList1 = [{ name: response.data.originalFilename, url: response.data.saveHttpPath }]
-            $('.uploadDeskTopLogo .el-upload--picture-card').hide()
-          } else {
-            this.mobileImageUrl = response.data.saveHttpPath
-            this.form.mobileLogoFileUrl = response.data.saveHttpPath
-            this.form.mobileLogoFileId = response.data.id
-            this.fileList2 = [{ name: response.data.originalFilename, url: response.data.saveHttpPath }]
-            $('.uploadMobileLogo .el-upload--picture-card').hide()
-          }
-          this.fileInfo = {}
-          this.cropperDialogVisible = false
-        })
+
+    // 添加题目选项
+    addOption: function() {
+      if (this[this.topic0].topic_option.length === 20) {
+        this.$message.warning('选项不可以超过20条！')
+        return false
+      }
+      this[this.topic0].topic_option.push({
+        option_content: '',
+        option_img: '',
+        correct_option: 2,
+        option_id: this.guid(),
+        option_id_time_stamp: new Date().getTime()
       })
     },
-    // 关闭上传及裁剪
-    closeUpload() {
-      if (this.clearFiles) {
-        if (this.logoType === 1) {
-          this.$refs['uploadDeskTopLogo'].clearFiles()
-        } else {
-          this.$refs['uploadMobileLogo'].clearFiles()
+
+    // 删除当前题目选项
+    delTheOption: function(index) {
+      if (this[this.topic0].topic_option.length === 2) {
+        this.$message.warning('选项不得少于两项！')
+        return false
+      }
+      this.$confirm('确定删除该选项？', '删除选项', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this[this.topic0].topic_option.splice(index, 1)
+        this.$message.success('删除成功！')
+      }).catch(() => {
+
+      })
+    },
+
+    // 添加标签
+    addLabels() {
+      this.visible2 = true
+    },
+    // 监听选择标签组件返回数据
+    getLabels(val) {
+      this.currentLabels = val
+      this[this.topic0].currentLabels = val
+    },
+    // 监听选择标签组件返回数据
+    onvisible2(val) {
+      this.visible2 = val.visible
+    },
+    // 删除标签
+    handleLabelDel(index) {
+      this.currentLabels.splice(index, 1)
+    },
+
+    // 添加技能
+    addSkills() {
+      this.visible3 = true
+    },
+    // 监听选择技能组件返回数据
+    getSkills(val) {
+      this.currentSkills = val
+      this[this.topic0].currentSkills = val
+    },
+    // 监听选择技能组件返回数据
+    onvisible3(val) {
+      this.visible3 = val.visible
+    },
+    // 删除技能
+    handleSkillDel(index) {
+      this.currentSkills.splice(index, 1)
+    },
+
+    // 添加试题
+    saveTopic() {
+      // 校验题目
+      if (!this[this.topic0].topic_content) {
+        this.$message.warning('请输入题目！')
+        $('.topicName input').focus()
+        return false
+      }
+
+      // 校验题目
+      var correct_option_arr = [] // 答案数组
+      for (var i = 0, len = this[this.topic0].topic_option.length; i < len; i++) {
+        var item = this[this.topic0].topic_option[i]
+        if (!item.option_content) {
+          this.$message.warning('请输入选项内容！')
+          $('.topicOption .option_content').eq(i).find('.el-input__inner').focus()
+          return false
         }
-        this.cropperDialogVisible = false
-        this.clearFiles = true
+        correct_option_arr.push(item.correct_option)
       }
-      this.clearFiles = true
-    },
-    // 实时预览函数
-    realTime(realTimeData) {
-      this.$refs.cropper.getCropData((data) => {
-        this.previews = realTimeData
-        this.previews.url = data
+
+      if (correct_option_arr.indexOf(1) === -1) {
+        this.$message.warning('请选择正确选项')
+        return false
+      }
+
+      // 校验分数
+      if (!this[this.topic0].topic_score) {
+        this.$message.warning('请输入分值')
+        $('.edit-' + this.topic_class + ' .topic_score input').focus()
+        return false
+      }
+
+      // 校验难度
+      if (!this[this.topic0].topic_level) {
+        this.$message.warning('请选择难度')
+        return false
+      }
+
+      var topic_label = []
+      this.currentLabels = this.currentLabels || []
+      this.currentSkills = this.currentSkills || []
+      this.currentLabels.forEach(item => {
+        topic_label.push(item.linc)
+      })
+      var topic_skill = []
+      this.currentSkills.forEach(item => {
+        topic_skill.push(item.increase_id)
+      })
+      // 获取标签
+      this[this.topic0].topic_label = topic_label.join()
+      // 获取技能
+      this[this.topic0].topic_skill = topic_skill.join()
+      this[this.topic0].topic_type = this[this.topic0].topic_type + ''
+      this[this.topic0].topic_level = this[this.topic0].topic_level + ''
+      topicEdit(this[this.topic0]).then(res => {
+        this.noLeaveprompt = true
+        this.$message.success('保存试题成功！')
+        this.$router.push({ path: '/evaluating-manage/question-bank-manage/list' })
       })
     },
-    // 图片加载情况
-    imgLoad(msg) {
-      console.log(msg)
-    },
-    // 校验最大用户数为正整数
-    intNum(val) {
-      this.form.userCount = validIntNum(val)
+
+    // 取消
+    cancel() {
+      this.$router.push({ path: '/evaluating-manage/question-bank-manage/list' })
     }
   },
   beforeRouteLeave(to, from, next) {
@@ -472,41 +795,227 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  @import "~@/styles/theme.scss";
   #btnGroup {
-    padding-left: 140px;
+    padding-left: 100px;
   }
-  /deep/ .el-upload-dragger {
-    border: none;
-    width: auto;
-    height: auto;
-  }
-  [class^="el-icon-"], [class*=" el-icon-"] {
-    line-height: 60px!important;
-  }
-  .vueCropper {
-    text-align: left;
-  }
-  // 截图
-  .cropper-content {
-    .cropper {
-      width: calc(100% - 200px);
-      height: 340px;
+  #addTopicVue .submit{
+    margin: 10px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 99;
+
+    > /deep/ p, .addTopic {
       display: inline-block;
     }
+    > /deep/ p {
+      font-size: 14px;
+    }
   }
-  .show-preview {
-    float: right;
-    width: 140px;
+  /deep/ .addType>.el-tabs__header .el-tabs__item {
+    font-size: 16px!important;
+    font-weight: 700!important;
+  }
+  /deep/ .addType .el-tabs__nav-wrap:after {
+    height: 0!important;
+  }
+  /deep/ .addType>.el-tabs__header>.el-tabs__nav-wrap>.el-tabs__nav-scroll>.el-tabs__nav {
+    width: 180px;
+    margin: 0 auto;
+    float: none;
+  }
+  #addTopicVue .edit {
+    width: 60%;
+  }
+  #addTopicVue .preview {
+    width: calc(40% - 10px);
+    border-left: 8px solid #e2e6ed;
+    height: 100%;
+    min-height: 500px;
+    padding: 0 10px;
+    box-sizing: border-box;
+  }
+  .topicType /deep/ .el-tabs__item.is-top.is-active {
+    border-radius: 3px;
+    padding-bottom: 38px;
+    box-shadow: inset 0 0px 2px 2px $themeColor;
+  }
+  .topicName {
+    width: calc(100% - 160px);
+  }
+  .img-group {
     display: inline-block;
   }
-  .previewImg {
-    width: 180px;
-    height: 180px;
+  .selectPic {
+    display: inline-block;
+    width: 80px;
+    height: 32px;
+    line-height: 32px;
+    cursor: pointer;
+    text-align: center;
+    margin-left: 6px;
+    border-radius: 3px;
+    color: #FFFFFF;
+    background-color: $themeColor;
+    border-color: $themeColor;
   }
-  .logoClass /deep/ .el-form-item__content {
-    line-height: 18px;
+  .selectPic:hover {
+    opacity: 0.8;
   }
-  /deep/ .el-upload-list li {
+  .imgCover {
+    position: relative;
+    display: inline-block;
+    background-size: cover;
+    vertical-align: middle;
+    width: 40PX;
+    height: 30px;
+  }
+  .close {
+    position: absolute;
+    top: -17px;
+    right: -8px;
+    cursor: pointer;
+  }
+  .content {
+    line-height: 40px;
+    height: 40px;
+
+    > /deep/ .el-form-item__label, /deep/ .el-form-item__content {
+      height: 40px;
+      line-height: 40px;
+    }
+  }
+  .avatar {
+    width: 40px;
+    vertical-align: middle;
+  }
+  .closeOptionImg {
+    position: absolute;
+    top: 0;
+    right: -1px;
+    cursor: pointer;
+  }
+  i {
+    cursor: pointer;
+  }
+  .tag {
+    display: inline-block;
+  }
+  /deep/ .el-tag {
+    margin-right: 10px;
+  }
+  /deep/ .el-tag .el-icon-close {
+    vertical-align: middle;
+    margin: 0;
+  }
+  /deep/ .el-tag .el-icon-close::before {
+    margin: 0;
+  }
+  .preview h3 {
+    margin-top: 4px;
+  }
+  #addTopicVue .preview .tip {
+    margin-top: 0;
+    padding-bottom: 10px;
     margin-bottom: 0;
+    border-bottom: 1px solid #e4e7ed;
+  }
+  #addTopicVue .topics-preview {
+    overflow: auto;
+  }
+  .preview h3 {
+    font-style: normal;
+    font-weight: 500;
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 0;
+  }
+  .topics-item {
+    padding: 10px;
+    border-bottom: 1px solid #e4e7ed;
+  }
+  .topic-type {
+    font-weight: 700;
+    font-size: 14px;
+    height: 30px;
+  }
+  .single-line {
+    display: inline-block;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    max-width:17%;
+    vertical-align: middle;
+  }
+  .previewImg {
+    display: inline-block;
+    width: 50px;
+    height: 30px;
+  }
+  .topic-options {
+    position: relative;
+  }
+  .topic-options .topic-item {
+    border: 1px solid #20c7b2;
+    width: 60%;
+    padding: 4px;
+    margin-bottom: 4px;
+    font-size: 14px;
+  }
+  .topic-options .topic-item label {
+    margin-bottom: 0;
+  }
+  .topic-options .topic-item {
+    border: 1px solid #20c7b2;
+    width: 60%;
+    padding: 4px;
+    margin-bottom: 4px;
+  }
+  .topic-options .topic-item label {
+    margin-bottom: 0;
+  }
+  .topic-item .el-checkbox__label {
+    display: inline-block;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    max-width:94%;
+    box-sizing: border-box;
+    vertical-align: middle;
+  }
+  .topics-item p {
+    margin: 0;
+  }
+  .topic_resolve {
+    font-size: 14px;
+  }
+  .handle {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+  .topicOption /deep/ .el-radio__label {
+    display: none;
+  }
+  .excel-uploader {
+    display: inline-block;
+  }
+  .error-option {
+    color: red;
+  }
+  .error-desc {
+    word-break: break-all;
+    word-wrap: break-word;
+    font-size: 14px;
+  }
+  .error-option .el-checkbox__label {
+    color: red!important;
+  }
+  .preview /deep/ .el-scrollbar {
+    height: calc(100vh - 260px);
+  }
+  .addIcon {
+    font-size: 14px;
   }
 </style>

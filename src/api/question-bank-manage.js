@@ -41,3 +41,19 @@ export function importTopics(data) {
     data
   })
 }
+// 试题详情
+export function topicDetil(data) {
+  return request({
+    url: '/evaluation/topic/findByIdV2',
+    method: 'post',
+    data
+  })
+}
+// 修改试题
+export function topicEdit(data) {
+  return request({
+    url: '/evaluation/topic/update',
+    method: 'post',
+    data
+  })
+}
