@@ -5,7 +5,7 @@
       :current-page.sync="currentPage"
       :page-size.sync="pageSize"
       :layout="layout"
-      :page-sizes="pageSizes.length === 1 ? 10 : pageSizes"
+      :page-sizes="!pageSizes.length ? '' : pageSizes"
       :total="total"
       v-bind="$attrs"
       @size-change="handleSizeChange"
@@ -33,7 +33,7 @@ export default {
       default: 10
     },
     pageSizes: {
-      type: Array,
+      type: [Array, Number],
       default() {
         return [10, 20, 30, 50]
       }

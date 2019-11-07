@@ -91,7 +91,7 @@
         <pagination
           v-show="total > 0"
           :total="total"
-          :page-sizes="[10]"
+          :page-sizes="[]"
           :page.sync="listQuery.currentPage"
           :limit.sync="listQuery.pageSize"
           @pagination="get_list"
