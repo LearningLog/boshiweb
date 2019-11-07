@@ -1,92 +1,106 @@
 <template>
   <div class="app-container">
-    <div id="topSearch">
-      <el-input v-model="listQuery.customname" placeholder="请输入租户名称" clearable @keyup.enter.native="topSearch">
-        <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
-      </el-input>
-      <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">高级搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
-      <transition name="fade-advanced-search">
-        <el-row v-show="popoverVisible">
-          <el-card id="advancedSearchArea" shadow="never">
-            <el-form ref="form" :model="listQuery" label-width="100px">
-              <el-form-item label="套餐类型">
-                <el-input v-model="listQuery.payTypeName" placeholder="请输入套餐类型" clearable @keyup.enter.native="topSearch" />
-              </el-form-item>
-              <el-form-item label="创建时间">
-                <el-date-picker
-                  v-model="time_range"
-                  type="daterange"
-                  range-separator="至"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                  value-format="yyyy-MM-dd"
+    <div class="list-box">
+      <div id="topSearch">
+        <el-input v-model="listQuery.content" placeholder="请输入操作日志信息" clearable @keyup.enter.native="topSearch">
+          <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
+        </el-input>
+        <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">高级搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
+        <transition name="fade-advanced-search">
+          <el-row v-show="popoverVisible">
+            <el-card id="advancedSearchArea" shadow="never">
+              <el-form ref="form" :model="listQuery" label-width="100px">
+                <tenants-groups-roles :is-render-role="false" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" />
+                <el-form-item label="模块名称">
+                  <el-select v-model="listQuery.egroup" placeholder="请选择模块" clearable filterable>
+                    <el-option
+                      v-for="item in moduleList"
+                      :key="item.value"
+                      :label="item.name"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-form>
+              <div id="searchPopoverBtn">
+                <el-button type="primary" @click="topSearch">搜索</el-button>
+                <el-button type="primary" plain @click="reset">重置</el-button>
+              </div>
+            </el-card>
+          </el-row>
+        </transition>
+      </div>
+
+      <el-table
+        v-loading="listLoading"
+        :data="list"
+        element-loading-text="Loading"
+        border
+        fit
+        highlight-current-row
+      >
+        <el-table-column align="center" label="消息内容" min-width="140" show-overflow-tooltip prop="content" />
+        <el-table-column label="操作类型" min-width="110" align="center" show-overflow-tooltip prop="noticeTypeDesc" />
+        <el-table-column class-name="status-col" label="操作模块" min-width="70" align="center" show-overflow-tooltip prop="moduleName" />
+        <el-table-column align="center" label="操作人" min-width="70" show-overflow-tooltip prop="userNickName" />
+
+        <el-table-column align="center" label="小组" min-width="70" show-overflow-tooltip prop="groupNameDesc" />
+
+        <el-table-column align="center" label="操作时间" min-width="100" show-overflow-tooltip prop="createTime" />
+        <el-table-column align="center" label="发送人数" min-width="100" show-overflow-tooltip prop="successCount">
+          <template slot-scope="scope">
+            <span class="pointer" @click="operateDetail(scope.row)">{{ scope.row.successCount }}</span>
+
+          </template>
+        </el-table-column>
+      </el-table>
+      <pagination v-show="total>0" :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="get_list" />
+      <el-dialog v-el-drag-dialog title="操作人详情" :visible.sync="dialogTableVisible">
+        <div id="topSearch2">
+          <el-form ref="form" :model="listQuery2" label-width="100px">
+            <el-form-item label="状态">
+              <el-select v-model="listQuery2.smsStatus" placeholder="" clearable filterable @change="getDetailList">
+                <el-option
+                  v-for="item in smsStatusList"
+                  :key="item.value"
+                  :label="item.name"
+                  :value="item.value"
                 />
-              </el-form-item>
-              <el-form-item label="有效期">
-                <el-date-picker
-                  v-model="effectTime"
-                  type="daterange"
-                  range-separator="至"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                  value-format="yyyy-MM-dd"
-                />
-              </el-form-item>
-            </el-form>
-            <div id="searchPopoverBtn">
-              <el-button type="primary" @click="topSearch">搜索</el-button>
-              <el-button type="primary" plain @click="reset">重置</el-button>
-            </div>
-          </el-card>
-        </el-row>
-      </transition>
+              </el-select>
+            </el-form-item>
+
+          </el-form>
+
+        </div>
+        <el-table :data="list2">
+          <el-table-column property="userNickName" label="接收人" width="150" />
+          <el-table-column property="groupNameDesc" label="小组" width="200" />
+          <el-table-column property="smsStatusDesc" label="短信发送状态" />
+        </el-table>
+        <div class="clearfix">
+          <pagination
+            v-show="total2 > 0"
+            :total="total2"
+            :page.sync="listQuery2.currentPage"
+            :limit.sync="listQuery2.pageSize"
+            @pagination="getDetailList"
+          />
+        </div>
+      </el-dialog>
     </div>
-    <el-table
-      v-loading="listLoading"
-      :data="list"
-      element-loading-text="Loading"
-      border
-      fit
-      highlight-current-row
-    >
-      <el-table-column align="center" label="租户" min-width="140" show-overflow-tooltip prop="customname" />
-      <el-table-column label="套餐类型" min-width="110" align="center" show-overflow-tooltip prop="payTypeName" />
-      <el-table-column class-name="status-col" label="员工规模" min-width="70" align="center" show-overflow-tooltip prop="totalUserCount" />
-      <el-table-column align="center" label="短信使用" min-width="70" show-overflow-tooltip>
-        <template slot-scope="scope">
-          <span>{{ scope.row.usedTotalSms }}</span><span>&nbsp;/&nbsp;</span><span>{{ scope.row.totalSms }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="存储空间" min-width="70" show-overflow-tooltip>
-        <template slot-scope="scope">
-          <span>{{ getFileShowSize(scope.row.usedStorageSpace) }}</span><span>&nbsp;/&nbsp;</span><span>{{ getFileShowSize(scope.row.totalStorageSpace) }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="创建时间" min-width="100" show-overflow-tooltip prop="createtime" />
-      <el-table-column align="center" label="有效期" min-width="120" show-overflow-tooltip>
-        <template slot-scope="scope">
-          <span>{{ scope.row.effectTime }}</span>
-          <span>{{ parseTime(scope.row.startTime || '', '{y}-{m}-{d}') }}</span><span>&nbsp;至&nbsp;</span><span>{{ parseTime(scope.row.endTime || '', '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column class-name="status-col" label="操作" width="160" align="center" fixed="right" show-overflow-tooltip>
-        <template slot-scope="scope">
-          <el-button size="mini" @click="detail(scope.row)"><i class="iconfont iconchakan" />查看</el-button>
-          <el-button size="mini" @click="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="get_list" />
-  </div>
-</template>
+  </div></template>
 
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import { getCustomResourceList } from '@/api/enterprise-data'
-import { getFileShowSize, parseTime } from '@/utils/index'
+import { getNoticeList, getNoticeDetail } from '@/api/operate-log'
+import { getCustomManageList } from '@/api/systemManage-roleManage'
+import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
+import elDragDialog from '@/directive/el-drag-dialog'
+import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
 
 export default {
-  components: { Pagination },
+  directives: { elDragDialog },
+  components: { Pagination, TenantsGroupsRoles },
   data() {
     return {
       popoverVisible: false, // 高级搜索是否显示
@@ -94,72 +108,100 @@ export default {
       listQuery: { // 查询条件
         currentPage: 1, // 当前页
         pageSize: 10, // 当前页请求条数
-        customname: null, // 租户名称
-        payTypeName: null, // 套餐类型
-        startTime: null, // 创建开始时间
-        endTime: null, // 创建结束时间
-        effectStartTime: null, // 有效开始日期
-        effectEndTime: null // 有效结束日期
+        content: null, // 消息内容
+        noticeType: null, // 操作模块
+        selectCompanyId: null, // 租户id
+        module: null, // 模块标识
+        egroup: []// 小组id
       },
-      time_range: [], // 创建时间
-      effectTime: [], // 有效期
+      total2: 0,
+      listQuery2: { // 查询条件
+        currentPage: 1, // 当前页
+        pageSize: 10, // 当前页请求条数
+        noticeId: null, // 短信id
+        smsStatus: null// 短息发送状态
+      },
       list: [], // 表格数据
-      listLoading: true // 表格是否开启遮罩
+      list2: [], // 操作人详情数据
+      custom_list: [], // 租户列表
+      group_list: [], // 小组列表
+      smsStatusList: [{ value: 0, name: '未发送' }, { value: 1, name: '发送中' }, { value: 4, name: '成功' }, { value: 3, name: '失败' }], // 短信状态列表
+      moduleList: [{ value: 'examination_exam', name: '考试管理' }, { value: 'stream_train_classroom', name: '直播课堂' }], // 模块名称列表
+      listLoading: true, // 表格是否开启遮罩
+      dialogTableVisible: false
+
     }
   },
   created() {
     this.get_list()
+    this.getCustomManageList()
+    this.getUserEgroupInfo()
   },
   methods: {
     // 获取列表数据
     get_list() {
       this.listLoading = true
-      getCustomResourceList(this.listQuery).then(response => {
+      getNoticeList(this.listQuery).then(response => {
         this.list = response.data.page.list
         this.total = response.data.page.totalCount
         this.listLoading = false
       })
     },
-    // 搜索
-    topSearch() {
-      this.time_range = this.time_range || []
-      this.listQuery.startTime = this.time_range[0]
-      this.listQuery.endTime = this.time_range[1]
-      this.time_range = this.effectTime || []
-      this.listQuery.effectStartTime = this.effectTime[0]
-      this.listQuery.effectEndTime = this.effectTime[1]
-      this.get_list()
+    // 获取租户列表
+    getCustomManageList() {
+      getCustomManageList().then(response => {
+        this.custom_list = response.data
+      })
+    },
+    // 获取小组列表
+    getUserEgroupInfo() {
+      getUserEgroupInfo().then(response => {
+        this.group_list = response.data.egroupInfo
+      })
     },
     // 重置
     reset() {
-      this.listQuery.customname = ''
-      this.listQuery.payTypeName = ''
-      this.time_range = []
-      this.effectTime = []
-      this.listQuery.startTime = ''
-      this.listQuery.endTime = ''
-      this.listQuery.effectStartTime = ''
-      this.listQuery.effectEndTime = ''
+      this.listQuery.content = ''
+      this.listQuery.noticeType = ''
+      this.listQuery.egroup = ''
+      this.selectCompanyId = ''
       this.get_list()
     },
-    // 详情
-    detail(row) {
-      this.$router.push({ path: '/enterpriseData/detail', query: { _id: row._id }})
+    // 搜索
+    topSearch() {
+      this.get_list()
     },
-    // 编辑
-    edit(row) {
-      this.$router.push({ path: '/enterpriseData/edit', query: { _id: row._id }})
+    // 操作人详情
+    operateDetail(data) {
+      this.listQuery2.noticeId = data.noticeId
+      getNoticeDetail(this.listQuery2).then(response => {
+        this.list2 = response.data.page.list
+        this.total2 = response.data.page.totalCount
+        this.listLoading = false
+        this.dialogTableVisible = true
+      })
     },
-    getFileShowSize(fileSize) {
-      return getFileShowSize(fileSize)
+    // 获取操作人详情列表
+    getDetailList() {
+      getNoticeDetail(this.listQuery2).then(response => {
+        this.list2 = response.data.page.list
+        this.total2 = response.data.page.totalCount
+        this.listLoading = false
+        this.dialogTableVisible = true
+      })
     },
-    parseTime(time, cFormat) {
-      return parseTime(time, cFormat)
+    // 监听三组数据变化
+    tenantsGroupsRolesVal(val) {
+      this.listQuery.selectGroupId = val.companyIds
+      this.listQuery.egroup = val.egroupId
     }
   }
 }
 </script>
-
-<style lang="scss" scoped>
-
+<style>
+  #topSearch2 /deep/ .el-form {
+    width: calc(100% - 128px);
+    float: left;
+    margin-right: 6px;
+  }
 </style>
