@@ -104,7 +104,7 @@ const evaluatingManage = {
           hidden: true,
           component: () => import('@/views/evaluating-manage/label-manage/child/list'),
           meta: { title: '标签列表', icon: '', activeMenu: '/evaluating-manage/label-manage' }
-        },
+        }
       ]
     }
   ]

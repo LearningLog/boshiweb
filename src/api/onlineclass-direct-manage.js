@@ -8,31 +8,31 @@
 import request from '@/utils/request'
 
 // 获取课堂列表
-export function chapetrList(data){
+export function chapetrList(data) {
   return request({
     url: '/cr/chapter/findPageV2',
     method: 'post',
     data
   })
 }
-//删除课堂
-export function chapetr_del(data){
+// 删除课堂
+export function chapetr_del(data) {
   return request({
     url: '/cr/chapter/delete',
     method: 'post',
     data
   })
 }
-//新增课堂
-export function chapetr_add(data){
+// 新增课堂
+export function chapetr_add(data) {
   return request({
     url: '/cr/chapter/create',
     method: 'post',
     data
   })
 }
-//修改课堂
-export function chapetr_edit(data){
+// 修改课堂
+export function chapetr_edit(data) {
   return request({
     url: '/cr/chapter/update',
     method: 'post',

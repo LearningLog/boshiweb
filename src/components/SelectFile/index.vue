@@ -82,6 +82,13 @@ export default {
       radio: ''
     }
   },
+  watch: {
+    visible: function(val, val2) {
+      if (val) {
+        this.getFileList()
+      }
+    }
+  },
   methods: {
     getFileList() {
       fileList(this.listQuery).then(res => {
@@ -108,13 +115,6 @@ export default {
     cancel() {
       this.selectFilVisible = false
       this.$emit('visible', { visible: false })
-    }
-  },
-  watch: {
-    visible: function(val, val2) {
-      if (val) {
-        this.getFileList()
-      }
     }
   }
 }

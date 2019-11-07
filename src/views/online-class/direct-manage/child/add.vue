@@ -1,11 +1,11 @@
 <template>
   <div class="form-edit">
     <el-steps :active="1" finish-status="success" simple style="margin-top: 20px">
-      <el-step title="步骤 1" ></el-step>
-      <el-step title="步骤 2" ></el-step>
-      <el-step title="步骤 3" ></el-step>
+      <el-step title="步骤 1" />
+      <el-step title="步骤 2" />
+      <el-step title="步骤 3" />
     </el-steps>
-    <div class="info" v-if="active==1">
+    <div v-if="active==1" class="info">
       <div class="step">
         <h5>基本信息：</h5>
         <el-button style="margin-top: 12px;float:right" @click="next">下一步</el-button>
@@ -18,11 +18,11 @@
           <el-input v-model="form.teacher" placeholder="请输入主讲老师" maxlength="100" clearable />
         </el-form-item>
         <el-form-item label="上课时段">
-           <el-date-picker
+          <el-date-picker
             v-model="form.s_time"
             type="date"
-            placeholder="选择课程开始时间">
-          </el-date-picker>
+            placeholder="选择课程开始时间"
+          />
         </el-form-item>
         <el-form-item class="required content" label="题目内容">
           <el-input v-model="topic1.topic_content" class="topicName" placeholder="请输入题目" clearable />
@@ -52,13 +52,13 @@
         <h5>播放设置：</h5>
       </div>
       <el-form ref="form" class="form" :model="form" :rules="rules" label-width="120px" :status-icon="true">
-        <el-form-item label="直播源" >
+        <el-form-item label="直播源">
           <el-radio-group v-model="form.live_count">
             <el-radio :label="1">两路视频直播</el-radio>
             <el-radio :label="0">一路视频直播</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="评论控制" >
+        <el-form-item label="评论控制">
           <el-radio-group v-model="form.can_discuss">
             <el-radio :label="1">开启</el-radio>
             <el-radio :label="0">关闭</el-radio>
@@ -92,16 +92,16 @@
         </el-form-item>
         <el-form-item label="课程简介">
           <el-input
+            v-model="form.brief"
             type="textarea"
             :rows="2"
-            placeholder="请输入课程简介" 
-            v-model="form.brief">
-          </el-input>
+            placeholder="请输入课程简介"
+          />
         </el-form-item>
       </el-form>
     </div>
 
-    <div class="info" v-if="active==2">
+    <div v-if="active==2" class="info">
       <div class="step">
         <h5>请选择小组：</h5>
         <el-button style="margin-top: 12px;float:right" @click="next">下一步</el-button>
@@ -109,7 +109,7 @@
       </div>
       <el-form ref="form" class="form" :model="form" :rules="rules" :status-icon="true" label-width="120px">
         <el-form-item label="所属租户" prop="GroupId">
-          <el-select v-model="form.selectCompanyId" placeholder="请选择所属租户" @change="changeCompany" clearable filterable>
+          <el-select v-model="form.selectCompanyId" placeholder="请选择所属租户" clearable filterable @change="changeCompany">
             <el-option
               v-for="item in custom_list"
               :key="item._id"
@@ -119,22 +119,16 @@
           </el-select>
         </el-form-item>
 
-        <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
-        <div style="margin: 15px 0;"></div>
-        <el-checkbox-group v-model="checkedGroupId"  @change="handleCheckedCitiesChange">
-          <el-checkbox style="margin: 15px 0;display:block" v-for="item in groupList" :label="item" :key="item">{{item}}</el-checkbox>
+        <el-checkbox v-model="checkAll" :indeterminate="isIndeterminate" @change="handleCheckAllChange">全选</el-checkbox>
+        <div style="margin: 15px 0;" />
+        <el-checkbox-group v-model="checkedGroupId" @change="handleCheckedCitiesChange">
+          <el-checkbox v-for="item in groupList" :key="item" style="margin: 15px 0;display:block" :label="item">{{ item }}</el-checkbox>
         </el-checkbox-group>
       </el-form>
-     
+
     </div>
 
-
-
-
-
-
-
-    <div class="info" v-if="active==3">
+    <div v-if="active==3" class="info">
       <div class="step">
         <h5>课程通知：</h5>
         <el-button style="margin-top: 12px;float:right">发布</el-button>
@@ -149,17 +143,17 @@
         </el-form-item>
 
         <el-form>
-          <el-form-item label="短信通知设置"></el-form-item>
+          <el-form-item label="短信通知设置" />
           <el-checkbox-group v-model="checkList">
-            <el-checkbox style="margin: 15px 0;display:block" label="课程创建后立即推送"></el-checkbox>
-            <el-checkbox style="margin: 15px 0;display:block" label="课程开始前推送"></el-checkbox>
+            <el-checkbox style="margin: 15px 0;display:block" label="课程创建后立即推送" />
+            <el-checkbox style="margin: 15px 0;display:block" label="课程开始前推送" />
           </el-checkbox-group>
-          <el-form-item label="通知人员"></el-form-item>
+          <el-form-item label="通知人员" />
 
-          <el-checkbox  :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
-          <div style="margin: 15px 0;"></div>
-          <el-checkbox-group  v-model="checkedGroupId" :value="groupId" @change="handleCheckedCitiesChange">
-            <el-checkbox  style="margin: 15px 0;display:block" v-for="item in groupList" :label="item" :key="item">{{item}}</el-checkbox>
+          <el-checkbox v-model="checkAll" :indeterminate="isIndeterminate" @change="handleCheckAllChange">全选</el-checkbox>
+          <div style="margin: 15px 0;" />
+          <el-checkbox-group v-model="checkedGroupId" :value="groupId" @change="handleCheckedCitiesChange">
+            <el-checkbox v-for="item in groupList" :key="item" style="margin: 15px 0;display:block" :label="item">{{ item }}</el-checkbox>
           </el-checkbox-group>
 
           <!-- <el-checkbox style="float:right;" :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
@@ -168,13 +162,10 @@
             <el-checkbox style="margin: 15px 0;display:block" v-for="item in groupList" :label="item" :key="item">{{item}}</el-checkbox>
           </el-checkbox-group> -->
         </el-form>
-        
 
       </el-form>
     </div>
 
-
-    
     <!-- vueCropper 剪裁图片实现-->
     <el-dialog v-el-drag-dialog title="图片剪裁" :visible.sync="cropperDialogVisible" append-to-body :close-on-click-modal="false" @close="closeUpload">
       <div class="cropper-content">
@@ -232,7 +223,7 @@ import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import { chapetr_add } from '@/api/onlineclass-direct-manage.js'
 import { uploadFile } from '@/api/uploadFile'
 import { getToken } from '@/utils/auth'
-import { getCustomManageList,} from '@/api/systemManage-roleManage'
+import { getCustomManageList } from '@/api/systemManage-roleManage'
 import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
 const $ = window.$
 import SelectFile from '@/components/SelectFile'
@@ -240,8 +231,8 @@ import AddLabels from '@/components/AddEvalLabels'
 
 export default {
   components: {
-    SelectFile,//添加图片
-    AddLabels,//添加标签
+    SelectFile, // 添加图片
+    AddLabels, // 添加标签
     VueCropper // 图片裁剪组件
   },
   directives: { elDragDialog },
@@ -272,38 +263,38 @@ export default {
       visible2: false, // 弹出选择标签
       dataIsChange: 0, // 计数器，据此判断表单是否已编辑
       noLeaveprompt: false, // 表单提交后，设置为true，据此判断提交不再弹出离开提示
-      checkList: ['课程创建后立即推送','课程开始前推送'],
+      checkList: ['课程创建后立即推送', '课程开始前推送'],
 
       checkAll: false,
       checkedGroupId: [],
-      group_list: [],// 所属小组list
+      group_list: [], // 所属小组list
       groupList: [],
       checkedId: [],
       groupId: [],
       isIndeterminate: true,
 
-      role_list: [],// 所属小组list
+      role_list: [], // 所属小组list
 
       form: { // 表单数据
         cname: '', // 课堂名称
-        teacher: '',//主讲老师
-        brief: '',//课程简介
+        teacher: '', // 主讲老师
+        brief: '', // 课程简介
         live_count: 1, // 直播源
-        can_discuss: 1, //评论控制
-        Status:1,//课程控制
+        can_discuss: 1, // 评论控制
+        Status: 1, // 课程控制
         cover_pic_id: '', // 课程封面 id
         cover_pic: '', // 课程封面 url
-        s_time:'',//开始时间
-        selectCompanyId: ''//所属租户ID
+        s_time: '', // 开始时间
+        selectCompanyId: ''// 所属租户ID
       },
       custom_list: [], // 所属租户list
-      topic1: { //课程文件
-        topic_content: '', // 课程名称 
+      topic1: { // 课程文件
+        topic_content: '', // 课程名称
         topic_label: '', // 标签
         currentLabels: [], // 标签obj
         topic_resource: '', // 选择的图片
         topic_resource_id: '' // 主文件id
-      }, 
+      },
       currentLabels: [], // 标签obj
       loading: false, // 防止重复提交
       headers: {
@@ -360,7 +351,7 @@ export default {
         ],
         customStatus: [
           { required: true, message: '请选择租户状态', trigger: 'change' }
-        ],
+        ]
       }
     }
   },
@@ -377,28 +368,27 @@ export default {
   },
   created() {
     this.getCustomManageList()
-    
   },
   methods: {
-    //下一步
+    // 下一步
     next() {
-      if (this.active++ > 3) this.active = 1;
+      if (this.active++ > 3) this.active = 1
     },
-    //上一步
+    // 上一步
     pre() {
-      if (this.active-- < 2) this.active = 1;
+      if (this.active-- < 2) this.active = 1
     },
     handleCheckAllChange(val) {
-      this.checkedGroupId = val ? this.groupList : [];
-      this.checkedId = val ? this.groupId : [];
-      this.isIndeterminate = false;
+      this.checkedGroupId = val ? this.groupList : []
+      this.checkedId = val ? this.groupId : []
+      this.isIndeterminate = false
     },
-    
+
     handleCheckedCitiesChange(value) {
-      let checkedCount = value.length;
-      this.checkAll = checkedCount === this.groupList.length;
-      this.isIndeterminate = checkedCount > 0 && checkedCount < this.groupList.length;
-      console.log(this.checkedGroupId,this.checkedId )
+      const checkedCount = value.length
+      this.checkAll = checkedCount === this.groupList.length
+      this.isIndeterminate = checkedCount > 0 && checkedCount < this.groupList.length
+      console.log(this.checkedGroupId, this.checkedId)
     },
     // 获取所属租户list
     getCustomManageList() {
@@ -410,14 +400,13 @@ export default {
     getEgroups() {
       getUserEgroupInfo({ selectCompanyId: this.selectCompanyId }).then(response => {
         this.group_list = response.data.egroupInfo
-        this.group_list.forEach(el=>{
-            this.groupList.push(el.groupName);
-            this.groupId.push(el.inc);
-            this.checkedGroupId.push(el.groupName);
-            this.checkedId.push(el.inc)
+        this.group_list.forEach(el => {
+          this.groupList.push(el.groupName)
+          this.groupId.push(el.inc)
+          this.checkedGroupId.push(el.groupName)
+          this.checkedId.push(el.inc)
         })
         console.log(this.checkedId)
-          
       })
     },
     // 更改所属租户
@@ -454,7 +443,7 @@ export default {
       })
     },
 
-     // 添加标签
+    // 添加标签
     addLabels() {
       this.visible2 = true
     },
@@ -479,7 +468,7 @@ export default {
           chapetr_add(this.form).then(response => {
             this.$message.success('新增课程成功！')
             this.noLeaveprompt = true
-            this.$router.push({ path: '/online-class/direct-manage/list'})
+            this.$router.push({ path: '/online-class/direct-manage/list' })
           })
         }
       })
@@ -500,7 +489,7 @@ export default {
         this.$message.error('文件格式错误！')
         if (this.logoType === 1) {
           this.fileList1 = []
-        } 
+        }
         return false
       }
       const isLt5M = file.size / 1024 / 1024 < 5
@@ -508,7 +497,7 @@ export default {
         this.$message.error('上传文件大小不能超过 5MB！')
         if (this.logoType === 1) {
           this.fileList1 = []
-        } 
+        }
         return false
       }
       this.fileName = file.name
@@ -689,7 +678,6 @@ export default {
   .topicName {
     width: calc(100% - 160px);
   }
- 
 
   .tag {
     display: inline-block;

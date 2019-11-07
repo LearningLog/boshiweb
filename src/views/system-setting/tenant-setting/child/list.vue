@@ -56,11 +56,11 @@
       </el-form-item>
       <el-form-item label="描述">
         <el-input
+          v-model="form.logo_desc"
           type="textarea"
           :rows="2"
           placeholder="请输入内容"
-          v-model="form.logo_desc">
-        </el-input>
+        />
       </el-form-item>
     </el-form>
     <div id="btnGroup">
@@ -117,7 +117,7 @@
 import { validIntNum } from '@/utils/validate'
 import { VueCropper } from 'vue-cropper'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
-import { getTenant, setTenant} from '@/api/systemManage-tenantManage'
+import { getTenant, setTenant } from '@/api/systemManage-tenantManage'
 import { uploadFile } from '@/api/uploadFile'
 import { getToken } from '@/utils/auth'
 import store from '@/store'
@@ -239,7 +239,7 @@ export default {
           platform_url: response.data.platform_url,
           mobile_url: response.data.mobile_url,
           logo_name: response.data.logo_name,
-          logo_desc: response.data.logo_desc,
+          logo_desc: response.data.logo_desc
         }
         if (response.data.platform_url) {
           this.fileList1 = [{ name: '', url: response.data.platform_url }]
@@ -251,7 +251,7 @@ export default {
         }
         this.form = obj
         this.dataIsChange = -1
-        console.log(obj.logo_name,3323)
+        console.log(obj.logo_name, 3323)
       })
     },
     // 提交
@@ -374,7 +374,7 @@ export default {
         })
       })
     },
-    
+
     // 关闭上传及裁剪
     closeUpload() {
       if (this.clearFiles) {

@@ -1,11 +1,11 @@
 <template>
   <div class="form-edit">
     <el-steps :active="1" finish-status="success" simple style="margin-top: 20px">
-      <el-step title="步骤 1" ></el-step>
-      <el-step title="步骤 2" ></el-step>
-      <el-step title="步骤 3" ></el-step>
+      <el-step title="步骤 1" />
+      <el-step title="步骤 2" />
+      <el-step title="步骤 3" />
     </el-steps>
-    <div class="info" v-if="active==1">
+    <div v-if="active==1" class="info">
       <div class="step">
         <h5>基本信息：</h5>
         <el-button style="margin-top: 12px;float:right" @click="next">下一步</el-button>
@@ -18,24 +18,24 @@
           <el-input v-model="form.teacher" placeholder="请输入主讲老师" maxlength="100" clearable />
         </el-form-item>
         <el-form-item label="上课时段">
-           <el-date-picker
+          <el-date-picker
             v-model="form.s_time"
             type="date"
-            placeholder="选择课程开始时间">
-          </el-date-picker>
+            placeholder="选择课程开始时间"
+          />
         </el-form-item>
       </el-form>
       <div class="step">
         <h5>播放设置：</h5>
       </div>
       <el-form ref="form" class="form" :model="form" :rules="rules" label-width="120px" :status-icon="true">
-        <el-form-item label="直播源" >
+        <el-form-item label="直播源">
           <el-radio-group v-model="live_count">
             <el-radio :label="1">两路视频直播</el-radio>
             <el-radio :label="0">一路视频直播</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="评论控制" >
+        <el-form-item label="评论控制">
           <el-radio-group v-model="can_discuss">
             <el-radio :label="1">开启</el-radio>
             <el-radio :label="0">关闭</el-radio>
@@ -69,32 +69,32 @@
         </el-form-item>
         <el-form-item label="课程简介">
           <el-input
+            v-model="form.brief"
             type="textarea"
+
             :rows="2"
-            
-            v-model="form.brief">
-          </el-input>
+          />
         </el-form-item>
       </el-form>
     </div>
 
-    <div class="info" v-if="active==2">
-      
+    <div v-if="active==2" class="info">
+
       <div class="step">
         <h5>请选择小组：</h5>
         <el-button style="margin-top: 12px;float:right" @click="next">下一步</el-button>
         <el-button style="margin-top: 12px;float:right;margin-right:20px" @click="pre">上一步</el-button>
       </div>
       <el-form ref="form" class="form" :model="form" :rules="rules" label-width="120px" :status-icon="true">
-      <el-form-item label="租户状态" prop="customStatus">
-        <el-radio-group v-model="form.customStatus">
-          <el-radio :label="1">生效</el-radio>
-          <el-radio :label="0">失效</el-radio>
-        </el-radio-group>
-      </el-form-item>
+        <el-form-item label="租户状态" prop="customStatus">
+          <el-radio-group v-model="form.customStatus">
+            <el-radio :label="1">生效</el-radio>
+            <el-radio :label="0">失效</el-radio>
+          </el-radio-group>
+        </el-form-item>
       </el-form>
     </div>
-    <div class="info" v-if="active==3">
+    <div v-if="active==3" class="info">
       <div class="step">
         <h5>课程通知：</h5>
         <el-button style="margin-top: 12px;float:right">发布</el-button>
@@ -110,8 +110,6 @@
       </el-form>
     </div>
 
-
-    
     <!-- vueCropper 剪裁图片实现-->
     <el-dialog v-el-drag-dialog title="图片剪裁" :visible.sync="cropperDialogVisible" append-to-body :close-on-click-modal="false" @close="closeUpload">
       <div class="cropper-content">
@@ -163,7 +161,7 @@
 import { validIntNum, regUName, regPwd } from '@/utils/validate'
 import { VueCropper } from 'vue-cropper'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
-import { getOneChapter,chapetr_edit } from '@/api/onlineclass-direct-manage.js'
+import { getOneChapter, chapetr_edit } from '@/api/onlineclass-direct-manage.js'
 import { uploadFile } from '@/api/uploadFile'
 import { getToken } from '@/utils/auth'
 const $ = window.$
@@ -201,19 +199,19 @@ export default {
       noLeaveprompt: false, // 表单提交后，设置为true，据此判断提交不再弹出离开提示
       form: { // 表单数据
         cname: '', // 课堂名称
-        teacher: '',//主讲老师
+        teacher: '', // 主讲老师
         desc: '', // 描述
         userCount: '', // 最大用户数量
         live_count: 1, // 直播源
-        can_discuss: 1, //评论控制
-        Status:'',//课程控制
+        can_discuss: 1, // 评论控制
+        Status: '', // 课程控制
         cover_pic_id: '', // 课程封面 id
         cover_pic: '', // 课程封面 url
-        s_time: '',//开始时间
-        brief: ''//课程简介
+        s_time: '', // 开始时间
+        brief: ''// 课程简介
       },
       live_count: 1, // 直播源
-      can_discuss: 1, //评论控制
+      can_discuss: 1, // 评论控制
       loading: false, // 防止重复提交
       headers: {
         Authorization: getToken() // 图片上传 header
@@ -269,7 +267,7 @@ export default {
         ],
         customStatus: [
           { required: true, message: '请选择租户状态', trigger: 'change' }
-        ],
+        ]
       }
     }
   },
@@ -296,25 +294,25 @@ export default {
         this.dataIsChange = -1
       })
     },
-    //下一步
+    // 下一步
     next() {
-      if (this.active++ > 3) this.active = 1;
+      if (this.active++ > 3) this.active = 1
     },
-    //上一步
+    // 上一步
     pre() {
-      if (this.active-- < 2) this.active = 1;
+      if (this.active-- < 2) this.active = 1
     },
     // 提交
     onSubmit(formName) {
       console.log(process.env.VUE_APP_BASE_API)
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.form.live_count=this.live_count
-          this.form.can_discuss=this.can_discuss
+          this.form.live_count = this.live_count
+          this.form.can_discuss = this.can_discuss
           chapetr_edit(this.form).then(response => {
             this.$message.success('新增课程成功！')
             this.noLeaveprompt = true
-            this.$router.push({ path: '/online-class/direct-manage/list'})
+            this.$router.push({ path: '/online-class/direct-manage/list' })
           })
         }
       })
@@ -335,7 +333,7 @@ export default {
         this.$message.error('文件格式错误！')
         if (this.logoType === 1) {
           this.fileList1 = []
-        } 
+        }
         return false
       }
       const isLt5M = file.size / 1024 / 1024 < 5
@@ -343,7 +341,7 @@ export default {
         this.$message.error('上传文件大小不能超过 5MB！')
         if (this.logoType === 1) {
           this.fileList1 = []
-        } 
+        }
         return false
       }
       this.fileName = file.name

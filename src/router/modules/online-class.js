@@ -51,7 +51,7 @@ const onlineClass = {
           hidden: true,
           component: () => import('@/views/online-class/chapter-manage/child/list'),
           meta: { title: '标签列表', icon: '', activeMenu: '/online-class/chapter-manage' }
-        },
+        }
       ]
     },
     {
@@ -88,7 +88,7 @@ const onlineClass = {
           hidden: true,
           component: () => import('@/views/online-class/direct-manage/child/list'),
           meta: { title: '课堂列表', icon: '', activeMenu: '/online-class/direct-manage' }
-        },
+        }
       ]
     }
   ]

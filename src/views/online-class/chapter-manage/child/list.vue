@@ -13,24 +13,24 @@
                 <el-input v-model="listQuery.linc" placeholder="请输入标签ID" clearable @keyup.enter.native="topSearch" />
               </el-form-item>
               <el-form-item label="所属租户">
-              <el-select v-model="listQuery.selectCompanyId" placeholder="请选择所属租户" clearable filterable>
-                <el-option
-                  v-for="item in custom_list"
-                  :key="item._id"
-                  :label="item.customname"
-                  :value="item._id"
-                />
-              </el-select>
+                <el-select v-model="listQuery.selectCompanyId" placeholder="请选择所属租户" clearable filterable>
+                  <el-option
+                    v-for="item in custom_list"
+                    :key="item._id"
+                    :label="item.customname"
+                    :value="item._id"
+                  />
+                </el-select>
               </el-form-item>
               <el-form-item label="所属小组">
-              <el-select v-model="listQuery.egroup" placeholder="请选择所属租户" clearable filterable>
-                <el-option
-                  v-for="item in group_list"
-                  :key="item._id"
-                  :label="item.groupName"
-                  :value="item.inc"
-                />
-              </el-select>
+                <el-select v-model="listQuery.egroup" placeholder="请选择所属租户" clearable filterable>
+                  <el-option
+                    v-for="item in group_list"
+                    :key="item._id"
+                    :label="item.groupName"
+                    :value="item.inc"
+                  />
+                </el-select>
               </el-form-item>
               <el-form-item label="创建时间">
                 <el-date-picker
@@ -92,9 +92,9 @@
 </template>
 
 <script>
-import { getLabelList,label_delete} from '@/api/onlineclass-label-manage.js'
+import { getLabelList, label_delete } from '@/api/onlineclass-label-manage.js'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import { getCustomManageList} from '@/api/systemManage-roleManage'
+import { getCustomManageList } from '@/api/systemManage-roleManage'
 import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
 export default {
   components: { Pagination },
@@ -107,9 +107,9 @@ export default {
         createTimebegin: '', // 开始时间
         createTimeend: '', // 结束时间
         lname: '', // 标签名称
-        linc: '',//标签ID
-        selectCompanyId:'',//租户名称
-        egroup: '', // 所属小组
+        linc: '', // 标签ID
+        selectCompanyId: '', // 租户名称
+        egroup: '' // 所属小组
       },
       group_list: [], // 所属小组list
       custom_list: [], // 所属租户list
@@ -223,7 +223,7 @@ export default {
     // 修改
     go_edit_fn(row) {
       this.$router.push({ path: '/online-class/chapter-manage/edit', query: { id: row._id }})
-    },
+    }
 
   }
 }

@@ -756,8 +756,8 @@
       </el-tab-pane>
     </el-tabs>
     <select-file :visible.sync="visible" :file-type-list="['pic']" @checkedFile="checkedFile" @visible="onvisible" />
-    <add-labels :visible2.sync="visible2" :egroup="egroup" :selectCompanyId="selectCompanyId" :current-labels.sync="currentLabels" @addLabels="getLabels" @visible2="onvisible2" />
-    <add-skills :visible3.sync="visible3" :selectCompanyId="selectCompanyId" :current-skills.sync="currentSkills" @addSkills="getSkills" @visible3="onvisible3" />
+    <add-labels :visible2.sync="visible2" :egroup="egroup" :select-company-id="selectCompanyId" :current-labels.sync="currentLabels" @addLabels="getLabels" @visible2="onvisible2" />
+    <add-skills :visible3.sync="visible3" :select-company-id="selectCompanyId" :current-skills.sync="currentSkills" @addSkills="getSkills" @visible3="onvisible3" />
   </div>
 </template>
 

@@ -16,11 +16,11 @@
       </el-form-item>
       <el-form-item label="描述">
         <el-input
+          v-model="form.ldesc"
           type="textarea"
           :rows="2"
           placeholder="请输入内容"
-          v-model="form.ldesc">
-        </el-input>
+        />
       </el-form-item>
     </el-form>
     <div id="btnGroup">
@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { getOneLabel,label_edit } from '@/api/onlineclass-label-manage.js'
+import { getOneLabel, label_edit } from '@/api/onlineclass-label-manage.js'
 import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
 export default {
   data() {
@@ -42,8 +42,8 @@ export default {
       form: {
         lname: '', // 标签名称
         ldesc: '', // 标签描述
-        _id:'',
-        egroup:'',
+        _id: '',
+        egroup: ''
       },
       groupList: [], // 所属小组list
       rules: {
@@ -86,13 +86,12 @@ export default {
         this.groupList = response.data.egroupInfo
       })
     },
-   
 
     // 保存
     save(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-        label_edit(this.form).then(response => {
+          label_edit(this.form).then(response => {
             this.$message.success('修改标签成功！')
             this.noLeaveprompt = true
             this.$router.push({ path: '/online-class/chapter-manage/detail', query: { id: this.id }})

@@ -16,7 +16,7 @@
           clearable
         />
       </el-form-item>
-      <el-form-item label="所属企业" prop="groupId" v-if="isSystemManage">
+      <el-form-item v-if="isSystemManage" label="所属企业" prop="groupId">
         <el-select
           v-model="form.groupId"
           placeholder="请选择所属企业"

@@ -29,16 +29,16 @@
                 <el-input v-model="listQuery.teacher" placeholder="请输入讲师" clearable @keyup.enter.native="topSearch" />
               </el-form-item>
               <el-form-item label="所属小组">
-              <el-select v-model="listQuery.egroup" placeholder="请选择所属小组" clearable filterable>
-                <el-option
-                  v-for="item in group_list"
-                  :key="item.inc"
-                  :label="item.groupName"
-                  :value="item.inc"
-                />
-              </el-select>
+                <el-select v-model="listQuery.egroup" placeholder="请选择所属小组" clearable filterable>
+                  <el-option
+                    v-for="item in group_list"
+                    :key="item.inc"
+                    :label="item.groupName"
+                    :value="item.inc"
+                  />
+                </el-select>
               </el-form-item>
-              
+
             </el-form>
             <div id="searchPopoverBtn">
               <el-button type="primary" @click="topSearch">搜索</el-button>
@@ -107,7 +107,7 @@
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
-import {chapetrList,chapetr_del} from '@/api/onlineclass-direct-manage.js'
+import { chapetrList, chapetr_del } from '@/api/onlineclass-direct-manage.js'
 export default {
   components: { Pagination },
   directives: { elDragDialog },
@@ -119,11 +119,11 @@ export default {
         pageSize: 10, // 当前页请求条数
         cname: '', // 课堂名称
         username: '', // 创建人
-        labels: [],//标签
-        teacher: '',//讲师
+        labels: [], // 标签
+        teacher: '', // 讲师
         createTimebegin: '', // 开始时间
         createTimeend: '', // 结束时间
-        egroup: '', // 所属小组
+        egroup: '' // 所属小组
       },
       time_range: [], // 创建时间
       group_list: [], // 所属小组list
@@ -234,9 +234,8 @@ export default {
     // 修改
     edit(row) {
       this.$router.push({ path: '/online-class/direct-manage/edit', query: { _id: row._id }})
-    },
-    
-    
+    }
+
   }
 }
 </script>

@@ -16,11 +16,11 @@
       </el-form-item>
       <el-form-item label="描述">
         <el-input
+          v-model="form.ldesc"
           type="textarea"
           :rows="2"
           placeholder="请输入内容"
-          v-model="form.ldesc">
-        </el-input>
+        />
       </el-form-item>
     </el-form>
     <div id="btnGroup">
@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { getOneLabel,label_edit } from '@/api/evaluatingManage-labelManage.js'
+import { getOneLabel, label_edit } from '@/api/evaluatingManage-labelManage.js'
 import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
 export default {
   data() {
@@ -42,8 +42,8 @@ export default {
       form: {
         lname: '', // 角色名称
         ldesc: '', // 角色描述
-        _id:'',
-        egroup:'',//所属小组
+        _id: '',
+        egroup: ''// 所属小组
       },
       groupList: [], // 所属小组list
       rules: {
@@ -86,13 +86,12 @@ export default {
         this.groupList = response.data.egroupInfo
       })
     },
-   
 
     // 保存
     save(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-        label_edit(this.form).then(response => {
+          label_edit(this.form).then(response => {
             this.$message.success('修改角色成功！')
             this.noLeaveprompt = true
             this.$router.push({ path: '/evaluating-manage/label-manage/detail', query: { id: this.id }})

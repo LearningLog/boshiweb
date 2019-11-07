@@ -8,7 +8,7 @@
         <el-input v-model="form.ldesc" placeholder="请输入标签描述" clearable />
       </el-form-item>
       <el-form-item label="所属小组" prop="roleId">
-      <el-select v-model="form.egroup" placeholder="请选择所属小组" clearable filterable>
+        <el-select v-model="form.egroup" placeholder="请选择所属小组" clearable filterable>
           <el-option
             v-for="item in groupList"
             :key="item._id"
@@ -18,14 +18,14 @@
         </el-select>
       </el-form-item>
       <el-form-item label="所属租户" prop="GroupId">
-          <el-select v-model="form.selectCompanyId" placeholder="请选择所属租户" clearable filterable>
-            <el-option
-              v-for="item in custom_list"
-              :key="item._id"
-              :label="item.customname"
-              :value="item._id"
-            />
-          </el-select>
+        <el-select v-model="form.selectCompanyId" placeholder="请选择所属租户" clearable filterable>
+          <el-option
+            v-for="item in custom_list"
+            :key="item._id"
+            :label="item.customname"
+            :value="item._id"
+          />
+        </el-select>
       </el-form-item>
     </el-form>
     <div id="btnGroup">
@@ -37,7 +37,7 @@
 
 <script>
 import { label_add } from '@/api/onlineclass-label-manage.js'
-import { getCustomManageList} from '@/api/systemManage-roleManage'
+import { getCustomManageList } from '@/api/systemManage-roleManage'
 import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
 export default {
   data() {
@@ -46,9 +46,9 @@ export default {
       noLeaveprompt: false, // 表单提交后，设置为true，据此判断提交不再弹出离开提示
       form: {
         name: '', // 标签名称
-        ldesc: '', //标签描述
+        ldesc: '', // 标签描述
         egroup: '', // 分组
-        selectCompanyId:'',//租户
+        selectCompanyId: ''// 租户
       },
       groupList: [], // 所属小组list
       custom_list: [], // 所属租户list
@@ -97,7 +97,7 @@ export default {
           label_add(this.form).then(response => {
             this.$message.success('添加标签成功！')
             this.noLeaveprompt = true
-            this.$router.push({ path: '/online-class/chapter-manage/list'})
+            this.$router.push({ path: '/online-class/chapter-manage/list' })
           })
         }
       })

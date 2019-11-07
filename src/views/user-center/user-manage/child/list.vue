@@ -20,7 +20,7 @@
                   <el-option v-for="item in userStatus" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
-              <tenants-groups-roles @tenantsGroupsRolesVal="tenantsGroupsRolesVal"></tenants-groups-roles>
+              <tenants-groups-roles @tenantsGroupsRolesVal="tenantsGroupsRolesVal" />
             </el-form>
             <div id="searchPopoverBtn">
               <el-button type="primary" @click="topSearch">搜索</el-button>
