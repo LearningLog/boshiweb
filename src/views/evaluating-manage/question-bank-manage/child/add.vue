@@ -756,8 +756,8 @@
       </el-tab-pane>
     </el-tabs>
     <select-file :visible.sync="visible" :file-type-list="['pic']" @checkedFile="checkedFile" @visible="onvisible" />
-    <add-labels :visible2.sync="visible2" :current-labels.sync="currentLabels" @addLabels="getLabels" @visible2="onvisible2" />
-    <add-skills :visible3.sync="visible3" :current-skills.sync="currentSkills" @addSkills="getSkills" @visible3="onvisible3" />
+    <add-labels :visible2.sync="visible2" :egroup="egroup" :selectCompanyId="selectCompanyId" :current-labels.sync="currentLabels" @addLabels="getLabels" @visible2="onvisible2" />
+    <add-skills :visible3.sync="visible3" :selectCompanyId="selectCompanyId" :current-skills.sync="currentSkills" @addSkills="getSkills" @visible3="onvisible3" />
   </div>
 </template>
 
@@ -1845,7 +1845,7 @@ export default {
     position: relative;
   }
   .topic-options .topic-item {
-    border: 1px solid #20c7b2;
+    border: 1px solid $themeColor;
     width: 60%;
     padding: 4px;
     margin-bottom: 4px;
@@ -1855,7 +1855,7 @@ export default {
     margin-bottom: 0;
   }
   .topic-options .topic-item {
-    border: 1px solid #20c7b2;
+    border: 1px solid $themeColor;
     width: 60%;
     padding: 4px;
     margin-bottom: 4px;

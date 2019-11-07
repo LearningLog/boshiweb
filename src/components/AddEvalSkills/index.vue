@@ -91,6 +91,10 @@ export default {
     currentSkills: {
       type: Array,
       default: null
+    },
+    selectCompanyId: {
+      type: String,
+      default: ''
     }
   },
   data() {
@@ -102,7 +106,8 @@ export default {
         pageSize: 10, // 当前列表请求条数
         content: '', // 技能名称
         startTime: '', // 开始时间
-        endtTime: '' // 结束时间
+        endtTime: '', // 结束时间
+        selectCompanyId: this.selectCompanyId // 所属租户
       },
       group_list: [], // 所属小组list
       custom_list: [], // 所属租户list

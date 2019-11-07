@@ -959,7 +959,7 @@ export default {
     position: relative;
   }
   .topic-options .topic-item {
-    border: 1px solid #20c7b2;
+    border: 1px solid $themeColor;
     width: 60%;
     padding: 4px;
     margin-bottom: 4px;
@@ -969,7 +969,7 @@ export default {
     margin-bottom: 0;
   }
   .topic-options .topic-item {
-    border: 1px solid #20c7b2;
+    border: 1px solid $themeColor;
     width: 60%;
     padding: 4px;
     margin-bottom: 4px;

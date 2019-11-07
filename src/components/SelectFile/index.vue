@@ -3,7 +3,7 @@
     <el-dialog
       v-el-drag-dialog
       title="选择文件"
-      width="46%"
+      width="592px"
       :visible.sync="selectFilVisible"
       @close="cancel"
     >
@@ -152,7 +152,8 @@ export default {
 	}
 	.name {
 		display: inline-block;
-		width: 100%;
+    margin-top: 4px;
+    width: 100%;
 		overflow:hidden;
 		text-overflow:ellipsis;
 		white-space:nowrap;
@@ -160,4 +161,7 @@ export default {
 	.el-scrollbar {
 		height: 50vh;
 	}
+  .global-search {
+    width: 200px;
+  }
 </style>

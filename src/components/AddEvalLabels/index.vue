@@ -9,10 +9,6 @@
     >
       <div id="topSearch">
         <el-form ref="form" :model="listQuery" label-width="100px">
-          <tenants-groups-roles
-            :is-render-role="false"
-            @tenantsGroupsRolesVal="tenantsGroupsRolesVal"
-          />
           <el-form-item label="标签名称">
             <el-input
               v-model="listQuery.content"
@@ -104,20 +100,27 @@
 <script>
 import { getLabelList } from '@/api/evaluatingManage-labelManage.js'
 import Pagination from '@/components/Pagination'
-import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
 import elDragDialog from '@/directive/el-drag-dialog'
 export default {
   name: 'AddEvalLabels',
-  components: { Pagination, TenantsGroupsRoles },
+  components: { Pagination },
   directives: { elDragDialog },
   props: {
-    visible2: {
+	  visible2: {
       type: Boolean,
       default: false
     },
     currentLabels: {
       type: Array,
       default: null
+    },
+    selectCompanyId: {
+      type: String,
+      default: ''
+    },
+    egroup: {
+      type: String,
+      default: ''
     }
   },
   data() {
@@ -130,8 +133,8 @@ export default {
         startTime: '', // 开始时间
         endtTime: '', // 结束时间
         content: '', // 标签名称
-        selectCompanyId: '', // 所属租户
-        egroup: '' // 所属小组
+        selectCompanyId: this.selectCompanyId, // 所属租户
+        egroup: this.egroup * 1 // 所属小组
       },
       group_list: [], // 所属小组list
       custom_list: [], // 所属租户list

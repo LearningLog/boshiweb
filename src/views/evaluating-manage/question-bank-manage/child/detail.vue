@@ -3,7 +3,7 @@
     <div class="form">
       <div v-for="(item, index) in topics" :key="item.id" class="topics-item">
         <p class="topic-type">
-          <span>{{ index+1 + '、' }}{{ item.topicTypeTitle }}</span><el-tooltip class="item" effect="dark" :content="item.labelStr" placement="top"><span v-if="item.labelStr"><span class="single-line">【{{ item.labelStr }}</span><span>】</span></span></el-tooltip><el-tooltip class="item" effect="dark" :content="item.skillStr" placement="top"><span v-if="item.skillStr"><span class="single-line">【{{ item.skillStr }}</span><span>】</span></span></el-tooltip>
+          <span>{{ item.topicTypeTitle }}</span><el-tooltip class="item" effect="dark" :content="item.labelStr" placement="top"><span v-if="item.labelStr"><span class="single-line">【{{ item.labelStr }}</span><span>】</span></span></el-tooltip><el-tooltip class="item" effect="dark" :content="item.skillStr" placement="top"><span v-if="item.skillStr"><span class="single-line">【{{ item.skillStr }}</span><span>】</span></span></el-tooltip>
         </p>
         <p>
           {{ item.topic_content }}
@@ -139,7 +139,7 @@ export default {
   position: relative;
 }
 .topic-options .topic-item {
-  border: 1px solid #20c7b2;
+  border: 1px solid $themeColor;
   width: 60%;
   padding: 4px;
   margin-bottom: 4px;
@@ -149,7 +149,7 @@ export default {
   margin-bottom: 0;
 }
 .topic-options .topic-item {
-  border: 1px solid #20c7b2;
+  border: 1px solid $themeColor;
   width: 60%;
   padding: 4px;
   margin-bottom: 4px;
@@ -175,4 +175,7 @@ export default {
 .btnGroup {
   margin-top: 20px;
 }
+  .topic-item /deep/ .is-disabled .el-checkbox__label {
+    color: $themeColor;
+  }
 </style>
