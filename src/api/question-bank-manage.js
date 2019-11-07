@@ -33,10 +33,10 @@ export function delTopic(data) {
     data
   })
 }
-// 删除试题
-export function batchDelTopic(data) {
+// 导入试题
+export function importTopics(data) {
   return request({
-    url: '/evaluation/topic/del',
+    url: '/evaluation/topicImport/importTopics',
     method: 'post',
     data
   })
