@@ -1,5 +1,5 @@
 <template>
-  <div id="addTopicVue" class="form-edit">
+  <div id="addTopicVue">
     <div class="fr submit">
       <p>（小提示：保存的试题记得保存至题库哦）</p>
       <el-button v-no-more-click class="addTopic" type="primary" @click="addTopics"><i class="addIcon iconfont iconhao" />保存至题库</el-button>
@@ -25,7 +25,7 @@
                       :data="topic1.topic_option"
                       border
                       style="width: 100%"
-                      max-height="242"
+                      max-height="291"
                     >
                       <el-table-column
                         prop="option_content"
@@ -148,6 +148,7 @@
                       :data="topic2.topic_option"
                       border
                       style="width: 100%"
+                      max-height="291"
                     >
                       <el-table-column
                         prop="option_content"
@@ -270,6 +271,7 @@
                       :data="topic3.topic_option"
                       border
                       style="width: 100%"
+                      max-height="291"
                     >
                       <el-table-column
                         prop="option_content"
@@ -403,6 +405,7 @@
                         :data="topic1.topic_option"
                         border
                         style="width: 100%"
+                        max-height="291"
                       >
                         <el-table-column
                           prop="option_content"
@@ -525,6 +528,7 @@
                         :data="topic2.topic_option"
                         border
                         style="width: 100%"
+                        max-height="291"
                       >
                         <el-table-column
                           prop="option_content"
@@ -647,6 +651,7 @@
                         :data="topic3.topic_option"
                         border
                         style="width: 100%"
+                        max-height="291"
                       >
                         <el-table-column
                           prop="option_content"
@@ -1720,6 +1725,7 @@ export default {
   }
   .saveTopic {
     margin: 0 auto;
+    margin-top: 20px;
     text-align: center;
     margin-left: calc(50% - 49px);
   }
@@ -1793,11 +1799,6 @@ export default {
   }
   .saveSet {
     margin-left: 34px;
-  }
-  .saveTopic {
-    margin: 0 auto;
-    text-align: center;
-    margin-left: calc(50% - 49px);
   }
   .preview h3 {
     margin-top: 4px;

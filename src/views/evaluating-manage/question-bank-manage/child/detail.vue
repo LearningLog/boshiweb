@@ -103,7 +103,7 @@ export default {
     },
     // 确定
     confirm() {
-      this.$router.push({ path: '/systemManage/tenantManage/list' })
+      this.$router.push({ path: '/evaluating-manage/question-bank-manage/list' })
     }
   }
 }

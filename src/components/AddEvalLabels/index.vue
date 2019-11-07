@@ -148,7 +148,6 @@ export default {
       }
     }
   },
-  created() {},
   methods: {
     // 监听三组数据变化
     tenantsGroupsRolesVal(val) {
@@ -167,19 +166,19 @@ export default {
         this.listLoading = false
         this.list = response.data.page.list
         this.total = response.data.page.totalCount
+        this.selectLabelsVisible = true
         this.$nextTick(() => {
           this.currentLabels = this.currentLabels || []
           for (var i = 0, len = this.currentLabels.length; i < len; i++) {
             var item1 = this.currentLabels[i]
             for (var j = 0, len2 = this.list.length; j < len2; j++) {
               var item2 = this.list[j]
-              if (item1._id === item2._id) {
+              if (item1._id === item2._id && this.visible2) {
                 this.$refs.multipleTable.toggleRowSelection(this.list[j], true)
                 break
               }
             }
           }
-          this.selectLabelsVisible = true
         })
       })
     },

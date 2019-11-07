@@ -129,19 +129,19 @@ export default {
         this.listLoading = false
         this.list = res.data.page.list
         this.total = res.data.page.totalCount
+        this.selectSkillsVisible = true
         this.$nextTick(() => {
           this.currentSkills = this.currentSkills || []
           for (var i = 0, len = this.currentSkills.length; i < len; i++) {
             var item1 = this.currentSkills[i]
             for (var j = 0, len2 = this.list.length; j < len2; j++) {
               var item2 = this.list[j]
-              if (item1._id === item2._id) {
+              if (item1._id === item2._id && this.visible3) {
                 this.$refs.multipleTable.toggleRowSelection(this.list[j], true)
                 break
               }
             }
           }
-          this.selectSkillsVisible = true
         })
       }).catch(error => {
         console.log(error)

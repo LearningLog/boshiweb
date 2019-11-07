@@ -14,7 +14,7 @@
           :data="topic1.topic_option"
           border
           style="width: 100%"
-          max-height="242"
+          max-height="291"
         >
           <el-table-column
             prop="option_content"
@@ -131,6 +131,7 @@
           :data="topic2.topic_option"
           border
           style="width: 100%"
+          max-height="291"
         >
           <el-table-column
             prop="option_content"
@@ -247,6 +248,7 @@
           :data="topic3.topic_option"
           border
           style="width: 100%"
+          max-height="291"
         >
           <el-table-column
             prop="option_content"
