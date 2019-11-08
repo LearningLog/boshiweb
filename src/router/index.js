@@ -143,6 +143,37 @@ export const asyncRoutes = [
   },
 
   {
+    path: '/global-config',
+    component: Layout,
+    redirect: '/global-config/list',
+    name: 'global-config',
+    meta: { title: 'global配置', icon: 'iconglobal' },
+    children: [
+      {
+        path: 'list',
+        name: 'global-config-list',
+        hidden: true,
+        component: () => import('@/views/global-config/list.vue'),
+        meta: { title: '配置列表', icon: '', activeMenu: '/global-config' }
+      },
+      {
+        path: 'add',
+        name: 'global-config-add',
+        hidden: true,
+        component: () => import('@/views/global-config/add'),
+        meta: { title: '新增配置', icon: '', activeMenu: '/global-config' }
+      },
+      {
+        path: 'edit',
+        name: 'global-config-edit',
+        hidden: true,
+        component: () => import('@/views/global-config/edit'),
+        meta: { title: '修改配置', icon: '', activeMenu: '/global-config' }
+      }
+    ]
+  },
+
+  {
     path: '/operation-log',
     component: Layout,
     redirect: '/operation-log/list',
