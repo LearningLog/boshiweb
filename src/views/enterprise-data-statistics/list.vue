@@ -40,12 +40,12 @@
       <el-table-column align="center" label="租户名称" min-width="180" show-overflow-tooltip prop="customname" />
       <el-table-column label="创建时间" min-width="100" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.createtime, '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(scope.row.createtime || '', '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
       <el-table-column class-name="status-col" label="上次登录时间" min-width="100" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.lastLoginTime, '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(scope.row.lastLoginTime || '', '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="套餐用户量" min-width="70" show-overflow-tooltip prop="userTotalCount" />
@@ -80,8 +80,8 @@ export default {
         startTime: null, // 操作模块
         endTime: null // 租户id
       },
-      current_time: parseTime(new Date() || '', '{y}-{m}-{d}'),
-      time_range: [parseTime(new Date() || '', '{y}-{m}-{d}'), parseTime(new Date() || '', '{y}-{m}-{d}')],
+      current_time: parseTime(new Date(), '{y}-{m}-{d}'),
+      time_range: [parseTime(new Date(), '{y}-{m}-{d}'), parseTime(new Date(), '{y}-{m}-{d}')],
       list: [], // 表格数据
       listLoading: true // 表格是否开启遮罩
     }
