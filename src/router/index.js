@@ -160,6 +160,23 @@ export const asyncRoutes = [
   },
 
   {
+    path: '/enterprise-data-statistics',
+    component: Layout,
+    redirect: '/enterprise-data-statistics/list',
+    name: 'enterprise-data-statistics',
+    meta: { title: '企业数据统计', icon: 'iconshuju' },
+    children: [
+      {
+        path: 'list',
+        name: 'operation-log-list',
+        hidden: true,
+        component: () => import('@/views/enterprise-data-statistics/list.vue'),
+        meta: { title: '统计列表', icon: '', activeMenu: '/enterprise-data-statistics' }
+      }
+    ]
+  },
+
+  {
     path: '/example',
     component: Layout,
     redirect: '/example/table',

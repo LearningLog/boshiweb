@@ -101,6 +101,17 @@
   -webkit-transition:all 0.5s;
 }
 
+.el-table__row:hover {
+  color: $themeColor;
+  border-color: $themeColor;
+  background: #f1f5fd!important;
+  transition:all 0.5s;
+  -o-transition:all 0.5s;
+  -ms-transition:all 0.5s;
+  -moz-transition:all 0.5s;
+  -webkit-transition:all 0.5s;
+}
+
 .el-table__row.hover-row > td .el-button:hover, .el-table__row.current-row > td .el-button:hover {
   color: #FFF;
   border-color: $themeColor;

@@ -45,7 +45,7 @@
       <el-table-column align="center" label="操作时间" min-width="130" show-overflow-tooltip prop="createTime" />
       <el-table-column align="center" label="发送人数" min-width="50" show-overflow-tooltip>
         <template slot-scope="scope">
-          <el-link type="warning" @click="operateDetail(scope.row)">{{ scope.row.successCount }}</el-link>
+          <el-link type="primary" @click="operateDetail(scope.row)">{{ scope.row.successCount }}</el-link>
         </template>
       </el-table-column>
     </el-table>
@@ -177,9 +177,9 @@ export default {
 }
 </script>
 <style>
-  #topSearch2 /deep/ .el-form {
-    width: calc(100% - 128px);
-    float: left;
-    margin-right: 6px;
-  }
+	#topSearch2 /deep/ .el-form {
+		width: calc(100% - 128px);
+		float: left;
+		margin-right: 6px;
+	}
 </style>
