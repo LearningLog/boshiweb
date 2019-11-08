@@ -38,8 +38,16 @@
       highlight-current-row
     >
       <el-table-column align="center" label="租户名称" min-width="180" show-overflow-tooltip prop="customname" />
-      <el-table-column label="创建时间" min-width="100" align="center" show-overflow-tooltip prop="createtime" />
-      <el-table-column class-name="status-col" label="上次登录时间" min-width="100" align="center" show-overflow-tooltip prop="lastLoginTime" />
+      <el-table-column label="创建时间" min-width="100" align="center" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <span>{{ parseTime(scope.row.createtime, '{y}-{m}-{d}') }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column class-name="status-col" label="上次登录时间" min-width="100" align="center" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <span>{{ parseTime(scope.row.lastLoginTime, '{y}-{m}-{d}') }}</span>
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="套餐用户量" min-width="70" show-overflow-tooltip prop="userTotalCount" />
       <el-table-column align="center" label="已创建用户数" min-width="80" show-overflow-tooltip prop="userCount" />
       <el-table-column align="center" label="已使用存储量" min-width="100" show-overflow-tooltip>
@@ -72,6 +80,7 @@ export default {
         startTime: null, // 操作模块
         endTime: null // 租户id
       },
+      current_time: parseTime(new Date() || '', '{y}-{m}-{d}'),
       time_range: [parseTime(new Date() || '', '{y}-{m}-{d}'), parseTime(new Date() || '', '{y}-{m}-{d}')],
       list: [], // 表格数据
       listLoading: true // 表格是否开启遮罩
@@ -100,8 +109,9 @@ export default {
     // 重置
     reset() {
       this.listQuery.customname = ''
-      this.listQuery.startTime = ''
-      this.listQuery.endTime = ''
+      this.time_range = [this.current_time, this.current_time]
+      this.listQuery.startTime = this.time_range[0]
+      this.listQuery.endTime = this.time_range[1]
       this.get_list()
     },
     // 搜索
