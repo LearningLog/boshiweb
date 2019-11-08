@@ -73,7 +73,6 @@ export default {
   components: { Pagination },
   data() {
     return {
-      popoverVisible: false, // 高级搜索是否显示
       total: 0, // 总条数
       listQuery: { // 查询条件
         currentPage: 1, // 当前页
@@ -88,13 +87,7 @@ export default {
       listLoading: true // 表格是否开启遮罩
     }
   },
-  /* computed:{
-    time_range:function () {
-      var date = new Date();
-      var year = date.getFullYear();
-      return
-    }
-  }*/
+
   created() {
     this.topSearch()
   },
