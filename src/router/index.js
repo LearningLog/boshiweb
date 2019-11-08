@@ -168,7 +168,7 @@ export const asyncRoutes = [
     children: [
       {
         path: 'list',
-        name: 'operation-log-list',
+        name: 'enterprise-data-statistics-list',
         hidden: true,
         component: () => import('@/views/enterprise-data-statistics/list.vue'),
         meta: { title: '统计列表', icon: '', activeMenu: '/enterprise-data-statistics' }

@@ -61,7 +61,7 @@
       />
       <el-table-column align="center" label="技能名称" show-overflow-tooltip>
         <template slot-scope="scope">
-          <span class="pointer" @click="detail(scope.row)">{{ scope.row.skill_name }}</span>
+          <el-link type="primary" @click="detail(scope.row)">{{ scope.row.skill_name }}</el-link>
         </template>
       </el-table-column>
       <el-table-column label="技能描述" min-width="100" align="center" show-overflow-tooltip prop="skill_desc" />

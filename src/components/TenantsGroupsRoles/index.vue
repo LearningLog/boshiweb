@@ -67,6 +67,11 @@ export default {
     isRenderRole: {
       type: Boolean,
       default: true
+    },
+    // 是否重置
+    isReset: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -78,6 +83,14 @@ export default {
       custom_list: [], // 所属租户
       roleList: [], // 角色,
       groupList: [] // 小组
+    }
+  },
+  watch: {
+    isReset: function(curVal, oldVal) {
+      // 重置
+      this.companyIds = ''
+      this.groupId = ''
+      this.roleId = ''
     }
   },
   computed: {

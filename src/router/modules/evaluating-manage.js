@@ -55,6 +55,43 @@ const evaluatingManage = {
       ]
     },
     {
+      path: 'test-paper-manage',
+      name: 'test-paper-manage',
+      component: () => import('@/views/evaluating-manage/test-paper-manage/index'),
+      redirect: '/evaluating-manage/test-paper-manage/list',
+      meta: { title: '试卷管理', icon: '', activeMenu: '/evaluating-manage/test-paper-manage' },
+      children: [
+        {
+          path: 'detail',
+          name: 'test-paper-detail',
+          hidden: true,
+          component: () => import('@/views/evaluating-manage/test-paper-manage/child/detail'),
+          meta: { title: '试卷详情', icon: '', activeMenu: '/evaluating-manage/test-paper-manage' }
+        },
+        {
+          path: 'list',
+          name: 'test-paper-list',
+          hidden: true,
+          component: () => import('@/views/evaluating-manage/test-paper-manage/child/list.vue'),
+          meta: { title: '试卷列表', icon: '', activeMenu: '/evaluating-manage/test-paper-manage' }
+        },
+        {
+          path: 'add',
+          component: () => import('@/views/evaluating-manage/test-paper-manage/child/add.vue'),
+          name: 'test-paper-add',
+          hidden: true,
+          meta: { title: '新增试卷', icon: '', activeMenu: '/evaluating-manage/test-paper-manage' }
+        },
+        {
+          path: 'edit',
+          name: 'test-paper-edit',
+          hidden: true,
+          component: () => import('@/views/evaluating-manage/test-paper-manage/child/edit'),
+          meta: { title: '修改试卷', icon: '', activeMenu: '/evaluating-manage/test-paper-manage' }
+        }
+      ]
+    },
+    {
       path: 'skill-manage',
       component: () => import('@/views/evaluating-manage/skill-manage/index'),
       redirect: '/evaluating-manage/skill-manage/list',

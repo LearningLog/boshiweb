@@ -9,7 +9,7 @@
         <el-row v-show="popoverVisible">
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
-              <tenants-groups-roles :is-render-role="false" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" />
+              <tenants-groups-roles :is-render-role="false" :isReset="isReset" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" />
               <!--<el-form-item label="试题标签">-->
               <!--<el-select-->
               <!--v-model="listQuery.topic_label"-->
@@ -98,7 +98,7 @@
       </el-table-column>
       <el-table-column label="题目内容" min-width="120" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
-          <span class="pointer" @click="detail(scope.row)">{{ scope.row.topic_content }}</span>
+          <el-link type="primary" @click="detail(scope.row)">{{ scope.row.topic_content }}</el-link>
         </template>
       </el-table-column>
       <el-table-column class-name="status-col" label="难度" min-width="40" align="center" show-overflow-tooltip>
@@ -145,6 +145,7 @@ export default {
   directives: { elDragDialog },
   data() {
     return {
+      isReset: false, // 是否重置三组联动数据
       total: 0, // 总条数
       listQuery: { // 查询条件
         currentPage: 1, // 当前页
@@ -153,7 +154,7 @@ export default {
         topic_label: null, // 试题标签
         topic_skill: null, // 试题技能
         topicType: null, // 试题类型
-        selectGroupId: null, // 租户
+        selectCompanyId: null, // 租户
         egroup: null, // 小组
         startTime: null, // 创建开始时间
         endTime: null // 创建结束时间
@@ -170,8 +171,8 @@ export default {
     }
   },
   watch: {
-    // 监听表单数据变化
-    'listQuery.selectGroupId': function(curVal, oldVal) {
+    // 监听表单数据变化 暂时无用
+    'listQuery.selectCompanyId': function(curVal, oldVal) {
       this.get_topic_label_list()
       this.get_topic_skill_list()
     }
@@ -193,13 +194,13 @@ export default {
         this.total = response.data.page.totalCount
       })
     },
-    // 获取标签list
+    // 获取标签list 暂时无用
     get_topic_label_list() {
       labelAllList({}).then(res => {
         this.topic_label = res.data
       })
     },
-    // 获取技能list
+    // 获取技能list 暂时无用
     get_topic_skill_list() {
       skillAllList({}).then(res => {
         this.topic_skill = res.data
@@ -214,11 +215,12 @@ export default {
     },
     // 重置
     reset() {
+      this.isReset = true
       this.listQuery.content = ''
       this.listQuery.topic_label = null
       this.listQuery.topic_skill = null
       this.listQuery.topicType = null
-      this.listQuery.selectGroupId = null
+      this.listQuery.selectCompanyId = null
       this.listQuery.egroup = null
       this.time_range = []
       this.listQuery.startTime = ''
@@ -227,7 +229,7 @@ export default {
     },
     // 监听三组数据变化
     tenantsGroupsRolesVal(val) {
-      this.listQuery.selectGroupId = val.companyIds
+      this.listQuery.selectCompanyId = val.companyIds
       this.listQuery.egroup = val.egroupId
       this.listQuery.roleId = val.roleId
       this.group = val.group
@@ -274,7 +276,7 @@ export default {
     },
     // 单个删除
     del(row) {
-      this.$confirm('确定要删除【' + row.topic_content + '】吗？', '删除租户', {
+      this.$confirm('确定要删除【' + row.topic_content + '】吗？', '删除试题', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

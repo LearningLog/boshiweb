@@ -72,7 +72,7 @@
       </el-table-column>
       <el-table-column align="center" label="课堂名称" min-width="100">
         <template slot-scope="scope">
-          <span class="pointer" @click="detail(scope.row)">{{ scope.row.cname }}</span>
+          <el-link type="primary" @click="detail(scope.row)">{{ scope.row.cname }}</el-link>
         </template>
       </el-table-column>
       <el-table-column class-name="status-col" label="开始时间" min-width="150" align="center" prop="s_time" />

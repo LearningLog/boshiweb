@@ -9,7 +9,7 @@
         <el-row v-show="popoverVisible">
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
-              <tenants-groups-roles :is-render-role="false" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" />
+              <tenants-groups-roles :is-render-role="false" :isReset="isReset" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" />
               <el-form-item label="模块名称">
                 <el-select v-model="listQuery.egroup" placeholder="请选择模块" clearable filterable>
                   <el-option
@@ -101,6 +101,7 @@ export default {
   components: { Pagination, TenantsGroupsRoles },
   data() {
     return {
+      isReset: false, // 是否重置三组联动数据
       popoverVisible: false, // 高级搜索是否显示
       total: 0, // 总条数
       listQuery: { // 查询条件
@@ -144,6 +145,7 @@ export default {
     },
     // 重置
     reset() {
+      this.isReset = true
       this.listQuery.content = ''
       this.listQuery.noticeType = ''
       this.listQuery.egroup = ''

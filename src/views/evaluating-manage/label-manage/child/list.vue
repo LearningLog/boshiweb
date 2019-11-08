@@ -71,7 +71,7 @@
       <el-table-column label="序号" min-width="100" align="center" show-overflow-tooltip prop="linc" />
       <el-table-column align="center" label="名称" show-overflow-tooltip>
         <template slot-scope="scope">
-          <span class="pointer" @click="detail(scope.row)">{{ scope.row.lname }}</span>
+          <el-link type="primary" @click="detail(scope.row)">{{ scope.row.lname }}</el-link>
         </template>
       </el-table-column>
       <el-table-column label="描述" min-width="100" align="center" show-overflow-tooltip prop="ldesc" />

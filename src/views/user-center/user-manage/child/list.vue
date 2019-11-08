@@ -20,7 +20,7 @@
                   <el-option v-for="item in userStatus" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
-              <tenants-groups-roles @tenantsGroupsRolesVal="tenantsGroupsRolesVal" />
+              <tenants-groups-roles :isReset="isReset" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" />
             </el-form>
             <div id="searchPopoverBtn">
               <el-button type="primary" @click="topSearch">搜索</el-button>
@@ -49,7 +49,7 @@
       />
       <el-table-column align="center" label="用户名" min-width="120" show-overflow-tooltip>
         <template slot-scope="scope">
-          <span class="pointer" @click="detail(scope.row)">{{ scope.row.username }}</span>
+          <el-link type="primary" @click="detail(scope.row)">{{ scope.row.username }}</el-link>
         </template>
       </el-table-column>
       <el-table-column label="昵称" min-width="100" align="center" show-overflow-tooltip prop="nickname" />
@@ -181,6 +181,7 @@ export default {
   directives: { elDragDialog },
   data() {
     return {
+      isReset: false, // 是否重置三组联动数据
       listLoading: false,
       setRolesDialogVisible: false,
       setEgroupsDialogVisible: false,
@@ -234,6 +235,7 @@ export default {
     },
     // 重置
     reset() {
+      this.isReset = true
       this.listQuery.userName = ''
       this.listQuery.selectCompanyId = ''
       this.listQuery.nickName = ''

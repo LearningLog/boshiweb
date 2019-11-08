@@ -9,7 +9,7 @@
         <el-row v-show="popoverVisible">
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
-              <tenants-groups-roles :is-render-role="false" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" />
+              <tenants-groups-roles :is-render-role="false" :isReset="isReset" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" />
               <el-form-item label="模块名称">
                 <el-select v-model="listQuery.egroup" placeholder="请选择模块" clearable filterable>
                   <el-option
@@ -43,8 +43,9 @@
       <el-table-column align="center" label="操作人" min-width="70" show-overflow-tooltip prop="userNickName" />
       <el-table-column align="center" label="小组" min-width="100" show-overflow-tooltip prop="groupNameDesc" />
       <el-table-column align="center" label="操作时间" min-width="130" show-overflow-tooltip prop="createTime" />
-      <el-table-column align="center" label="发送人数" min-width="50" show-overflow-tooltip>
+      <el-table-column align="center" label="发送人数" min-width="50" show-overflow-tooltip prop="successCount">
         <template slot-scope="scope">
+          <!--<span class="pointer underline" @click="operateDetail(scope.row)">{{ scope.row.successCount }}</span>-->
           <el-link type="warning" @click="operateDetail(scope.row)">{{ scope.row.successCount }}</el-link>
         </template>
       </el-table-column>
@@ -101,6 +102,7 @@ export default {
   components: { Pagination, TenantsGroupsRoles },
   data() {
     return {
+      isReset: false, // 是否重置三组联动数据
       popoverVisible: false, // 高级搜索是否显示
       total: 0, // 总条数
       listQuery: { // 查询条件
@@ -142,16 +144,17 @@ export default {
         this.listLoading = false
       })
     },
+    // 搜索
+    topSearch() {
+      this.get_list()
+    },
     // 重置
     reset() {
+      this.isReset = true
       this.listQuery.content = ''
       this.listQuery.noticeType = ''
       this.listQuery.egroup = ''
       this.selectCompanyId = ''
-      this.get_list()
-    },
-    // 搜索
-    topSearch() {
       this.get_list()
     },
     // 操作人详情
