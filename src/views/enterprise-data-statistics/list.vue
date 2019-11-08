@@ -44,7 +44,7 @@
       <el-table-column align="center" label="已创建用户数" min-width="80" show-overflow-tooltip prop="userCount" />
       <el-table-column align="center" label="已使用存储量" min-width="100" show-overflow-tooltip>
         <template slot-scope="scope">
-          <span>{{ getFileShowSize(scope.row.usedStorageSpace) }}</span><span>&nbsp;/&nbsp;</span><span>{{ getFileShowSize(scope.row.totalStorageSpace) }}</span>
+          <span>{{ getFileShowSize(scope.row.usedStorageSpace) }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="已发布课程数" min-width="50" show-overflow-tooltip prop="publishTrainCount" />
