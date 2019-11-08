@@ -67,6 +67,8 @@
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { getEnterpriseList } from '@/api/enterprise-data-statistics'
 import { getFileShowSize, parseTime } from '@/utils/index'
+
+const curent_time = parseTime(new Date(), '{y}-{m}-{d}')
 export default {
   components: { Pagination },
   data() {
@@ -80,8 +82,8 @@ export default {
         startTime: null, // 操作模块
         endTime: null // 租户id
       },
-      current_time: parseTime(new Date(), '{y}-{m}-{d}'),
-      time_range: [parseTime(new Date(), '{y}-{m}-{d}'), parseTime(new Date(), '{y}-{m}-{d}')],
+      current_time: curent_time,
+      time_range: [curent_time, curent_time],
       list: [], // 表格数据
       listLoading: true // 表格是否开启遮罩
     }
