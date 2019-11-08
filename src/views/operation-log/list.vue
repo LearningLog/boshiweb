@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div id="topSearch">
-      <el-input v-model="listQuery.content" placeholder="请输入操作日志信息" clearable @keyup.enter.native="topSearch">
+      <el-input v-model="listQuery.content" placeholder="请输入日志信息" clearable @keyup.enter.native="topSearch">
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
       </el-input>
       <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">高级搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
@@ -45,7 +45,7 @@
       <el-table-column align="center" label="操作时间" min-width="130" show-overflow-tooltip prop="createTime" />
       <el-table-column align="center" label="发送人数" min-width="50" show-overflow-tooltip>
         <template slot-scope="scope">
-          <el-link type="warning" @click="operateDetail(scope.row)">{{ scope.row.successCount }}</el-link>
+          <el-link type="warning" @click="operateDetail(scope.row)">{{ scope.row.successCount + scope.row.errorCount }}</el-link>
         </template>
       </el-table-column>
     </el-table>
@@ -157,7 +157,9 @@ export default {
     // 操作人详情
     operateDetail(data) {
       this.listLoading = true
-      this.listQuery2.noticeId = data.noticeId
+      if (data instanceof Object && data.noticeId) {
+        this.listQuery2.noticeId = data.noticeId
+      }
       getNoticeDetail(this.listQuery2).then(response => {
         this.list2 = response.data.page.list
         this.total2 = response.data.page.totalCount
