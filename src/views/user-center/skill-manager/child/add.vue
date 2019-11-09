@@ -7,7 +7,7 @@
       <el-form-item label="技能描述">
         <el-input v-model="form.skill_desc" placeholder="请输入技能描述" clearable />
       </el-form-item>
-      <el-form-item label="所属租户" prop="groupId">
+      <el-form-item v-if="isSystemManage" label="所属租户" prop="groupId">
         <el-select v-model="form.groupId" placeholder="请选择所属租户" clearable filterable>
           <el-option
             v-for="item in custom_list"
@@ -26,7 +26,8 @@
 </template>
 
 <script>
-import { addItem, getCustomManageList } from '@/api/userCenter-skillManage'
+import { getCustomManageList } from '@/api/systemManage-roleManage'
+import { addItem } from '@/api/userCenter-skillManage'
 
 export default {
   data() {
@@ -52,6 +53,11 @@ export default {
           { required: true, message: '请选择所属租户', trigger: 'change' }
         ]
       }
+    }
+  },
+  computed: {
+    isSystemManage() {
+      return this.$store.state.user.isSystemManage
     }
   },
   watch: {

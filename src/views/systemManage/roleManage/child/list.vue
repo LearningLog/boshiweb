@@ -103,7 +103,7 @@ export default {
         rolename: '', // 角色名称
         creater: '', // 创建人
         startTime: '', // 开始时间
-        endtTime: '', // 结束时间
+        endTime: '', // 结束时间
         customname: '' // 所属租户
       },
       time_range: [],
@@ -126,7 +126,7 @@ export default {
       this.listQuery.rolename = ''
       this.listQuery.creater = ''
       this.listQuery.startTime = ''
-      this.listQuery.endtTime = ''
+      this.listQuery.endTime = ''
       this.time_range = []
       this.listQuery.customname = ''
       this.get_list()
@@ -135,7 +135,7 @@ export default {
     get_list() {
       this.time_range = this.time_range || []
       this.listQuery.startTime = this.time_range[0]
-      this.listQuery.endtTime = this.time_range[1]
+      this.listQuery.endTime = this.time_range[1]
       this.listLoading = true
       role_list(this.listQuery).then(response => {
         this.listLoading = false

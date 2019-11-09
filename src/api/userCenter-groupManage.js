@@ -14,6 +14,15 @@ export function getCustomManageList() {
     data: {}
   })
 }
+// 获取用户下拉列表
+export function findUserListByGroupId(data) {
+  return request({
+    url: 'system/userV2/findUserListByGroupId',
+    method: 'post',
+    data
+  })
+}
+
 // 获取分组列表
 export function findEmployeeGroupList(data) {
   return request({
@@ -22,6 +31,23 @@ export function findEmployeeGroupList(data) {
     data
   })
 }
+// 详情
+export function getItem(data) {
+  return request({
+    url: '/system/employeeGroupV2/findEmployeeGroupById',
+    method: 'post',
+    data
+  })
+}
+// 修改分组
+export function modifyItem(data) {
+  return request({
+    url: '/system/employeeGroupV2/upateEmployeeGroup',
+    method: 'post',
+    data
+  })
+}
+
 // 获取所有小组列表
 export function getAllEmployeeGroup(data) {
   return request({
@@ -34,22 +60,6 @@ export function getAllEmployeeGroup(data) {
 export function getUserEgroupInfo(data) {
   return request({
     url: 'system/user/getUserEgroupInfo',
-    method: 'post',
-    data
-  })
-}
-// 单个分组详情 system/skill/one
-export function getItem(data) {
-  return request({
-    url: '/system/employeeGroup/findEmployeeGroupById',
-    method: 'post',
-    data
-  })
-}
-// 修改分组
-export function modifyItem(data) {
-  return request({
-    url: '/system/employeeGroup/upateEmployeeGroup',
     method: 'post',
     data
   })
@@ -75,6 +85,14 @@ export function deleteItem(data) {
 export function egroupskill(data) {
   return request({
     url: 'system/skill/egroupskill',
+    method: 'post',
+    data
+  })
+}
+// 获取所有的技能接口
+export function allskill(data) {
+  return request({
+    url: '/system/skill/all',
     method: 'post',
     data
   })

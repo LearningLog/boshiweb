@@ -64,6 +64,14 @@ export function deleteItem(data) {
     data
   })
 }
+// 删除技能
+export function deleteMulti(data) {
+  return request({
+    url: 'system/skill/deleteMulti',
+    method: 'post',
+    data
+  })
+}
 // /////////////////////////////
 // 批量删除
 export function deleteMultiRole(data) {
