@@ -331,10 +331,10 @@
         <span>分值{{ judge_select[1] }}分</span>
       </div>
 
-	    <div id="btnGroup">
-		    <el-button v-no-more-click type="primary" @click="saveIntelligence()">保存</el-button>
-		    <el-button type="primary" plain @click="cancel()">取消</el-button>
-	    </div>
+      <div id="btnGroup">
+        <el-button v-no-more-click type="primary" @click="saveIntelligence()">保存</el-button>
+        <el-button type="primary" plain @click="cancel()">取消</el-button>
+      </div>
     </div>
   </div>
 </template>
@@ -353,7 +353,7 @@ export default {
     return {
       selectCompanyId: '', // 租户
       egroup: '', // 小组
-      dataIsChange: 0, // 计数器，据此判断表单是否已编辑
+      dataIsChange: -1, // 计数器，据此判断表单是否已编辑
       noLeaveprompt: false, // 表单提交后，设置为true，据此判断提交不再弹出离开提示
       currentLabels: [], // 当前要回显的标签
       currentSkills: [], // 当前要回显的技能
@@ -387,8 +387,17 @@ export default {
       judge_select: [0, 0] // 总的判断
     }
   },
-  computed: {},
-  watch: {},
+  watch: {
+    // 监听表单数据变化
+    intelligenceForm: {
+      handler(val) {
+        if (val) {
+          this.dataIsChange++
+        }
+      },
+      deep: true // 深层次监听
+    }
+  },
   created() {
     this.selectCompanyId = this.$route.query.selectCompanyId
     this.egroup = this.$route.query.egroup
@@ -604,8 +613,17 @@ export default {
 
     // 保存
     saveIntelligence() {
+      if (!this.totalTopics[0]) {
+        this.$message.warning('请选择题目数！')
+        return false
+      }
+      if (!this.totalTopics[1]) {
+        this.$message.warning('请输入试题分值！')
+        return false
+      }
       this.intelligenceForm.egroup = this.egroup
       intelligence(this.intelligenceForm).then(res => {
+        this.noLeaveprompt = true
         store.dispatch('testPaper/temporaryStorageTopics', res.data)
         this.$router.push({ path: '/evaluating-manage/test-paper-manage/add', query: { selectCompanyId: this.selectCompanyId, egroup: this.egroup }})
       })
@@ -613,7 +631,7 @@ export default {
 
     // 取消
     cancel() {
-
+      this.$router.push({ path: '/evaluating-manage/test-paper-manage/add', query: { selectCompanyId: this.selectCompanyId, egroup: this.egroup }})
     }
   },
   beforeRouteLeave(to, from, next) {

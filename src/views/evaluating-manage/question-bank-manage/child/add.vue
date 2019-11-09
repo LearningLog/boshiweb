@@ -767,6 +767,7 @@ import AddLabels from '@/components/AddEvalLabels'
 import AddSkills from '@/components/AddEvalSkills'
 import { getToken } from '@/utils/auth'
 import { importTopics, addTopic } from '@/api/question-bank-manage'
+import { getOptionOrderByIndex } from '@/utils/index'
 const $ = window.$
 
 export default {
@@ -1153,13 +1154,7 @@ export default {
 
     // 根据选项在数组中位置获取选项序号
     getOptionOrderByIndex(index) {
-      // 选项序号
-      var option_order = ['A. ', 'B. ', 'C. ', 'D. ', 'E. ', 'F. ', 'G. ', 'H. ', 'I. ', 'J. ', 'K. ', 'L. ', 'M. ', 'N. ', 'O. ', 'P. ', 'Q. ', 'R. ', 'S. ', 'T. ', 'U. ', 'V. ', 'W. ', 'X. ', 'Y. ', 'Z. ']
-      index = parseInt(index)
-      if (index < 0 || index > (option_order.length - 1)) {
-        return 'Z. '
-      }
-      return option_order[index]
+      return getOptionOrderByIndex(index)
     },
 
     // 添加试题
