@@ -37,7 +37,7 @@
           </div>
           <p>{{ index + 1 }}、{{ item.topic_content }}</p>
           <ul class="topic-options">
-            <li v-for="(item2, index2) in item.topic_option" :key="item2.option_id" class="topic-item">
+            <li v-for="(item2, index2) in item.topic_option" :key="item2.option_id" class="item-topic">
               <el-checkbox :checked="item2.correct_option===1?true:false" :title="item2.option_content" class="single-line3" disabled>{{ getOptionOrderByIndex(index2) }}{{ item2.option_content }}</el-checkbox>
             </li>
           </ul>
@@ -655,9 +655,11 @@ export default {
     // =====================================================================================
     // 用于生成uuid
     handleTopic(row) {
-      this.topic_type = row.topic_type
+      const topic = {}
+      $.extend(true, topic, row)
+      this.topic_type = topic.topic_type
 
-      row.topic_option.forEach((item, index) => {
+      topic.topic_option.forEach((item, index) => {
         item.option_id_time_stamp = new Date().getTime() + index
         if (item.correct_option === 1 && this.topic_type === 1) {
           this.radio1 = item.option_id_time_stamp
@@ -671,23 +673,23 @@ export default {
       })
       this.currentLabels = []
       this.currentSkills = []
-      for(var key in row.labels) {
-        this.currentLabels.push(row.labels[key])
+      for(var key in topic.labels) {
+        this.currentLabels.push(topic.labels[key])
       }
-      for(var key in row.skills) {
-        this.currentSkills.push(row.skills[key])
+      for(var key in topic.skills) {
+        this.currentSkills.push(topic.skills[key])
       }
-      // this.currentLabels = row.labels || []
-      // this.currentSkills = row.skills || []
+      // this.currentLabels = topic.labels || []
+      // this.currentSkills = topic.skills || []
       switch (this.topic_type) {
         case 1:
-          this.topic1 = row
+          this.topic1 = topic
           break
         case 2:
-          this.topic2 = row
+          this.topic2 = topic
           break
         case 3:
-          this.topic3 = row
+          this.topic3 = topic
           break
       }
     },
@@ -915,14 +917,14 @@ export default {
         topic_skill.push(item.increase_id)
       })
       // 获取标签
-      this[this.topic0].topic_label = topic_label.join()
+      this[this.topic0].topic_label = topic_label
       // 获取技能
-      this[this.topic0].topic_skill = topic_skill.join()
+      this[this.topic0].topic_skill = topic_skill
       this[this.topic0].topic_type = this[this.topic0].topic_type + ''
       this[this.topic0].topic_level = this[this.topic0].topic_level + ''
       console.log(this[this.topic0])
       this.testPaper.topics.splice(this.editTopicIndex, 1, this[this.topic0])
-      this.editTopicDrawer = true
+      this.editTopicDrawer = false
       this.$message.success('编辑试题成功！')
     },
 
@@ -1011,6 +1013,7 @@ export default {
     padding: 20px;
     padding-top: 0;
     background-color: #F8F8F8;
+    margin-bottom: 20px;
   }
   .topics {
     width: 100%;
@@ -1028,13 +1031,13 @@ export default {
   .operation /deep/ .el-link {
     margin-left: 20px;
   }
-  .topic-item {
+  .item-topic {
     background-color: #fff;
     padding-left: 10px;
     width: 524px;
     margin-bottom: 10px;
   }
-  .topic-item /deep/ .el-checkbox__label {
+  .item-topic /deep/ .el-checkbox__label {
     color: #000;
   }
   #add-test-paper /deep/ .el-scrollbar {
