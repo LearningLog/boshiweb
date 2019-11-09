@@ -109,7 +109,7 @@ export default {
         // egroup: '', // 分组
         // roleId: '', // 角色
         startTime: '', // 开始时间
-        endtTime: '' // 结束时间
+        endTime: '' // 结束时间
       },
       time_range: [], // 时间范围model
       delCheckedList: [], // 选中的数据
@@ -143,7 +143,7 @@ export default {
       this.isReset = true
       this.listQuery.content = ''// 技能名
       this.listQuery.startTime = ''// 开始时间
-      this.listQuery.endtTime = ''// 结束时间
+      this.listQuery.endTime = ''// 结束时间
       this.listQuery.selectCompanyId = ''// 企业名称
       // this.listQuery.egroup = ''// 分组
       // this.listQuery.roleId = ''// 角色
@@ -155,7 +155,7 @@ export default {
     get_list() {
       this.time_range = this.time_range || []
       this.listQuery.startTime = this.time_range[0]
-      this.listQuery.endtTime = this.time_range[1]
+      this.listQuery.endTime = this.time_range[1]
       this.listLoading = true
       skillManagerList(this.listQuery).then(response => {
         this.listLoading = false

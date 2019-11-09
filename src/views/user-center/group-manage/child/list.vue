@@ -9,11 +9,8 @@
         <el-row v-show="popoverVisible">
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
-              <el-form-item label="创建人">
-                <el-input v-model="listQuery.creater" placeholder="请输入创建人" clearable @keyup.enter.native="topSearch" />
-              </el-form-item>
-              <el-form-item label="所属租户">
-                <el-select v-model="listQuery.customname" placeholder="请选择所属租户" clearable filterable>
+              <el-form-item v-if="isSystemManage" label="所属租户">
+                <el-select v-model="listQuery.selectCompanyId" placeholder="请选择所属租户" clearable filterable @change="companyidChange">
                   <el-option
                     v-for="item in custom_list"
                     :key="item._id"
@@ -22,6 +19,18 @@
                   />
                 </el-select>
               </el-form-item>
+
+              <el-form-item label="创建人">
+                <el-select v-model="listQuery.userId" placeholder="请选择创建人" clearable filterable>
+                  <el-option v-for="item in alluserList" :key="item._id" :label="item.nickname" :value="item._id" />
+                </el-select>
+              </el-form-item>
+              <el-form-item label="负责人">
+                <el-select v-model="listQuery.manage_user_id" placeholder="请选择负责人" clearable filterable>
+                  <el-option v-for="item in alluserList" :key="item._id" :label="item.nickname" :value="item._id" />
+                </el-select>
+              </el-form-item>
+
               <el-form-item label="创建时间">
                 <el-date-picker
                   v-model="time_range"
@@ -33,8 +42,6 @@
                   value-format="yyyy-MM-dd"
                 />
               </el-form-item>
-              <tenants-groups-roles :is-reset="isReset" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" />
-
             </el-form>
             <div id="searchPopoverBtn">
               <el-button type="primary" @click="topSearch">搜索</el-button>
@@ -98,18 +105,17 @@
 </template>
 
 <script>
-import { findEmployeeGroupList, getCustomManageList, deleteItem, deleteMultiRole, egroupskill, saveGroupSkill } from '@/api/userCenter-groupManage'
+import { findUserListByGroupId, findEmployeeGroupList, getCustomManageList, deleteItem, deleteMultiRole, egroupskill, saveGroupSkill } from '@/api/userCenter-groupManage'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
 
 export default {
-  components: { Pagination, TenantsGroupsRoles },
+  components: { Pagination },
   directives: { elDragDialog },
   data() {
     return {
-      isReset: true, // 租户组件重置
       listLoading: false,
+      alluserList: [], // 所有用户下拉
       custom_list: [], // 所属租户下拉列表
       transforBoxVisible: false, // 穿梭框显示隐藏
       noList: [], // 穿梭框未分配
@@ -122,11 +128,13 @@ export default {
       listQuery: {
         currentPage: 1, // 当前页码
         pageSize: 10, // 当前列表请求条数
-        groupName: '', // 分组名称
-        creater: '', // 创建人
+        content: '', // 分组名称
+        manage_user_id: '', // 负责人
+        userId: '', // 创建人
         startTime: '', // 开始时间
-        endtTime: '', // 结束时间
-        customname: '' // 所属租户
+        endTime: '', // 结束时间
+
+        selectCompanyId: '' // 所属租户
       },
       time_range: [],
       delCheckedList: [], // 选中的数据
@@ -143,8 +151,22 @@ export default {
   created() {
     this.get_list()
     this.getCustomManageList()
+    this.getAlluserList()
   },
   methods: {
+    // 获取所有用户
+    getAlluserList() {
+      const data = {
+        groupId: this.listQuery.selectCompanyId
+      }
+      findUserListByGroupId(data).then(res => {
+        this.alluserList = res.data
+        console.log('this.alluserList ', this.alluserList)
+      })
+    },
+    companyidChange() {
+      this.getAlluserList()
+    },
     // 获取所属租户list
     getCustomManageList() {
       getCustomManageList().then(res => {
@@ -157,19 +179,20 @@ export default {
     },
     // 重置
     reset() {
-      this.listQuery.groupName = ''
-      this.listQuery.creater = ''
+      this.listQuery.content = ''
+      this.listQuery.manage_user_id = ''
+      this.listQuery.userId = ''
       this.listQuery.startTime = ''
-      this.listQuery.endtTime = ''
+      this.listQuery.endTime = ''
       this.time_range = []
-      this.listQuery.customname = ''
+      this.listQuery.selectCompanyId = ''
       this.get_list()
     },
     // 获取分组列表
     get_list() {
       this.time_range = this.time_range || []
       this.listQuery.startTime = this.time_range[0]
-      this.listQuery.endtTime = this.time_range[1]
+      this.listQuery.endTime = this.time_range[1]
       this.listLoading = true
       findEmployeeGroupList(this.listQuery).then(response => {
         this.listLoading = false
@@ -241,7 +264,6 @@ export default {
     // 授权
     // 穿梭框
     getTranstorInformation(row) {
-      debugger
       this.setInformationId = row._id
       egroupskill({ _id: row._id }).then(response => {
         console.log(response)
