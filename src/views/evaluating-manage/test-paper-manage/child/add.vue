@@ -567,7 +567,7 @@ export default {
     // 暂存当前试卷数据
     temporaryStorage() {
       store.dispatch('testPaper/temporaryStorageTestPaper', this.testPaper)
-      store.dispatch('testPaper/temporaryStorageTopics', this.topics)
+      store.dispatch('testPaper/temporaryStorageTopics', this.testPaper.topics)
     },
     // 智能添加
     intelligentAdd() {
@@ -922,7 +922,6 @@ export default {
       this[this.topic0].topic_skill = topic_skill
       this[this.topic0].topic_type = this[this.topic0].topic_type + ''
       this[this.topic0].topic_level = this[this.topic0].topic_level + ''
-      console.log(this[this.topic0])
       this.testPaper.topics.splice(this.editTopicIndex, 1, this[this.topic0])
       this.editTopicDrawer = false
       this.$message.success('编辑试题成功！')
