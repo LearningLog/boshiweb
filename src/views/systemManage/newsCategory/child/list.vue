@@ -43,7 +43,7 @@
     >
       <el-table-column align="center" label="类别" show-overflow-tooltip>
         <template slot-scope="scope">
-          <span class="pointer" @click="go_detail(scope.row._id)">{{ scope.row.newscategory_name }}</span>
+          <el-link type="primary" @click="go_detail(scope.row._id)">{{ scope.row.newscategory_name }}</el-link>
         </template>
       </el-table-column>
       <el-table-column label="描述" min-width="130" align="center" show-overflow-tooltip prop="newscategory_desc" />
