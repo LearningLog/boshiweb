@@ -130,6 +130,15 @@
     <div id="bottomOperation">
       <el-button v-show="total>0" type="danger" plain @click="batchDel"><i class="iconfont iconshanchu" />批量删除</el-button>
     </div>
+    <el-dialog v-el-drag-dialog class="selectCompany" width="400px" title="选择小组" :visible.sync="isVisibleSystemManage">
+      <el-form ref="form" :model="listQuery" label-width="100px">
+        <tenants-groups-roles :is-render-role="false" whichGroup="manageEgroupInfo" @tenantsGroupsRolesVal="tenantsGroupsRolesVal2" />
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="selectCompany">确定</el-button>
+        <el-button @click="isVisibleSystemManage = false">取 消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -146,6 +155,7 @@ export default {
   data() {
     return {
       isReset: false, // 是否重置三组联动数据
+      isVisibleSystemManage: false, // 是否弹出选择租户、小组
       total: 0, // 总条数
       listQuery: { // 查询条件
         currentPage: 1, // 当前页
@@ -167,7 +177,9 @@ export default {
       listLoading: true, // 是否开启表格遮罩
       popoverVisible: false, // 是否开启高级搜索
       checkedDelList: [], // 选择删除的list
-      setInformationId: '' // 当前设置资讯的id
+      setInformationId: '', // 当前设置资讯的id
+      companyId: '', // 系统管理员选择的租户id
+      egroup: '' // 系统管理员选择的小组id
     }
   },
   watch: {
@@ -234,6 +246,11 @@ export default {
       this.listQuery.roleId = val.roleId
       this.group = val.group
     },
+    // 新增监听三组数据变化
+    tenantsGroupsRolesVal2(val) {
+      this.companyId = val.companyIds
+      this.egroup = val.egroupId
+    },
 
     // 题型转换为name
     switchTopicTypeToName(topic_type) {
@@ -264,11 +281,18 @@ export default {
     },
     // 新增
     add() {
-      if (!this.listQuery.egroup) {
-        this.$message.warning('请先选择分组信息再尝试添加试题！')
+      this.isVisibleSystemManage = true
+    },
+    // 新增选择租户、小组
+    selectCompany() {
+      if (!this.companyId) {
+        this.$message.warning('请先选择租户！')
+        return false
+      } else if (!this.egroup) {
+        this.$message.warning('请先选择小组！')
         return false
       }
-      this.$router.push({ path: '/evaluating-manage/question-bank-manage/add', query: { egroup: this.listQuery.egroup, selectCompanyId: this.group.groupId }})
+      this.$router.push({ path: '/evaluating-manage/question-bank-manage/add', query: { selectCompanyId: this.companyId, egroup: this.egroup }})
     },
     // 详情
     detail(row) {
@@ -324,5 +348,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+  .selectCompany /deep/ .tenantsGroupsRoles {
+    width: 100% !important;
+  }
+  .selectCompany /deep/ .tenantsGroupsRoles .el-form-item {
+    width: 100% !important;
+  }
 </style>
