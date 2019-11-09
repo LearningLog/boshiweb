@@ -62,18 +62,18 @@ const evaluatingManage = {
       meta: { title: '试卷管理', icon: '', activeMenu: '/evaluating-manage/test-paper-manage' },
       children: [
         {
-          path: 'detail',
-          name: 'test-paper-detail',
-          hidden: true,
-          component: () => import('@/views/evaluating-manage/test-paper-manage/child/detail'),
-          meta: { title: '试卷详情', icon: '', activeMenu: '/evaluating-manage/test-paper-manage' }
-        },
-        {
           path: 'list',
           name: 'test-paper-list',
           hidden: true,
           component: () => import('@/views/evaluating-manage/test-paper-manage/child/list.vue'),
           meta: { title: '试卷列表', icon: '', activeMenu: '/evaluating-manage/test-paper-manage' }
+        },
+        {
+          path: 'detail',
+          name: 'test-paper-detail',
+          hidden: true,
+          component: () => import('@/views/evaluating-manage/test-paper-manage/child/detail'),
+          meta: { title: '试卷详情', icon: '', activeMenu: '/evaluating-manage/test-paper-manage' }
         },
         {
           path: 'add',
@@ -88,6 +88,73 @@ const evaluatingManage = {
           hidden: true,
           component: () => import('@/views/evaluating-manage/test-paper-manage/child/edit'),
           meta: { title: '修改试卷', icon: '', activeMenu: '/evaluating-manage/test-paper-manage' }
+        }
+      ]
+    },
+    {
+      path: 'examination-manage',
+      name: 'examination-manage',
+      component: () => import('@/views/evaluating-manage/examination-manage/index'),
+      redirect: '/evaluating-manage/examination-manage/list',
+      meta: { title: '考试管理', icon: '', activeMenu: '/evaluating-manage/examination-manage' },
+      children: [
+        {
+          path: 'list',
+          name: 'examination-list',
+          hidden: true,
+          component: () => import('@/views/evaluating-manage/examination-manage/child/list.vue'),
+          meta: { title: '试卷列表', icon: '', activeMenu: '/evaluating-manage/examination-manage' }
+        },
+        {
+          path: 'detail',
+          name: 'examination-detail',
+          hidden: true,
+          component: () => import('@/views/evaluating-manage/examination-manage/child/detail'),
+          meta: { title: '考试详情', icon: '', activeMenu: '/evaluating-manage/examination-manage' }
+        },
+        {
+          path: 'add',
+          component: () => import('@/views/evaluating-manage/examination-manage/child/add.vue'),
+          name: 'examination-add',
+          hidden: true,
+          meta: { title: '新增考试', icon: '', activeMenu: '/evaluating-manage/examination-manage' }
+        },
+        {
+          path: 'edit',
+          name: 'examination-edit',
+          hidden: true,
+          component: () => import('@/views/evaluating-manage/examination-manage/child/edit'),
+          meta: { title: '修改考试', icon: '', activeMenu: '/evaluating-manage/examination-manage' }
+        }
+      ]
+    },
+    {
+      path: 'automatic-release-manage',
+      name: 'automatic-release-manage',
+      component: () => import('@/views/evaluating-manage/automatic-release-manage/index'),
+      redirect: '/evaluating-manage/automatic-release-manage/list',
+      meta: { title: '自动发布管理', icon: '', activeMenu: '/evaluating-manage/automatic-release-manage' },
+      children: [
+        {
+          path: 'list',
+          name: 'automatic-release-list',
+          hidden: true,
+          component: () => import('@/views/evaluating-manage/automatic-release-manage/child/list.vue'),
+          meta: { title: '自动发布列表', icon: '', activeMenu: '/evaluating-manage/automatic-release-manage' }
+        },
+        {
+          path: 'add',
+          component: () => import('@/views/evaluating-manage/automatic-release-manage/child/add.vue'),
+          name: 'automatic-release-add',
+          hidden: true,
+          meta: { title: '新增发布', icon: '', activeMenu: '/evaluating-manage/automatic-release-manage' }
+        },
+        {
+          path: 'edit',
+          name: 'automatic-release-edit',
+          hidden: true,
+          component: () => import('@/views/evaluating-manage/automatic-release-manage/child/edit'),
+          meta: { title: '修改考试', icon: '', activeMenu: '/evaluating-manage/automatic-release-manage' }
         }
       ]
     },
