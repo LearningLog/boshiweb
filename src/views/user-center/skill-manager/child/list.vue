@@ -1,7 +1,7 @@
 <template>
   <div class="list-box">
     <div id="topSearch">
-      <el-input v-model="listQuery.skill_name" placeholder="请输入技能名称" clearable @keyup.enter.native="topSearch">
+      <el-input v-model="listQuery.content" placeholder="请输入技能名称" clearable @keyup.enter.native="topSearch">
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
       </el-input>
       <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">高级搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
@@ -9,19 +9,6 @@
         <el-row v-show="popoverVisible">
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
-              <el-form-item label="创建人">
-                <el-input v-model="listQuery.creater" placeholder="请输入创建人" clearable @keyup.enter.native="topSearch" />
-              </el-form-item>
-              <el-form-item label="所属租户">
-                <el-select v-model="listQuery.customname" placeholder="请选择所属租户" clearable filterable>
-                  <el-option
-                    v-for="item in custom_list"
-                    :key="item._id"
-                    :label="item.customname"
-                    :value="item._id"
-                  />
-                </el-select>
-              </el-form-item>
               <el-form-item label="创建时间">
                 <el-date-picker
                   v-model="time_range"
@@ -33,6 +20,23 @@
                   value-format="yyyy-MM-dd"
                 />
               </el-form-item>
+
+              <el-form-item v-if="isSystemManage" label="所属租户">
+                <el-select
+                  v-model="listQuery.selectCompanyId"
+                  placeholder="请选择所属租户"
+                  clearable
+                  filterable
+                >
+                  <el-option
+                    v-for="item in custom_list"
+                    :key="item._id"
+                    :label="item.customname"
+                    :value="item._id"
+                  />
+                </el-select>
+              </el-form-item>
+
             </el-form>
             <div id="searchPopoverBtn">
               <el-button type="primary" @click="topSearch">搜索</el-button>
@@ -84,24 +88,30 @@
 </template>
 
 <script>
-import { skillManagerList, deleteItem, deleteMultiRole, getCustomManageList } from '@/api/userCenter-skillManage'
+import { getCustomManageList } from '@/api/systemManage-roleManage'
+
+import { skillManagerList, deleteItem, deleteMulti } from '@/api/userCenter-skillManage'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+// import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
+
 export default {
   components: { Pagination },
   data() {
     return {
+      isReset: true, // 租户组件重置
       listLoading: false,
       custom_list: [], // 所属租户下拉列表
       listQuery: {
         currentPage: 1, // 当前页码
         pageSize: 10, // 当前列表请求条数
-        skill_name: '', // 技能名称
-        creater: '', // 创建人
+        content: '', // 技能名称
+        selectCompanyId: '', // 企业名称
+        // egroup: '', // 分组
+        // roleId: '', // 角色
         startTime: '', // 开始时间
-        endtTime: '', // 结束时间
-        customname: '' // 所属租户
+        endtTime: '' // 结束时间
       },
-      time_range: [],
+      time_range: [], // 时间范围model
       delCheckedList: [], // 选中的数据
       list: null, // 列表数据
       total: 0, // 总条数
@@ -130,12 +140,15 @@ export default {
     },
     // 重置
     reset() {
-      this.listQuery.skill_name = ''
-      this.listQuery.creater = ''
-      this.listQuery.startTime = ''
-      this.listQuery.endtTime = ''
-      this.time_range = []
-      this.listQuery.customname = ''
+      this.isReset = true
+      this.listQuery.content = ''// 技能名
+      this.listQuery.startTime = ''// 开始时间
+      this.listQuery.endtTime = ''// 结束时间
+      this.listQuery.selectCompanyId = ''// 企业名称
+      // this.listQuery.egroup = ''// 分组
+      // this.listQuery.roleId = ''// 角色
+
+      this.time_range = []// 时间范围
       this.get_list()
     },
     // 获取技能列表
@@ -201,7 +214,7 @@ export default {
         this.delCheckedList.forEach(item => {
           _ids.push(item._id)
         })
-        deleteMultiRole({ _ids: _ids }).then(response => {
+        deleteMulti({ _ids: _ids }).then(response => {
           this.$message.success('批量删除成功！')
           if ((this.list.length - this.delCheckedList.length) === 0) { // 如果当前页数据已删完，则去往上一页
             this.listQuery.currentPage -= 1

@@ -33,6 +33,8 @@
                   value-format="yyyy-MM-dd"
                 />
               </el-form-item>
+              <tenants-groups-roles :is-reset="isReset" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" />
+
             </el-form>
             <div id="searchPopoverBtn">
               <el-button type="primary" @click="topSearch">搜索</el-button>
@@ -99,11 +101,14 @@
 import { findEmployeeGroupList, getCustomManageList, deleteItem, deleteMultiRole, egroupskill, saveGroupSkill } from '@/api/userCenter-groupManage'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
+
 export default {
-  components: { Pagination },
+  components: { Pagination, TenantsGroupsRoles },
   directives: { elDragDialog },
   data() {
     return {
+      isReset: true, // 租户组件重置
       listLoading: false,
       custom_list: [], // 所属租户下拉列表
       transforBoxVisible: false, // 穿梭框显示隐藏

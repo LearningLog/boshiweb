@@ -7,8 +7,8 @@
       <el-form-item label="技能描述">
         <el-input v-model="form.skill_desc" placeholder="请输入技能描述" clearable />
       </el-form-item>
-      <el-form-item label="所属租户" prop="groupId">
-        <el-select v-model="form.groupId" placeholder="请选择所属租户" clearable filterable>
+      <el-form-item v-if="isSystemManage" label="所属租户" prop="groupId">
+        <el-select v-model="form.groupId" placeholder="请选择所属租户" clearable filterable disabled>
           <el-option
             v-for="item in custom_list"
             :key="item._id"
@@ -26,7 +26,8 @@
 </template>
 
 <script>
-import { getItem, modifyItem, getCustomManageList } from '@/api/userCenter-skillManage'
+import { getCustomManageList } from '@/api/systemManage-roleManage'
+import { getItem, modifyItem } from '@/api/userCenter-skillManage'
 
 export default {
   data() {
@@ -54,6 +55,11 @@ export default {
       }
     }
   },
+  computed: {
+    isSystemManage() {
+      return this.$store.state.user.isSystemManage
+    }
+  },
   watch: {
     // 监听表单数据变化
     form: {
@@ -74,7 +80,6 @@ export default {
     // 获取初始数据
     getInitData() {
       getItem({ _id: this.id }).then(response => {
-        debugger
         this.form = response.data.skill
         this.dataIsChange = -1
       })
