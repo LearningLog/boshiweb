@@ -6,18 +6,25 @@
 */
 
 const state = {
-  testPaper: {} // 新增试卷，跳页缓存的试卷数据
+  testPaper: {}, // 新增试卷，跳页缓存的试卷数据
+  topics: [] // 试题
 }
 
 const mutations = {
   SET_TEST_PAPER_TEPORARY_STORAGE: (state, testPaper) => {
     state.testPaper = testPaper
+  },
+  SET_TOPICS_TEPORARY_STORAGE: (state, topics) => {
+    state.topics = topics
   }
 }
 
 const actions = {
-  temporaryStorage({ commit }, testPaper) {
+  temporaryStorageTestPaper({ commit }, testPaper) {
     commit('SET_TEST_PAPER_TEPORARY_STORAGE', testPaper)
+  },
+  temporaryStorageTopics({ commit }, topics) {
+    commit('SET_TOPICS_TEPORARY_STORAGE', topics)
   }
 }
 

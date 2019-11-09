@@ -121,6 +121,7 @@ export default {
       listLoading: true, // 是否开启表格遮罩
       popoverVisible: false, // 是否开启高级搜索
       checkedDelList: [], // 选择删除的list
+      exampaper_id: '', // 发布的试卷id
       selectCompanyId: '', // 发布的试卷的selectCompanyId
       scoreCount: 0, // 发布的试卷的总分
       companyId: '', // 系统管理员选择的租户id
@@ -223,14 +224,16 @@ export default {
     },
     // 发布
     beginPublish(row) {
+      this.exampaper_id = row._id
       this.selectCompanyId = row.groupId
       this.scoreCount = row.score_count
       this.publishDialog = true
     },
     // 监听发布考试
     publishExam(val) {
-      console.log('监听发布考试', val)
+      val.exampaper_id = this.exampaper_id
       publish(val).then(response => {
+        this.publishDialog = false
         this.$message.success('发布试卷成功！')
         this.get_list()
       })

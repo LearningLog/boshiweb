@@ -42,6 +42,7 @@ export default {
         topic_count: null, // 总题数
         score_count: null, // 总分数
         exampaper_name: '', // 试卷标题
+        topics: [], // 试题
       }
     }
   },
@@ -58,7 +59,8 @@ export default {
   methods: {
     // 暂存当前试卷数据
     temporaryStorage() {
-      store.dispatch('testPaper/temporaryStorage', this.testPaper)
+      store.dispatch('testPaper/temporaryStorageTestPaper', this.testPaper)
+      store.dispatch('testPaper/temporaryStorageTopics', this.topics)
     },
     // 智能添加
     intelligentAdd() {

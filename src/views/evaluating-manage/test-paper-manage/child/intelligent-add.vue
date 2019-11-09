@@ -330,6 +330,11 @@
         <span>判断题{{ judge_select[0] }}题</span>
         <span>分值{{ judge_select[1] }}分</span>
       </div>
+
+	    <div id="btnGroup">
+		    <el-button v-no-more-click type="primary" @click="saveIntelligence()">保存</el-button>
+		    <el-button type="primary" plain @click="cancel()">取消</el-button>
+	    </div>
     </div>
   </div>
 </template>
@@ -338,6 +343,7 @@
 import { intelligence, getTopicCount } from '@/api/test-paper-manage'
 import AddLabels from '@/components/AddEvalLabels'
 import AddSkills from '@/components/AddEvalSkills'
+import store from '@/store'
 export default {
   components: {
     AddLabels,
@@ -371,7 +377,7 @@ export default {
         judge_and_easy: [0, 0], // 简单判断题
         judge_and_normal: [0, 0], // 一般判断题数
         judge_and_hard: [0, 0], // 困难判断题数
-        egroup: this.egroup, // 所选管理小组
+        egroup: null, // 所选管理小组
         ids: [] // 当前已有试题id集合
       },
       topicsNumDetail: {}, // 可选题数详情
@@ -459,61 +465,42 @@ export default {
     changeTopicType(val) {
       // 重置
       // ======================================================
-      this.intelligenceForm.total_number[0] = 0
-      this.intelligenceForm.total_number[1] = 0
+      this.intelligenceForm.total_number = [0, 0]
 
       // ======================================================
-      this.intelligenceForm.single_select[0] = 0
-      this.intelligenceForm.single_select[1] = 0
+      this.intelligenceForm.single_select = [0, 0]
 
-      this.intelligenceForm.multi_select[0] = 0
-      this.intelligenceForm.multi_select[1] = 0
+      this.intelligenceForm.multi_select = [0, 0]
 
-      this.intelligenceForm.judge_select[0] = 0
-      this.intelligenceForm.judge_select[1] = 0
+      this.intelligenceForm.judge_select = [0, 0]
 
       // ======================================================
-      this.intelligenceForm.single_and_easy[0] = 0
-      this.intelligenceForm.single_and_easy[1] = 0
+      this.intelligenceForm.single_and_easy = [0, 0]
 
-      this.intelligenceForm.single_and_normal[0] = 0
-      this.intelligenceForm.single_and_normal[1] = 0
+      this.intelligenceForm.single_and_normal = [0, 0]
 
-      this.intelligenceForm.single_and_hard[0] = 0
-      this.intelligenceForm.single_and_hard[1] = 0
+      this.intelligenceForm.single_and_hard = [0, 0]
 
-      this.intelligenceForm.multi_and_easy[0] = 0
-      this.intelligenceForm.multi_and_easy[1] = 0
+      this.intelligenceForm.multi_and_easy = [0, 0]
 
-      this.intelligenceForm.multi_and_normal[0] = 0
-      this.intelligenceForm.multi_and_normal[1] = 0
+      this.intelligenceForm.multi_and_normal = [0, 0]
 
-      this.intelligenceForm.multi_and_hard[0] = 0
-      this.intelligenceForm.multi_and_hard[1] = 0
+      this.intelligenceForm.multi_and_hard = [0, 0]
 
-      this.intelligenceForm.judge_and_easy[0] = 0
-      this.intelligenceForm.judge_and_easy[1] = 0
+      this.intelligenceForm.judge_and_easy = [0, 0]
 
-      this.intelligenceForm.judge_and_normal[0] = 0
-      this.intelligenceForm.judge_and_normal[1] = 0
+      this.intelligenceForm.judge_and_normal = [0, 0]
 
-      this.intelligenceForm.judge_and_hard[0] = 0
-      this.intelligenceForm.judge_and_hard[1] = 0
+      this.intelligenceForm.judge_and_hard = [0, 0]
 
       // ================================================
-      this.totalTopics[0] = 0
-      this.totalTopics[1] = 0
-
-      this.single_select[0] = 0
-      this.single_select[1] = 0
-
-      this.multi_select[0] = 0
-      this.multi_select[1] = 0
-
-      this.judge_select[0] = 0
-      this.judge_select[1] = 0
+      this.totalTopics = [0, 0]
+      this.single_select = [0, 0]
+      this.multi_select = [0, 0]
+      this.judge_select = [0, 0]
     },
 
+	  // 题数、分值变化
     handleChange(val) {
       switch (this.intelligenceForm.select_type) {
         case 1:
@@ -616,8 +603,17 @@ export default {
     },
 
     // 保存
-    intelligence() {
-      intelligence()
+    saveIntelligence() {
+      this.intelligenceForm.egroup = this.egroup
+      intelligence(this.intelligenceForm).then(res => {
+        store.dispatch('testPaper/temporaryStorageTopics', res.data)
+        this.$router.push({ path: '/evaluating-manage/test-paper-manage/add', query: { selectCompanyId: this.selectCompanyId, egroup: this.egroup }})
+      })
+    },
+
+    // 取消
+    cancel() {
+
     }
   },
   beforeRouteLeave(to, from, next) {
@@ -645,13 +641,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "~@/styles/theme.scss";
-//$themeColor
-/*.select /deep/ .el-form-item {*/
-/*display: inline-block;*/
-/*width: 49%;*/
-/*vertical-align: top;*/
-/*}*/
 .edit {
   width: calc(100% - 350px);
 }
@@ -664,7 +653,6 @@ export default {
   padding: 20px;
   border: 1px solid #ededed;
   border-radius: 2px;
-  /*width: calc((100% - 100px) / 3);*/
 }
 .topicsNum {
   display: inline-block;
@@ -695,5 +683,18 @@ export default {
 }
 .selectType2:last-child {
   margin-bottom: 0;
+}
+	.count {
+		text-align: center;
+	}
+	.count .total {
+		margin-bottom: 20px;
+	}
+.count span {
+	margin-right: 20px;
+}
+.count .single, .count .multi, .count .judge {
+	margin-bottom: 20px;
+	color: #999;
 }
 </style>
