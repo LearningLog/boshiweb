@@ -138,6 +138,23 @@ export function getExamUserInfo(data) {
     data
   })
 }
+// 智能添加试题接口
+export function intelligence(data) {
+  return request({
+    url: '/evaluation/examinationpaper/intelligence',
+    method: 'post',
+    data
+  })
+}
+// 根据标签和技能刷新数据接口，获取当前可用题数
+export function getTopicCount(data) {
+  return request({
+    url: '/evaluation/automatic/select',
+    method: 'post',
+    data
+  })
+}
+
 // 试卷生成导出文档
 export function generateExportPaper(data) {
   return request({

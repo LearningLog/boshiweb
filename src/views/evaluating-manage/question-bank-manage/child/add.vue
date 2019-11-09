@@ -1710,8 +1710,7 @@ export default {
   #addTopicVue .preview {
     width: calc(40% - 10px);
     border-left: 8px solid #e2e6ed;
-    height: 100%;
-    min-height: 500px;
+    height: calc(100vh - 200px);
     padding: 0 10px;
     box-sizing: border-box;
   }

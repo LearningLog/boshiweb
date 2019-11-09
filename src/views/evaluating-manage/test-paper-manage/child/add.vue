@@ -35,6 +35,7 @@ export default {
   data() {
     return {
       selectCompanyId: '', // 租户
+      egroup: '', // 小组
       dataIsChange: 0, // 计数器，据此判断表单是否已编辑
       noLeaveprompt: false, // 表单提交后，设置为true，据此判断提交不再弹出离开提示
       testPaper: {
@@ -52,6 +53,7 @@ export default {
   },
   created() {
     this.selectCompanyId = this.$route.query.selectCompanyId
+    this.egroup = this.$route.query.egroup
   },
   methods: {
     // 暂存当前试卷数据
@@ -61,12 +63,12 @@ export default {
     // 智能添加
     intelligentAdd() {
       this.temporaryStorage()
-      this.$router.push({ path: '/evaluating-manage/test-paper-manage/intelligent-add', query: { selectCompanyId: this.selectCompanyId }})
+      this.$router.push({ path: '/evaluating-manage/test-paper-manage/intelligent-add', query: { selectCompanyId: this.selectCompanyId, egroup: this.egroup }})
     },
     // 题库中添加
     questionBankAdd() {
       this.temporaryStorage()
-      this.$router.push({ path: '/evaluating-manage/test-paper-manage/question-bank-add', query: { selectCompanyId: this.selectCompanyId }})
+      this.$router.push({ path: '/evaluating-manage/test-paper-manage/question-bank-add', query: { selectCompanyId: this.selectCompanyId, egroup: this.egroup }})
     },
     // 发布考试
     publishTestPaper() {
@@ -75,7 +77,7 @@ export default {
     // 保存考试
     saveTestPaper() {
 
-    },
+    }
   },
   beforeRouteLeave(to, from, next) {
     if (this.dataIsChange && !this.noLeaveprompt) { // 判断表单数据是否变化，以及提交后不进行此保存提示

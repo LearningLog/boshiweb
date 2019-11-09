@@ -207,13 +207,14 @@ export default {
     },
     // 新增选择租户、小组
     selectCompany() {
-      if (!this.companyId) {
+      if (!this.companyId && this.$store.state.user.isSystemManage) {
         this.$message.warning('请先选择租户！')
         return false
       } else if (!this.egroup) {
         this.$message.warning('请先选择小组！')
         return false
       }
+      this.isVisibleSystemManage = false
       this.$router.push({ path: '/evaluating-manage/test-paper-manage/add', query: { selectCompanyId: this.companyId, egroup: this.egroup }})
     },
     // 详情
