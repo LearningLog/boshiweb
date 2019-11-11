@@ -54,7 +54,7 @@
       />
       <el-table-column align="center" label="名称" min-width="150">
         <template slot-scope="scope">
-          <span class="pointer" @click="detail(scope.row)">{{ scope.row.customname }}</span>
+          <el-link type="primary" @click="detail(scope.row)">{{ scope.row.customname }}</el-link>
         </template>
       </el-table-column>
       <el-table-column label="Logo" min-width="90" align="center">

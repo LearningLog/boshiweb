@@ -284,7 +284,6 @@ export default {
   methods: {
     // 提交
     onSubmit(formName) {
-      console.log(process.env.VUE_APP_BASE_API)
       this.$refs[formName].validate((valid) => {
         if (valid) {
           addTenant(this.form).then(response => {
@@ -360,7 +359,6 @@ export default {
     },
     // 处理文件移除
     handleRemove(file, fileList) {
-      console.log(file, fileList)
       if (this.logoType === 1) {
         this.form.pcLogoFileId = ''
         this.form.pcLogoFileUrl = ''

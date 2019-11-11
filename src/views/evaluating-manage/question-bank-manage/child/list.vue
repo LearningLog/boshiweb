@@ -9,7 +9,7 @@
         <el-row v-show="popoverVisible">
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
-              <tenants-groups-roles :is-render-role="false" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" />
+              <tenants-groups-roles :is-render-role="false" :isReset="isReset" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" />
               <!--<el-form-item label="试题标签">-->
               <!--<el-select-->
               <!--v-model="listQuery.topic_label"-->
@@ -98,7 +98,7 @@
       </el-table-column>
       <el-table-column label="题目内容" min-width="120" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
-          <span class="pointer" @click="detail(scope.row)">{{ scope.row.topic_content }}</span>
+          <el-link type="primary" @click="detail(scope.row)">{{ scope.row.topic_content }}</el-link>
         </template>
       </el-table-column>
       <el-table-column class-name="status-col" label="难度" min-width="40" align="center" show-overflow-tooltip>
@@ -130,6 +130,15 @@
     <div id="bottomOperation">
       <el-button v-show="total>0" type="danger" plain @click="batchDel"><i class="iconfont iconshanchu" />批量删除</el-button>
     </div>
+    <el-dialog v-el-drag-dialog class="selectCompany" width="400px" title="选择小组" :visible.sync="isVisibleSystemManage">
+      <el-form ref="form" :model="listQuery" label-width="100px">
+        <tenants-groups-roles :is-render-role="false" whichGroup="manageEgroupInfo" @tenantsGroupsRolesVal="tenantsGroupsRolesVal2" />
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="selectCompany">确定</el-button>
+        <el-button @click="isVisibleSystemManage = false">取 消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -145,6 +154,8 @@ export default {
   directives: { elDragDialog },
   data() {
     return {
+      isReset: false, // 是否重置三组联动数据
+      isVisibleSystemManage: false, // 是否弹出选择租户、小组
       total: 0, // 总条数
       listQuery: { // 查询条件
         currentPage: 1, // 当前页
@@ -153,7 +164,7 @@ export default {
         topic_label: null, // 试题标签
         topic_skill: null, // 试题技能
         topicType: null, // 试题类型
-        selectGroupId: null, // 租户
+        selectCompanyId: null, // 租户
         egroup: null, // 小组
         startTime: null, // 创建开始时间
         endTime: null // 创建结束时间
@@ -166,12 +177,14 @@ export default {
       listLoading: true, // 是否开启表格遮罩
       popoverVisible: false, // 是否开启高级搜索
       checkedDelList: [], // 选择删除的list
-      setInformationId: '' // 当前设置资讯的id
+      setInformationId: '', // 当前设置资讯的id
+      companyId: '', // 系统管理员选择的租户id
+      egroup: '' // 系统管理员选择的小组id
     }
   },
   watch: {
-    // 监听表单数据变化
-    'listQuery.selectGroupId': function(curVal, oldVal) {
+    // 监听表单数据变化 暂时无用
+    'listQuery.selectCompanyId': function(curVal, oldVal) {
       this.get_topic_label_list()
       this.get_topic_skill_list()
     }
@@ -193,13 +206,13 @@ export default {
         this.total = response.data.page.totalCount
       })
     },
-    // 获取标签list
+    // 获取标签list 暂时无用
     get_topic_label_list() {
       labelAllList({}).then(res => {
         this.topic_label = res.data
       })
     },
-    // 获取技能list
+    // 获取技能list 暂时无用
     get_topic_skill_list() {
       skillAllList({}).then(res => {
         this.topic_skill = res.data
@@ -214,11 +227,12 @@ export default {
     },
     // 重置
     reset() {
+      this.isReset = true
       this.listQuery.content = ''
       this.listQuery.topic_label = null
       this.listQuery.topic_skill = null
       this.listQuery.topicType = null
-      this.listQuery.selectGroupId = null
+      this.listQuery.selectCompanyId = null
       this.listQuery.egroup = null
       this.time_range = []
       this.listQuery.startTime = ''
@@ -227,10 +241,15 @@ export default {
     },
     // 监听三组数据变化
     tenantsGroupsRolesVal(val) {
-      this.listQuery.selectGroupId = val.companyIds
+      this.listQuery.selectCompanyId = val.companyIds
       this.listQuery.egroup = val.egroupId
       this.listQuery.roleId = val.roleId
       this.group = val.group
+    },
+    // 新增监听三组数据变化
+    tenantsGroupsRolesVal2(val) {
+      this.companyId = val.companyIds
+      this.egroup = val.egroupId
     },
 
     // 题型转换为name
@@ -262,11 +281,19 @@ export default {
     },
     // 新增
     add() {
-      if (!this.listQuery.egroup) {
-        this.$message.warning('请先选择分组信息再尝试添加试题！')
+      this.isVisibleSystemManage = true
+    },
+    // 新增选择租户、小组
+    selectCompany() {
+      if (!this.companyId && this.$store.state.user.isSystemManage) {
+        this.$message.warning('请先选择租户！')
+        return false
+      } else if (!this.egroup) {
+        this.$message.warning('请先选择小组！')
         return false
       }
-      this.$router.push({ path: '/evaluating-manage/question-bank-manage/add', query: { egroup: this.listQuery.egroup, selectCompanyId: this.group.groupId }})
+      this.isVisibleSystemManage = false
+      this.$router.push({ path: '/evaluating-manage/question-bank-manage/add', query: { selectCompanyId: this.companyId, egroup: this.egroup }})
     },
     // 详情
     detail(row) {
@@ -274,7 +301,7 @@ export default {
     },
     // 单个删除
     del(row) {
-      this.$confirm('确定要删除【' + row.topic_content + '】吗？', '删除租户', {
+      this.$confirm('确定要删除【' + row.topic_content + '】吗？', '删除试题', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -322,5 +349,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+  .selectCompany /deep/ .tenantsGroupsRoles {
+    width: 100% !important;
+  }
+  .selectCompany /deep/ .tenantsGroupsRoles .el-form-item {
+    width: 100% !important;
+  }
 </style>

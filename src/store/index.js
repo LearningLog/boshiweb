@@ -5,6 +5,7 @@ import app from './modules/app'
 import permission from './modules/permission'
 import settings from './modules/settings'
 import menuManage from './modules/menu-manage'
+import testPaper from './modules/test-paper'
 import user from './modules/user'
 
 Vue.use(Vuex)
@@ -15,7 +16,8 @@ const store = new Vuex.Store({
     permission,
     settings,
     user,
-    menuManage
+    menuManage,
+    testPaper
   },
   getters
 })

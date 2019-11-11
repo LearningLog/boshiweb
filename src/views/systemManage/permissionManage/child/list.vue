@@ -49,7 +49,7 @@
     >
       <el-table-column align="center" label="名称" show-overflow-tooltip>
         <template slot-scope="scope">
-          <span class="pointer" @click="go_detail(scope.row._id)">{{ scope.row.permissionname }}</span>
+          <el-link type="primary" @click="go_detail(scope.row._id)">{{ scope.row.permissionname }}</el-link>
         </template>
       </el-table-column>
       <el-table-column label="菜单模块" min-width="120" align="center" show-overflow-tooltip prop="modulename" />

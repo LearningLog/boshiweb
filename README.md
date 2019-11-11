@@ -335,6 +335,7 @@ vue-element-admin 配套了系列教程文章，如何从零构建后一个完�
 #### 列表
 
 - 操作列（左侧多选、右侧操作列）锁定
+- 详情操作以 `<el-link type="primary" @click="detail(scope.row)">{{ scope.row.name }}</el-link>`显示
 - 操作列中 更多 以 `click` 激活
 - 表头锁定
 - 所有列都添加 `show-overflow-tooltip` 属性
@@ -363,7 +364,7 @@ vue-element-admin 配套了系列教程文章，如何从零构建后一个完�
       />
       <el-table-column align="center" label="名称" min-width="150">
         <template slot-scope="scope">
-          <span class="pointer">{{ scope.row.customname }}</span>
+          <el-link type="primary" @click="detail(scope.row)">{{ scope.row.name }}</el-link>
         </template>
       </el-table-column>
       <el-table-column label="Logo" min-width="90" align="center">

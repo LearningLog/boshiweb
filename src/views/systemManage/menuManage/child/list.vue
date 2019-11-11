@@ -51,7 +51,7 @@
         </el-table-column>
         <el-table-column align="center" show-overflow-tooltip min-width="100" label="名称">
           <template slot-scope="scope">
-            <span class="pointer" @click="detail(scope.row)">{{ scope.row.menuname }}</span>
+            <el-link type="primary" @click="detail(scope.row)">{{ scope.row.menuname }}</el-link>
           </template>
         </el-table-column>
         <el-table-column label="标识" min-width="130" align="center" show-overflow-tooltip prop="cmark" />

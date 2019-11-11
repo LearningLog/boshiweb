@@ -54,7 +54,7 @@
       />
       <el-table-column align="center" label="名称" show-overflow-tooltip>
         <template slot-scope="scope">
-          <span class="pointer" @click="detail(scope.row)">{{ scope.row.rolename }}</span>
+          <el-link type="primary" @click="detail(scope.row)">{{ scope.row.rolename }}</el-link>
         </template>
       </el-table-column>
       <el-table-column label="描述" min-width="100" align="center" show-overflow-tooltip prop="desc" />
@@ -103,7 +103,7 @@ export default {
         rolename: '', // 角色名称
         creater: '', // 创建人
         startTime: '', // 开始时间
-        endtTime: '', // 结束时间
+        endTime: '', // 结束时间
         customname: '' // 所属租户
       },
       time_range: [],
@@ -126,7 +126,7 @@ export default {
       this.listQuery.rolename = ''
       this.listQuery.creater = ''
       this.listQuery.startTime = ''
-      this.listQuery.endtTime = ''
+      this.listQuery.endTime = ''
       this.time_range = []
       this.listQuery.customname = ''
       this.get_list()
@@ -135,7 +135,7 @@ export default {
     get_list() {
       this.time_range = this.time_range || []
       this.listQuery.startTime = this.time_range[0]
-      this.listQuery.endtTime = this.time_range[1]
+      this.listQuery.endTime = this.time_range[1]
       this.listLoading = true
       role_list(this.listQuery).then(response => {
         this.listLoading = false

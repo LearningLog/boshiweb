@@ -7,7 +7,22 @@
       <el-form-item class="" label="分组描述：">
         <span>{{ form.desc }}</span>
       </el-form-item>
-      <el-form-item class="" label="创建时间">
+      <el-form-item class="" label="所属企业:">
+        <span>{{ form.createtime }}</span>
+      </el-form-item>
+      <el-form-item class="" label="分组负责人">
+        <span>{{ form.createtime }}</span>
+      </el-form-item>
+      <el-form-item class="" label="成员人数">
+        <span>{{ form.createtime }}</span>
+      </el-form-item>
+      <el-form-item class="" label="分组成员">
+        <span>{{ form.createtime }}</span>
+      </el-form-item>
+      <el-form-item class="" label="分组来源">
+        <span>{{ form.createtime }}</span>
+      </el-form-item>
+      <el-form-item class="" label="分组技能">
         <span>{{ form.createtime }}</span>
       </el-form-item>
     </el-form>

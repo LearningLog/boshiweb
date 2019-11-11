@@ -3,7 +3,7 @@
     <el-form-item v-if="isSystemManage" label="所属租户" :style="{ width: itemWidth }">
       <el-select
         v-model="companyIds"
-        placeholder="请选择所属租户"
+        placeholder="请选择租户"
         clearable
         filterable
         @change="changeCompany"
@@ -67,6 +67,15 @@ export default {
     isRenderRole: {
       type: Boolean,
       default: true
+    },
+    // 是否重置
+    isReset: {
+      type: Boolean,
+      default: false
+    },
+    whichGroup: {
+      type: String,
+      default: ''
     }
   },
   data() {
@@ -78,6 +87,14 @@ export default {
       custom_list: [], // 所属租户
       roleList: [], // 角色,
       groupList: [] // 小组
+    }
+  },
+  watch: {
+    isReset: function(curVal, oldVal) {
+      // 重置
+      this.companyIds = ''
+      this.groupId = ''
+      this.roleId = ''
     }
   },
   computed: {
@@ -141,7 +158,15 @@ export default {
     // 获取所有小组
     getEgroups() {
       getUserEgroupInfo({ selectCompanyId: this.companyIds }).then(response => {
-        this.groupList = response.data.egroupInfo
+        if (this.whichGroup === '' || this.whichGroup === 'egroupInfo') {
+          this.groupList = response.data.egroupInfo
+        } else if (this.whichGroup === 'joinEgroupInfo') {
+          this.groupList = response.data.joinEgroupInfo
+        } else if (this.whichGroup === 'manageEgroupInfo') {
+          this.groupList = response.data.manageEgroupInfo
+        } else {
+          this.groupList = response.data.egroupInfo
+        }
       })
     },
     // 获取全部角色
