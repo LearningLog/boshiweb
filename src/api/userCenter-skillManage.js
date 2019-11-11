@@ -72,37 +72,3 @@ export function deleteMulti(data) {
     data
   })
 }
-// /////////////////////////////
-// 批量删除
-export function deleteMultiRole(data) {
-  return request({
-    url: '/system/roleV2/deleteMultiRole',
-    method: 'post',
-    data
-  })
-}
-
-// 角色授权页面管理类型
-export function get_role_manage_type() {
-  return request({
-    url: '/system/roleV2/getDefaultManage',
-    method: 'post',
-    data: {}
-  })
-}
-// 获取角色授权菜单权限树
-export function getAllMenus(data) {
-  return request({
-    url: '/system/roleV2/findAllMenus',
-    method: 'post',
-    data
-  })
-}
-// 角色授权
-export function setRoleAuthority(data) {
-  return request({
-    url: '/system/roleV2/saveMenu',
-    method: 'post',
-    data
-  })
-}
