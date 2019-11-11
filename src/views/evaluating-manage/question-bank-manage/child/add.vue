@@ -2,7 +2,7 @@
   <div id="addTopicVue">
     <div class="fr submit">
       <p>（小提示：保存的试题记得保存至题库哦）</p>
-      <el-button v-no-more-click class="addTopic" type="primary" @click="addTopics"><i class="addIcon iconfont iconhao" />保存至题库</el-button>
+      <el-button v-no-more-click class="addTopic" type="primary" @click="addTopics"><i class="addIcon iconfont iconbaocun" />保存至题库</el-button>
     </div>
 
     <el-tabs v-model="addType" :before-leave="beforeLeaveTabs1" class="addType" @tab-click="handleTabsClick1">

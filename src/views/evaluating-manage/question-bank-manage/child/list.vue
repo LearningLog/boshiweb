@@ -171,7 +171,7 @@ export default {
       },
       topic_label: [], // 试题标签
       topic_skill: [], // 试题技能
-      topicType: [{ _id: 1, topicName: '简单' }, { _id: 2, topicName: '普通' }, { _id: 3, topicName: '困难' }],
+      topicType: [{ _id: 1, topicName: '单选' }, { _id: 2, topicName: '多选' }, { _id: 3, topicName: '判断' }],
       time_range: [], // 创建时间
       list: [], // 表格数据
       listLoading: true, // 是否开启表格遮罩

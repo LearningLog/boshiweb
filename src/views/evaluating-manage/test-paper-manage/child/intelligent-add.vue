@@ -332,7 +332,11 @@
       </div>
 
       <div id="btnGroup">
-        <el-button v-no-more-click type="primary" @click="saveIntelligence()">保存</el-button>
+        <el-button
+          v-no-more-click
+          type="primary"
+          @click="saveIntelligence()"
+        >保存</el-button>
         <el-button type="primary" plain @click="cancel()">取消</el-button>
       </div>
     </div>
@@ -402,6 +406,9 @@ export default {
     this.selectCompanyId = this.$route.query.selectCompanyId
     this.egroup = this.$route.query.egroup
     this.getTopicCount()
+    this.$store.state.testPaper.topics.forEach(row => {
+      this.intelligenceForm.ids.push(row._id)
+    })
   },
   methods: {
     // 获取可用题数
@@ -509,7 +516,7 @@ export default {
       this.judge_select = [0, 0]
     },
 
-	  // 题数、分值变化
+    // 题数、分值变化
     handleChange(val) {
       switch (this.intelligenceForm.select_type) {
         case 1:
@@ -625,13 +632,19 @@ export default {
       intelligence(this.intelligenceForm).then(res => {
         this.noLeaveprompt = true
         store.dispatch('testPaper/temporaryStorageTopics', res.data)
-        this.$router.push({ path: '/evaluating-manage/test-paper-manage/add', query: { selectCompanyId: this.selectCompanyId, egroup: this.egroup }})
+        this.$router.push({
+          path: '/evaluating-manage/test-paper-manage/add',
+          query: { selectCompanyId: this.selectCompanyId, egroup: this.egroup }
+        })
       })
     },
 
     // 取消
     cancel() {
-      this.$router.push({ path: '/evaluating-manage/test-paper-manage/add', query: { selectCompanyId: this.selectCompanyId, egroup: this.egroup }})
+      this.$router.push({
+        path: '/evaluating-manage/test-paper-manage/add',
+        query: { selectCompanyId: this.selectCompanyId, egroup: this.egroup }
+      })
     }
   },
   beforeRouteLeave(to, from, next) {
@@ -645,6 +658,8 @@ export default {
           type: 'warning'
         })
           .then(() => {
+            store.dispatch('testPaper/temporaryStorageTestPaper', {})
+            store.dispatch('testPaper/temporaryStorageTopics', [])
             next()
           })
           .catch(() => {
@@ -702,17 +717,19 @@ export default {
 .selectType2:last-child {
   margin-bottom: 0;
 }
-	.count {
-		text-align: center;
-	}
-	.count .total {
-		margin-bottom: 20px;
-	}
-.count span {
-	margin-right: 20px;
+.count {
+  text-align: center;
 }
-.count .single, .count .multi, .count .judge {
-	margin-bottom: 20px;
-	color: #999;
+.count .total {
+  margin-bottom: 20px;
+}
+.count span {
+  margin-right: 20px;
+}
+.count .single,
+.count .multi,
+.count .judge {
+  margin-bottom: 20px;
+  color: #999;
 }
 </style>

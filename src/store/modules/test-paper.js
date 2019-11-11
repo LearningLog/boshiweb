@@ -6,16 +6,18 @@
 */
 
 const state = {
-  testPaper: {}, // 新增试卷，跳页缓存的试卷数据
-  topics: [] // 试题
+  testPaper: sessionStorage.getItem('testPaper') ? JSON.parse(sessionStorage.getItem('testPaper')) : {}, // 新增试卷，跳页缓存的试卷数据
+  topics: sessionStorage.getItem('topics') ? JSON.parse(sessionStorage.getItem('topics')) : [] // 试题
 }
 
 const mutations = {
   SET_TEST_PAPER_TEPORARY_STORAGE: (state, testPaper) => {
     state.testPaper = testPaper
+    sessionStorage.setItem('testPaper', JSON.stringify(testPaper))
   },
   SET_TOPICS_TEPORARY_STORAGE: (state, topics) => {
     state.topics = topics
+    sessionStorage.setItem('topics', JSON.stringify(topics))
   }
 }
 

@@ -82,9 +82,9 @@ export function evaluationPaperList(data) {
 }
 
 // 新增试卷
-export function addTopic(data) {
+export function addTestPaper(data) {
   return request({
-    url: '/evaluation/topic/add',
+    url: '/evaluation/examinationpaper/add',
     method: 'post',
     data
   })

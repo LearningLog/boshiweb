@@ -112,8 +112,8 @@
 <script>
 import { getCustomManageList, getAllRole } from '@/api/systemManage-roleManage'
 import { getAllEmployeeGroup } from '@/api/userCenter-groupManage'
-import { createUser, getUserById } from '@/api/userCenter-userManage'
-import { validUserName, validPhone, validPassword } from '@/utils/validate'
+import { updateUser, getUserById } from '@/api/userCenter-userManage'
+import { validPhone, validPassword } from '@/utils/validate'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 
 export default {
@@ -263,8 +263,8 @@ export default {
           delete this.form.falseRole
           delete this.form.noList
           delete this.form.noList2
-          createUser(this.form).then(response => {
-            this.$message.success('添加用户成功！')
+          updateUser(this.form).then(response => {
+            this.$message.success('修改用户成功！')
             this.noLeaveprompt = true
             this.$router.push({
               path: '/user-center/user-manage/detail',

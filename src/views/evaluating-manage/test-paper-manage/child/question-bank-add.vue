@@ -26,11 +26,21 @@
         <el-row v-show="popoverVisible">
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
-              <tenants-groups-roles
-                :is-render-role="false"
-                :is-reset="isReset"
-                @tenantsGroupsRolesVal="tenantsGroupsRolesVal"
+              <el-form-item label="试题类型">
+              <el-select
+              v-model="listQuery.topicType"
+              placeholder="请选择试题类型"
+              clearable
+              filterable
+              >
+              <el-option
+              v-for="item in topicType"
+              :key="item._id"
+              :label="item.topicName"
+              :value="item._id"
               />
+              </el-select>
+              </el-form-item>
               <el-form-item label="创建时间">
                 <el-date-picker
                   v-model="time_range"
@@ -64,7 +74,8 @@
       border
       fit
       highlight-current-row
-      @selection-change="handleSelectionChange"
+      @select-all="selectAll"
+      @select="handleselectRow"
     >
       <el-table-column type="selection" width="50" fixed />
       <el-table-column align="center" label="题型" min-width="40">
@@ -144,14 +155,14 @@
 
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
 import { evaluationTopicList } from '@/api/question-bank-manage'
 import store from '@/store'
 
 export default {
-  components: { Pagination, TenantsGroupsRoles },
+  components: { Pagination },
   data() {
     return {
+      noLeaveprompt: false, // 保存后，设置为true，据此判断提交不再弹出离开提示
       isReset: false, // 是否重置三组联动数据
       total: 0, // 总条数
       listQuery: {
@@ -169,11 +180,7 @@ export default {
       },
       topic_label: [], // 试题标签
       topic_skill: [], // 试题技能
-      topicType: [
-        { _id: 1, topicName: '简单' },
-        { _id: 2, topicName: '普通' },
-        { _id: 3, topicName: '困难' }
-      ],
+      topicType: [{ _id: 1, topicName: '单选' }, { _id: 2, topicName: '多选' }, { _id: 3, topicName: '判断' }],
       time_range: [], // 创建时间
       list: [], // 表格数据
       listLoading: true, // 是否开启表格遮罩
@@ -183,13 +190,15 @@ export default {
       egroup: '', // 系统管理员选择的小组id
       selectCompanyId: '', // 带过来的租户id
       egroup2: '', // 带过来的小组id
-      topics: [] // store中的试题
+      selectObj: {} // 选中行数据
     }
   },
   created() {
     this.selectCompanyId = this.$route.query.selectCompanyId
     this.egroup2 = this.$route.query.egroup
-    this.topics = this.$store.state.testPaper.topics
+    this.$store.state.testPaper.topics.forEach(row => {
+      this.selectObj[row._id] = row
+    })
     this.get_list()
   },
   methods: {
@@ -204,9 +213,12 @@ export default {
         this.total = response.data.page.totalCount
 
         this.$nextTick(() => {
-          const topics = this.$store.state.testPaper.topics || []
-          for (var i = 0, len = topics.length; i < len; i++) {
-            var item1 = topics[i]
+          this.topicsForBank = []
+          for (var key in this.selectObj) {
+            this.topicsForBank.push(this.selectObj[key])
+          }
+          for (var i = 0, len = this.topicsForBank.length; i < len; i++) {
+            var item1 = this.topicsForBank[i]
             for (var j = 0, len2 = this.list.length; j < len2; j++) {
               var item2 = this.list[j]
               if (item1._id === item2._id) {
@@ -239,18 +251,6 @@ export default {
       this.listQuery.endTime = ''
       this.get_list()
     },
-    // 监听三组数据变化
-    tenantsGroupsRolesVal(val) {
-      this.listQuery.selectCompanyId = val.companyIds
-      this.listQuery.egroup = val.egroupId
-      this.listQuery.roleId = val.roleId
-      this.group = val.group
-    },
-    // 新增监听三组数据变化
-    tenantsGroupsRolesVal2(val) {
-      this.companyId = val.companyIds
-      this.egroup = val.egroupId
-    },
 
     // 题型转换为name
     switchTopicTypeToName(topic_type) {
@@ -275,19 +275,74 @@ export default {
       }
     },
 
-    // 选中数据
-    handleSelectionChange(row) {
-      this.checkedDelList = row
-      const arr = this.topics.concat(this.checkedDelList)
-      store.dispatch('testPaper/temporaryStorageTopics', arr)
+    // 表格全选事件
+    selectAll(selection) {
+      if (selection.length > 1) {
+        this.addRows(selection)
+      } else {
+        this.removeRows(selection)
+      }
     },
 
+    // 行选中函数  若有删除，若无添加
+    handleselectRow(selection, row) {
+      if (this.selectObj[row._id]) {
+        delete this.selectObj[row._id]
+      } else {
+        this.selectObj[row._id] = row
+      }
+    },
+
+    // 添加选中行
+    addRows(selection) {
+      selection.forEach(row => {
+        this.selectObj[row._id] = row
+      })
+    },
+    // 取消选中行
+    removeRows(selection) {
+      selection.forEach(row => {
+        if (this.selectObj[row._id]) {
+          delete this.selectObj[row._id]
+        }
+      })
+    },
+
+    // 保存
     save() {
-      store.dispatch('testPaper/temporaryStorageTopics', this.checkedDelList)
+      var topics = []
+      for (var key in this.selectObj) {
+        topics.push(this.selectObj[key])
+      }
+      store.dispatch('testPaper/temporaryStorageTopics', topics)
+      this.noLeaveprompt = true
       this.$router.push({
         path: '/evaluating-manage/test-paper-manage/add',
         query: { selectCompanyId: this.selectCompanyId, egroup: this.egroup2 }
       })
+    }
+  },
+  beforeRouteLeave(to, from, next) {
+    if (!this.noLeaveprompt) {
+      // 判断表单数据是否变化，以及提交后不进行此保存提示
+      setTimeout(() => {
+        // 此处必须要加延迟执行，主要解决浏览器前进后退带来的闪现
+        this.$confirm('您的数据尚未保存，是否离开？', '离开页面', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+          .then(() => {
+            store.dispatch('testPaper/temporaryStorageTestPaper', {})
+            store.dispatch('testPaper/temporaryStorageTopics', [])
+            next()
+          })
+          .catch(() => {
+            next(false)
+          })
+      }, 200)
+    } else {
+      next()
     }
   }
 }
