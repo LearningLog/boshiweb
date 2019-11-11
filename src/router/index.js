@@ -147,7 +147,7 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/global-config/list',
     name: 'global-config',
-    meta: { title: 'global配置', icon: 'iconglobal' },
+    meta: { title: 'global配置', icon: 'icongongzuotai' },
     children: [
       {
         path: 'list',
@@ -169,6 +169,30 @@ export const asyncRoutes = [
         hidden: true,
         component: () => import('@/views/global-config/edit'),
         meta: { title: '修改配置', icon: '', activeMenu: '/global-config' }
+      }
+    ]
+  },
+
+  {
+    path: '/work-desk',
+    component: Layout,
+    redirect: '/work-desk/list',
+    name: 'work-desk',
+    meta: { title: '工作台', icon: 'iconglobal' },
+    children: [
+      {
+        path: 'list',
+        name: 'work-desk-list',
+        hidden: true,
+        component: () => import('@/views/work-desk/list.vue'),
+        meta: { title: '工作台列表', icon: '', activeMenu: '/work-desk' }
+      },
+      {
+        path: 'details',
+        name: 'work-desk-details',
+        hidden: true,
+        component: () => import('@/views/work-desk/details'),
+        meta: { title: '工作详情', icon: '', activeMenu: '/work-desk' }
       }
     ]
   },
