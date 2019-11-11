@@ -7,9 +7,9 @@
 import request from '@/utils/request'
 
 // 获取文件列表
-export function fileList(data) {
+export function fileListManage(data) {
   return request({
-    url: 'workDeskFileList/fileList',
+    url: 'workDeskFileList/fileListManage',
     method: 'post',
     data
   })

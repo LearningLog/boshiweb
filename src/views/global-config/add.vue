@@ -1,25 +1,25 @@
 <template>
   <div class="app-container">
     <div class="form-edit">
-      <el-form ref="form" class="form" :model="form" :rules="rules" label-width="80px" :status-icon="true">
+      <el-form ref="form" class="form" :model="form" :rules="rules" label-width="100px" :status-icon="true">
         <el-form-item class="" label="key:">
-          <el-input v-model="form.menuname" placeholder="" maxlength="12" clearable />
+          <el-input v-model="obj.key" placeholder="" maxlength="12" clearable />
         </el-form-item>
-        <el-form-item class="" label="管理员密码:">
-          <el-input v-model="form.cmark" placeholder="" maxlength="64" clearable />
+        <el-form-item class="pas" label="管理员密码:">
+          <el-input type="password" v-model="pwd" placeholder="" maxlength="64" clearable />
         </el-form-item>
         <el-form-item label="类型" prop="type">
-          <el-select v-model="form.type" placeholder="数值型" clearable>
-            <el-option v-for="item in menuType" :key="item.id" :label="item.name" :value="item.id" />
+          <el-select v-model="obj.type" placeholder="" clearable>
+            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
         <el-form-item label="值">
-          <el-input v-model="form.desc" type="textarea" resize="none" rows=" 7 "/>
+          <el-input v-model="obj.value" type="textarea" resize="none" rows=" 4 " />
         </el-form-item>
       </el-form>
       <div id="btnGroup">
-        <el-button v-no-more-click type="primary" @click="save('form')">提交</el-button>
-        <el-button type="primary" plain @click="cancel">取消</el-button>
+        <el-button v-no-more-click type="primary" @click="save('form')">确认</el-button>
+        <el-button type="primary" plain @click="cancel">关闭</el-button>
       </div>
     </div>
   </div>
@@ -29,7 +29,6 @@
 <script>
 import { mapGetters } from 'vuex'
 import { setConfigValue } from '@/api/global-config'
-import { updateMenuRoute } from '@/utils/update-menu-router'
 
 export default {
   computed: {
@@ -38,8 +37,8 @@ export default {
     ])
   },
   watch: {
-    // 监听表单数据变化
-    form: {
+    // 监听对象变化
+    obj: {
       handler(val) {
         if (val) {
           this.dataIsChange++
@@ -49,62 +48,47 @@ export default {
     }
   },
   created() {
-    this.pid = this.$route.query.pid
-    this.pname = this.$route.query.pname
+
   },
   data() {
     return {
       dataIsChange: 0, // 计数器，据此判断表单是否已编辑
       noLeaveprompt: false, // 表单提交后，设置为true，据此判断提交不再弹出离开提示
-      form: { // 表单数据
-        menuname: '', // 菜单名称
-        cmark: '', // 描述
-        imagename: '', // 菜单图标
-        menuurl: '', // 菜单路径path
-        type: '' // 菜案模块
-      },
-      pid: '', // 父级id
-      pname: '', // 父级菜单
-      rules: {
-        // menuname: [
-        //   { required: true, message: '请输入菜单名称（长度在 1 到 12 个字符）', trigger: 'blur' },
-        //   { required: true, message: '请输入菜单名称（长度在 1 到 12 个字符）', trigger: 'change' },
-        //   { min: 1, max: 12, message: '长度在 1 到 12 个字符', trigger: 'blur' },
-        //   { min: 1, max: 12, message: '长度在 1 到 12 个字符', trigger: 'change' }
-        // ],
-        // cmark: [
-        //   { required: true, message: '请输入菜单标识（长度在 1 到 64 个字符）', trigger: 'blur' },
-        //   { required: true, message: '请输入菜单标识（长度在 1 到 64 个字符）', trigger: 'change' },
-        //   { min: 1, max: 64, message: '长度在 1 到 64 个字符', trigger: 'blur' },
-        //   { min: 1, max: 64, message: '长度在 1 到 64 个字符', trigger: 'change' }
-        // ],
-        // menuurl: [
-        //   { required: true, message: '请输入菜单路径（长度在 1 到 120 个字符）', trigger: 'blur' },
-        //   { required: true, message: '请输入菜单路径（长度在 1 到 120 个字符）', trigger: 'change' },
-        //   { min: 1, max: 120, message: '长度在 1 到 120 个字符', trigger: 'blur' },
-        //   { min: 1, max: 120, message: '长度在 1 到 120 个字符', trigger: 'change' }
-        // ],
-        type: [
-          { required: true, message: '请选择菜单模块', trigger: 'change' }
-        ]
-      }
+      pwd: '', // 管理员密码
+      options: [{
+        value: 'number',
+        label: '数值'
+      }, {
+        value: 'string',
+        label: '字符串'
+      }, {
+        value: 'boolean',
+        label: '布尔值'
+      }, {
+        value: 'array',
+        label: '数组'
+      }, {
+        value: 'object',
+        label: '对象'
+      }],
+      obj: {
+        key: '',
+        value: '',
+        password: '',
+        type: ''
+      }, // 当前的对象
+      rules: []
     }
   },
   methods: {
-    // 保存
-    // save(formName) {
-    //   this.$refs[formName].validate((valid) => {
-    //     if (valid) {
-    //       this.form.pid = this.pid
-    //       addMenu(this.form).then(async response => {
-    //         this.$message.success('新增菜单成功！')
-    //         this.noLeaveprompt = true
-    //         updateMenuRoute()
-    //         this.$router.push({ path: '/systemManage/menuManage/detail', query: { _id: response.data._id }})
-    //       })
-    //     }
-    //   })
-    // },
+    // 提交
+    save(formName) {
+      this.noLeaveprompt = true
+      this.obj.password = this.pwd
+      setConfigValue(this.obj)
+      console.log(this.obj)
+      this.$router.push({ path: '/global-config/list' })
+    },
     // 取消
     cancel() {
       this.$router.push({ path: '/global-config/list' })
@@ -130,6 +114,6 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 
 </style>
