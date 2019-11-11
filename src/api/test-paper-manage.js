@@ -107,9 +107,9 @@ export function importTopics(data) {
   })
 }
 // 试卷详情
-export function topicDetil(data) {
+export function paperDetail(data) {
   return request({
-    url: '/evaluation/topic/findByIdV2',
+    url: '/evaluation/examinationpaper/one',
     method: 'post',
     data
   })

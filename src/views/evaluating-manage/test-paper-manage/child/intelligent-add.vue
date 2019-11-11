@@ -355,6 +355,7 @@ export default {
   },
   data() {
     return {
+      id: '', // 试卷ID
       selectCompanyId: '', // 租户
       egroup: '', // 小组
       dataIsChange: -1, // 计数器，据此判断表单是否已编辑
@@ -403,6 +404,7 @@ export default {
     }
   },
   created() {
+    this.id = this.$route.query._id
     this.selectCompanyId = this.$route.query.selectCompanyId
     this.egroup = this.$route.query.egroup
     this.getTopicCount()
@@ -631,20 +633,35 @@ export default {
       this.intelligenceForm.egroup = this.egroup
       intelligence(this.intelligenceForm).then(res => {
         this.noLeaveprompt = true
-        store.dispatch('testPaper/temporaryStorageTopics', res.data)
-        this.$router.push({
-          path: '/evaluating-manage/test-paper-manage/add',
-          query: { selectCompanyId: this.selectCompanyId, egroup: this.egroup }
-        })
+        const topics = this.$store.state.testPaper.topics.concat(res.data)
+        store.dispatch('testPaper/temporaryStorageTopics', topics)
+        if (this.id) {
+          this.$router.push({
+            path: '/evaluating-manage/test-paper-manage/edit',
+            query: { _id: this.id, selectCompanyId: this.selectCompanyId, egroup: this.egroup, isedit: 1 }
+          })
+        } else {
+          this.$router.push({
+            path: '/evaluating-manage/test-paper-manage/add',
+            query: { selectCompanyId: this.selectCompanyId, egroup: this.egroup }
+          })
+        }
       })
     },
 
     // 取消
     cancel() {
-      this.$router.push({
-        path: '/evaluating-manage/test-paper-manage/add',
-        query: { selectCompanyId: this.selectCompanyId, egroup: this.egroup }
-      })
+      if (this.id) {
+        this.$router.push({
+          path: '/evaluating-manage/test-paper-manage/edit',
+          query: { _id: this.id, selectCompanyId: this.selectCompanyId, egroup: this.egroup, isedit: 1  }
+        })
+      } else {
+        this.$router.push({
+          path: '/evaluating-manage/test-paper-manage/add',
+          query: { selectCompanyId: this.selectCompanyId, egroup: this.egroup }
+        })
+      }
     }
   },
   beforeRouteLeave(to, from, next) {

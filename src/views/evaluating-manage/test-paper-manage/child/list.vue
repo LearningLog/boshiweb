@@ -335,7 +335,7 @@ export default {
     },
     // 编辑
     edit(row) {
-      this.$router.push({ path: '/evaluating-manage/test-paper-manage/edit', query: { _id: row._id }})
+      this.$router.push({ path: '/evaluating-manage/test-paper-manage/edit', query: { _id: row._id, selectCompanyId: row.groupId, egroup: row.egroup[0] }})
     }
   }
 }

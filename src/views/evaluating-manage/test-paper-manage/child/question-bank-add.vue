@@ -64,7 +64,7 @@
       <el-button
         type="primary"
         @click="save"
-      ><i class="iconfont iconjia" />保存</el-button>
+      ><i class="iconfont iconbaocun" />保存</el-button>
     </div>
     <el-table
       ref="topics"
@@ -188,12 +188,14 @@ export default {
       checkedDelList: [], // 选择的list
       companyId: '', // 系统管理员选择的租户id
       egroup: '', // 系统管理员选择的小组id
+      id: '', // 试题id
       selectCompanyId: '', // 带过来的租户id
       egroup2: '', // 带过来的小组id
       selectObj: {} // 选中行数据
     }
   },
   created() {
+    this.id = this.$route.query._id
     this.selectCompanyId = this.$route.query.selectCompanyId
     this.egroup2 = this.$route.query.egroup
     this.$store.state.testPaper.topics.forEach(row => {
@@ -316,10 +318,17 @@ export default {
       }
       store.dispatch('testPaper/temporaryStorageTopics', topics)
       this.noLeaveprompt = true
-      this.$router.push({
-        path: '/evaluating-manage/test-paper-manage/add',
-        query: { selectCompanyId: this.selectCompanyId, egroup: this.egroup2 }
-      })
+      if (this.id) {
+        this.$router.push({
+          path: '/evaluating-manage/test-paper-manage/edit',
+          query: { _id: this.id, selectCompanyId: this.selectCompanyId, egroup: this.egroup, isedit: 1  }
+        })
+      } else {
+        this.$router.push({
+          path: '/evaluating-manage/test-paper-manage/add',
+          query: { selectCompanyId: this.selectCompanyId, egroup: this.egroup }
+        })
+      }
     }
   },
   beforeRouteLeave(to, from, next) {
