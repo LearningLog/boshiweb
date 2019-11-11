@@ -60,10 +60,10 @@ export default {
         this.list = []
         this.type = 'string'
         for (var key in res.data) {
+          // console.log(res.data[key])
           this.type = this.getJsonObjType(res.data[key], key)
-          this.list.push({ key: key, value: res.data[key], type: this.type })
+          this.list.push({ key: key, value: JSON.stringify(res.data[key]), type: this.type })
         }
-        console.log(this.list)
         this.listLoading = false
       })
     },
@@ -101,7 +101,7 @@ export default {
     },
     // 编辑
     edit(row) {
-      this.$router.push({ path: '/global-config/edit', query: { obj: row }})
+      this.$router.push({ path: '/global-config/edit', query: { key: row.key, value: row.value, type: row.type }})
     }
   }
 }

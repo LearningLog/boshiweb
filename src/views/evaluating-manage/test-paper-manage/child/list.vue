@@ -75,6 +75,15 @@
       <el-button v-show="total>0" type="primary" plain @click="exportPaper"><i class="iconfont icondaochu" />批量导出</el-button>
     </div>
     <PublishExam :selectCompanyId="selectCompanyId" :publishDialog="publishDialog" :scoreCount="scoreCount" @publishExam="publishExam"></PublishExam>
+    <el-dialog v-el-drag-dialog class="selectCompany" width="400px" title="选择小组" :visible.sync="isVisibleSystemManage">
+      <el-form ref="form" :model="listQuery" label-width="100px">
+        <tenants-groups-roles :is-render-role="false" whichGroup="manageEgroupInfo" @tenantsGroupsRolesVal="tenantsGroupsRolesVal2" />
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="selectCompany">确定</el-button>
+        <el-button @click="isVisibleSystemManage = false">取 消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -86,23 +95,15 @@ import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import { evaluationPaperList, delPaper, generateExportPaper, exportPaperOne, exportPaperMore, publish } from '@/api/test-paper-manage'
 import { skillAllList } from '@/api/userCenter-skillManage'
 import { labelAllList } from '@/api/evaluatingManage-labelManage'
-const $ = window.$
 
 export default {
   components: { Pagination, TenantsGroupsRoles, PublishExam },
   directives: { elDragDialog },
   data() {
-    // 校验考试人员
-    var validTargetUser = (rule, value, callback) => {
-      if (this.paparForm.time_range.length) {
-        callback(new Error('请选择考试时间'))
-      } else {
-        callback()
-      }
-    }
     return {
       isReset: false, // 是否重置三组联动数据
       publishDialog: false, // 发布考试弹窗
+      isVisibleSystemManage: false, // 是否弹出选择租户、小组
       total: 0, // 总条数
       listQuery: { // 查询条件
         currentPage: 1, // 当前页
@@ -120,39 +121,11 @@ export default {
       listLoading: true, // 是否开启表格遮罩
       popoverVisible: false, // 是否开启高级搜索
       checkedDelList: [], // 选择删除的list
+      exampaper_id: '', // 发布的试卷id
       selectCompanyId: '', // 发布的试卷的selectCompanyId
       scoreCount: 0, // 发布的试卷的总分
-      paparForm: {
-        exampaper_id: '', // 试卷Id
-        exam_name: '', // 试卷名称
-        time_range: [], // 考试时间
-        begin_time: '', // 开始时间
-        end_time: '', // 结束时间
-        passscore: '', // 及格分数
-        egroup: '', // 小组
-        targetUser: '', // 考试人员
-        topic_disorder: '' // 是否题号乱序
-      },
-      rules: {
-        exam_name: [
-          { required: true, message: '请输入试卷名称（长度在 1 到 64 个字符）', trigger: 'blur' },
-          { required: true, message: '请输入试卷名称（长度在 1 到 64 个字符）', trigger: 'change' },
-          { min: 1, max: 64, message: '长度在 1 到 64 个字符', trigger: 'blur' },
-          { min: 1, max: 64, message: '长度在 1 到 64 个字符', trigger: 'change' }
-        ],
-        time_range: [
-          { required: true, message: '请选择考试时间', trigger: 'blur' },
-          { required: true, message: '请选择考试时间', trigger: 'change' }
-        ],
-        passscore: [
-          { required: true, message: '请输入及格分数', trigger: 'blur' },
-          { required: true, message: '请输入及格分数', trigger: 'change' }
-        ],
-        targetUser: [
-          { required: true, validator: validTargetUser, trigger: 'blur' },
-          { required: true, validator: validTargetUser, trigger: 'change' }
-        ]
-      }
+      companyId: '', // 系统管理员选择的租户id
+      egroup: '' // 系统管理员选择的小组id
     }
   },
   watch: {
@@ -219,6 +192,11 @@ export default {
       this.listQuery.roleId = val.roleId
       this.group = val.group
     },
+    // 新增监听三组数据变化
+    tenantsGroupsRolesVal2(val) {
+      this.companyId = val.companyIds
+      this.egroup = val.egroupId
+    },
 
     // 选中数据
     handleSelectionChange(row) {
@@ -226,11 +204,19 @@ export default {
     },
     // 新增
     add() {
-      if (!this.listQuery.egroup) {
-        this.$message.warning('请先选择分组信息再尝试添加试卷！')
+      this.isVisibleSystemManage = true
+    },
+    // 新增选择租户、小组
+    selectCompany() {
+      if (!this.companyId && this.$store.state.user.isSystemManage) {
+        this.$message.warning('请先选择租户！')
+        return false
+      } else if (!this.egroup) {
+        this.$message.warning('请先选择小组！')
         return false
       }
-      this.$router.push({ path: '/evaluating-manage/test-paper-manage/add', query: { egroup: this.listQuery.egroup, selectCompanyId: this.group.groupId }})
+      this.isVisibleSystemManage = false
+      this.$router.push({ path: '/evaluating-manage/test-paper-manage/add', query: { selectCompanyId: this.companyId, egroup: this.egroup }})
     },
     // 详情
     detail(row) {
@@ -238,14 +224,16 @@ export default {
     },
     // 发布
     beginPublish(row) {
+      this.exampaper_id = row._id
       this.selectCompanyId = row.groupId
       this.scoreCount = row.score_count
       this.publishDialog = true
     },
     // 监听发布考试
     publishExam(val) {
-      console.log('监听发布考试', val)
+      val.exampaper_id = this.exampaper_id
       publish(val).then(response => {
+        this.publishDialog = false
         this.$message.success('发布试卷成功！')
         this.get_list()
       })
@@ -354,5 +342,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+  .selectCompany /deep/ .tenantsGroupsRoles {
+    width: 100% !important;
+  }
+  .selectCompany /deep/ .tenantsGroupsRoles .el-form-item {
+    width: 100% !important;
+  }
 </style>

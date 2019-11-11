@@ -39,7 +39,7 @@
           />
         </el-form-item>
         <el-form-item label="考试人员" prop="memer">
-          <el-input v-model="paparForm.memer" v-show="false" />
+          <el-input v-show="false" v-model="paparForm.memer" />
           <Examiners
             :select-company-id="selectCompanyId"
             @examiners="getExaminers"
@@ -114,6 +114,7 @@ export default {
         topic_disorder: '', // 是否题号乱序
         memer: '' // 校验用的，无实际意义
       },
+      targetUser: [], // 未处理的考试人员
       rules: {
         exam_name: [
           {
@@ -161,7 +162,7 @@ export default {
   methods: {
     // 监听选择人员
     getExaminers(val) {
-      this.paparForm.targetUser = val
+      this.targetUser = val
       if (val.length && val[0].length >= 2) {
         this.paparForm.memer = '111'
       } else {
@@ -180,6 +181,16 @@ export default {
           this.paparForm.begin_time = this.paparForm.time_range[0]
           this.paparForm.end_time = this.paparForm.time_range[1]
           delete this.paparForm.time_range
+
+          var obj = {}
+          this.targetUser.forEach(item => {
+            if (!obj[item[0]]) {
+              obj[item[0]] = [item[1]]
+            } else {
+              obj[item[0]].push(item[1])
+            }
+          })
+          this.paparForm.targetUser = obj
           this.$emit('publishExam', this.paparForm)
         }
       })

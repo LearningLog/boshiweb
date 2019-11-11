@@ -62,6 +62,13 @@ const evaluatingManage = {
       meta: { title: '试卷管理', icon: '', activeMenu: '/evaluating-manage/test-paper-manage' },
       children: [
         {
+          path: 'detail',
+          name: 'test-paper-detail',
+          hidden: true,
+          component: () => import('@/views/evaluating-manage/test-paper-manage/child/detail'),
+          meta: { title: '试卷详情', icon: '', activeMenu: '/evaluating-manage/test-paper-manage' }
+        },
+        {
           path: 'list',
           name: 'test-paper-list',
           hidden: true,
@@ -69,11 +76,18 @@ const evaluatingManage = {
           meta: { title: '试卷列表', icon: '', activeMenu: '/evaluating-manage/test-paper-manage' }
         },
         {
-          path: 'detail',
-          name: 'test-paper-detail',
+          path: 'intelligent-add',
+          component: () => import('@/views/evaluating-manage/test-paper-manage/child/intelligent-add.vue'),
+          name: 'intelligent-add',
           hidden: true,
-          component: () => import('@/views/evaluating-manage/test-paper-manage/child/detail'),
-          meta: { title: '试卷详情', icon: '', activeMenu: '/evaluating-manage/test-paper-manage' }
+          meta: { title: '智能添加', icon: '', activeMenu: '/evaluating-manage/test-paper-manage' }
+        },
+        {
+          path: 'question-bank-add',
+          component: () => import('@/views/evaluating-manage/test-paper-manage/child/question-bank-add.vue'),
+          name: 'question-bank-add',
+          hidden: true,
+          meta: { title: '题库中添加', icon: '', activeMenu: '/evaluating-manage/test-paper-manage' }
         },
         {
           path: 'add',

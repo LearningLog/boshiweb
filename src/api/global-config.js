@@ -27,35 +27,4 @@ export function setConfigValue(data) {
     data
   })
 }
-// 获取单个菜单数据
-export function getMenu(data) {
-  return request({
-    url: '/system/menuV2/findMenuById',
-    method: 'post',
-    data
-  })
-}
-// 编辑菜单
-export function editMenu(data) {
-  return request({
-    url: '/system/menuV2/updatemenu',
-    method: 'post',
-    data
-  })
-}
-// 删除菜单
-export function delMenu(data) {
-  return request({
-    url: '/system/menuV2/deletemenu',
-    method: 'post',
-    data
-  })
-}
-// 移动菜单
-export function moveMenu(data) {
-  return request({
-    url: '/system/menuV2/updownmenu',
-    method: 'post',
-    data
-  })
-}
+

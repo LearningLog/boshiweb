@@ -119,7 +119,7 @@ export default {
       default: ''
     },
     egroup: {
-      type: String,
+      type: [Number, String],
       default: ''
     }
   },
