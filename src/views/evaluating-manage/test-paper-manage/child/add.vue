@@ -9,6 +9,11 @@
         <el-button
           v-no-more-click
           type="primary"
+          @click="cancel0"
+        ><i class="addIcon iconfont iconcancel" />取消</el-button>
+        <el-button
+          v-no-more-click
+          type="primary"
           @click="publishTestPaper"
         ><i class="addIcon iconfont iconfabu1" />发布考试</el-button>
         <el-button
@@ -43,16 +48,17 @@
     </div>
     <el-scrollbar wrap-class="scrollbar-wrapper">
       <div class="topics">
+        <i class="iconfont icontag" />
         <span>添加标签</span>
         <div v-if="currentLabels.length" class="tag">
           <el-tag
-              v-for="(tag, index) in currentLabels"
-              :key="tag.linc"
-              closable
-              size="medium"
-              :disable-transitions="false"
-              type="success"
-              @close="handlePaperLabelDel(index)"
+            v-for="(tag, index) in currentLabels"
+            :key="tag.linc"
+            closable
+            size="medium"
+            :disable-transitions="false"
+            type="success"
+            @close="handlePaperLabelDel(index)"
           >
             {{ tag.lname }}
           </el-tag>
@@ -71,14 +77,14 @@
             </div>
             <div class="fr operation">
               <el-link
-                  v-if="index"
-                  type="info"
-                  @click="shiftTop(item, index)"
+                v-if="index"
+                type="info"
+                @click="shiftTop(item, index)"
               >置顶</el-link>
               <el-link
-                  v-if="index !== testPaper.topic_info.length - 1"
-                  type="info"
-                  @click="shiftFooter(item, index)"
+                v-if="index !== testPaper.topic_info.length - 1"
+                type="info"
+                @click="shiftFooter(item, index)"
               >置底</el-link>
               <el-link
                 v-if="index"
@@ -596,12 +602,12 @@
       </div>
     </el-drawer>
     <add-labels
-        :visible2.sync="visible1"
-        :current-labels.sync="paperLabels"
-        :selectCompanyId="testPaper.selectCompanyId"
-        :egroup="testPaper.egroup"
-        @addLabels="getPaperLabels"
-        @visible2="onvisible1"
+      :visible2.sync="visible1"
+      :current-labels.sync="paperLabels"
+      :select-company-id="testPaper.selectCompanyId"
+      :egroup="testPaper.egroup"
+      @addLabels="getPaperLabels"
+      @visible2="onvisible1"
     />
     <select-file
       :visible.sync="visible"
@@ -612,7 +618,7 @@
     <add-labels
       :visible2.sync="visible2"
       :current-labels.sync="currentLabels"
-      :selectCompanyId="testPaper.selectCompanyId"
+      :select-company-id="testPaper.selectCompanyId"
       :egroup="testPaper.egroup"
       @addLabels="getLabels"
       @visible2="onvisible2"
@@ -620,21 +626,21 @@
     <add-skills
       :visible3.sync="visible3"
       :current-skills.sync="currentSkills"
-      :selectCompanyId="testPaper.selectCompanyId"
+      :select-company-id="testPaper.selectCompanyId"
       @addSkills="getSkills"
       @visible3="onvisible3"
     />
-    <PublishExam :selectCompanyId="testPaper.selectCompanyId" :publishDialog="publishDialog" :scoreCount="testPaper.score_count" @publishExam="publishExam"></PublishExam>
+    <PublishExam :select-company-id="testPaper.selectCompanyId" :publish-dialog="publishDialog" :score-count="testPaper.score_count" @publishExam="publishExam" />
   </div>
 </template>
 
 <script>
-  import { addTestPaper } from '@/api/test-paper-manage'
+import { addTestPaper } from '@/api/test-paper-manage'
 import SelectFile from '@/components/SelectFile'
 import AddLabels from '@/components/AddEvalLabels'
 import AddSkills from '@/components/AddEvalSkills'
 import MdInput from '@/components/MDinput'
-  import PublishExam from '@/components/PublishExam'
+import PublishExam from '@/components/PublishExam'
 import store from '@/store'
 import { getOptionOrderByIndex } from '@/utils/index'
 import { getToken } from '@/utils/auth'
@@ -798,7 +804,7 @@ export default {
         }
       },
       deep: true // 深层次监听
-    },
+    }
   },
   created() {
     this.testPaper.selectCompanyId = this.$route.query.selectCompanyId
@@ -834,7 +840,7 @@ export default {
       this.noLeaveprompt = true
       this.temporaryStorage()
       this.$router.push({
-        path: '/evaluating-manage/test-paper-manage/question-bank-add',
+        path: '/evaluating-manage/test-paper-manage/paper-question-bank-add',
         query: { selectCompanyId: this.testPaper.selectCompanyId, egroup: this.testPaper.egroup }
       })
     },
@@ -1233,6 +1239,10 @@ export default {
           done()
         })
         .catch(() => {})
+    },
+
+    cancel0() {
+      this.$router.push({ path: '/evaluating-manage/test-paper-manage/list' })
     },
 
     // 发布考试

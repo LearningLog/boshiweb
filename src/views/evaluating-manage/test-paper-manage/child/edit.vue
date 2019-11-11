@@ -9,6 +9,11 @@
         <el-button
           v-no-more-click
           type="primary"
+          @click="cancel0"
+      ><i class="addIcon iconfont iconcancel" />取消</el-button>
+        <el-button
+          v-no-more-click
+          type="primary"
           @click="publishTestPaper"
         ><i class="addIcon iconfont iconfabu1" />发布考试</el-button>
         <el-button
@@ -43,6 +48,7 @@
     </div>
     <el-scrollbar wrap-class="scrollbar-wrapper">
       <div class="topics">
+        <i class="iconfont icontag"></i>
         <span>添加标签</span>
         <div v-if="currentLabels.length" class="tag">
           <el-tag
@@ -854,7 +860,7 @@ export default {
       this.noLeaveprompt = true
       this.temporaryStorage()
       this.$router.push({
-        path: '/evaluating-manage/test-paper-manage/question-bank-add',
+        path: '/evaluating-manage/test-paper-manage/paper-question-bank-add',
         query: { _id: this.testPaper.id, selectCompanyId: this.testPaper.selectCompanyId, egroup: this.testPaper.egroup }
       })
     },
@@ -1253,6 +1259,10 @@ export default {
           done()
         })
         .catch(() => {})
+    },
+
+    cancel0() {
+      this.$router.push({ path: '/evaluating-manage/test-paper-manage/list' })
     },
 
     // 发布考试

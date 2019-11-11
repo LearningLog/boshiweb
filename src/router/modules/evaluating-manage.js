@@ -83,9 +83,9 @@ const evaluatingManage = {
           meta: { title: '智能添加', icon: '', activeMenu: '/evaluating-manage/test-paper-manage' }
         },
         {
-          path: 'question-bank-add',
+          path: 'paper-question-bank-add',
           component: () => import('@/views/evaluating-manage/test-paper-manage/child/question-bank-add.vue'),
-          name: 'question-bank-add',
+          name: 'paper-question-bank-add',
           hidden: true,
           meta: { title: '题库中添加', icon: '', activeMenu: '/evaluating-manage/test-paper-manage' }
         },
