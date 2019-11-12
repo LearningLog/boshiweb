@@ -115,9 +115,9 @@ export function paperDetail(data) {
   })
 }
 // 修改试卷
-export function topicEdit(data) {
+export function testPaperUpdata(data) {
   return request({
-    url: '/evaluation/topic/update',
+    url: 'evaluation/examinationpaper/update',
     method: 'post',
     data
   })

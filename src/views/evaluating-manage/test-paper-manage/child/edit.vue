@@ -10,7 +10,7 @@
           v-no-more-click
           type="primary"
           @click="cancel0"
-      ><i class="addIcon iconfont iconcancel" />取消</el-button>
+        ><i class="addIcon iconfont iconcancel" />取消</el-button>
         <el-button
           v-no-more-click
           type="primary"
@@ -48,7 +48,7 @@
     </div>
     <el-scrollbar wrap-class="scrollbar-wrapper">
       <div class="topics">
-        <i class="iconfont icontag"></i>
+        <i class="iconfont icontag" />
         <span>添加标签</span>
         <div v-if="currentLabels.length" class="tag">
           <el-tag
@@ -120,486 +120,489 @@
       </div>
     </el-scrollbar>
     <el-drawer
+      class="editTopicDrawer"
       title="编辑试题"
       :visible.sync="editTopicDrawer"
       direction="rtl"
       size="50%"
       :before-close="handleCloseEditTopicDrawer"
     >
-      <div class="form-edit">
-        <el-form
-          v-if="topic_type === 1"
-          ref="form"
-          class="form"
-          label-width="100px"
-        >
-          <el-form-item class="required content" label="题目内容">
-            <el-input
-              v-model="topic1.topic_content"
-              class="topicName"
-              placeholder="请输入题目"
-              clearable
-            />
-            <div v-show="topic1.topic_resource" class="img-group">
-              <div
-                class="imgCover"
-                :style="{
-                  backgroundImage: 'url(' + topic1.topic_resource + ')'
-                }"
-              >
-                <i
-                  class="close iconfont iconfalse-circle"
-                  @click="delTopicImg"
-                />
-              </div>
-            </div>
-            <div class="selectPic" @click="topicImg">添加图片</div>
-          </el-form-item>
-          <el-form-item class="required" label="题目选项">
-            <el-table
-              class="topicOption"
-              :data="topic1.topic_option"
-              border
-              style="width: 100%"
-              max-height="291"
-            >
-              <el-table-column
-                prop="option_content"
-                align="center"
-                label="选项内容"
-              >
-                <template slot-scope="scope">
-                  <el-input
-                    v-model="scope.row.option_content"
-                    size="small"
-                    class="option_content"
-                    placeholder="请输入选项内容，字数不超过100个字"
-                    maxlength="100"
-                  />
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="option_img"
-                label="图片"
-                align="center"
-                width="60"
-              >
-                <template slot-scope="scope">
-                  <el-upload
-                    ref="upload"
-                    class="avatar-uploader"
-                    :action="uploadUrl()"
-                    :headers="headers"
-                    accept=".jpg,.png,.gif,.jepg,.jpeg"
-                    :show-file-list="false"
-                    :on-success="handleImgSuccess"
-                    :before-upload="beforeImgUpload"
-                  >
-                    <img
-                      v-if="scope.row.option_img"
-                      :src="scope.row.option_img"
-                      class="avatar"
-                    >
-                    <i
-                      v-else
-                      class="el-icon-plus avatar-uploader-icon"
-                      @click="optionConcentIndex(scope.$index)"
-                    />
-                  </el-upload>
-                  <i
-                    v-if="scope.row.option_img"
-                    class="closeOptionImg iconfont iconfalse-circle"
-                    @click="delOptionImg(scope.row)"
-                  />
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="correct_option"
-                label="正确选项"
-                align="center"
-                width="90"
-              >
-                <template slot-scope="scope">
-                  <el-radio
-                    v-model="radio1"
-                    class="radio"
-                    :label="scope.row.option_id_time_stamp"
-                    @change="
-                      isTrueChange(scope.$index, scope.row.option_id_time_stamp)
-                    "
-                  />
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="addOrdelOption"
-                label="操作"
-                align="center"
-                width="90"
-              >
-                <template slot-scope="scope">
-                  <i class="pointer el-icon-plus" @click="addOption" />
-                  <i
-                    class="pointer el-icon-minus"
-                    @click="delTheOption(scope.$index)"
-                  />
-                </template>
-              </el-table-column>
-            </el-table>
-          </el-form-item>
-          <el-form-item label="题目解析">
-            <el-input
-              v-model="topic1.topic_resolve"
-              size="small"
-              type="textarea"
-              :autosize="{ minRows: 1, maxRows: 4 }"
-            />
-          </el-form-item>
-          <el-form-item class="required" label="题目分值">
-            <el-input-number
-              v-model="topic1.topic_score"
-              class="topic_score"
-              controls-position="right"
-              :min="1"
-            />
-          </el-form-item>
-          <el-form-item class="required" label="题目难度">
-            <el-radio-group v-model="topic1.topic_level" class="topic_level">
-              <el-radio-button label="1">简单</el-radio-button>
-              <el-radio-button label="2">普通</el-radio-button>
-              <el-radio-button label="3">困难</el-radio-button>
-            </el-radio-group>
-          </el-form-item>
-          <el-form-item label="添加标签" class="addLabel">
-            <div v-if="currentLabels.length" class="tag">
-              <el-tag
-                v-for="(tag, index) in currentLabels"
-                :key="tag.linc"
-                closable
-                size="medium"
-                :disable-transitions="false"
-                type="success"
-                @close="handleLabelDel(index)"
-              >
-                {{ tag.lname }}
-              </el-tag>
-            </div>
-            <i class="el-icon-circle-plus-outline" @click="addLabels" />
-          </el-form-item>
-          <el-form-item label="题目考核技能" class="addSkill">
-            <div v-if="currentSkills.length" class="tag">
-              <el-tag
-                v-for="(tag, index) in currentSkills"
-                :key="tag.increase_id"
-                closable
-                size="medium"
-                :disable-transitions="false"
-                type="success"
-                @close="handleSkillDel(index)"
-              >
-                {{ tag.skill_name }}
-              </el-tag>
-            </div>
-            <i class="el-icon-circle-plus-outline" @click="addSkills" />
-          </el-form-item>
-        </el-form>
-        <el-form
-          v-else-if="topic_type === 2"
-          ref="form"
-          class="form"
-          label-width="100px"
-        >
-          <el-form-item class="required content" label="题目内容">
-            <el-input
-              v-model="topic2.topic_content"
-              class="topicName"
-              placeholder="请输入题目"
-              clearable
-            />
-            <div v-show="topic2.topic_resource" class="img-group">
-              <div
-                class="imgCover"
-                :style="{
-                  backgroundImage: 'url(' + topic2.topic_resource + ')'
-                }"
-              >
-                <i
-                  class="close iconfont iconfalse-circle"
-                  @click="delTopicImg"
-                />
-              </div>
-            </div>
-            <div class="selectPic" @click="topicImg">添加图片</div>
-          </el-form-item>
-          <el-form-item class="required" label="题目选项">
-            <el-table
-              class="topicOption"
-              :data="topic2.topic_option"
-              border
-              style="width: 100%"
-              max-height="291"
-            >
-              <el-table-column
-                prop="option_content"
-                align="center"
-                label="选项内容"
-              >
-                <template slot-scope="scope">
-                  <el-input
-                    v-model="scope.row.option_content"
-                    size="small"
-                    class="option_content"
-                    placeholder="请输入选项内容，字数不超过100个字"
-                    maxlength="100"
-                  />
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="option_img"
-                label="图片"
-                align="center"
-                width="60"
-              >
-                <template slot-scope="scope">
-                  <el-upload
-                    ref="upload"
-                    class="avatar-uploader"
-                    :action="uploadUrl()"
-                    :headers="headers"
-                    accept=".jpg,.png,.gif,.jepg,.jpeg"
-                    :show-file-list="false"
-                    :on-success="handleImgSuccess"
-                    :before-upload="beforeImgUpload"
-                  >
-                    <img
-                      v-if="scope.row.option_img"
-                      :src="scope.row.option_img"
-                      class="avatar"
-                    >
-                    <i
-                      v-else
-                      class="el-icon-plus avatar-uploader-icon"
-                      @click="optionConcentIndex(scope.$index)"
-                    />
-                  </el-upload>
-                  <i
-                    v-if="scope.row.option_img"
-                    class="closeOptionImg iconfont iconfalse-circle"
-                    @click="delOptionImg(scope.row)"
-                  />
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="correct_option"
-                label="正确选项"
-                align="center"
-                width="90"
-              >
-                <template slot-scope="scope">
-                  <el-checkbox
-                    v-model="scope.row.check"
-                    @change="chcekboxChange(scope.row)"
-                  />
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="addOrdelOption"
-                label="操作"
-                align="center"
-                width="90"
-              >
-                <template slot-scope="scope">
-                  <i class="pointer el-icon-plus" @click="addOption" />
-                  <i
-                    class="pointer el-icon-minus"
-                    @click="delTheOption(scope.$index)"
-                  />
-                </template>
-              </el-table-column>
-            </el-table>
-          </el-form-item>
-          <el-form-item label="题目解析">
-            <el-input
-              v-model="topic2.topic_resolve"
-              size="small"
-              type="textarea"
-              :autosize="{ minRows: 1, maxRows: 4 }"
-            />
-          </el-form-item>
-          <el-form-item class="required" label="题目分值">
-            <el-input-number
-              v-model="topic2.topic_score"
-              class="topic_score"
-              controls-position="right"
-              :min="1"
-            />
-          </el-form-item>
-          <el-form-item class="required" label="题目难度">
-            <el-radio-group v-model="topic2.topic_level" class="topic_level">
-              <el-radio-button label="1">简单</el-radio-button>
-              <el-radio-button label="2">普通</el-radio-button>
-              <el-radio-button label="3">困难</el-radio-button>
-            </el-radio-group>
-          </el-form-item>
-          <el-form-item label="添加标签" class="addLabel">
-            <div v-if="currentLabels.length" class="tag">
-              <el-tag
-                v-for="(tag, index) in currentLabels"
-                :key="tag.linc"
-                closable
-                size="medium"
-                :disable-transitions="false"
-                type="success"
-                @close="handleLabelDel(index)"
-              >
-                {{ tag.lname }}
-              </el-tag>
-            </div>
-            <i class="el-icon-circle-plus-outline" @click="addLabels" />
-          </el-form-item>
-          <el-form-item label="题目考核技能" class="addSkill">
-            <div v-if="currentSkills.length" class="tag">
-              <el-tag
-                v-for="(tag, index) in currentSkills"
-                :key="tag.increase_id"
-                closable
-                size="medium"
-                :disable-transitions="false"
-                type="success"
-                @close="handleSkillDel(index)"
-              >
-                {{ tag.skill_name }}
-              </el-tag>
-            </div>
-            <i class="el-icon-circle-plus-outline" @click="addSkills" />
-          </el-form-item>
-        </el-form>
-        <el-form
-          v-else-if="topic_type === 3"
-          ref="form"
-          class="form"
-          label-width="100px"
-        >
-          <el-form-item class="required content" label="题目内容">
-            <el-input
-              v-model="topic3.topic_content"
-              class="topicName"
-              placeholder="请输入题目"
-              clearable
-            />
-            <div v-show="topic3.topic_resource" class="img-group">
-              <div
-                class="imgCover"
-                :style="{
-                  backgroundImage: 'url(' + topic3.topic_resource + ')'
-                }"
-              >
-                <i
-                  class="close iconfont iconfalse-circle"
-                  @click="delTopicImg"
-                />
-              </div>
-            </div>
-            <div class="selectPic" @click="topicImg">添加图片</div>
-          </el-form-item>
-          <el-form-item class="required" label="题目选项">
-            <el-table
-              class="topicOption"
-              :data="topic3.topic_option"
-              border
-              style="width: 100%"
-              max-height="291"
-            >
-              <el-table-column
-                prop="option_content"
-                align="center"
-                label="选项内容"
+      <el-scrollbar wrap-class="scrollbar-wrapper">
+        <div class="form-edit">
+          <el-form
+            v-if="topic_type === 1"
+            ref="form"
+            class="form"
+            label-width="100px"
+          >
+            <el-form-item class="required content" label="题目内容">
+              <el-input
+                v-model="topic1.topic_content"
+                class="topicName"
+                placeholder="请输入题目"
+                clearable
               />
-              <el-table-column
-                prop="correct_option"
-                label="正确选项"
-                align="center"
-                width="90"
-              >
-                <template slot-scope="scope">
-                  <el-radio
-                    v-model="radio2"
-                    :label="scope.row.option_id_time_stamp"
-                    @change="isTrueChange(scope.$index)"
+              <div v-show="topic1.topic_resource" class="img-group">
+                <div
+                  class="imgCover"
+                  :style="{
+                    backgroundImage: 'url(' + topic1.topic_resource + ')'
+                  }"
+                >
+                  <i
+                    class="close iconfont iconfalse-circle"
+                    @click="delTopicImg"
                   />
-                </template>
-              </el-table-column>
-            </el-table>
-          </el-form-item>
-          <el-form-item label="题目解析">
-            <el-input
-              v-model="topic3.topic_resolve"
-              size="small"
-              type="textarea"
-              :autosize="{ minRows: 1, maxRows: 4 }"
-            />
-          </el-form-item>
-          <el-form-item class="required" label="题目分值">
-            <el-input-number
-              v-model="topic3.topic_score"
-              class="topic_score"
-              controls-position="right"
-              :min="1"
-            />
-          </el-form-item>
-          <el-form-item class="required" label="题目难度">
-            <el-radio-group v-model="topic3.topic_level" class="topic_level">
-              <el-radio-button label="1">简单</el-radio-button>
-              <el-radio-button label="2">普通</el-radio-button>
-              <el-radio-button label="3">困难</el-radio-button>
-            </el-radio-group>
-          </el-form-item>
-          <el-form-item label="添加标签" class="addLabel">
-            <div v-if="currentLabels.length" class="tag">
-              <el-tag
-                v-for="(tag, index) in currentLabels"
-                :key="tag.linc"
-                closable
-                size="medium"
-                :disable-transitions="false"
-                type="success"
-                @close="handleLabelDel(index)"
+                </div>
+              </div>
+              <div class="selectPic" @click="topicImg">添加图片</div>
+            </el-form-item>
+            <el-form-item class="required" label="题目选项">
+              <el-table
+                class="topicOption"
+                :data="topic1.topic_option"
+                border
+                style="width: 100%"
+                max-height="291"
               >
-                {{ tag.lname }}
-              </el-tag>
-            </div>
-            <i class="el-icon-circle-plus-outline" @click="addLabels" />
-          </el-form-item>
-          <el-form-item label="题目考核技能" class="addSkill">
-            <div v-if="currentSkills.length" class="tag">
-              <el-tag
-                v-for="(tag, index) in currentSkills"
-                :key="tag.increase_id"
-                closable
-                size="medium"
-                :disable-transitions="false"
-                type="success"
-                @close="handleSkillDel(index)"
+                <el-table-column
+                  prop="option_content"
+                  align="center"
+                  label="选项内容"
+                >
+                  <template slot-scope="scope">
+                    <el-input
+                      v-model="scope.row.option_content"
+                      size="small"
+                      class="option_content"
+                      placeholder="请输入选项内容，字数不超过100个字"
+                      maxlength="100"
+                    />
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="option_img"
+                  label="图片"
+                  align="center"
+                  width="60"
+                >
+                  <template slot-scope="scope">
+                    <el-upload
+                      ref="upload"
+                      class="avatar-uploader"
+                      :action="uploadUrl()"
+                      :headers="headers"
+                      accept=".jpg,.png,.gif,.jepg,.jpeg"
+                      :show-file-list="false"
+                      :on-success="handleImgSuccess"
+                      :before-upload="beforeImgUpload"
+                    >
+                      <img
+                        v-if="scope.row.option_img"
+                        :src="scope.row.option_img"
+                        class="avatar"
+                      >
+                      <i
+                        v-else
+                        class="el-icon-plus avatar-uploader-icon"
+                        @click="optionConcentIndex(scope.$index)"
+                      />
+                    </el-upload>
+                    <i
+                      v-if="scope.row.option_img"
+                      class="closeOptionImg iconfont iconfalse-circle"
+                      @click="delOptionImg(scope.row)"
+                    />
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="correct_option"
+                  label="正确选项"
+                  align="center"
+                  width="90"
+                >
+                  <template slot-scope="scope">
+                    <el-radio
+                      v-model="radio1"
+                      class="radio"
+                      :label="scope.row.option_id_time_stamp"
+                      @change="
+                        isTrueChange(scope.$index, scope.row.option_id_time_stamp)
+                      "
+                    />
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="addOrdelOption"
+                  label="操作"
+                  align="center"
+                  width="90"
+                >
+                  <template slot-scope="scope">
+                    <i class="pointer el-icon-plus" @click="addOption" />
+                    <i
+                      class="pointer el-icon-minus"
+                      @click="delTheOption(scope.$index)"
+                    />
+                  </template>
+                </el-table-column>
+              </el-table>
+            </el-form-item>
+            <el-form-item label="题目解析">
+              <el-input
+                v-model="topic1.topic_resolve"
+                size="small"
+                type="textarea"
+                :autosize="{ minRows: 1, maxRows: 4 }"
+              />
+            </el-form-item>
+            <el-form-item class="required" label="题目分值">
+              <el-input-number
+                v-model="topic1.topic_score"
+                class="topic_score"
+                controls-position="right"
+                :min="1"
+              />
+            </el-form-item>
+            <el-form-item class="required" label="题目难度">
+              <el-radio-group v-model="topic1.topic_level" class="topic_level">
+                <el-radio-button label="1">简单</el-radio-button>
+                <el-radio-button label="2">普通</el-radio-button>
+                <el-radio-button label="3">困难</el-radio-button>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item label="添加标签" class="addLabel">
+              <div v-if="currentLabels.length" class="tag">
+                <el-tag
+                  v-for="(tag, index) in currentLabels"
+                  :key="tag.linc"
+                  closable
+                  size="medium"
+                  :disable-transitions="false"
+                  type="success"
+                  @close="handleLabelDel(index)"
+                >
+                  {{ tag.lname }}
+                </el-tag>
+              </div>
+              <i class="el-icon-circle-plus-outline" @click="addLabels" />
+            </el-form-item>
+            <el-form-item label="题目考核技能" class="addSkill">
+              <div v-if="currentSkills.length" class="tag">
+                <el-tag
+                  v-for="(tag, index) in currentSkills"
+                  :key="tag.increase_id"
+                  closable
+                  size="medium"
+                  :disable-transitions="false"
+                  type="success"
+                  @close="handleSkillDel(index)"
+                >
+                  {{ tag.skill_name }}
+                </el-tag>
+              </div>
+              <i class="el-icon-circle-plus-outline" @click="addSkills" />
+            </el-form-item>
+          </el-form>
+          <el-form
+            v-else-if="topic_type === 2"
+            ref="form"
+            class="form"
+            label-width="100px"
+          >
+            <el-form-item class="required content" label="题目内容">
+              <el-input
+                v-model="topic2.topic_content"
+                class="topicName"
+                placeholder="请输入题目"
+                clearable
+              />
+              <div v-show="topic2.topic_resource" class="img-group">
+                <div
+                  class="imgCover"
+                  :style="{
+                    backgroundImage: 'url(' + topic2.topic_resource + ')'
+                  }"
+                >
+                  <i
+                    class="close iconfont iconfalse-circle"
+                    @click="delTopicImg"
+                  />
+                </div>
+              </div>
+              <div class="selectPic" @click="topicImg">添加图片</div>
+            </el-form-item>
+            <el-form-item class="required" label="题目选项">
+              <el-table
+                class="topicOption"
+                :data="topic2.topic_option"
+                border
+                style="width: 100%"
+                max-height="291"
               >
-                {{ tag.skill_name }}
-              </el-tag>
-            </div>
-            <i class="el-icon-circle-plus-outline" @click="addSkills" />
-          </el-form-item>
-        </el-form>
-        <div id="btnGroup">
-          <el-button
-            v-no-more-click
-            class="saveTopic"
-            type="primary"
-            @click="saveTopic"
-          >保存</el-button>
-          <el-button
-            type="primary"
-            plain
-            @click="cancelEdit('form')"
-          >取消</el-button>
+                <el-table-column
+                  prop="option_content"
+                  align="center"
+                  label="选项内容"
+                >
+                  <template slot-scope="scope">
+                    <el-input
+                      v-model="scope.row.option_content"
+                      size="small"
+                      class="option_content"
+                      placeholder="请输入选项内容，字数不超过100个字"
+                      maxlength="100"
+                    />
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="option_img"
+                  label="图片"
+                  align="center"
+                  width="60"
+                >
+                  <template slot-scope="scope">
+                    <el-upload
+                      ref="upload"
+                      class="avatar-uploader"
+                      :action="uploadUrl()"
+                      :headers="headers"
+                      accept=".jpg,.png,.gif,.jepg,.jpeg"
+                      :show-file-list="false"
+                      :on-success="handleImgSuccess"
+                      :before-upload="beforeImgUpload"
+                    >
+                      <img
+                        v-if="scope.row.option_img"
+                        :src="scope.row.option_img"
+                        class="avatar"
+                      >
+                      <i
+                        v-else
+                        class="el-icon-plus avatar-uploader-icon"
+                        @click="optionConcentIndex(scope.$index)"
+                      />
+                    </el-upload>
+                    <i
+                      v-if="scope.row.option_img"
+                      class="closeOptionImg iconfont iconfalse-circle"
+                      @click="delOptionImg(scope.row)"
+                    />
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="correct_option"
+                  label="正确选项"
+                  align="center"
+                  width="90"
+                >
+                  <template slot-scope="scope">
+                    <el-checkbox
+                      v-model="scope.row.check"
+                      @change="chcekboxChange(scope.row)"
+                    />
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="addOrdelOption"
+                  label="操作"
+                  align="center"
+                  width="90"
+                >
+                  <template slot-scope="scope">
+                    <i class="pointer el-icon-plus" @click="addOption" />
+                    <i
+                      class="pointer el-icon-minus"
+                      @click="delTheOption(scope.$index)"
+                    />
+                  </template>
+                </el-table-column>
+              </el-table>
+            </el-form-item>
+            <el-form-item label="题目解析">
+              <el-input
+                v-model="topic2.topic_resolve"
+                size="small"
+                type="textarea"
+                :autosize="{ minRows: 1, maxRows: 4 }"
+              />
+            </el-form-item>
+            <el-form-item class="required" label="题目分值">
+              <el-input-number
+                v-model="topic2.topic_score"
+                class="topic_score"
+                controls-position="right"
+                :min="1"
+              />
+            </el-form-item>
+            <el-form-item class="required" label="题目难度">
+              <el-radio-group v-model="topic2.topic_level" class="topic_level">
+                <el-radio-button label="1">简单</el-radio-button>
+                <el-radio-button label="2">普通</el-radio-button>
+                <el-radio-button label="3">困难</el-radio-button>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item label="添加标签" class="addLabel">
+              <div v-if="currentLabels.length" class="tag">
+                <el-tag
+                  v-for="(tag, index) in currentLabels"
+                  :key="tag.linc"
+                  closable
+                  size="medium"
+                  :disable-transitions="false"
+                  type="success"
+                  @close="handleLabelDel(index)"
+                >
+                  {{ tag.lname }}
+                </el-tag>
+              </div>
+              <i class="el-icon-circle-plus-outline" @click="addLabels" />
+            </el-form-item>
+            <el-form-item label="题目考核技能" class="addSkill">
+              <div v-if="currentSkills.length" class="tag">
+                <el-tag
+                  v-for="(tag, index) in currentSkills"
+                  :key="tag.increase_id"
+                  closable
+                  size="medium"
+                  :disable-transitions="false"
+                  type="success"
+                  @close="handleSkillDel(index)"
+                >
+                  {{ tag.skill_name }}
+                </el-tag>
+              </div>
+              <i class="el-icon-circle-plus-outline" @click="addSkills" />
+            </el-form-item>
+          </el-form>
+          <el-form
+            v-else-if="topic_type === 3"
+            ref="form"
+            class="form"
+            label-width="100px"
+          >
+            <el-form-item class="required content" label="题目内容">
+              <el-input
+                v-model="topic3.topic_content"
+                class="topicName"
+                placeholder="请输入题目"
+                clearable
+              />
+              <div v-show="topic3.topic_resource" class="img-group">
+                <div
+                  class="imgCover"
+                  :style="{
+                    backgroundImage: 'url(' + topic3.topic_resource + ')'
+                  }"
+                >
+                  <i
+                    class="close iconfont iconfalse-circle"
+                    @click="delTopicImg"
+                  />
+                </div>
+              </div>
+              <div class="selectPic" @click="topicImg">添加图片</div>
+            </el-form-item>
+            <el-form-item class="required" label="题目选项">
+              <el-table
+                class="topicOption"
+                :data="topic3.topic_option"
+                border
+                style="width: 100%"
+                max-height="291"
+              >
+                <el-table-column
+                  prop="option_content"
+                  align="center"
+                  label="选项内容"
+                />
+                <el-table-column
+                  prop="correct_option"
+                  label="正确选项"
+                  align="center"
+                  width="90"
+                >
+                  <template slot-scope="scope">
+                    <el-radio
+                      v-model="radio2"
+                      :label="scope.row.option_id_time_stamp"
+                      @change="isTrueChange(scope.$index)"
+                    />
+                  </template>
+                </el-table-column>
+              </el-table>
+            </el-form-item>
+            <el-form-item label="题目解析">
+              <el-input
+                v-model="topic3.topic_resolve"
+                size="small"
+                type="textarea"
+                :autosize="{ minRows: 1, maxRows: 4 }"
+              />
+            </el-form-item>
+            <el-form-item class="required" label="题目分值">
+              <el-input-number
+                v-model="topic3.topic_score"
+                class="topic_score"
+                controls-position="right"
+                :min="1"
+              />
+            </el-form-item>
+            <el-form-item class="required" label="题目难度">
+              <el-radio-group v-model="topic3.topic_level" class="topic_level">
+                <el-radio-button label="1">简单</el-radio-button>
+                <el-radio-button label="2">普通</el-radio-button>
+                <el-radio-button label="3">困难</el-radio-button>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item label="添加标签" class="addLabel">
+              <div v-if="currentLabels.length" class="tag">
+                <el-tag
+                  v-for="(tag, index) in currentLabels"
+                  :key="tag.linc"
+                  closable
+                  size="medium"
+                  :disable-transitions="false"
+                  type="success"
+                  @close="handleLabelDel(index)"
+                >
+                  {{ tag.lname }}
+                </el-tag>
+              </div>
+              <i class="el-icon-circle-plus-outline" @click="addLabels" />
+            </el-form-item>
+            <el-form-item label="题目考核技能" class="addSkill">
+              <div v-if="currentSkills.length" class="tag">
+                <el-tag
+                  v-for="(tag, index) in currentSkills"
+                  :key="tag.increase_id"
+                  closable
+                  size="medium"
+                  :disable-transitions="false"
+                  type="success"
+                  @close="handleSkillDel(index)"
+                >
+                  {{ tag.skill_name }}
+                </el-tag>
+              </div>
+              <i class="el-icon-circle-plus-outline" @click="addSkills" />
+            </el-form-item>
+          </el-form>
+          <div id="btnGroup">
+            <el-button
+              v-no-more-click
+              class="saveTopic"
+              type="primary"
+              @click="saveTopic"
+            >保存</el-button>
+            <el-button
+              type="primary"
+              plain
+              @click="cancelEdit('form')"
+            >取消</el-button>
+          </div>
         </div>
-      </div>
+      </el-scrollbar>
     </el-drawer>
     <add-labels
       :visible2.sync="visible1"
@@ -635,7 +638,7 @@
 </template>
 
 <script>
-import { paperDetail, addTestPaper } from '@/api/test-paper-manage'
+import { paperDetail, testPaperUpdata } from '@/api/test-paper-manage'
 import SelectFile from '@/components/SelectFile'
 import AddLabels from '@/components/AddEvalLabels'
 import AddSkills from '@/components/AddEvalSkills'
@@ -1276,7 +1279,7 @@ export default {
     publishExam(val) {
       this.testPaper.operatetype = 'publish'
       $.extend(true, val, this.testPaper)
-      addTestPaper(val).then(res => {
+      testPaperUpdata(val).then(res => {
         this.noLeaveprompt = true
         store.dispatch('testPaper/temporaryStorageTestPaper', {})
         store.dispatch('testPaper/temporaryStorageTopics', [])
@@ -1289,7 +1292,7 @@ export default {
     saveTestPaper() {
       if (this.valid()) {
         this.testPaper.operatetype = 'save'
-        addTestPaper(this.testPaper).then(res => {
+        testPaperUpdata(this.testPaper).then(res => {
           this.noLeaveprompt = true
           store.dispatch('testPaper/temporaryStorageTestPaper', {})
           store.dispatch('testPaper/temporaryStorageTopics', [])
@@ -1370,7 +1373,7 @@ export default {
     width: 100%;
     height: 40px;
     line-height: 40px;
-    margin-top: 30px;
+    margin-top: 20px;
     background-color: #f2f2f2;
 
     > .fl,
@@ -1668,4 +1671,7 @@ export default {
   .addIcon {
     font-size: 14px;
   }
+  .editTopicDrawer /deep/ .el-scrollbar {
+     height: calc(100vh - 100px);
+   }
 </style>

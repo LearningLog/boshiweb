@@ -190,7 +190,6 @@ export default {
       this.listQuery.selectCompanyId = val.companyIds
       this.listQuery.egroup = val.egroupId
       this.listQuery.roleId = val.roleId
-      this.group = val.group
     },
     // 新增监听三组数据变化
     tenantsGroupsRolesVal2(val) {

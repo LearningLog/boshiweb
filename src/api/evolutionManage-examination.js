@@ -25,3 +25,12 @@ export function delExam(data) {
   })
 }
 
+// 发布考试
+export function publishExam(data) {
+  return request({
+    url: 'evaluation/examination/add',
+    method: 'post',
+    data
+  })
+}
+

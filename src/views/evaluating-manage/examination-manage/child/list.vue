@@ -82,6 +82,15 @@
     <div id="bottomOperation">
       <el-button v-show="total>0" type="danger" plain @click="batchDel"><i class="iconfont iconshanchu" />批量删除</el-button>
     </div>
+    <el-dialog v-el-drag-dialog class="selectCompany" width="400px" title="选择小组" :visible.sync="isVisibleSystemManage">
+      <el-form ref="form" :model="listQuery" label-width="100px">
+        <tenants-groups-roles :is-render-role="false" whichGroup="manageEgroupInfo" @tenantsGroupsRolesVal="tenantsGroupsRolesVal2" />
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="selectCompany">确定</el-button>
+        <el-button @click="isVisibleSystemManage = false">取 消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -89,13 +98,14 @@
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
-import { getExaminationList,delExam } from '@/api/evolutionManage-examination'
+import { getExaminationList, delExam } from '@/api/evolutionManage-examination'
 export default {
   components: { Pagination, TenantsGroupsRoles },
   directives: { elDragDialog },
   data() {
     return {
       isReset: false, // 是否重置三组联动数据
+      isVisibleSystemManage: false, // 是否弹出选择租户、小组
       total: 0, // 总条数
       listQuery: { // 查询条件
         currentPage: 1, // 当前页
@@ -118,8 +128,6 @@ export default {
 
   created() {
     this.get_list()
-    // this.get_topic_label_list()
-    // this.get_topic_skill_list()
   },
   methods: {
     // 获取初始化数据
@@ -157,7 +165,11 @@ export default {
       this.listQuery.selectCompanyId = val.companyIds
       this.listQuery.egroup = val.egroupId
       this.listQuery.roleId = val.roleId
-      this.group = val.group
+    },
+    // 新增监听三组数据变化
+    tenantsGroupsRolesVal2(val) {
+      this.companyId = val.companyIds
+      this.egroup = val.egroupId
     },
 
     // 选中数据
@@ -166,12 +178,23 @@ export default {
     },
     // 新增
     add() {
-      if (!this.listQuery.egroup) {
-        this.$message.warning('请先选择分组信息再尝试添加试题！')
+      this.isVisibleSystemManage = true
+    },
+
+    // 新增选择租户、小组
+    selectCompany() {
+      if (!this.companyId && this.$store.state.user.isSystemManage) {
+        this.$message.warning('请先选择租户！')
+        return false
+      } else if (!this.egroup) {
+        this.$message.warning('请先选择小组！')
         return false
       }
-      // this.$router.push({ path: '/evaluating-manage/question-bank-manage/add', query: { egroup: this.listQuery.egroup, selectCompanyId: this.group.groupId }})
+      this.isVisibleSystemManage = false
+      this.$router.push({ path: '/evaluating-manage/examination-manage/add', query: { selectCompanyId: this.companyId, egroup: this.egroup }})
     },
+
+    // 单个删除
     del(row) {
       this.$confirm('确定要删除【' + row.exam_name + '】吗？', '删除考试', {
         confirmButtonText: '确定',
@@ -187,6 +210,8 @@ export default {
         })
       }).catch(() => {})
     },
+
+    // 批量删除
     batchDel() {
       if (!this.checkedDelList.length) {
         this.$message.warning('请选择考试！')
@@ -210,24 +235,26 @@ export default {
           this.get_list()
         })
       }).catch(() => {})
-    }
-    /*
+    },
+
     // 详情
     detail(row) {
-      this.$router.push({ path: '/evaluating-manage/question-bank-manage/detail', query: { _id: row._id }})
+      this.$router.push({ path: '/evaluating-manage/examination-manage/detail', query: { _id: row._id }})
     },
-    // 单个删除
-   */
-    // 批量删除
-  /*  ,
+
     // 编辑
     edit(row) {
-      this.$router.push({ path: '/evaluating-manage/question-bank-manage/edit', query: { _id: row._id }})
-    }*/
+      this.$router.push({ path: '/evaluating-manage/examination-manage/edit', query: { _id: row._id }})
+    }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-
+  .selectCompany /deep/ .tenantsGroupsRoles {
+    width: 100% !important;
+  }
+  .selectCompany /deep/ .tenantsGroupsRoles .el-form-item {
+    width: 100% !important;
+  }
 </style>

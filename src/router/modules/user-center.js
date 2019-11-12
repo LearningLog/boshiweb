@@ -131,6 +131,50 @@ const userCenter = {
         }
 
       ]
+    },
+    {
+      path: 'roleManage',
+      component: () => import('@/views/user-center/roleManage/index'),
+      redirect: '/user-center/roleManage/list',
+      name: 'roleManage',
+      meta: { title: '角色管理', icon: '', activeMenu: '/user-center/roleManage' },
+      children: [
+        {
+          path: 'list',
+          name: 'roleList',
+          hidden: true,
+          component: () => import('@/views/user-center/roleManage/child/list.vue'),
+          meta: { title: '角色管理列表', icon: '', activeMenu: '/user-center/roleManage' }
+        },
+        {
+          path: 'add',
+          component: () => import('@/views/user-center/roleManage/child/add.vue'),
+          name: 'roleAdd',
+          hidden: true,
+          meta: { title: '新增角色', icon: '', activeMenu: '/user-center/roleManage' }
+        },
+        {
+          path: 'edit',
+          name: 'roleEdit',
+          hidden: true,
+          component: () => import('@/views/user-center/roleManage/child/edit'),
+          meta: { title: '修改角色', icon: '', activeMenu: '/user-center/roleManage' }
+        },
+        {
+          path: 'detail',
+          name: 'roleDetail',
+          hidden: true,
+          component: () => import('@/views/user-center/roleManage/child/detail'),
+          meta: { title: '角色详情', icon: '', activeMenu: '/user-center/roleManage' }
+        },
+        {
+          path: 'authorize',
+          name: 'roleAuthorize',
+          hidden: true,
+          component: () => import('@/views/user-center/roleManage/child/authorize'),
+          meta: { title: '角色授权', icon: '', activeMenu: '/user-center/roleManage' }
+        }
+      ]
     }
   ]
 }

@@ -134,6 +134,13 @@ const evaluatingManage = {
           meta: { title: '新增考试', icon: '', activeMenu: '/evaluating-manage/examination-manage' }
         },
         {
+          path: 'select-exam-paper',
+          component: () => import('@/views/evaluating-manage/examination-manage/child/select-exam-paper.vue'),
+          name: 'select-exam-paper',
+          hidden: true,
+          meta: { title: '选择试卷', icon: '', activeMenu: '/evaluating-manage/examination-manage' }
+        },
+        {
           path: 'edit',
           name: 'examination-edit',
           hidden: true,

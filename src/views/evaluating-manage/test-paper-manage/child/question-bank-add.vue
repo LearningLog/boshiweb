@@ -321,7 +321,7 @@ export default {
       if (this.id) {
         this.$router.push({
           path: '/evaluating-manage/test-paper-manage/edit',
-          query: { _id: this.id, selectCompanyId: this.selectCompanyId, egroup: this.egroup, isedit: 1  }
+          query: { _id: this.id, selectCompanyId: this.selectCompanyId, egroup: this.egroup, isedit: 1 }
         })
       } else {
         this.$router.push({
