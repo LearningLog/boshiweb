@@ -70,6 +70,7 @@
                 type="primary"
                 @click="selectPaper"
               ><i class="iconfont iconshangyibu" />选择试卷</el-button>
+              <span class="exampaper_name">{{ exampaper_name }}</span>
             </div>
           </transition>
         </div>
@@ -89,6 +90,7 @@
             </el-tooltip>
             <span class="count">总题数：</span><span class="topic_count">{{ exam.topic_count || 0 }}</span>
             <span class="count">当前总分数：</span><span class="score_count">{{ exam.score_count || 0 }}</span>
+            <span class="count"><el-checkbox v-model="exam.topic_disorder">试题乱序</el-checkbox></span>
             <div class="fr">
               <span
                 class="questionBankAdd pointer"
@@ -809,9 +811,10 @@ export default {
         end_time: '', // 结束时间
         passscore: '', // 及格分数
         targetUser: '', // 考试人员
-        topic_disorder: '', // 是否题号乱序
+        topic_disorder: 0, // 是否题号乱序
         memer: '' // 校验用的，无实际意义
       },
+      exampaper_name: '', // 选择的试卷名称
       targetUser: [], // 未处理的考试人员
       topic_info: [], // 试卷
       examPaper: {}, // 选择的试卷
@@ -998,6 +1001,7 @@ export default {
     this.exam.selectCompanyId = this.$route.query.selectCompanyId
     $.extend(true, this.exam, this.$store.state.examinationManage.exam)
     this.exam.exampaper_id = this.$store.state.examinationManage.examPaper._id
+    this.exampaper_name = this.$store.state.examinationManage.examPaper.exampaper_name
     this.exam.score_count = this.$store.state.examinationManage.examPaper.score_count * 1
     this.examPaper = this.$store.state.examinationManage.examPaper
     this.createType = this.$store.state.examinationManage.createType + ''
@@ -1545,6 +1549,11 @@ export default {
           this.exam.topic_info = this.topic_info
           if (this.createType === '1') {
             this.exam.type = null
+            if (this.topic_disorder) {
+              this.topic_disorder = 1
+            } else {
+              this.topic_disorder = 0
+            }
             publishExam(this.exam).then(response => {
               this.noLeaveprompt = true
               store.dispatch('examinationManage/temporaryStorageExam', {})
@@ -1964,4 +1973,9 @@ i {
 .editTopicDrawer /deep/ .el-scrollbar {
   height: calc(100vh - 100px);
 }
+  .exampaper_name {
+    margin-left: 10px;
+    color: #606266;
+    font-size: 14px;
+  }
 </style>

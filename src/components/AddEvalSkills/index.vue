@@ -54,10 +54,7 @@
             </span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="技能名称" show-overflow-tooltip>
-          <template slot-scope="scope">
-            <el-link type="primary" @click="detail(scope.row)">{{ scope.row.skill_name }}</el-link>
-          </template>
+        <el-table-column align="center" label="技能名称" show-overflow-tooltip prop="skill_name">
         </el-table-column>
         <el-table-column label="技能描述" min-width="100" align="center" show-overflow-tooltip prop="skill_desc" />
         <el-table-column align="center" label="创建时间" min-width="130" show-overflow-tooltip prop="createtime" />

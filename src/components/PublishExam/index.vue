@@ -4,7 +4,8 @@
       v-el-drag-dialog
       class="publishDialog"
       title="发布考试"
-      :visible.sync="publishDialog"
+      :visible.sync="visible"
+      @close="cancel('paparForm')"
     >
       <el-form
         ref="paparForm"
@@ -102,6 +103,7 @@ export default {
       }
     }
     return {
+      visible: false,
       paparForm: {
         exampaper_id: '', // 试卷Id
         exam_name: '', // 考试名称
@@ -158,7 +160,13 @@ export default {
       }
     }
   },
-  created() {},
+  watch: {
+    publishDialog: function(val, val2) {
+      if (val) {
+        this.visible = true
+      }
+    }
+  },
   methods: {
     // 监听选择人员
     getExaminers(val) {
@@ -171,8 +179,9 @@ export default {
     },
     // 取消
     cancel(formName) {
-      this.publishDialog = false
+      this.visible = false
       this.$refs[formName].resetFields()
+      this.$emit('visiblePublish', { visible: false })
     },
     // 发布考试
     publish(formName) {

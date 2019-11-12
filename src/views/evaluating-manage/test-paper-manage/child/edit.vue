@@ -633,7 +633,7 @@
       @addSkills="getSkills"
       @visible3="onvisible3"
     />
-    <PublishExam :select-company-id="testPaper.selectCompanyId" :publish-dialog="publishDialog" :score-count="testPaper.score_count" @publishExam="publishExam" />
+    <PublishExam :select-company-id="testPaper.selectCompanyId" :publish-dialog="publishDialog" :score-count="testPaper.score_count" @publishExam="publishExam"  @visiblePublish="visiblePublish" />
   </div>
 </template>
 
@@ -1273,6 +1273,12 @@ export default {
       if (this.valid()) {
         this.publishDialog = true
       }
+    },
+
+
+    // 监听修改弹窗关闭
+    visiblePublish(val) {
+      this.publishDialog = val.visible
     },
 
     // 监听发布考试

@@ -74,7 +74,7 @@
       <el-button v-show="total>0" type="danger" plain @click="batchDel"><i class="iconfont iconshanchu" />批量删除</el-button>
       <el-button v-show="total>0" type="primary" plain @click="exportPaper"><i class="iconfont icondaochu" />批量导出</el-button>
     </div>
-    <PublishExam :selectCompanyId="selectCompanyId" :publishDialog="publishDialog" :scoreCount="scoreCount" @publishExam="publishExam"></PublishExam>
+    <PublishExam :selectCompanyId="selectCompanyId" :publishDialog="publishDialog" :scoreCount="scoreCount" @publishExam="publishExam" @visiblePublish="visiblePublish"></PublishExam>
     <el-dialog v-el-drag-dialog class="selectCompany" width="400px" title="选择小组" :visible.sync="isVisibleSystemManage">
       <el-form ref="form" label-width="100px">
         <tenants-groups-roles :is-render-role="false" whichGroup="manageEgroupInfo" @tenantsGroupsRolesVal="tenantsGroupsRolesVal2" />
@@ -228,12 +228,18 @@ export default {
       this.scoreCount = row.score_count
       this.publishDialog = true
     },
+
+    // 监听修改弹窗关闭
+    visiblePublish(val) {
+      this.publishDialog = val.visible
+    },
+
     // 监听发布考试
     publishExam(val) {
       val.exampaper_id = this.exampaper_id
       publish(val).then(response => {
         this.publishDialog = false
-        this.$message.success('发布试卷成功！')
+        this.$message.success('发布考试成功！')
         this.get_list()
       })
     },

@@ -72,8 +72,8 @@
 
       <el-table-column class-name="status-col" label="操作" width="250" align="center" fixed="right">
         <template slot-scope="scope">
-          <el-button size="mini" @click="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
-          <el-button size="mini" @click="edit(scope.row)"><i class="iconfont iconxiugai" />考试统计</el-button>
+          <el-button size="mini" :disabled="scope.row.exam_status !== 1" @click="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
+          <el-button size="mini" :disabled="scope.row.exam_status !== 3" @click="detail(scope.row)"><i class="iconfont iconchakan" />考试统计</el-button>
           <el-button size="mini" @click="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
         </template>
       </el-table-column>
@@ -91,20 +91,23 @@
         <el-button @click="isVisibleSystemManage = false">取 消</el-button>
       </div>
     </el-dialog>
+    <PublishExam :selectCompanyId="selectCompanyId" :publishDialog="publishDialog" :scoreCount="scoreCount" @publishExam="publishExam" @visiblePublish="visiblePublish"></PublishExam>
   </div>
 </template>
 
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
+import PublishExam from '@/components/PublishExam'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
-import { getExaminationList, delExam } from '@/api/evolutionManage-examination'
+import { getExaminationList, delExam, examDetail, examUpdate } from '@/api/evolutionManage-examination'
 export default {
-  components: { Pagination, TenantsGroupsRoles },
+  components: { Pagination, TenantsGroupsRoles, PublishExam },
   directives: { elDragDialog },
   data() {
     return {
       isReset: false, // 是否重置三组联动数据
+      publishDialog: false, // 发布考试弹窗
       isVisibleSystemManage: false, // 是否弹出选择租户、小组
       total: 0, // 总条数
       listQuery: { // 查询条件
@@ -122,7 +125,9 @@ export default {
       list: [], // 表格数据
       listLoading: true, // 是否开启表格遮罩
       popoverVisible: false, // 是否开启高级搜索
-      checkedDelList: [] // 选择删除的list
+      checkedDelList: [], // 选择删除的list
+      selectCompanyId: '', // 编辑的当前行selectCompanyId
+      scoreCount: 0 // 编辑的当前行考试总分scoreCount
     }
   },
 
@@ -244,8 +249,27 @@ export default {
 
     // 编辑
     edit(row) {
-      this.$router.push({ path: '/evaluating-manage/examination-manage/edit', query: { _id: row._id }})
-    }
+      examDetail({ _id: row._id }).then(res => {
+        this.selectCompanyId = res.data.exam.selectCompanyId
+        this.scoreCount = res.data.exam.score_count
+        this.publishDialog = true
+      })
+    },
+
+    // 监听修改弹窗关闭
+    visiblePublish(val) {
+      this.publishDialog = val.visible
+    },
+
+    // 监听发布考试
+    publishExam(val) {
+      val.exampaper_id = this.exampaper_id
+      examUpdate(val).then(response => {
+        this.publishDialog = false
+        this.$message.success('发布考试成功！')
+        this.get_list()
+      })
+    },
   }
 }
 </script>

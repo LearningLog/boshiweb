@@ -146,13 +146,6 @@ const evaluatingManage = {
           name: 'exam-question-bank-add',
           hidden: true,
           meta: { title: '题库中添加', icon: '', activeMenu: '/evaluating-manage/examination-manage' }
-        },
-        {
-          path: 'edit',
-          name: 'examination-edit',
-          hidden: true,
-          component: () => import('@/views/evaluating-manage/examination-manage/child/edit'),
-          meta: { title: '修改考试', icon: '', activeMenu: '/evaluating-manage/examination-manage' }
         }
       ]
     },

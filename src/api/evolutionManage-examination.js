@@ -41,4 +41,20 @@ export function publishExam2(data) {
     data
   })
 }
+// 考试详情
+export function examDetail(data) {
+  return request({
+    url: '/evaluation/examination/one',
+    method: 'post',
+    data
+  })
+}
+// 考试修改
+export function examUpdate(data) {
+  return request({
+    url: '/evaluation/examination/update',
+    method: 'post',
+    data
+  })
+}
 

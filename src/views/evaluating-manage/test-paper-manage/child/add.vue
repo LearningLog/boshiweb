@@ -641,6 +641,7 @@
       :publish-dialog="publishDialog"
       :score-count="testPaper.score_count"
       @publishExam="publishExam"
+      @visiblePublish="visiblePublish"
     />
   </div>
 </template>
@@ -1274,6 +1275,11 @@ export default {
       if (this.valid()) {
         this.publishDialog = true
       }
+    },
+
+    // 监听修改弹窗关闭
+    visiblePublish(val) {
+      this.publishDialog = val.visible
     },
 
     // 监听发布考试
