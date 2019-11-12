@@ -28,6 +28,14 @@ export function delExam(data) {
 // 发布考试
 export function publishExam(data) {
   return request({
+    url: 'evaluation/examinationpaper/add',
+    method: 'post',
+    data
+  })
+}
+// 发布考试2 虚选择试卷
+export function publishExam2(data) {
+  return request({
     url: 'evaluation/examination/add',
     method: 'post',
     data

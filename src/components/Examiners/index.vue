@@ -61,7 +61,6 @@ export default {
     },
     handleChange(val) {
       this.$emit('examiners', val)
-      console.log(val)
     }
   }
 }

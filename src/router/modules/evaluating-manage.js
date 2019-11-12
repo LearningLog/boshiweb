@@ -141,6 +141,13 @@ const evaluatingManage = {
           meta: { title: '选择试卷', icon: '', activeMenu: '/evaluating-manage/examination-manage' }
         },
         {
+          path: 'question-bank-add',
+          component: () => import('@/views/evaluating-manage/examination-manage/child/question-bank-add.vue'),
+          name: 'exam-question-bank-add',
+          hidden: true,
+          meta: { title: '题库中添加', icon: '', activeMenu: '/evaluating-manage/examination-manage' }
+        },
+        {
           path: 'edit',
           name: 'examination-edit',
           hidden: true,

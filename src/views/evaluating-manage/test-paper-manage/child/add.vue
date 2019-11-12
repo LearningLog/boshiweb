@@ -65,7 +65,7 @@
         </div>
         <i class="el-icon-circle-plus-outline" @click="addPaperLabels" />
         <div
-          v-for="(item, index) in testPaper.topic_info"
+          v-for="(item, index) in topic_info"
           :key="item._id"
           class="topicItem"
         >
@@ -82,7 +82,7 @@
                 @click="shiftTop(item, index)"
               >置顶</el-link>
               <el-link
-                v-if="index !== testPaper.topic_info.length - 1"
+                v-if="index !== topic_info.length - 1"
                 type="info"
                 @click="shiftFooter(item, index)"
               >置底</el-link>
@@ -92,11 +92,11 @@
                 @click="shiftUp(item, index)"
               >上移</el-link>
               <el-link
-                v-if="index !== testPaper.topic_info.length - 1"
+                v-if="index !== topic_info.length - 1"
                 type="info"
                 @click="shiftDown(item, index)"
               >下移</el-link>
-              <el-link type="primary" @click="edit(item)">编辑</el-link>
+              <el-link type="primary" @click="edit(item, index)">编辑</el-link>
               <el-link type="danger" @click="del(index)">删除</el-link>
             </div>
           </div>
@@ -108,7 +108,7 @@
               class="item-topic"
             >
               <el-checkbox
-                :checked="item2.correct_option === 1 ? true : false"
+                v-model="item2.correct_option === 1 ? true : false"
                 :title="item2.option_content"
                 class="single-line3"
                 disabled
@@ -227,7 +227,10 @@
                       class="radio"
                       :label="scope.row.option_id_time_stamp"
                       @change="
-                        isTrueChange(scope.$index, scope.row.option_id_time_stamp)
+                        isTrueChange(
+                          scope.$index,
+                          scope.row.option_id_time_stamp
+                        )
                       "
                     />
                   </template>
@@ -633,7 +636,12 @@
       @addSkills="getSkills"
       @visible3="onvisible3"
     />
-    <PublishExam :select-company-id="testPaper.selectCompanyId" :publish-dialog="publishDialog" :score-count="testPaper.score_count" @publishExam="publishExam" />
+    <PublishExam
+      :select-company-id="testPaper.selectCompanyId"
+      :publish-dialog="publishDialog"
+      :score-count="testPaper.score_count"
+      @publishExam="publishExam"
+    />
   </div>
 </template>
 
@@ -672,6 +680,7 @@ export default {
         exampaper_src: 1, // 添加类型 1：手动添加
         topic_info: [] // 试题
       },
+      topic_info: [], // 试题
       editTopicIndex: null, // 当前编辑的试题index
       headers: {
         Authorization: getToken() // 图片上传 header
@@ -812,22 +821,23 @@ export default {
   created() {
     this.testPaper.selectCompanyId = this.$route.query.selectCompanyId
     this.testPaper.egroup = this.$route.query.egroup
-    this.testPaper.topic_info = this.$store.state.testPaper.topics || []
+    this.testPaper = this.$store.state.testPaper.testPaper || {}
+    this.topic_info = this.$store.state.testPaper.topics || []
     this.getCount()
   },
   methods: {
     // 获取题数和分值
     getCount() {
-      this.testPaper.topic_count = this.testPaper.topic_info.length
+      this.testPaper.topic_count = this.topic_info.length
       this.testPaper.score_count = 0
-      this.testPaper.topic_info.forEach(item => {
+      this.topic_info.forEach(item => {
         this.testPaper.score_count += item.topic_score * 1
       })
     },
     // 暂存当前试卷数据
     temporaryStorage() {
       store.dispatch('testPaper/temporaryStorageTestPaper', this.testPaper)
-      store.dispatch('testPaper/temporaryStorageTopics', this.testPaper.topic_info)
+      store.dispatch('testPaper/temporaryStorageTopics', this.topic_info)
     },
     // 智能添加
     intelligentAdd() {
@@ -835,7 +845,10 @@ export default {
       this.temporaryStorage()
       this.$router.push({
         path: '/evaluating-manage/test-paper-manage/intelligent-add',
-        query: { selectCompanyId: this.testPaper.selectCompanyId, egroup: this.testPaper.egroup }
+        query: {
+          selectCompanyId: this.testPaper.selectCompanyId,
+          egroup: this.testPaper.egroup
+        }
       })
     },
     // 题库中添加
@@ -844,7 +857,10 @@ export default {
       this.temporaryStorage()
       this.$router.push({
         path: '/evaluating-manage/test-paper-manage/paper-question-bank-add',
-        query: { selectCompanyId: this.testPaper.selectCompanyId, egroup: this.testPaper.egroup }
+        query: {
+          selectCompanyId: this.testPaper.selectCompanyId,
+          egroup: this.testPaper.egroup
+        }
       })
     },
 
@@ -867,26 +883,26 @@ export default {
 
     // 置顶
     shiftTop(row, index) {
-      this.testPaper.topic_info.splice(index, 1)
-      this.testPaper.topic_info.unshift(row)
+      this.topic_info.splice(index, 1)
+      this.topic_info.unshift(row)
     },
 
     // 置底
     shiftFooter(row, index) {
-      this.testPaper.topic_info.splice(index, 1)
-      this.testPaper.topic_info.push(row)
+      this.topic_info.splice(index, 1)
+      this.topic_info.push(row)
     },
 
     // 上移
     shiftUp(row, index) {
-      this.testPaper.topic_info.splice(index, 1)
-      this.testPaper.topic_info.splice(index - 1, 0, row)
+      this.topic_info.splice(index, 1)
+      this.topic_info.splice(index - 1, 0, row)
     },
 
     // 下移
     shiftDown(row, index) {
-      this.testPaper.topic_info.splice(index, 1)
-      this.testPaper.topic_info.splice(index + 1, 0, row)
+      this.topic_info.splice(index, 1)
+      this.topic_info.splice(index + 1, 0, row)
     },
 
     // 编辑
@@ -904,7 +920,7 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          this.testPaper.topic_info.splice(index, 1)
+          this.topic_info.splice(index, 1)
           this.getCount()
           this.$message.success('删除成功！')
         })
@@ -916,7 +932,7 @@ export default {
     handleTopic(row) {
       const topic = {}
       $.extend(true, topic, row)
-      this.topic_type = topic.topic_type
+      this.topic_type = topic.topic_type * 1
 
       topic.topic_option.forEach((item, index) => {
         item.option_id_time_stamp = new Date().getTime() + index
@@ -1220,7 +1236,10 @@ export default {
       this[this.topic0].topic_skill = topic_skill
       this[this.topic0].topic_type = this[this.topic0].topic_type + ''
       this[this.topic0].topic_level = this[this.topic0].topic_level + ''
-      this.testPaper.topic_info.splice(this.editTopicIndex, 1, this[this.topic0])
+      for(let key in this.topic_info[this.editTopicIndex]) {
+        delete this.topic_info[this.editTopicIndex][key]
+      }
+      $.extend(true, this.topic_info[this.editTopicIndex], this[this.topic0])
       this.editTopicDrawer = false
       this.getCount()
       this.$message.success('编辑试题成功！')
@@ -1229,6 +1248,7 @@ export default {
     // 取消编辑
     cancelEdit() {
       this[this.topic0] = {}
+      this.editTopicDrawer = false
     },
 
     // 编辑试题关闭
@@ -1244,6 +1264,7 @@ export default {
         .catch(() => {})
     },
 
+    // 页面的取消
     cancel0() {
       this.$router.push({ path: '/evaluating-manage/test-paper-manage/list' })
     },
@@ -1264,7 +1285,9 @@ export default {
         store.dispatch('testPaper/temporaryStorageTestPaper', {})
         store.dispatch('testPaper/temporaryStorageTopics', [])
         this.$message.success('发布考试成功！')
-        this.$router.push({ path: '/evaluating-manage/test-paper-manage/list' })
+        this.$router.push({
+          path: '/evaluating-manage/test-paper-manage/list'
+        })
       })
     },
 
@@ -1277,7 +1300,9 @@ export default {
           store.dispatch('testPaper/temporaryStorageTestPaper', {})
           store.dispatch('testPaper/temporaryStorageTopics', [])
           this.$message.success('保存试卷成功！')
-          this.$router.push({ path: '/evaluating-manage/test-paper-manage/list' })
+          this.$router.push({
+            path: '/evaluating-manage/test-paper-manage/list'
+          })
         })
       }
     },
@@ -1289,12 +1314,13 @@ export default {
         this.$message.warning('请输入试卷标题！')
         return false
       }
-      if (!this.testPaper.topic_info.length) {
+      if (!this.topic_info.length) {
         this.$message.warning('请添加试题！')
         return false
       }
-      this.testPaper.topic_count = this.testPaper.topic_info.length
-      this.testPaper.topic_info.forEach(item => {
+      this.testPaper.topic_info = this.topic_info
+      this.testPaper.topic_count = this.topic_info.length
+      this.topic_info.forEach(item => {
         this.testPaper.score_count += item.topic_score * 1
       })
       return true
@@ -1416,7 +1442,7 @@ export default {
 .item-topic /deep/ .el-checkbox__label {
   color: #000;
 }
-#add-test-paper>.el-scrollbar {
+#add-test-paper > .el-scrollbar {
   height: calc(100vh - 230px);
 }
 

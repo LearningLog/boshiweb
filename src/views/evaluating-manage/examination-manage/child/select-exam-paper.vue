@@ -169,8 +169,10 @@ export default {
           .then(() => {
             store.dispatch('examinationManage/temporaryStorageExam', {})
             store.dispatch('examinationManage/temporaryStorageExamPaper', {})
+            store.dispatch('examinationManage/activeStep', 1)
             store.dispatch('examinationManage/createType', '1')
             store.dispatch('examinationManage/examPaperId', '')
+            store.dispatch('examinationManage/temporaryStorageTopics', [])
             next()
           })
           .catch(() => {

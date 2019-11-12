@@ -27,19 +27,19 @@
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
               <el-form-item label="试题类型">
-              <el-select
-              v-model="listQuery.topicType"
-              placeholder="请选择试题类型"
-              clearable
-              filterable
-              >
-              <el-option
-              v-for="item in topicType"
-              :key="item._id"
-              :label="item.topicName"
-              :value="item._id"
-              />
-              </el-select>
+                <el-select
+                  v-model="listQuery.topicType"
+                  placeholder="请选择试题类型"
+                  clearable
+                  filterable
+                >
+                  <el-option
+                    v-for="item in topicType"
+                    :key="item._id"
+                    :label="item.topicName"
+                    :value="item._id"
+                  />
+                </el-select>
               </el-form-item>
               <el-form-item label="创建时间">
                 <el-date-picker
@@ -194,7 +194,7 @@ export default {
     this.id = this.$route.query._id
     this.listQuery.selectCompanyId = this.$route.query.selectCompanyId
     this.listQuery.egroup = this.$route.query.egroup * 1
-    this.$store.state.testPaper.topics.forEach(row => {
+    this.$store.state.examinationManage.examTopics.forEach(row => {
       this.selectObj[row._id] = row
     })
     this.get_list()
@@ -235,6 +235,7 @@ export default {
       this.listQuery.endTime = this.time_range[1]
       this.get_list()
     },
+
     // 重置
     reset() {
       this.isReset = true
@@ -261,6 +262,7 @@ export default {
           return '判断'
       }
     },
+
     // 难度转换为name
     switchTopicLevelToName(topic_level) {
       switch (topic_level) {
@@ -313,16 +315,16 @@ export default {
       for (var key in this.selectObj) {
         topics.push(this.selectObj[key])
       }
-      store.dispatch('testPaper/temporaryStorageTopics', topics)
+      store.dispatch('examinationManage/temporaryStorageTopics', topics)
       this.noLeaveprompt = true
       if (this.id) {
         this.$router.push({
-          path: '/evaluating-manage/test-paper-manage/edit',
+          path: '/evaluating-manage/examination-manage/edit',
           query: { _id: this.id, selectCompanyId: this.listQuery.selectCompanyId, egroup: this.listQuery.egroup, isedit: 1 }
         })
       } else {
         this.$router.push({
-          path: '/evaluating-manage/test-paper-manage/add',
+          path: '/evaluating-manage/examination-manage/add',
           query: { selectCompanyId: this.listQuery.selectCompanyId, egroup: this.listQuery.egroup }
         })
       }
@@ -339,8 +341,12 @@ export default {
           type: 'warning'
         })
           .then(() => {
-            store.dispatch('testPaper/temporaryStorageTestPaper', {})
-            store.dispatch('testPaper/temporaryStorageTopics', [])
+            store.dispatch('examinationManage/temporaryStorageExam', {})
+            store.dispatch('examinationManage/temporaryStorageExamPaper', {})
+            store.dispatch('examinationManage/activeStep', 1)
+            store.dispatch('examinationManage/createType', '1')
+            store.dispatch('examinationManage/examPaperId', '')
+            store.dispatch('examinationManage/temporaryStorageTopics', [])
             next()
           })
           .catch(() => {

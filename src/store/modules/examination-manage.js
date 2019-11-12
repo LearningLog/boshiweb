@@ -8,18 +8,24 @@
 const state = {
   exam: sessionStorage.getItem('exam') ? JSON.parse(sessionStorage.getItem('exam')) : {}, // 新增考试，选择试卷，跳页缓存考试数据
   examPaper: sessionStorage.getItem('examPaper') ? JSON.parse(sessionStorage.getItem('examPaper')) : {}, // 新增考试，选择试卷，跳页缓存数据
+  activeStep: sessionStorage.getItem('activeStep') ? sessionStorage.getItem('activeStep') : 1,
   createType: sessionStorage.getItem('createType') ? sessionStorage.getItem('createType') : '1',
-  examPaperId: sessionStorage.getItem('examPaperId') ? sessionStorage.getItem('examPaperId') : '' // 试卷ID
+  examPaperId: sessionStorage.getItem('examPaperId') ? sessionStorage.getItem('examPaperId') : '', // 试卷ID
+  examTopics: sessionStorage.getItem('examTopics') ? JSON.parse(sessionStorage.getItem('examTopics')) : [] // 试题
 }
 
 const mutations = {
   SET_EXAM_PAPER_TEPORARY_STORAGE: (state, examPaper) => {
     state.examPaper = examPaper
-    sessionStorage.setItem('examPaper', JSON.stringify(examPaper))
+    sessionStorage.setItem('examPaper', JSON.stringify(examPaper || {}))
   },
   SET_EXAM_TEPORARY_STORAGE: (state, exam) => {
     state.exam = exam
     sessionStorage.setItem('exam', JSON.stringify(exam))
+  },
+  SET_ACTIVE_TYPE: (state, activeStep) => {
+    state.activeStep = activeStep
+    sessionStorage.setItem('activeStep', activeStep)
   },
   SET_CREATE_TYPE: (state, createType) => {
     state.createType = createType
@@ -28,21 +34,31 @@ const mutations = {
   SET_EXAM_PAPER_ID: (state, examPaperId) => {
     state.examPaperId = examPaperId
     sessionStorage.setItem('examPaperId', examPaperId)
+  },
+  SET_TOPICS_TEPORARY_STORAGE: (state, examTopics) => {
+    state.examTopics = examTopics
+    sessionStorage.setItem('examTopics', JSON.stringify(examTopics))
   }
 }
 
 const actions = {
+  temporaryStorageExam({ commit }, exam) {
+    commit('SET_EXAM_TEPORARY_STORAGE', exam)
+  },
   temporaryStorageExamPaper({ commit }, examPaper) {
     commit('SET_EXAM_PAPER_TEPORARY_STORAGE', examPaper)
   },
-  temporaryStorageExam({ commit }, exam) {
-    commit('SET_EXAM_TEPORARY_STORAGE', exam)
+  activeStep({ commit }, activeStep) {
+    commit('SET_ACTIVE_TYPE', activeStep)
   },
   createType({ commit }, createType) {
     commit('SET_CREATE_TYPE', createType)
   },
   examPaperId({ commit }, examPaperId) {
     commit('SET_EXAM_PAPER_ID', examPaperId)
+  },
+  temporaryStorageTopics({ commit }, examTopics) {
+    commit('SET_TOPICS_TEPORARY_STORAGE', examTopics)
   }
 }
 

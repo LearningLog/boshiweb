@@ -40,3 +40,8 @@
 .pre-wrap {
     white-space: pre-wrap;
 }
+.singleLineOmission {
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+}

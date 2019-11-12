@@ -104,7 +104,7 @@ export default {
     return {
       paparForm: {
         exampaper_id: '', // 试卷Id
-        exam_name: '', // 试卷名称
+        exam_name: '', // 考试名称
         time_range: [], // 考试时间
         begin_time: '', // 开始时间
         end_time: '', // 结束时间

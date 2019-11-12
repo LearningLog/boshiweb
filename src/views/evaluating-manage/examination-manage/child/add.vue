@@ -1,6 +1,11 @@
 <template>
   <div id="addExamination">
-    <el-steps :active="activeStep" finish-status="success" simple style="margin-top: 20px">
+    <el-steps
+      :active="activeStep"
+      finish-status="success"
+      simple
+      style="margin-top: 20px"
+    >
       <el-step title="第一步：创建试卷" />
       <el-step title="第二部：添加试卷" />
       <el-step title="第三部：发布考试" />
@@ -21,24 +26,43 @@
           v-if="activeStep === 3"
           v-no-more-click
           type="primary"
-          @click="publish"
+          @click="publish('exam')"
         ><i class="addIcon iconfont iconshangyibu" />发布</el-button>
       </div>
     </div>
-    <div class="content">
-      <div v-show="activeStep === 1">
+    <div>
+      <div v-show="activeStep === 1" class="activeStep1">
         <div class="createExam exam">
-          <el-radio v-model="createType" class="createType" label="1">创建新试卷</el-radio>
+          <el-radio
+            v-model="createType"
+            class="createType"
+            label="1"
+          >创建新试卷</el-radio>
           <transition name="fade-advanced-search">
-            <el-form v-if="createType == 1" ref="form" class="form" label-width="100px">
-              <el-form-item class="required examName" label="试卷名称">
-                <el-input ref="examName" v-model="exam.exam_name" class="examName" placeholder="请输入试卷名称" clearable />
+            <el-form
+              v-if="createType == 1"
+              ref="form"
+              class="form"
+              label-width="100px"
+            >
+              <el-form-item class="required examPaperName" label="试卷名称">
+                <el-input
+                  ref="examPaperName"
+                  v-model="exam.exampaper_name"
+                  class="examPaperName"
+                  placeholder="请输入试卷名称"
+                  clearable
+                />
               </el-form-item>
             </el-form>
           </transition>
         </div>
         <div class="selectExam exam">
-          <el-radio v-model="createType" class="createType" label="2">试卷库中选择一张试卷</el-radio>
+          <el-radio
+            v-model="createType"
+            class="createType"
+            label="2"
+          >试卷库中选择一张试卷</el-radio>
           <transition name="fade-advanced-search">
             <div v-if="createType == 2" class="form">
               <el-button
@@ -53,11 +77,18 @@
       <div v-show="activeStep === 2" id="add-test-paper">
         <div>
           <div class="selectArea clearfix">
-            <div class="fl">
-              试卷名称：{{ exam.exam_name }}
-            </div>
-            <span class="count">总题数：</span><span class="topic_count">{{ testPaper.topic_count }}</span>
-            <span class="count">当前总分数：</span><span class="score_count">{{ testPaper.score_count }}</span>
+            <el-tooltip
+              class="item"
+              effect="dark"
+              :content="'试卷名称：' + (exam.exampaper_name || '')"
+              placement="top-start"
+            >
+              <div class="fl examPaperName singleLineOmission">
+                试卷名称：<span>{{ exam.exampaper_name }}</span>
+              </div>
+            </el-tooltip>
+            <span class="count">总题数：</span><span class="topic_count">{{ exam.topic_count || 0 }}</span>
+            <span class="count">当前总分数：</span><span class="score_count">{{ exam.score_count || 0 }}</span>
             <div class="fr">
               <span
                 class="questionBankAdd pointer"
@@ -85,7 +116,7 @@
             </div>
             <i class="el-icon-circle-plus-outline" @click="addPaperLabels" />
             <div
-              v-for="(item, index) in testPaper.topic_info"
+              v-for="(item, index) in topic_info"
               :key="item._id"
               class="topicItem"
             >
@@ -102,7 +133,7 @@
                     @click="shiftTop(item, index)"
                   >置顶</el-link>
                   <el-link
-                    v-if="index !== testPaper.topic_info.length - 1"
+                    v-if="index !== topic_info.length - 1"
                     type="info"
                     @click="shiftFooter(item, index)"
                   >置底</el-link>
@@ -112,11 +143,14 @@
                     @click="shiftUp(item, index)"
                   >上移</el-link>
                   <el-link
-                    v-if="index !== testPaper.topic_info.length - 1"
+                    v-if="index !== topic_info.length - 1"
                     type="info"
                     @click="shiftDown(item, index)"
                   >下移</el-link>
-                  <el-link type="primary" @click="edit(item)">编辑</el-link>
+                  <el-link
+                    type="primary"
+                    @click="edit(item, index)"
+                  >编辑</el-link>
                   <el-link type="danger" @click="del(index)">删除</el-link>
                 </div>
               </div>
@@ -128,7 +162,7 @@
                   class="item-topic"
                 >
                   <el-checkbox
-                    :checked="item2.correct_option === 1 ? true : false"
+                    v-model="item2.correct_option === 1 ? true : false"
                     :title="item2.option_content"
                     class="single-line3"
                     disabled
@@ -247,7 +281,10 @@
                           class="radio"
                           :label="scope.row.option_id_time_stamp"
                           @change="
-                            isTrueChange(scope.$index, scope.row.option_id_time_stamp)
+                            isTrueChange(
+                              scope.$index,
+                              scope.row.option_id_time_stamp
+                            )
                           "
                         />
                       </template>
@@ -285,7 +322,10 @@
                   />
                 </el-form-item>
                 <el-form-item class="required" label="题目难度">
-                  <el-radio-group v-model="topic1.topic_level" class="topic_level">
+                  <el-radio-group
+                    v-model="topic1.topic_level"
+                    class="topic_level"
+                  >
                     <el-radio-button label="1">简单</el-radio-button>
                     <el-radio-button label="2">普通</el-radio-button>
                     <el-radio-button label="3">困难</el-radio-button>
@@ -456,7 +496,10 @@
                   />
                 </el-form-item>
                 <el-form-item class="required" label="题目难度">
-                  <el-radio-group v-model="topic2.topic_level" class="topic_level">
+                  <el-radio-group
+                    v-model="topic2.topic_level"
+                    class="topic_level"
+                  >
                     <el-radio-button label="1">简单</el-radio-button>
                     <el-radio-button label="2">普通</el-radio-button>
                     <el-radio-button label="3">困难</el-radio-button>
@@ -569,7 +612,10 @@
                   />
                 </el-form-item>
                 <el-form-item class="required" label="题目难度">
-                  <el-radio-group v-model="topic3.topic_level" class="topic_level">
+                  <el-radio-group
+                    v-model="topic3.topic_level"
+                    class="topic_level"
+                  >
                     <el-radio-button label="1">简单</el-radio-button>
                     <el-radio-button label="2">普通</el-radio-button>
                     <el-radio-button label="3">困难</el-radio-button>
@@ -627,8 +673,8 @@
         <add-labels
           :visible2.sync="visible1"
           :current-labels.sync="paperLabels"
-          :select-company-id="testPaper.selectCompanyId"
-          :egroup="testPaper.egroup"
+          :select-company-id="exam.selectCompanyId"
+          :egroup="exam.egroup"
           @addLabels="getPaperLabels"
           @visible2="onvisible1"
         />
@@ -641,44 +687,107 @@
         <add-labels
           :visible2.sync="visible2"
           :current-labels.sync="currentLabels"
-          :select-company-id="testPaper.selectCompanyId"
-          :egroup="testPaper.egroup"
+          :select-company-id="exam.selectCompanyId"
+          :egroup="exam.egroup"
           @addLabels="getLabels"
           @visible2="onvisible2"
         />
         <add-skills
           :visible3.sync="visible3"
           :current-skills.sync="currentSkills"
-          :select-company-id="testPaper.selectCompanyId"
+          :select-company-id="exam.selectCompanyId"
           @addSkills="getSkills"
           @visible3="onvisible3"
         />
-        <PublishExam :select-company-id="testPaper.selectCompanyId" :publish-dialog="publishDialog" :score-count="testPaper.score_count" @publishExam="publishExam" />
+      </div>
+      <div v-show="activeStep === 3" class="activeStep3">
+        <el-form
+            ref="exam"
+            :model="exam"
+            :rules="rules"
+            label-width="100px"
+        >
+          <el-form-item label="考试名称" prop="exam_name">
+            <el-input
+                v-model="exam.exam_name"
+                placeholder="请输入考试名称"
+                maxlength="64"
+                clearable
+            />
+          </el-form-item>
+          <el-form-item label="考试时间" prop="time_range">
+            <el-date-picker
+                v-model="exam.time_range"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                value-format="yyyy-MM-dd"
+            />
+          </el-form-item>
+          <el-form-item label="及格分数" prop="passscore">
+            <el-input
+                v-model="exam.passscore"
+                placeholder="请输入及格分数"
+                clearable
+                @keyup.native="intNum(exam.passscore)"
+            />
+          </el-form-item>
+          <el-form-item label="考试人员" prop="memer">
+            <el-input v-show="false" v-model="exam.memer" />
+            <Examiners
+                :select-company-id="exam.selectCompanyId"
+                @examiners="getExaminers"
+            />
+          </el-form-item>
+        </el-form>
       </div>
     </div>
   </div>
 </template>
-
 <script>
-import { publishExam } from '@/api/test-paper-manage'
+import { publishExam, publishExam2 } from '@/api/evolutionManage-examination'
 import SelectFile from '@/components/SelectFile'
 import AddLabels from '@/components/AddEvalLabels'
 import AddSkills from '@/components/AddEvalSkills'
-import PublishExam from '@/components/PublishExam'
+import Examiners from '@/components/Examiners'
+import { validIntNum } from '@/utils/validate'
 import { getOptionOrderByIndex } from '@/utils/index'
 import { getToken } from '@/utils/auth'
-const $ = window.$
 import store from '@/store'
+const $ = window.$
 
 export default {
   components: {
     SelectFile,
     AddLabels,
     AddSkills,
-    PublishExam
+    Examiners
   },
   data() {
+    // 校验考试人员
+    var validTargetUser = (rule, value, callback) => {
+      if (!this.exam.time_range.length) {
+        callback(new Error('请选择考试时间'))
+      } else {
+        callback()
+      }
+    }
+    // 校验及格分数
+    var validPassscore = (rule, value, callback) => {
+      if (!this.exam.passscore) {
+        callback(new Error('请输入及格分数'))
+      } else if (this.exam.passscore * 1 > this.exam.score_count) {
+        callback(
+          new Error('及格分数不能超过总分数（总分数:' + this.exam.score_count + '）')
+        )
+      } else {
+        callback()
+      }
+    }
     return {
+      publishDialog: false, // 发布考试弹窗
+      editTopicDrawer: false, // 编辑抽屉
       dataIsChange: 0, // 计数器，据此判断表单是否已编辑
       noLeaveprompt: false, // 表单提交后，设置为true，据此判断提交不再弹出离开提示
       activeStep: 1, // 当前激活步骤
@@ -686,21 +795,26 @@ export default {
       exam: {
         selectCompanyId: '', // 租户
         egroup: '', // 小组
-        exam_name: '', // 试卷名称
-        type: '', // "selectPaper"
-        topic_info: [] // 试题
-      },
-      examPaper: {}, // 选择的试卷
-      testPaper: {
+        exampaper_name: '', // 试卷名称
         topic_count: 0, // 总题数
         score_count: 0, // 总分数
-        selectCompanyId: '', // 租户
-        egroup: 0, // 小组
-        exampaper_name: '', // 试卷标题
-        exampaper_label: '', // 标签[]string
-        exampaper_src: 1, // 添加类型 1：手动添加
-        topic_info: [] // 试题
+        exam_name: '', // 考试名称
+        exampaper_label: '', // 考试名称
+        exampaper_src: 1,
+        type: '', // "selectPaper"
+        topic_info: [], // 试题
+        exampaper_id: '', // 试卷Id
+        time_range: [], // 考试时间
+        begin_time: '', // 开始时间
+        end_time: '', // 结束时间
+        passscore: '', // 及格分数
+        targetUser: '', // 考试人员
+        topic_disorder: '', // 是否题号乱序
+        memer: '' // 校验用的，无实际意义
       },
+      targetUser: [], // 未处理的考试人员
+      topic_info: [], // 试卷
+      examPaper: {}, // 选择的试卷
       editTopicIndex: null, // 当前编辑的试题index
       headers: {
         Authorization: getToken() // 图片上传 header
@@ -815,7 +929,48 @@ export default {
       }, // 单题数据
       radio1: '', // 单选题目选项
       radio2: '', // 判断题目选项
-      check2: '' // 多选题目选项
+      check2: '', // 多选题目选项
+      rules: {
+        exam_name: [
+          {
+            required: true,
+            message: '请输入试卷名称（长度在 1 到 64 个字符）',
+            trigger: 'blur'
+          },
+          {
+            required: true,
+            message: '请输入试卷名称（长度在 1 到 64 个字符）',
+            trigger: 'change'
+          },
+          {
+            min: 1,
+            max: 64,
+            message: '长度在 1 到 64 个字符',
+            trigger: 'blur'
+          },
+          {
+            min: 1,
+            max: 64,
+            message: '长度在 1 到 64 个字符',
+            trigger: 'change'
+          }
+        ],
+        time_range: [
+          { required: true, message: '请选择考试时间', trigger: 'blur' },
+          { required: true, message: '请选择考试时间', trigger: 'change' }
+        ],
+        memer: [
+          { required: true, message: '请选择考试人员', trigger: 'change' }
+        ],
+        passscore: [
+          { required: true, validator: validPassscore, trigger: 'blur' },
+          { required: true, validator: validPassscore, trigger: 'change' }
+        ],
+        targetUser: [
+          { required: true, validator: validTargetUser, trigger: 'blur' },
+          { required: true, validator: validTargetUser, trigger: 'change' }
+        ]
+      }
     }
   },
   computed: {
@@ -829,7 +984,7 @@ export default {
     }
   },
   watch: {
-    testPaper: {
+    exam: {
       handler(val) {
         if (val) {
           this.dataIsChange++
@@ -839,42 +994,63 @@ export default {
     }
   },
   created() {
-    this.exam = this.$store.state.examinationManage.exam
-    this.exam.exampaper_id = this.$store.state.examinationManage.examPaper._id
-    this.examPaper = this.$store.state.examinationManage.examPaper
-    this.createType = this.$store.state.examinationManage.createType
     this.exam.egroup = this.$route.query.egroup
     this.exam.selectCompanyId = this.$route.query.selectCompanyId
+    $.extend(true, this.exam, this.$store.state.examinationManage.exam)
+    this.exam.exampaper_id = this.$store.state.examinationManage.examPaper._id
+    this.exam.score_count = this.$store.state.examinationManage.examPaper.score_count * 1
+    this.examPaper = this.$store.state.examinationManage.examPaper
+    this.createType = this.$store.state.examinationManage.createType + ''
+    this.activeStep = this.$store.state.examinationManage.activeStep * 1
+    this.topic_info = this.$store.state.examinationManage.examTopics
+    this.targetUser.length = 0
+    this.getCount()
   },
   methods: {
     // 选择试卷
     selectPaper() {
+      this.exam.type = 'selectPaper'
       this.noLeaveprompt = true
       this.temporaryStorage()
       this.$router.push({
         path: '/evaluating-manage/examination-manage/select-exam-paper',
-        query: { selectCompanyId: this.exam.selectCompanyId, egroup: this.exam.egroup }
+        query: {
+          selectCompanyId: this.exam.selectCompanyId,
+          egroup: this.exam.egroup
+        }
       })
     },
 
     // 暂存当前数据
     temporaryStorage() {
+      store.dispatch('examinationManage/activeStep', this.activeStep)
       store.dispatch('examinationManage/createType', this.createType)
       store.dispatch('examinationManage/temporaryStorageExam', this.exam)
-      store.dispatch('examinationManage/temporaryStorageExamPaper', this.exam.topic_info)
+      store.dispatch(
+        'examinationManage/temporaryStorageExamPaper',
+        this.topic_info
+      )
     },
 
     // 上一步
     forwardStep() {
       if (this.activeStep !== 1) {
-        --this.activeStep
+        if (this.createType === '2') {
+          this.activeStep = 1
+        } else {
+          --this.activeStep
+        }
       }
+      store.dispatch('examinationManage/createType', this.createType)
+      store.dispatch('examinationManage/temporaryStorageExam', this.exam)
+      store.dispatch('examinationManage/targetUser', this.targetUser)
     },
+
     // 下一步
     nextStep() {
       if (this.activeStep === 1) {
-        if (this.createType === '1' && !this.exam.exam_name) {
-          this.$refs.examName.focus()
+        if (this.createType === '1' && !this.exam.exampaper_name) {
+          this.$refs.examPaperName.focus()
           this.$message.warning('请填写试卷名称！')
           return false
         }
@@ -883,19 +1059,32 @@ export default {
           return false
         }
       }
-
-      if (this.activeStep !== 3) {
-        ++this.activeStep
+      if (this.activeStep === 2) {
+        if (this.createType === '1' && !this.topic_info.length) {
+          this.$message.warning('请添加题目！')
+          return false
+        }
       }
+      if (this.activeStep !== 3) {
+        if (this.createType === '2') {
+          this.activeStep = 3
+        } else {
+          ++this.activeStep
+        }
+      }
+      store.dispatch('examinationManage/createType', this.createType)
+      store.dispatch('examinationManage/temporaryStorageExam', this.exam)
     },
 
     // 获取题数和分值
     getCount() {
-      this.testPaper.topic_count = this.testPaper.topic_info.length
-      this.testPaper.score_count = 0
-      this.testPaper.topic_info.forEach(item => {
-        this.testPaper.score_count += item.topic_score * 1
-      })
+      if (this.createType === '1') {
+        this.exam.topic_count = this.topic_info.length
+        this.exam.score_count = 0
+        this.topic_info.forEach(item => {
+          this.exam.score_count += item.topic_score * 1
+        })
+      }
     },
 
     // 题库中添加
@@ -903,8 +1092,11 @@ export default {
       this.noLeaveprompt = true
       this.temporaryStorage()
       this.$router.push({
-        path: '/evaluating-manage/test-paper-manage/paper-question-bank-add',
-        query: { selectCompanyId: this.testPaper.selectCompanyId, egroup: this.testPaper.egroup }
+        path: '/evaluating-manage/examination-manage/question-bank-add',
+        query: {
+          selectCompanyId: this.exam.selectCompanyId,
+          egroup: this.exam.egroup
+        }
       })
     },
 
@@ -925,6 +1117,30 @@ export default {
       return getOptionOrderByIndex(index)
     },
 
+    // 置顶
+    shiftTop(row, index) {
+      this.topic_info.splice(index, 1)
+      this.topic_info.unshift(row)
+    },
+
+    // 置底
+    shiftFooter(row, index) {
+      this.topic_info.splice(index, 1)
+      this.topic_info.push(row)
+    },
+
+    // 上移
+    shiftUp(row, index) {
+      this.topic_info.splice(index, 1)
+      this.topic_info.splice(index - 1, 0, row)
+    },
+
+    // 下移
+    shiftDown(row, index) {
+      this.topic_info.splice(index, 1)
+      this.topic_info.splice(index + 2, 0, row)
+    },
+
     // 编辑
     edit(row, index) {
       this.handleTopic(row)
@@ -940,7 +1156,7 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          this.testPaper.topic_info.splice(index, 1)
+          this.topic_info.splice(index, 1)
           this.getCount()
           this.$message.success('删除成功！')
         })
@@ -952,7 +1168,7 @@ export default {
     handleTopic(row) {
       const topic = {}
       $.extend(true, topic, row)
-      this.topic_type = topic.topic_type
+      this.topic_type = topic.topic_type * 1
 
       topic.topic_option.forEach((item, index) => {
         item.option_id_time_stamp = new Date().getTime() + index
@@ -1181,14 +1397,17 @@ export default {
       this.visible3 = true
     },
     // 监听选择技能组件返回数据
+
     getSkills(val) {
       this.currentSkills = val
       this[this.topic0].currentSkills = val
     },
+
     // 监听选择技能组件返回数据
     onvisible3(val) {
       this.visible3 = val.visible
     },
+
     // 删除技能
     handleSkillDel(index) {
       this.currentSkills.splice(index, 1)
@@ -1256,7 +1475,10 @@ export default {
       this[this.topic0].topic_skill = topic_skill
       this[this.topic0].topic_type = this[this.topic0].topic_type + ''
       this[this.topic0].topic_level = this[this.topic0].topic_level + ''
-      this.testPaper.topic_info.splice(this.editTopicIndex, 1, this[this.topic0])
+      for (const key in this.topic_info[this.editTopicIndex]) {
+        delete this.topic_info[this.editTopicIndex][key]
+      }
+      $.extend(true, this.topic_info[this.editTopicIndex], this[this.topic0])
       this.editTopicDrawer = false
       this.getCount()
       this.$message.success('编辑试题成功！')
@@ -1265,6 +1487,7 @@ export default {
     // 取消编辑
     cancelEdit() {
       this[this.topic0] = {}
+      this.editTopicDrawer = false
     },
 
     // 编辑试题关闭
@@ -1284,11 +1507,75 @@ export default {
       this.$router.push({ path: '/evaluating-manage/test-paper-manage/list' })
     },
 
-    // 发布
-    publish() {
-      publishExam().then(res => {
+    // 监听选择人员
+    getExaminers(val) {
+      this.targetUser = val
+      if (val.length && val[0].length >= 2) {
+        this.exam.memer = '111'
+      } else {
+        this.exam.memer = ''
+      }
+    },
 
+    // 取消
+    cancel(formName) {
+      this.publishDialog = false
+      this.$refs[formName].resetFields()
+    },
+
+    // 发布考试
+    publish(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          this.exam.begin_time = this.exam.time_range[0]
+          this.exam.end_time = this.exam.time_range[1]
+          delete this.exam.time_range
+
+          var obj = {}
+          this.targetUser.forEach(item => {
+            if (!obj[item[0]]) {
+              obj[item[0]] = [item[1]]
+            } else {
+              obj[item[0]].push(item[1])
+            }
+          })
+          this.exam.targetUser = obj
+          this.exam.exampaper_src = 1
+          this.exam.operatetype = 'publish'
+          this.exam.topic_info = this.topic_info
+          if (this.createType === '1') {
+            this.exam.type = null
+            publishExam(this.exam).then(response => {
+              this.noLeaveprompt = true
+              store.dispatch('examinationManage/temporaryStorageExam', {})
+              store.dispatch('examinationManage/temporaryStorageExamPaper', {})
+              store.dispatch('examinationManage/activeStep', 1)
+              store.dispatch('examinationManage/createType', '1')
+              store.dispatch('examinationManage/examPaperId', '')
+              store.dispatch('examinationManage/temporaryStorageTopics', [])
+              this.$message.success('发布考试成功！')
+              this.$router.push({ path: '/evaluating-manage/examination-manage/list' })
+            })
+          } else {
+            publishExam2(this.exam).then(response => {
+              this.noLeaveprompt = true
+              store.dispatch('examinationManage/temporaryStorageExam', {})
+              store.dispatch('examinationManage/temporaryStorageExamPaper', {})
+              store.dispatch('examinationManage/activeStep', 1)
+              store.dispatch('examinationManage/createType', '1')
+              store.dispatch('examinationManage/examPaperId', '')
+              store.dispatch('examinationManage/temporaryStorageTopics', [])
+              this.$message.success('发布考试成功！')
+              this.$router.push({ path: '/evaluating-manage/examination-manage/list' })
+            })
+          }
+        }
       })
+    },
+
+    // 校验最大用户数为正整数
+    intNum(val) {
+      this.exam.passscore = validIntNum(val)
     }
   },
   beforeRouteLeave(to, from, next) {
@@ -1304,7 +1591,10 @@ export default {
           .then(() => {
             store.dispatch('examinationManage/temporaryStorageExam', {})
             store.dispatch('examinationManage/temporaryStorageExamPaper', {})
+            store.dispatch('examinationManage/activeStep', 1)
             store.dispatch('examinationManage/createType', '1')
+            store.dispatch('examinationManage/examPaperId', '')
+            store.dispatch('examinationManage/temporaryStorageTopics', [])
             next()
           })
           .catch(() => {
@@ -1320,353 +1610,358 @@ export default {
 
 <style lang="scss" scoped>
 @import "~@/styles/theme.scss";
-  .operator {
-    margin-top: 20px;
-  }
-  .exam {
-    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    margin-top: 20px;
-  }
-.content {
-	width: 60%;
-	margin: 0 auto;
+.operator {
+  margin-top: 20px;
+}
+.exam {
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-top: 20px;
+}
+.activeStep1, .activeStep3 {
+  width: 60%;
+  margin: 0 auto;
 }
 .createType {
-	margin-left: 30px;
+  margin-left: 30px;
 }
-	.content .form .el-form-item {
-		width: 400px;
-	}
-	.content .form {
-		margin-top: 18px;
-	}
+.activeStep1 .form .el-form-item {
+  width: 400px;
+}
+.activeStep1 .form {
+  margin-top: 18px;
+}
 .selectPaper {
-	margin-left: 30px;
+  margin-left: 30px;
+}
+.examPaperName {
+  width: 400px;
+  margin-right: 30px;
+  padding-left: 22px;
 }
 #add-test-paper {
-	height: 38px;
-	line-height: 38px;
+  height: 38px;
+  line-height: 38px;
 }
 .count {
-	color: #666666;
-	font-size: 14px;
+  color: #666666;
+  font-size: 14px;
 }
 .topic_count,
 .score_count {
-	display: inline-block;
-	color: $themeColor;
-	margin-right: 20px;
+  display: inline-block;
+  color: $themeColor;
+  margin-right: 20px;
 }
 .addIcon {
-	margin-right: 4px;
-	vertical-align: middle;
+  margin-right: 4px;
+  vertical-align: middle;
 }
 .selectArea {
-	color: #666666;
-	font-size: 14px;
-	width: 100%;
-	height: 40px;
-	line-height: 40px;
-	margin-top: 20px;
-	background-color: #f2f2f2;
+  color: #666666;
+  font-size: 14px;
+  width: 100%;
+  height: 40px;
+  line-height: 40px;
+  margin-top: 20px;
+  background-color: #f2f2f2;
 
-	> .fl,
-	.fr {
-		display: inline-block;
-	}
+  > .fl,
+  .fr {
+    display: inline-block;
+  }
 }
 .selectArea /deep/ .material-input__component {
-	width: 300px;
-	height: 40px;
-	line-height: 40px;
-	margin-top: 0;
-	background: #f2f2f2;
+  width: 300px;
+  height: 40px;
+  line-height: 40px;
+  margin-top: 0;
+  background: #f2f2f2;
 }
 .selectArea /deep/ .material-input__component .iconClass {
-	width: 300px;
-	height: 40px;
-	line-height: 40px;
+  width: 300px;
+  height: 40px;
+  line-height: 40px;
 }
 .selectArea /deep/ .material-input__component .material-input {
-	border-bottom: none;
-	margin-bottom: 10px;
-	height: 30px;
+  border-bottom: none;
+  margin-bottom: 10px;
+  height: 30px;
 }
 .questionBankAdd {
-	display: inline-block;
-	margin: 0 30px;
+  display: inline-block;
+  margin: 0 30px;
 }
 .intelligentAdd,
 .questionBankAdd {
-	color: $themeColor;
+  color: $themeColor;
 }
 .topicItem {
-	padding: 20px;
-	padding-top: 0;
-	background-color: #f8f8f8;
-	margin-bottom: 20px;
+  padding: 20px;
+  padding-top: 0;
+  background-color: #f8f8f8;
+  margin-bottom: 20px;
 }
 .topics {
-	width: 100%;
-	border: 1px solid #f2f2f2;
-	padding: 20px;
+  width: 100%;
+  border: 1px solid #f2f2f2;
+  padding: 20px;
 }
 .topicItemTop {
-	height: 40px;
-	line-height: 40px;
-	border-bottom: 1px solid #eaeaea;
+  height: 40px;
+  line-height: 40px;
+  border-bottom: 1px solid #eaeaea;
 }
 .topicType {
-	color: $themeColor;
+  color: $themeColor;
 }
 .operation /deep/ .el-link {
-	margin-left: 20px;
+  margin-left: 20px;
 }
 .item-topic {
-	background-color: #fff;
-	padding-left: 10px;
-	width: 524px;
-	margin-bottom: 10px;
+  background-color: #fff;
+  padding-left: 10px;
+  width: 524px;
+  margin-bottom: 10px;
 }
 .item-topic /deep/ .el-checkbox__label {
-	color: #000;
+  color: #000;
 }
-#add-test-paper>.el-scrollbar {
-	height: calc(100vh - 230px);
+#add-test-paper > .el-scrollbar {
+  height: calc(100vh - 230px);
 }
 
 /*==============================================================*/
 #btnGroup {
-	padding-left: 100px;
+  padding-left: 100px;
 }
 #addTopicVue .submit {
-	margin: 10px;
-	position: absolute;
-	right: 0;
-	top: 0;
-	z-index: 99;
+  margin: 10px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 99;
 
-	> /deep/ p,
-	.addTopic {
-		display: inline-block;
-	}
-	> /deep/ p {
-		font-size: 14px;
-	}
+  > /deep/ p,
+  .addTopic {
+    display: inline-block;
+  }
+  > /deep/ p {
+    font-size: 14px;
+  }
 }
 /deep/ .addType > .el-tabs__header .el-tabs__item {
-	font-size: 16px !important;
-	font-weight: 700 !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
 }
 /deep/ .addType .el-tabs__nav-wrap:after {
-	height: 0 !important;
+  height: 0 !important;
 }
 /deep/
-.addType
-> .el-tabs__header
-> .el-tabs__nav-wrap
-> .el-tabs__nav-scroll
-> .el-tabs__nav {
-	width: 180px;
-	margin: 0 auto;
-	float: none;
+  .addType
+  > .el-tabs__header
+  > .el-tabs__nav-wrap
+  > .el-tabs__nav-scroll
+  > .el-tabs__nav {
+  width: 180px;
+  margin: 0 auto;
+  float: none;
 }
 #addTopicVue .edit {
-	width: 60%;
+  width: 60%;
 }
 #addTopicVue .preview {
-	width: calc(40% - 10px);
-	border-left: 8px solid #e2e6ed;
-	height: 100%;
-	min-height: 500px;
-	padding: 0 10px;
-	box-sizing: border-box;
+  width: calc(40% - 10px);
+  border-left: 8px solid #e2e6ed;
+  height: 100%;
+  min-height: 500px;
+  padding: 0 10px;
+  box-sizing: border-box;
 }
 .topicType /deep/ .el-tabs__item.is-top.is-active {
-	border-radius: 3px;
-	padding-bottom: 38px;
-	box-shadow: inset 0 0px 2px 2px $themeColor;
+  border-radius: 3px;
+  padding-bottom: 38px;
+  box-shadow: inset 0 0px 2px 2px $themeColor;
 }
 .topicName {
-	width: calc(100% - 160px);
+  width: calc(100% - 160px);
 }
 .img-group {
-	display: inline-block;
+  display: inline-block;
 }
 .selectPic {
-	display: inline-block;
-	width: 80px;
-	height: 32px;
-	line-height: 32px;
-	cursor: pointer;
-	text-align: center;
-	margin-left: 6px;
-	border-radius: 3px;
-	color: #ffffff;
-	background-color: $themeColor;
-	border-color: $themeColor;
+  display: inline-block;
+  width: 80px;
+  height: 32px;
+  line-height: 32px;
+  cursor: pointer;
+  text-align: center;
+  margin-left: 6px;
+  border-radius: 3px;
+  color: #ffffff;
+  background-color: $themeColor;
+  border-color: $themeColor;
 }
 .selectPic:hover {
-	opacity: 0.8;
+  opacity: 0.8;
 }
 .imgCover {
-	position: relative;
-	display: inline-block;
-	background-size: cover;
-	vertical-align: middle;
-	width: 40px;
-	height: 30px;
+  position: relative;
+  display: inline-block;
+  background-size: cover;
+  vertical-align: middle;
+  width: 40px;
+  height: 30px;
 }
 .close {
-	position: absolute;
-	top: -17px;
-	right: -8px;
-	cursor: pointer;
+  position: absolute;
+  top: -17px;
+  right: -8px;
+  cursor: pointer;
 }
 .content {
-	line-height: 40px;
-	height: 40px;
+  line-height: 40px;
+  height: 40px;
 
-	> /deep/ .el-form-item__label,
-	/deep/ .el-form-item__content {
-		height: 40px;
-		line-height: 40px;
-	}
+  > /deep/ .el-form-item__label,
+  /deep/ .el-form-item__content {
+    height: 40px;
+    line-height: 40px;
+  }
 }
 .avatar {
-	width: 40px;
-	vertical-align: middle;
+  width: 40px;
+  vertical-align: middle;
 }
 .closeOptionImg {
-	position: absolute;
-	top: 0;
-	right: -1px;
-	cursor: pointer;
+  position: absolute;
+  top: 0;
+  right: -1px;
+  cursor: pointer;
 }
 i {
-	cursor: pointer;
+  cursor: pointer;
 }
 .tag {
-	display: inline-block;
+  display: inline-block;
 }
 /deep/ .el-tag {
-	margin-right: 10px;
+  margin-right: 10px;
 }
 /deep/ .el-tag .el-icon-close {
-	vertical-align: middle;
-	margin: 0;
+  vertical-align: middle;
+  margin: 0;
 }
 /deep/ .el-tag .el-icon-close::before {
-	margin: 0;
+  margin: 0;
 }
 .preview h3 {
-	margin-top: 4px;
+  margin-top: 4px;
 }
 #addTopicVue .preview .tip {
-	margin-top: 0;
-	padding-bottom: 10px;
-	margin-bottom: 0;
-	border-bottom: 1px solid #e4e7ed;
+  margin-top: 0;
+  padding-bottom: 10px;
+  margin-bottom: 0;
+  border-bottom: 1px solid #e4e7ed;
 }
 #addTopicVue .topics-preview {
-	overflow: auto;
+  overflow: auto;
 }
 .preview h3 {
-	font-style: normal;
-	font-weight: 500;
-	font-size: 24px;
-	color: #333;
-	margin-bottom: 0;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 0;
 }
 .topics-item {
-	padding: 10px;
-	border-bottom: 1px solid #e4e7ed;
+  padding: 10px;
+  border-bottom: 1px solid #e4e7ed;
 }
 .topic-type {
-	font-weight: 700;
-	font-size: 14px;
-	height: 30px;
+  font-weight: 700;
+  font-size: 14px;
+  height: 30px;
 }
 .single-line {
-	display: inline-block;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-	max-width: 17%;
-	vertical-align: middle;
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 17%;
+  vertical-align: middle;
 }
 .previewImg {
-	display: inline-block;
-	width: 50px;
-	height: 30px;
+  display: inline-block;
+  width: 50px;
+  height: 30px;
 }
 .topic-options {
-	position: relative;
+  position: relative;
 }
 .topic-options .topic-item {
-	border: 1px solid $themeColor;
-	width: 60%;
-	padding: 4px;
-	margin-bottom: 4px;
-	font-size: 14px;
+  border: 1px solid $themeColor;
+  width: 60%;
+  padding: 4px;
+  margin-bottom: 4px;
+  font-size: 14px;
 }
 .topic-options .topic-item label {
-	margin-bottom: 0;
+  margin-bottom: 0;
 }
 .topic-options .topic-item {
-	border: 1px solid $themeColor;
-	width: 60%;
-	padding: 4px;
-	margin-bottom: 4px;
+  border: 1px solid $themeColor;
+  width: 60%;
+  padding: 4px;
+  margin-bottom: 4px;
 }
 .topic-options .topic-item label {
-	margin-bottom: 0;
+  margin-bottom: 0;
 }
 .topic-item .el-checkbox__label {
-	display: inline-block;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-	max-width: 94%;
-	box-sizing: border-box;
-	vertical-align: middle;
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 94%;
+  box-sizing: border-box;
+  vertical-align: middle;
 }
 .topics-item p {
-	margin: 0;
+  margin: 0;
 }
 .topic_resolve {
-	font-size: 14px;
+  font-size: 14px;
 }
 .handle {
-	position: absolute;
-	top: 0;
-	right: 0;
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 .topicOption /deep/ .el-radio__label {
-	display: none;
+  display: none;
 }
 .excel-uploader {
-	display: inline-block;
+  display: inline-block;
 }
 .error-option {
-	color: red;
+  color: red;
 }
 .error-desc {
-	word-break: break-all;
-	word-wrap: break-word;
-	font-size: 14px;
+  word-break: break-all;
+  word-wrap: break-word;
+  font-size: 14px;
 }
 .error-option .el-checkbox__label {
-	color: red !important;
+  color: red !important;
 }
 .preview /deep/ .el-scrollbar {
-	height: calc(100vh - 260px);
+  height: calc(100vh - 260px);
 }
 .addIcon {
-	font-size: 14px;
+  font-size: 14px;
 }
 .editTopicDrawer /deep/ .el-scrollbar {
-	height: calc(100vh - 100px);
+  height: calc(100vh - 100px);
 }
 </style>

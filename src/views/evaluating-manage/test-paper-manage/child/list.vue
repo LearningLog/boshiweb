@@ -76,7 +76,7 @@
     </div>
     <PublishExam :selectCompanyId="selectCompanyId" :publishDialog="publishDialog" :scoreCount="scoreCount" @publishExam="publishExam"></PublishExam>
     <el-dialog v-el-drag-dialog class="selectCompany" width="400px" title="选择小组" :visible.sync="isVisibleSystemManage">
-      <el-form ref="form" :model="listQuery" label-width="100px">
+      <el-form ref="form" label-width="100px">
         <tenants-groups-roles :is-render-role="false" whichGroup="manageEgroupInfo" @tenantsGroupsRolesVal="tenantsGroupsRolesVal2" />
       </el-form>
       <div slot="footer" class="dialog-footer">
