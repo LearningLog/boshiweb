@@ -3,7 +3,7 @@
     <div>
       <span class="group">选择小组</span><span class="member">选择人员</span>
     </div>
-    <el-cascader-panel v-model="selectedOptions" :options="list2" :props="props" @change="handleChange" />
+    <el-cascader-panel v-model="selectedOptions2" :options="list2" :props="props" @change="handleChange" />
   </div>
 </template>
 
@@ -20,19 +20,28 @@ export default {
     },
     selectedOptions: {
       type: Array,
-      default: []
+      default() {
+        return [];
+      }
     }
   },
   data() {
     return {
-      radio: null,
       list: [],
       list2: [],
+      selectedOptions2: [],
       props: {
         multiple: true,
         value: 'id',
         label: 'name',
         children: 'userinfo'
+      }
+    }
+  },
+  watch: {
+    selectedOptions: function(val, val2) {
+      if (val) {
+        this.selectedOptions2 = val
       }
     }
   },

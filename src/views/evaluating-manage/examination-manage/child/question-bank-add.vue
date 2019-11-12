@@ -341,6 +341,7 @@ export default {
           type: 'warning'
         })
           .then(() => {
+            store.dispatch('examinationManage/examLabels', [])
             store.dispatch('examinationManage/temporaryStorageExam', {})
             store.dispatch('examinationManage/temporaryStorageExamPaper', {})
             store.dispatch('examinationManage/activeStep', 1)

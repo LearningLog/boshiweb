@@ -11,7 +11,8 @@ const state = {
   activeStep: sessionStorage.getItem('activeStep') ? sessionStorage.getItem('activeStep') : 1,
   createType: sessionStorage.getItem('createType') ? sessionStorage.getItem('createType') : '1',
   examPaperId: sessionStorage.getItem('examPaperId') ? sessionStorage.getItem('examPaperId') : '', // 试卷ID
-  examTopics: sessionStorage.getItem('examTopics') ? JSON.parse(sessionStorage.getItem('examTopics')) : [] // 试题
+  examTopics: sessionStorage.getItem('examTopics') ? JSON.parse(sessionStorage.getItem('examTopics')) : [], // 试题
+  examLabels: sessionStorage.getItem('examLabels') ? JSON.parse(sessionStorage.getItem('examLabels')) : [] // 标签
 }
 
 const mutations = {
@@ -38,6 +39,10 @@ const mutations = {
   SET_TOPICS_TEPORARY_STORAGE: (state, examTopics) => {
     state.examTopics = examTopics
     sessionStorage.setItem('examTopics', JSON.stringify(examTopics))
+  },
+  SET_LABELS_TEPORARY_STORAGE: (state, examLabels) => {
+    state.examLabels = examLabels
+    sessionStorage.setItem('examLabels', JSON.stringify(examLabels))
   }
 }
 
@@ -59,6 +64,9 @@ const actions = {
   },
   temporaryStorageTopics({ commit }, examTopics) {
     commit('SET_TOPICS_TEPORARY_STORAGE', examTopics)
+  },
+  examLabels({ commit }, examLabels) {
+    commit('SET_LABELS_TEPORARY_STORAGE', examLabels)
   }
 }
 

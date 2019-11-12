@@ -7,7 +7,8 @@
 
 const state = {
   testPaper: sessionStorage.getItem('testPaper') ? JSON.parse(sessionStorage.getItem('testPaper')) : {}, // 新增试卷，跳页缓存的试卷数据
-  topics: sessionStorage.getItem('topics') ? JSON.parse(sessionStorage.getItem('topics')) : [] // 试题
+  topics: sessionStorage.getItem('topics') ? JSON.parse(sessionStorage.getItem('topics')) : [], // 试题
+  paperLabels: sessionStorage.getItem('paperLabels') ? JSON.parse(sessionStorage.getItem('paperLabels')) : [] // 试卷标签
 }
 
 const mutations = {
@@ -18,6 +19,10 @@ const mutations = {
   SET_TOPICS_TEPORARY_STORAGE: (state, topics) => {
     state.topics = topics
     sessionStorage.setItem('topics', JSON.stringify(topics))
+  },
+  SET_LABELS_TEPORARY_STORAGE: (state, paperLabels) => {
+    state.paperLabels = paperLabels
+    sessionStorage.setItem('topics', JSON.stringify(paperLabels))
   }
 }
 
@@ -27,6 +32,9 @@ const actions = {
   },
   temporaryStorageTopics({ commit }, topics) {
     commit('SET_TOPICS_TEPORARY_STORAGE', topics)
+  },
+  temporaryStoragePaperLabels({ commit }, paperLabels) {
+    commit('SET_LABELS_TEPORARY_STORAGE', paperLabels)
   }
 }
 

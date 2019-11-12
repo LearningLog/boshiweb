@@ -677,6 +677,7 @@ export default {
           .then(() => {
             store.dispatch('testPaper/temporaryStorageTestPaper', {})
             store.dispatch('testPaper/temporaryStorageTopics', [])
+            store.dispatch('testPaper/temporaryStoragePaperLabels', [])
             next()
           })
           .catch(() => {

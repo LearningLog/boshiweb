@@ -48,22 +48,24 @@
     </div>
     <el-scrollbar wrap-class="scrollbar-wrapper">
       <div class="topics">
-        <i class="iconfont icontag" />
-        <span>添加标签</span>
-        <div v-if="currentLabels.length" class="tag">
-          <el-tag
-            v-for="(tag, index) in currentLabels"
-            :key="tag.linc"
-            closable
-            size="medium"
-            :disable-transitions="false"
-            type="success"
-            @close="handlePaperLabelDel(index)"
-          >
-            {{ tag.lname }}
-          </el-tag>
+        <div class="paperLabels">
+          <i class="iconfont icontag" />
+          <span>添加标签</span>
+          <div v-if="paperLabels.length" class="tag">
+            <el-tag
+                v-for="(tag, index) in paperLabels"
+                :key="tag.linc"
+                closable
+                size="medium"
+                :disable-transitions="false"
+                type="success"
+                @close="handlePaperLabelDel(index)"
+            >
+              {{ tag.lname }}
+            </el-tag>
+          </div>
+          <i class="el-icon-circle-plus-outline" @click="addPaperLabels" />
         </div>
-        <i class="el-icon-circle-plus-outline" @click="addPaperLabels" />
         <div
           v-for="(item, index) in topic_info"
           :key="item._id"
@@ -107,13 +109,14 @@
               :key="item2.option_id"
               class="item-topic"
             >
-              <el-checkbox
-                v-model="item2.correct_option === 1 ? true : false"
-                :title="item2.option_content"
-                class="single-line3"
-                disabled
-              >{{ getOptionOrderByIndex(index2)
-              }}{{ item2.option_content }}</el-checkbox>
+              <el-tooltip class="item" effect="dark" :content="item2.option_content" placement="top-start">
+                <el-checkbox
+                  v-model="item2.correct_option === 1 ? true : false"
+                  class="single-line3"
+                  disabled
+                >{{ getOptionOrderByIndex(index2)
+                }}{{ item2.option_content }}</el-checkbox>
+              </el-tooltip>
             </li>
           </ul>
         </div>
@@ -675,7 +678,7 @@ export default {
         topic_count: 0, // 总题数
         score_count: 0, // 总分数
         selectCompanyId: '', // 租户
-        egroup: 0, // 小组
+        egroup: '', // 小组
         exampaper_name: '', // 试卷标题
         exampaper_label: '', // 标签[]string
         exampaper_src: 1, // 添加类型 1：手动添加
@@ -820,10 +823,11 @@ export default {
     }
   },
   created() {
-    this.testPaper.selectCompanyId = this.$route.query.selectCompanyId
-    this.testPaper.egroup = this.$route.query.egroup
+    this.paperLabels = this.$store.state.testPaper.paperLabels || []
     this.testPaper = this.$store.state.testPaper.testPaper || {}
     this.topic_info = this.$store.state.testPaper.topics || []
+    this.testPaper.selectCompanyId = this.$route.query.selectCompanyId
+    this.testPaper.egroup = this.$route.query.egroup
     this.getCount()
   },
   methods: {
@@ -839,6 +843,7 @@ export default {
     temporaryStorage() {
       store.dispatch('testPaper/temporaryStorageTestPaper', this.testPaper)
       store.dispatch('testPaper/temporaryStorageTopics', this.topic_info)
+      store.dispatch('testPaper/temporaryStoragePaperLabels', this.paperLabels)
     },
     // 智能添加
     intelligentAdd() {
@@ -1290,6 +1295,7 @@ export default {
         this.noLeaveprompt = true
         store.dispatch('testPaper/temporaryStorageTestPaper', {})
         store.dispatch('testPaper/temporaryStorageTopics', [])
+        store.dispatch('testPaper/temporaryStoragePaperLabels', [])
         this.$message.success('发布考试成功！')
         this.$router.push({
           path: '/evaluating-manage/test-paper-manage/list'
@@ -1305,6 +1311,7 @@ export default {
           this.noLeaveprompt = true
           store.dispatch('testPaper/temporaryStorageTestPaper', {})
           store.dispatch('testPaper/temporaryStorageTopics', [])
+          store.dispatch('testPaper/temporaryStoragePaperLabels', [])
           this.$message.success('保存试卷成功！')
           this.$router.push({
             path: '/evaluating-manage/test-paper-manage/list'
@@ -1329,6 +1336,12 @@ export default {
       this.topic_info.forEach(item => {
         this.testPaper.score_count += item.topic_score * 1
       })
+      var arrLabels = []
+      this.paperLabels.forEach(item => {
+        arrLabels.push(item.linc)
+      })
+      this.testPaper.exampaper_label = arrLabels.join()
+      this.testPaper.exampaper_src = 1
       return true
     }
   },
@@ -1345,6 +1358,7 @@ export default {
           .then(() => {
             store.dispatch('testPaper/temporaryStorageTestPaper', {})
             store.dispatch('testPaper/temporaryStorageTopics', [])
+            store.dispatch('testPaper/temporaryStoragePaperLabels', [])
             next()
           })
           .catch(() => {
@@ -1693,4 +1707,10 @@ i {
   vertical-align: text-top;
   padding-right: 10px;
 }
+  .paperLabels {
+    margin-bottom: 20px;
+  }
+  .tag {
+    display: inline;
+  }
 </style>

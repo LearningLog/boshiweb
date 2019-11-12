@@ -20,16 +20,18 @@
     </div>
     <el-scrollbar wrap-class="scrollbar-wrapper">
       <div class="topics">
-        <i class="iconfont icontag"></i>
-        <span>标签：</span>
-        <el-tag
-            v-for="tag in testPaper.labels"
-            :key="tag.linc"
-            size="medium"
-            type="success"
-        >
-          {{ tag.lname }}
-        </el-tag>
+        <div class="paperLabels">
+          <i class="iconfont icontag"></i>
+          <span>标签：</span>
+          <el-tag
+              v-for="tag in paperLabels"
+              :key="tag.linc"
+              size="medium"
+              type="success"
+          >
+            {{ tag.lname }}
+          </el-tag>
+        </div>
         <div
           v-for="(item, index) in testPaper.topic_info"
           :key="item._id"
@@ -49,13 +51,14 @@
               :key="item2.option_id"
               class="item-topic"
             >
-              <el-checkbox
-                :checked="item2.correct_option === 1 ? true : false"
-                :title="item2.option_content"
-                class="single-line3"
-                disabled
-              >{{ getOptionOrderByIndex(index2)
-              }}{{ item2.option_content }}</el-checkbox>
+              <el-tooltip class="item" effect="dark" :content="item2.option_content" placement="top-start">
+                <el-checkbox
+                  :checked="item2.correct_option === 1 ? true : false"
+                  class="single-line3"
+                  disabled
+                >{{ getOptionOrderByIndex(index2)
+                }}{{ item2.option_content }}</el-checkbox>
+              </el-tooltip>
             </li>
           </ul>
         </div>
@@ -70,6 +73,7 @@ import { getOptionOrderByIndex } from '@/utils/index'
 export default {
   data() {
     return {
+      paperLabels: [], // 标签
       testPaper: {
         topic_count: 0, // 总题数
         score_count: 0, // 总分数
@@ -95,6 +99,11 @@ export default {
         exampaper.selectCompanyId = res.data.exampaper.groupId
         exampaper.egroup = res.data.exampaper.egroup[0]
         this.testPaper = exampaper
+        var arrLabels = []
+        for (var key in exampaper.labels) {
+          arrLabels.push({ linc: key, lname: exampaper.labels[key] })
+        }
+        this.paperLabels = arrLabels
         this.getCount()
       })
     },
@@ -127,8 +136,7 @@ export default {
     // 确定
     cancel0() {
       this.$router.push({ path: '/evaluating-manage/test-paper-manage/list' })
-    },
-
+    }
   }
 }
 </script>
@@ -159,7 +167,7 @@ export default {
     width: 100%;
     height: 40px;
     line-height: 40px;
-    margin-top: 30px;
+    margin-top: 20px;
     padding-left: 22px;
     background-color: #f2f2f2;
 
@@ -218,8 +226,9 @@ export default {
   .item-topic {
     background-color: #fff;
     padding-left: 10px;
-    width: 524px;
+    width: 50%;
     margin-bottom: 10px;
+    padding-right: 10px;
   }
   .item-topic /deep/ .el-checkbox__label {
     color: #000;
@@ -457,5 +466,18 @@ export default {
   }
   .addIcon {
     font-size: 14px;
+  }
+  .item-topic /deep/ .el-checkbox__label {
+    word-break: break-all;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    vertical-align: text-top;
+    padding-right: 10px;
+  }
+  .paperLabels {
+    margin-bottom: 20px;
+  }
+  .tag {
+    display: inline;
   }
 </style>

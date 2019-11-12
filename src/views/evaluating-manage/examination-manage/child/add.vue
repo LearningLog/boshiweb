@@ -90,7 +90,11 @@
             </el-tooltip>
             <span class="count">总题数：</span><span class="topic_count">{{ exam.topic_count || 0 }}</span>
             <span class="count">当前总分数：</span><span class="score_count">{{ exam.score_count || 0 }}</span>
-            <span class="count"><el-checkbox v-model="exam.topic_disorder">试题乱序</el-checkbox></span>
+            <span
+              class="count"
+            ><el-checkbox
+              v-model="exam.topic_disorder"
+            >试题乱序</el-checkbox></span>
             <div class="fr">
               <span
                 class="questionBankAdd pointer"
@@ -101,22 +105,24 @@
         </div>
         <el-scrollbar wrap-class="scrollbar-wrapper">
           <div class="topics">
-            <i class="iconfont icontag" />
-            <span>添加标签</span>
-            <div v-if="currentLabels.length" class="tag">
-              <el-tag
-                v-for="(tag, index) in currentLabels"
-                :key="tag.linc"
-                closable
-                size="medium"
-                :disable-transitions="false"
-                type="success"
-                @close="handlePaperLabelDel(index)"
-              >
-                {{ tag.lname }}
-              </el-tag>
+            <div class="paperLabels">
+              <i class="iconfont icontag" />
+              <span>添加标签</span>
+              <div v-if="examLabels.length" class="tag">
+                <el-tag
+                    v-for="(tag, index) in examLabels"
+                    :key="tag.linc"
+                    closable
+                    size="medium"
+                    :disable-transitions="false"
+                    type="success"
+                    @close="handlePaperLabelDel(index)"
+                >
+                  {{ tag.lname }}
+                </el-tag>
+              </div>
+              <i class="el-icon-circle-plus-outline" @click="addPaperLabels" />
             </div>
-            <i class="el-icon-circle-plus-outline" @click="addPaperLabels" />
             <div
               v-for="(item, index) in topic_info"
               :key="item._id"
@@ -163,7 +169,12 @@
                   :key="item2.option_id"
                   class="item-topic"
                 >
-                  <el-tooltip class="item" effect="dark" :content="item2.option_content" placement="top-start">
+                  <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="item2.option_content"
+                    placement="top-start"
+                  >
                     <el-checkbox
                       v-model="item2.correct_option === 1 ? true : false"
                       :title="item2.option_content"
@@ -675,7 +686,7 @@
         </el-drawer>
         <add-labels
           :visible2.sync="visible1"
-          :current-labels.sync="paperLabels"
+          :current-labels.sync="examLabels"
           :select-company-id="exam.selectCompanyId"
           :egroup="exam.egroup"
           @addLabels="getPaperLabels"
@@ -704,43 +715,38 @@
         />
       </div>
       <div v-show="activeStep === 3" class="activeStep3">
-        <el-form
-            ref="exam"
-            :model="exam"
-            :rules="rules"
-            label-width="100px"
-        >
+        <el-form ref="exam" :model="exam" :rules="rules" label-width="100px">
           <el-form-item label="考试名称" prop="exam_name">
             <el-input
-                v-model="exam.exam_name"
-                placeholder="请输入考试名称"
-                maxlength="64"
-                clearable
+              v-model="exam.exam_name"
+              placeholder="请输入考试名称"
+              maxlength="64"
+              clearable
             />
           </el-form-item>
           <el-form-item label="考试时间" prop="time_range">
             <el-date-picker
-                v-model="exam.time_range"
-                type="daterange"
-                range-separator="至"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                value-format="yyyy-MM-dd"
+              v-model="exam.time_range"
+              type="daterange"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              value-format="yyyy-MM-dd"
             />
           </el-form-item>
           <el-form-item label="及格分数" prop="passscore">
             <el-input
-                v-model="exam.passscore"
-                placeholder="请输入及格分数"
-                clearable
-                @keyup.native="intNum(exam.passscore)"
+              v-model="exam.passscore"
+              placeholder="请输入及格分数"
+              clearable
+              @keyup.native="intNum(exam.passscore)"
             />
           </el-form-item>
           <el-form-item label="考试人员" prop="memer">
             <el-input v-show="false" v-model="exam.memer" />
             <Examiners
-                :select-company-id="exam.selectCompanyId"
-                @examiners="getExaminers"
+              :select-company-id="exam.selectCompanyId"
+              @examiners="getExaminers"
             />
           </el-form-item>
         </el-form>
@@ -782,7 +788,9 @@ export default {
         callback(new Error('请输入及格分数'))
       } else if (this.exam.passscore * 1 > this.exam.score_count) {
         callback(
-          new Error('及格分数不能超过总分数（总分数:' + this.exam.score_count + '）')
+          new Error(
+            '及格分数不能超过总分数（总分数:' + this.exam.score_count + '）'
+          )
         )
       } else {
         callback()
@@ -830,7 +838,7 @@ export default {
       visible3: false, // 弹出选择技能
       topic_type: '1', // 默认单选题
       uploadOptionIndex: null, // 上传图片的选项index
-      paperLabels: [], // 试卷的标签
+      examLabels: [], // 试卷的标签
       currentLabels: [], // 当前要回显的标签
       currentSkills: [], // 当前要回显的技能
       topics: [], // 添加的所有试题
@@ -1003,11 +1011,13 @@ export default {
     $.extend(true, this.exam, this.$store.state.examinationManage.exam)
     this.exam.exampaper_id = this.$store.state.examinationManage.examPaper._id
     this.exampaper_name = this.$store.state.examinationManage.examPaper.exampaper_name
-    this.exam.score_count = this.$store.state.examinationManage.examPaper.score_count * 1
+    this.exam.score_count =
+      this.$store.state.examinationManage.examPaper.score_count * 1
     this.examPaper = this.$store.state.examinationManage.examPaper
     this.createType = this.$store.state.examinationManage.createType + ''
     this.activeStep = this.$store.state.examinationManage.activeStep * 1
     this.topic_info = this.$store.state.examinationManage.examTopics
+    this.examLabels = this.$store.state.examinationManage.examLabels
     this.targetUser.length = 0
     this.getCount()
   },
@@ -1031,6 +1041,7 @@ export default {
       store.dispatch('examinationManage/activeStep', this.activeStep)
       store.dispatch('examinationManage/createType', this.createType)
       store.dispatch('examinationManage/temporaryStorageExam', this.exam)
+      store.dispatch('examinationManage/examLabels', this.examLabels)
       store.dispatch(
         'examinationManage/temporaryStorageExamPaper',
         this.topic_info
@@ -1048,6 +1059,7 @@ export default {
       }
       store.dispatch('examinationManage/createType', this.createType)
       store.dispatch('examinationManage/temporaryStorageExam', this.exam)
+      store.dispatch('examinationManage/examLabels', this.examLabels)
       store.dispatch('examinationManage/targetUser', this.targetUser)
     },
 
@@ -1079,6 +1091,7 @@ export default {
       }
       store.dispatch('examinationManage/createType', this.createType)
       store.dispatch('examinationManage/temporaryStorageExam', this.exam)
+      store.dispatch('examinationManage/examLabels', this.examLabels)
     },
 
     // 获取题数和分值
@@ -1368,7 +1381,7 @@ export default {
     },
     // 监听选择标签组件返回数据
     getPaperLabels(val) {
-      this.paperLabels = val
+      this.examLabels = val
     },
     // 监听选择标签组件返回数据
     onvisible1(val) {
@@ -1376,7 +1389,7 @@ export default {
     },
     // 试卷删除标签
     handlePaperLabelDel(index) {
-      this.paperLabels.splice(index, 1)
+      this.examLabels.splice(index, 1)
     },
 
     // 添加标签
@@ -1557,6 +1570,7 @@ export default {
             }
             publishExam(this.exam).then(response => {
               this.noLeaveprompt = true
+              store.dispatch('examinationManage/examLabels', [])
               store.dispatch('examinationManage/temporaryStorageExam', {})
               store.dispatch('examinationManage/temporaryStorageExamPaper', {})
               store.dispatch('examinationManage/activeStep', 1)
@@ -1564,11 +1578,14 @@ export default {
               store.dispatch('examinationManage/examPaperId', '')
               store.dispatch('examinationManage/temporaryStorageTopics', [])
               this.$message.success('发布考试成功！')
-              this.$router.push({ path: '/evaluating-manage/examination-manage/list' })
+              this.$router.push({
+                path: '/evaluating-manage/examination-manage/list'
+              })
             })
           } else {
             publishExam2(this.exam).then(response => {
               this.noLeaveprompt = true
+              store.dispatch('examinationManage/examLabels', [])
               store.dispatch('examinationManage/temporaryStorageExam', {})
               store.dispatch('examinationManage/temporaryStorageExamPaper', {})
               store.dispatch('examinationManage/activeStep', 1)
@@ -1576,7 +1593,9 @@ export default {
               store.dispatch('examinationManage/examPaperId', '')
               store.dispatch('examinationManage/temporaryStorageTopics', [])
               this.$message.success('发布考试成功！')
-              this.$router.push({ path: '/evaluating-manage/examination-manage/list' })
+              this.$router.push({
+                path: '/evaluating-manage/examination-manage/list'
+              })
             })
           }
         }
@@ -1599,6 +1618,7 @@ export default {
           type: 'warning'
         })
           .then(() => {
+            store.dispatch('examinationManage/examLabels', [])
             store.dispatch('examinationManage/temporaryStorageExam', {})
             store.dispatch('examinationManage/temporaryStorageExamPaper', {})
             store.dispatch('examinationManage/activeStep', 1)
@@ -1628,7 +1648,8 @@ export default {
   padding: 20px;
   margin-top: 20px;
 }
-.activeStep1, .activeStep3 {
+.activeStep1,
+.activeStep3 {
   width: 60%;
   margin: 0 auto;
 }
@@ -1975,16 +1996,22 @@ i {
 .editTopicDrawer /deep/ .el-scrollbar {
   height: calc(100vh - 100px);
 }
-  .exampaper_name {
-    margin-left: 10px;
-    color: #606266;
-    font-size: 14px;
-  }
+.exampaper_name {
+  margin-left: 10px;
+  color: #606266;
+  font-size: 14px;
+}
 .item-topic /deep/ .el-checkbox__label {
   word-break: break-all;
   word-wrap: break-word;
   white-space: pre-wrap;
   vertical-align: text-top;
   padding-right: 10px;
+}
+.paperLabels {
+  margin-bottom: 20px;
+}
+.tag {
+  display: inline;
 }
 </style>
