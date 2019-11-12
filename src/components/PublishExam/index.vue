@@ -43,6 +43,7 @@
           <el-input v-show="false" v-model="paparForm.memer" />
           <Examiners
             :select-company-id="selectCompanyId"
+            :selectedOptions="selectedOptions"
             @examiners="getExaminers"
           />
         </el-form-item>
@@ -59,6 +60,7 @@
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import Examiners from '@/components/Examiners'
 import { validIntNum } from '@/utils/validate'
+const $ = window.$
 
 export default {
   name: 'PublishExam',
@@ -79,6 +81,10 @@ export default {
     publishDialog: {
       type: Boolean,
       default: false
+    },
+    exam: {
+      type: Object,
+      default: null
     }
   },
   data() {
@@ -117,6 +123,7 @@ export default {
         memer: '' // 校验用的，无实际意义
       },
       targetUser: [], // 未处理的考试人员
+      selectedOptions: [], // 回显的级联菜单值
       rules: {
         exam_name: [
           {
@@ -164,6 +171,25 @@ export default {
     publishDialog: function(val, val2) {
       if (val) {
         this.visible = true
+      }
+    },
+    exam: function(val, val2) {
+      if (val) {
+        this.paparForm.time_range[0] = val.begin_time
+        this.paparForm.time_range[1] = val.end_time
+        this.selectedOptions = []
+        $.extend(true, this.paparForm, val)
+        for(let key in val.target_user) {
+          const item = val.target_user[key]
+          item.forEach(value => {
+            this.selectedOptions.push([key, value])
+          })
+        }
+        if (this.selectedOptions.length && this.selectedOptions[0].length >= 2) {
+          this.paparForm.memer = '111'
+        } else {
+          this.paparForm.memer = ''
+        }
       }
     }
   },

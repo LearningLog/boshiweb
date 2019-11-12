@@ -91,7 +91,7 @@
         <el-button @click="isVisibleSystemManage = false">取 消</el-button>
       </div>
     </el-dialog>
-    <PublishExam :selectCompanyId="selectCompanyId" :publishDialog="publishDialog" :scoreCount="scoreCount" @publishExam="publishExam" @visiblePublish="visiblePublish"></PublishExam>
+    <PublishExam :selectCompanyId="selectCompanyId" :publishDialog="publishDialog" :scoreCount="scoreCount" :exam="exam" @publishExam="publishExam" @visiblePublish="visiblePublish"></PublishExam>
   </div>
 </template>
 
@@ -126,6 +126,7 @@ export default {
       listLoading: true, // 是否开启表格遮罩
       popoverVisible: false, // 是否开启高级搜索
       checkedDelList: [], // 选择删除的list
+      exam: {}, // 考试详情
       selectCompanyId: '', // 编辑的当前行selectCompanyId
       scoreCount: 0 // 编辑的当前行考试总分scoreCount
     }
@@ -252,6 +253,7 @@ export default {
       examDetail({ _id: row._id }).then(res => {
         this.selectCompanyId = res.data.exam.selectCompanyId
         this.scoreCount = res.data.exam.score_count
+        this.exam = res.data.exam
         this.publishDialog = true
       })
     },
@@ -263,13 +265,22 @@ export default {
 
     // 监听发布考试
     publishExam(val) {
-      val.exampaper_id = this.exampaper_id
-      examUpdate(val).then(response => {
+      const parpams = {
+        _id: val._id,
+        exam_name: val.exam_name,
+        begin_time: val.begin_time,
+        end_time: val.end_time,
+        passscore: val.passscore,
+        target_user: val.target_user,
+        egroup: val.egroup[0],
+        type: val.type
+      }
+      examUpdate(parpams).then(response => {
         this.publishDialog = false
         this.$message.success('发布考试成功！')
         this.get_list()
       })
-    },
+    }
   }
 }
 </script>

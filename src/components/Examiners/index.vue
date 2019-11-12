@@ -3,7 +3,7 @@
     <div>
       <span class="group">选择小组</span><span class="member">选择人员</span>
     </div>
-    <el-cascader-panel v-model="checkeList" :options="list2" :props="props" @change="handleChange" />
+    <el-cascader-panel v-model="selectedOptions" :options="list2" :props="props" @change="handleChange" />
   </div>
 </template>
 
@@ -17,6 +17,10 @@ export default {
     selectCompanyId: {
       type: String,
       default: ''
+    },
+    selectedOptions: {
+      type: Array,
+      default: []
     }
   },
   data() {
@@ -24,7 +28,6 @@ export default {
       radio: null,
       list: [],
       list2: [],
-      checkeList: [],
       props: {
         multiple: true,
         value: 'id',
