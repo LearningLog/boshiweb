@@ -80,7 +80,7 @@
       <el-table-column align="center" label="周期类型" min-width="40" prop="revolutionTypeDesc" />
       <el-table-column align="center" label="周期" min-width="30" prop="revolution" >
         <template slot-scope="scope">
-          <el-link type="primary">{{ scope.row.revolution === 0?'--': scope.row.revolution}}</el-link>
+          <span>{{ scope.row.revolution === 0?'--': scope.row.revolution}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="已发布场次" min-width="30" prop="total_count">
