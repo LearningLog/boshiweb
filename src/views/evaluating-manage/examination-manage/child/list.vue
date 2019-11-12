@@ -61,19 +61,19 @@
         width="50"
         fixed
       />
-      <el-table-column align="center" label="考试名称" min-width="70" prop="exam_name" />
-      <el-table-column align="center" label="小组" min-width="40" prop="groupName" />
-      <el-table-column align="center" label="题目数" min-width="30" prop="topic_count" />
-      <el-table-column align="center" label="总分数" min-width="30" prop="score_count" />
-      <el-table-column align="center" label="及格分数" min-width="30" prop="passscore" />
-      <el-table-column align="center" label="开始时间" min-width="40" prop="begin_time" />
-      <el-table-column align="center" label="结束时间" min-width="40" prop="end_time" />
-      <el-table-column align="center" label="考试状态" min-width="40" prop="examstatus" />
+      <el-table-column align="center" label="考试名称" min-width="70" show-overflow-tooltip prop="exam_name" />
+      <el-table-column align="center" label="小组" min-width="40" show-overflow-tooltip prop="groupName" />
+      <el-table-column align="center" label="题目数" min-width="30" show-overflow-tooltip prop="topic_count" />
+      <el-table-column align="center" label="总分数" min-width="30" show-overflow-tooltip prop="score_count" />
+      <el-table-column align="center" label="及格分数" min-width="30" show-overflow-tooltip prop="passscore" />
+      <el-table-column align="center" label="开始时间" min-width="40" show-overflow-tooltip prop="begin_time" />
+      <el-table-column align="center" label="结束时间" min-width="40" show-overflow-tooltip prop="end_time" />
+      <el-table-column align="center" label="考试状态" min-width="40" show-overflow-tooltip prop="examstatus" />
 
       <el-table-column class-name="status-col" label="操作" width="250" align="center" fixed="right">
         <template slot-scope="scope">
           <el-button size="mini" :disabled="scope.row.exam_status !== 1" @click="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
-          <el-button size="mini" :disabled="scope.row.exam_status !== 3" @click="detail(scope.row)"><i class="iconfont iconchakan" />考试统计</el-button>
+          <el-button size="mini" :disabled="scope.row.exam_status === 1" @click="detail(scope.row)"><i class="iconfont iconchakan" />考试统计</el-button>
           <el-button size="mini" @click="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
         </template>
       </el-table-column>

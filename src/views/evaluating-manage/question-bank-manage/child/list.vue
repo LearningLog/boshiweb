@@ -91,7 +91,7 @@
         width="50"
         fixed
       />
-      <el-table-column align="center" label="题型" min-width="40">
+      <el-table-column align="center" show-overflow-tooltip label="题型" min-width="40">
         <template slot-scope="scope">
           <span>{{ switchTopicTypeToName(scope.row.topic_type) }}</span>
         </template>

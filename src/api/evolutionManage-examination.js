@@ -57,4 +57,36 @@ export function examUpdate(data) {
     data
   })
 }
+// 答题详情
+export function answerInfo(data) {
+  return request({
+    url: '/evaluation/grade/answerinfo',
+    method: 'post',
+    data
+  })
+}
+// 成绩统计
+export function userGrade(data) {
+  return request({
+    url: '/evaluation/grade/user',
+    method: 'post',
+    data
+  })
+}
+// 得分统计
+export function topicGrade(data) {
+  return request({
+    url: '/evaluation/grade/topic',
+    method: 'post',
+    data
+  })
+}
+// 个人答题统计
+export function oneAnswerInfo(data) {
+  return request({
+    url: '/evaluation/grade/oneanswerinfo',
+    method: 'post',
+    data
+  })
+}
 

@@ -1442,8 +1442,9 @@ export default {
 .item-topic {
   background-color: #fff;
   padding-left: 10px;
-  width: 524px;
+  width: 50%;
   margin-bottom: 10px;
+  padding-right: 10px;
 }
 .item-topic /deep/ .el-checkbox__label {
   color: #000;
@@ -1684,5 +1685,12 @@ i {
 }
 .editTopicDrawer /deep/ .el-scrollbar {
   height: calc(100vh - 100px);
+}
+.item-topic /deep/ .el-checkbox__label {
+  word-break: break-all;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  vertical-align: text-top;
+  padding-right: 10px;
 }
 </style>

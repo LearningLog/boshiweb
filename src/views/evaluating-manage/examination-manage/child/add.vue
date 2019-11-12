@@ -163,13 +163,14 @@
                   :key="item2.option_id"
                   class="item-topic"
                 >
-                  <el-checkbox
-                    v-model="item2.correct_option === 1 ? true : false"
-                    :title="item2.option_content"
-                    class="single-line3"
-                    disabled
-                  >{{ getOptionOrderByIndex(index2)
-                  }}{{ item2.option_content }}</el-checkbox>
+                  <el-tooltip class="item" effect="dark" :content="item2.option_content" placement="top-start">
+                    <el-checkbox
+                      v-model="item2.correct_option === 1 ? true : false"
+                      :title="item2.option_content"
+                      disabled
+                    >{{ getOptionOrderByIndex(index2)
+                    }}{{ item2.option_content }}</el-checkbox>
+                  </el-tooltip>
                 </li>
               </ul>
             </div>
@@ -1730,8 +1731,9 @@ export default {
 .item-topic {
   background-color: #fff;
   padding-left: 10px;
-  width: 524px;
+  width: 50%;
   margin-bottom: 10px;
+  padding-right: 10px;
 }
 .item-topic /deep/ .el-checkbox__label {
   color: #000;
@@ -1978,4 +1980,11 @@ i {
     color: #606266;
     font-size: 14px;
   }
+.item-topic /deep/ .el-checkbox__label {
+  word-break: break-all;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  vertical-align: text-top;
+  padding-right: 10px;
+}
 </style>

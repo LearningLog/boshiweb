@@ -124,7 +124,7 @@ const evaluatingManage = {
           name: 'examination-detail',
           hidden: true,
           component: () => import('@/views/evaluating-manage/examination-manage/child/detail'),
-          meta: { title: '考试详情', icon: '', activeMenu: '/evaluating-manage/examination-manage' }
+          meta: { title: '考试统计', icon: '', activeMenu: '/evaluating-manage/examination-manage' }
         },
         {
           path: 'add',
