@@ -88,9 +88,9 @@
       <el-table-column align="center" label="序号" min-width="20" show-overflow-tooltip>
         <template slot-scope="scope">{{ scope.$index+1 }} </template>
       </el-table-column>
-      <el-table-column align="center" label="信息" min-width="130" show-overflow-tooltip>
+      <el-table-column align="center" label="信息" min-width="150" show-overflow-tooltip>
         <template slot-scope="scope">
-          <div class="f">
+          <div class="f imgInfo">
             <img id="fileImg" :src="getPic(scope.row)">
           </div>
           <div class="f">
@@ -99,8 +99,8 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="来源" min-width="90" align="center" show-overflow-tooltip prop="fileSourceName" />
-      <el-table-column align="center" label="创建人" min-width="50" show-overflow-tooltip>
+      <el-table-column label="来源" min-width="70" align="center" show-overflow-tooltip prop="fileSourceName" />
+      <el-table-column align="center" label="创建人" min-width="30" show-overflow-tooltip>
         <template slot-scope="scope">{{ getFileListData(scope.row.mainFileId).nickName }} </template>
       </el-table-column>
       <el-table-column align="center" label="创建时间" min-width="70" show-overflow-tooltip>
@@ -109,10 +109,12 @@
       <el-table-column align="center" label="文档状态" min-width="50" show-overflow-tooltip>
         <template slot-scope="scope">{{ getFileStatusDesc(getFileListData(scope.row.mainFileId).file_status) }} </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="操作" width="250" align="center" fixed="right">
+      <el-table-column class-name="status-col" label="操作" width="210" align="center" fixed="right">
         <template slot-scope="scope">
           <el-button size="mini" @click="download(scope.row)"><i class="iconfont icondownload" />下载</el-button>
-          <el-button size="mini" @click="edit(scope.row)"><i class="iconfont iconxiugai" />推送</el-button>
+
+          <span v-if="getFileListData(scope.row.mainFileId).file_status===4"><el-button size="mini" @click="pushToKnowledge(scope.row)"><i class="iconfont iconxiugai" />推送</el-button></span>
+          <span v-else><el-button size="mini" class="dis" disabled="disabled"><i class="iconfont iconxiugai" />推送</el-button></span>
           <el-button size="mini" @click="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
         </template>
       </el-table-column>
@@ -121,15 +123,45 @@
     <div id="bottomOperation">
       <el-button v-show="total>0" type="danger" plain @click="batchDel"><i class="iconfont iconshanchu" />批量推送</el-button>
       <el-button v-show="total>0" type="danger" plain @click="batchDel"><i class="iconfont iconshanchu" />批量删除</el-button>
-      <el-button v-show="total>0" type="danger" plain @click="batch_download"><i class="iconfont iconshanchu" />批量下载</el-button>
+      <el-button v-show="total>0" type="danger" plain @click="batchDownload"><i class="iconfont iconshanchu" />批量下载</el-button>
     </div>
+    <el-dialog
+      v-el-drag-dialog
+      title="推送"
+      :visible.sync="menu_tree_flag"
+      width="50%"
+    >
+      <div class="menu_tree_box">
+        <el-scrollbar wrap-class="scrollbar-wrapper">
+          <el-tree
+            ref="tree"
+            :data="treeData"
+            :props="defaultProps"
+            show-checkbox
+            node-key="id"
+            :check-strictly="true"
+            :expand-on-click-node="false"
+            :check-on-click-node="true"
+            default-expand-all
+            highlight-current
+            @check-change="menu_tree_check_fn"
+          />
+        </el-scrollbar>
+      </div>
+
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="save_menu">确认</el-button>
+        <el-button type="primary" plain @click="cancel_push">取消</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import { getFileList, findUserListByGroupId, del, batch_download, download } from '@/api/work-desk'
+import { getFileList, findUserListByGroupId, del, getDownloadToken } from '@/api/work-desk'
 import { getCustomManageList } from '@/api/systemManage-roleManage'
+import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
 import { getFileShowSize, parseTime } from '@/utils/index'
 
 export default {
@@ -166,7 +198,10 @@ export default {
       time_range: [], // 时间范围
       fileSource_list: [{ value: 'file_upload', name: '个人上传' }, { value: 'live_record', name: '直播收录' }, { value: 'company_knowledge_lib', name: '企业知识库收藏' },
         { value: 'group_knowledge_lib', name: '小组知识库收藏' }, { value: 'courseware_upload', name: '课件上传' }],
-      listLoading: true // 表格是否开启遮罩
+      listLoading: true, // 表格是否开启遮罩
+      isDisabled: false, // 推送按钮是否可用
+      menu_tree_flag: false, // 是否显示树
+      treeData: []// 推送的知识库菜单
     }
   },
   created() {
@@ -244,7 +279,7 @@ export default {
       }).then(() => {
         const fileIdList = []
         this.checkedDelList.forEach(item => {
-          fileIdList.push(item._id)
+          fileIdList.push(this.getFileListData(item.mainFileId)._id)
         })
         del({ fileIdList: fileIdList }).then(response => {
           this.$message.success('批量删除成功！')
@@ -275,31 +310,38 @@ export default {
     // 单个下载
     download(row) {
       const fileId = this.getFileListData(row.mainFileId)._id
-      download({ fileId: fileId }).then(response => {
-        debugger
-        const reader = new FileReader()
-        reader.readAsDataURL(response.data)
-        reader.onload = function(e) {
-          const a = document.createElement('a')
-          a.download = row.fileName + '\.' + row.fileFormat
-          a.href = e.target.result
-          document.body.appendChild(a)
-          a.click()
-        }
-      })
+      const url = process.env.VUE_APP_BASE_API + '/api/workDeskFile/downloadFile?fileId=' + fileId
+      const a = document.createElement('a')
+      a.download = row.fileName + '\.' + row.fileFormat
+      a.href = url
+      document.body.appendChild(a)
+      a.click()
     },
     // 批量下载
-    batch_download() {
+    batchDownload() {
       if (!this.checkedDelList.length) {
         this.$message.warning('请选择文件！')
         return false
       }
       const fileIdList = []
       this.checkedDelList.forEach(item => {
-        fileIdList.push(item._id)
+        fileIdList.push(this.getFileListData(item.mainFileId)._id)
       })
-      batch_download({ fileIdList: fileIdList }).then(response => {
-
+      getDownloadToken({ fileIdList: fileIdList }).then(response => {
+        const token = response.data.token
+        const size = this.getFileShowSize(response.data.size)
+        this.$confirm('文件约为' + size + '确定要下载吗', '批量下载', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          const url = process.env.VUE_APP_BASE_API + '/api/workDeskFile/downloadZipFile?token=' + token
+          const a = document.createElement('a')
+          a.download = '批量下载.zip'
+          a.href = url
+          document.body.appendChild(a)
+          a.click()
+        }).catch(() => {})
       })
     },
     // 获取预览图片
@@ -314,14 +356,66 @@ export default {
     },
     // 选中数据
     handleSelectionChange(row) {
-      this.checkedDelList = []
-      if (row.length === 0) {
+      this.checkedDelList = row
+      /* if (row.length === 0) {
         return
       }
       for (let i = 0; i < row.length; i++) {
         this.checkedDelList.push(row[i].mainFileId)
+      }*/
+    },
+    // 推送至知识库
+    pushToKnowledge(row) {
+      const groupId = this.getFileListData(row.mainFileId).groupId
+      this.initializeTreeData(groupId)
+      this.menu_tree_flag = true
+    },
+    // 初始化推送菜单树的数据
+    initializeTreeData(val) {
+      const companyTree = { label: '企业知识库', type: 'company' }
+      const groupTree = { label: '小组知识库', type: 'egroup' }
+      getUserEgroupInfo({ selectCompanyId: val }).then(response => {
+        const groupList = response.data.egroupInfo
+        const groupNames = []
+        for (let i = 0; i < groupList.length; i++) {
+          groupNames.push({ label: groupList[i].groupName, value: groupList[i]._id })
+        }
+        groupTree.children = groupNames
+        this.treeData = [companyTree, groupTree]
+      })
+    },
+    // 选择菜单 单选
+    menu_tree_check_fn(data, checked, indeterminate) {
+      console.log(this.$refs.tree.getCheckedNodes());
+      debugger
+      this.menu_tree_checked.checkey = [data.id]
+      if (checked === true) {
+        const need_ids = []
+        const need_lables = []
+        const cur_id = data.id
+        const menu_dt = this.menu_dt[1]
+        const cur_arr = menu_dt[cur_id]
+        cur_arr.forEach(item => {
+          need_ids.push(item.id)
+          need_lables.push(item.label)
+        })
+        this.menu_tree_checked.ids = need_ids
+        this.menu_tree_checked.lables = need_lables
+        this.$refs.tree.setCheckedKeys([data.id])
+        this.menu_tree_checked.dt = data
+      } else {
+        if (this.menu_tree_checked.id === data.id) {
+          this.$refs.tree.setCheckedKeys([data.id])
+        }
       }
-      console.log(this.checkedDelList)
+    },
+    // 取消推送
+    cancel_push() {
+      this.menu_tree_flag = false
+    },
+    // 查看详情
+    detail(row) {
+      this.$router.push({ path: '/work-desk/detail', query: { id: row._id }})
     },
     parseTime(time, cFormat) {
       return parseTime(time, cFormat)
@@ -333,10 +427,18 @@ export default {
 }
 </script>
 <style>
+  .imgInfo{
+    width:110px;
+    height:110px
+  }
   #fileImg{
-    width:130px
+    height:100%;
+    width:100%
   }
   .f{
     float:left
+  }
+  .dis{
+    color:#ccc
   }
 </style>
