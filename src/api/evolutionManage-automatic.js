@@ -61,3 +61,12 @@ export function saveThenPublish(data) {
   })
 }
 
+// 获取详情
+export function getDetail(data) {
+  return request({
+    url: '/evaluation/automatic/update',
+    method: 'post',
+    data
+  })
+}
+

@@ -23,6 +23,12 @@ export default {
       default() {
         return [];
       }
+    },
+    targetUser: {
+      type: Object,
+      default() {
+        return {};
+      }
     }
   },
   data() {
@@ -42,6 +48,16 @@ export default {
     selectedOptions: function(val, val2) {
       if (val) {
         this.selectedOptions2 = val
+      }
+    },
+    targetUser: function(val, val2) {
+      if (val) {
+        for(let key in val) {
+          const item = val[key]
+          item.forEach(value => {
+            this.selectedOptions.push([key, value])
+          })
+        }
       }
     }
   },

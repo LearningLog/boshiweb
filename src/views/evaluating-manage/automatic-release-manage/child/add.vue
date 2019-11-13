@@ -372,7 +372,7 @@
                     :max="max_revolution"
                   />
                   <el-select
-                    v-model="exam.revolution_type"
+                    v-model="revolutionType"
                     placeholder="请选择"
                     @change="changeRevolutionType2"
                   >
@@ -393,6 +393,7 @@
                     v-model="exam.begintime_cycle"
                     :clearable="false"
                     placeholder="开始时间"
+                    value-format="HH:mm:ss"
                   />
                   <p class="text">至</p>
                   <el-select v-model="exam.endday_cycle" placeholder="请选择">
@@ -408,6 +409,7 @@
                     v-model="exam.endtime_cycle"
                     :clearable="false"
                     placeholder="开始时间"
+                    value-format="HH:mm:ss"
                   />
                 </div>
               </div>
@@ -561,6 +563,7 @@ export default {
         judge_and_normal: [0, 0], // 一般判断题数
         judge_and_hard: [0, 0] // 困难判断题数
       },
+      revolutionType: 2,
       time_range: [], // 考试时间
       max_revolution: 52, // 最大周期 按周 52周；按月 12个月
       beginday_cycle: [
@@ -1281,6 +1284,9 @@ export default {
           this.$refs.revolution.focus()
           return false
         }
+      }
+      if (this.exam.revolution_type !== 4) {
+        this.exam.revolution_type = this.revolutionType
       }
       if (this.exam.topic_unrest) {
         this.exam.topic_unrest = 1
