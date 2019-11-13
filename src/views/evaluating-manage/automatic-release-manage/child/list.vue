@@ -158,6 +158,7 @@ export default {
       isReset: false, // 是否重置三组联动数据
       total: 0, // 总条数
       listQuery: { // 查询条件
+        sort: { _id: -1 }, // 排序
         currentPage: 1, // 当前页
         pageSize: 10, // 当前页请求条数
         content: '', // 自动发布考试任务名称

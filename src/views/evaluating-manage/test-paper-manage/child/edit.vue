@@ -31,6 +31,7 @@
             class="mdInput"
             icon="iconxiugai"
             name="title"
+            :maxlength="30"
             placeholder="请输入试卷标题"
           >试卷标题</md-input>
         </div>
@@ -615,12 +616,6 @@
       @addLabels="getPaperLabels"
       @visible2="onvisible1"
     />
-    <select-file
-      :visible.sync="visible"
-      :file-type-list="['pic']"
-      @checkedFile="checkedFile"
-      @visible="onvisible"
-    />
     <add-labels
       :visible2.sync="visible2"
       :current-labels.sync="currentLabels"
@@ -642,7 +637,6 @@
 
 <script>
 import { paperDetail, testPaperUpdata } from '@/api/test-paper-manage'
-import SelectFile from '@/components/SelectFile'
 import AddLabels from '@/components/AddEvalLabels'
 import AddSkills from '@/components/AddEvalSkills'
 import MdInput from '@/components/MDinput'
@@ -654,7 +648,6 @@ const $ = window.$
 export default {
   components: {
     MdInput,
-    SelectFile,
     AddLabels,
     AddSkills,
     PublishExam

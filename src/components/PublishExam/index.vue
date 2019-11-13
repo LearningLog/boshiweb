@@ -128,24 +128,24 @@ export default {
         exam_name: [
           {
             required: true,
-            message: '请输入试卷名称（长度在 1 到 64 个字符）',
+            message: '请输入考试名称（长度在 2 到 30 个字符）',
             trigger: 'blur'
           },
           {
             required: true,
-            message: '请输入试卷名称（长度在 1 到 64 个字符）',
+            message: '请输入考试名称（长度在 2 到 30 个字符）',
             trigger: 'change'
           },
           {
-            min: 1,
-            max: 64,
-            message: '长度在 1 到 64 个字符',
+            min: 2,
+            max: 30,
+            message: '长度在 2 到 30 个字符',
             trigger: 'blur'
           },
           {
-            min: 1,
-            max: 64,
-            message: '长度在 1 到 64 个字符',
+            min: 2,
+            max: 30,
+            message: '长度在 2 到 30 个字符',
             trigger: 'change'
           }
         ],

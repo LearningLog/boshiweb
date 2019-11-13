@@ -2,7 +2,7 @@
   <div class="form-edit">
     <el-form v-if="topic_type === 1" ref="form" class="form" label-width="100px">
       <el-form-item class="required content" label="题目内容">
-        <el-input v-model="topic1.topic_content" class="topicName" placeholder="请输入题目" clearable />
+        <el-input v-model="topic1.topic_content" class="topicName" placeholder="请输入题目" maxlength="200" clearable />
         <div v-show="topic1.topic_resource" class="img-group">
           <div class="imgCover" :style="{backgroundImage:'url(' + topic1.topic_resource + ')'}"> <i class="close iconfont iconfalse-circle" @click="delTopicImg" /></div>
         </div>
@@ -119,7 +119,7 @@
     </el-form>
     <el-form v-else-if="topic_type === 2" ref="form" class="form" label-width="100px">
       <el-form-item class="required content" label="题目内容">
-        <el-input v-model="topic2.topic_content" class="topicName" placeholder="请输入题目" clearable />
+        <el-input v-model="topic2.topic_content" class="topicName" placeholder="请输入题目" maxlength="200" clearable />
         <div v-show="topic2.topic_resource" class="img-group">
           <div class="imgCover" :style="{backgroundImage:'url(' + topic2.topic_resource + ')'}"> <i class="close iconfont iconfalse-circle" @click="delTopicImg" /></div>
         </div>
@@ -236,7 +236,7 @@
     </el-form>
     <el-form v-else-if="topic_type === 3" ref="form" class="form" label-width="100px">
       <el-form-item class="required content" label="题目内容">
-        <el-input v-model="topic3.topic_content" class="topicName" placeholder="请输入题目" clearable />
+        <el-input v-model="topic3.topic_content" class="topicName" placeholder="请输入题目" maxlength="200" clearable />
         <div v-show="topic3.topic_resource" class="img-group">
           <div class="imgCover" :style="{backgroundImage:'url(' + topic3.topic_resource + ')'}"> <i class="close iconfont iconfalse-circle" @click="delTopicImg" /></div>
         </div>

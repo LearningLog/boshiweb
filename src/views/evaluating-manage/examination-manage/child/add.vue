@@ -41,16 +41,18 @@
           <transition name="fade-advanced-search">
             <el-form
               v-if="createType == 1"
-              ref="form"
+              ref="form1"
               class="form"
+              :model="exam"
+              :rules="rule"
               label-width="100px"
             >
-              <el-form-item class="required examPaperName" label="试卷名称">
+              <el-form-item class="required examPaperName" label="试卷名称" prop="exampaper_name">
                 <el-input
                   ref="examPaperName"
                   v-model="exam.exampaper_name"
-                  class="examPaperName"
                   placeholder="请输入试卷名称"
+                  maxlength="30"
                   clearable
                 />
               </el-form-item>
@@ -692,12 +694,6 @@
           @addLabels="getPaperLabels"
           @visible2="onvisible1"
         />
-        <select-file
-          :visible.sync="visible"
-          :file-type-list="['pic']"
-          @checkedFile="checkedFile"
-          @visible="onvisible"
-        />
         <add-labels
           :visible2.sync="visible2"
           :current-labels.sync="currentLabels"
@@ -940,28 +936,54 @@ export default {
       radio1: '', // 单选题目选项
       radio2: '', // 判断题目选项
       check2: '', // 多选题目选项
+      rule: {
+        exampaper_name: [
+          {
+            required: true,
+            message: '请输入试卷名称（长度在 2 到 30 个字符）',
+            trigger: 'blur'
+          },
+          {
+            required: true,
+            message: '请输入试卷名称（长度在 2 到 30 个字符）',
+            trigger: 'change'
+          },
+          {
+            min: 2,
+            max: 30,
+            message: '长度在 2 到 30 个字符',
+            trigger: 'blur'
+          },
+          {
+            min: 2,
+            max: 30,
+            message: '长度在 2 到 30 个字符',
+            trigger: 'change'
+          }
+        ]
+      },
       rules: {
         exam_name: [
           {
             required: true,
-            message: '请输入试卷名称（长度在 1 到 64 个字符）',
+            message: '请输入考试名称（长度在 2 到 30 个字符）',
             trigger: 'blur'
           },
           {
             required: true,
-            message: '请输入试卷名称（长度在 1 到 64 个字符）',
+            message: '请输入考试名称（长度在 2 到 30 个字符）',
             trigger: 'change'
           },
           {
-            min: 1,
-            max: 64,
-            message: '长度在 1 到 64 个字符',
+            min: 2,
+            max: 30,
+            message: '长度在 2 到 30 个字符',
             trigger: 'blur'
           },
           {
-            min: 1,
-            max: 64,
-            message: '长度在 1 到 64 个字符',
+            min: 2,
+            max: 30,
+            message: '长度在 2 到 30 个字符',
             trigger: 'change'
           }
         ],
@@ -1064,9 +1086,16 @@ export default {
     // 下一步
     nextStep() {
       if (this.activeStep === 1) {
-        if (this.createType === '1' && !this.exam.exampaper_name) {
-          this.$refs.examPaperName.focus()
-          this.$message.warning('请填写试卷名称！')
+        var flag = false
+          this.$refs.form1.validate(valid => {
+          if (valid) {
+            flag = true
+          }
+        })
+        if (this.createType === '1' && !flag) {
+
+          // this.$refs.examPaperName.focus()
+          // this.$message.warning('请填写试卷名称！')
           return false
         }
         if (this.createType === '2' && !this.exam.exampaper_id) {

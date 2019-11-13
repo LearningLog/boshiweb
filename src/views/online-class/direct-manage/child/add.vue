@@ -25,7 +25,7 @@
           />
         </el-form-item>
         <el-form-item class="required content" label="题目内容">
-          <el-input v-model="topic1.topic_content" class="topicName" placeholder="请输入题目" clearable />
+          <el-input v-model="topic1.topic_content" class="topicName" placeholder="请输入题目" maxlength="200" clearable />
           <div v-show="topic1.topic_resource" class="img-group">
             <div class="imgCover" :style="{backgroundImage:'url(' + topic1.topic_resource + ')'}"> <i class="close iconfont iconfalse-circle" @click="delTopicImg" /></div>
           </div>
