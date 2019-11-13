@@ -347,11 +347,12 @@
                     ref="daterange"
                     v-model="time_range"
                     class="daterange"
-                    type="daterange"
+                    type="datetimerange"
                     range-separator="至"
                     start-placeholder="开始日期"
                     end-placeholder="结束日期"
-                    value-format="yyyy-MM-dd"
+                    value-format="yyyy-MM-dd HH:mm:ss"
+                    :default-time="['00:00:00', '23:59:59']"
                   />
                 </el-radio>
                 <el-radio
@@ -391,8 +392,6 @@
                   <el-time-picker
                     v-model="exam.begintime_cycle"
                     :clearable="false"
-                    format="HH 时 mm 分 ss 秒"
-                    value-format="HH-mm-ss"
                     placeholder="开始时间"
                   />
                   <p class="text">至</p>
@@ -408,8 +407,6 @@
                   <el-time-picker
                     v-model="exam.endtime_cycle"
                     :clearable="false"
-                    format="HH 时 mm 分 ss 秒"
-                    value-format="HH-mm-ss"
                     placeholder="开始时间"
                   />
                 </div>
@@ -536,10 +533,11 @@ export default {
         score_count: 0, // 总分数
         revolution_name: '', // 考试名称
         revolution_type: 4, // 周期类型 4 单次考试；2 按周循环；3按月循环
+        revolution: 0, // 周期类型 4 单次考试；2 按周循环；3按月循环
         beginday_cycle: 4, // 发布开始日期
-        begintime_cycle: '00-00-00', // 发布开始时间
+        begintime_cycle: '00:00:00', // 发布开始时间
         endday_cycle: 4, // 发布结束天
-        endtime_cycle: '23-59-59', // 发布结束时间
+        endtime_cycle: '23:59:59', // 发布结束时间
         start_time: '', // 开始时间
         end_time: '', // 结束时间
         pass_score: '', // 及格分数
