@@ -60,7 +60,7 @@
           <div class="objBox">
             <p class="pointer" @click="detail(scope.row)">{{ scope.row.fileName }}</p>
             <p>文件大小：{{ scope.row.fileSize }}</p>
-            <p>文件格式：{{scope.row.fileType}}</p>
+            <p>文件格式：{{ scope.row.fileType }}</p>
           </div>
 
         </template>
@@ -214,7 +214,7 @@ export default {
     // 获取数据
     getData() {
       fileListManage(this.obj).then(res => {
-          console.log(res)
+        console.log(res)
         this.list1 = res.data.page.list
         this.sourceObj = res.data.filePackageIdWorkDeskFile
         if (res && res.data && res.data.page && res.data.filePackageIdWorkDeskFile && res.data.page.list)

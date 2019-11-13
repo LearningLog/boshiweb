@@ -386,7 +386,7 @@ export default {
     },
     // 选择菜单 单选
     menu_tree_check_fn(data, checked, indeterminate) {
-      console.log(this.$refs.tree.getCheckedNodes());
+      console.log(this.$refs.tree.getCheckedNodes())
       debugger
       this.menu_tree_checked.checkey = [data.id]
       if (checked === true) {

@@ -4,7 +4,7 @@
       <el-input v-model="listQuery.customname" placeholder="" clearable @keyup.enter.native="topSearch">
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
       </el-input>
-      <span id="advancedSearchBtn"></span>
+      <span id="advancedSearchBtn" />
     </div>
     <div id="topBtn">
       <el-button type="primary" @click="add"><i class="iconfont iconjia" />新增</el-button>

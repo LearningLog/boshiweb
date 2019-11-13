@@ -112,13 +112,13 @@
               <span>添加标签</span>
               <div v-if="examLabels.length" class="tag">
                 <el-tag
-                    v-for="(tag, index) in examLabels"
-                    :key="tag.linc"
-                    closable
-                    size="medium"
-                    :disable-transitions="false"
-                    type="success"
-                    @close="handlePaperLabelDel(index)"
+                  v-for="(tag, index) in examLabels"
+                  :key="tag.linc"
+                  closable
+                  size="medium"
+                  :disable-transitions="false"
+                  type="success"
+                  @close="handlePaperLabelDel(index)"
                 >
                   {{ tag.lname }}
                 </el-tag>
@@ -1087,13 +1087,12 @@ export default {
     nextStep() {
       if (this.activeStep === 1) {
         var flag = false
-          this.$refs.form1.validate(valid => {
+        this.$refs.form1.validate(valid => {
           if (valid) {
             flag = true
           }
         })
         if (this.createType === '1' && !flag) {
-
           // this.$refs.examPaperName.focus()
           // this.$message.warning('请填写试卷名称！')
           return false

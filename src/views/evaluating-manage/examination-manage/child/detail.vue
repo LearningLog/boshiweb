@@ -83,7 +83,7 @@
                   <el-table-column align="center" label="选择人数" min-width="100" show-overflow-tooltip prop="selectUserCount" />
                   <el-table-column header-align="center" label="比例" width="300" show-overflow-tooltip align="left">
                     <template slot-scope="scope2">
-                      <el-progress :percentage="(scope2.row.selectRate.substring(0, scope2.row.selectRate.length - 1)) * 1"></el-progress>
+                      <el-progress :percentage="(scope2.row.selectRate.substring(0, scope2.row.selectRate.length - 1)) * 1" />
                     </template>
                   </el-table-column>
                 </el-table>
@@ -102,7 +102,7 @@
         </el-tab-pane>
       </el-tabs>
     </div>
-    <el-dialog class="answerInfodialog" v-el-drag-dialog title="答题详情" :visible.sync="answerInfodialog">
+    <el-dialog v-el-drag-dialog class="answerInfodialog" title="答题详情" :visible.sync="answerInfodialog">
       <div class="userTopDetail"><span class="username">答题人：{{ topicsDetail.username }}</span><span class="examname">{{ topicsDetail.examname }}</span><span class="answerScore">得分：{{ topicsDetail.answer_score }}分</span></div>
       <el-scrollbar wrap-class="scrollbar-wrapper">
         <div v-for="(item, index) in topicsList" class="topicItem">
@@ -115,11 +115,11 @@
             >
               <el-tooltip class="item" effect="dark" :content="item2.option_content" placement="top-start">
                 <el-checkbox
-                    v-model="item2.is_selected === 'y' ? true : false"
-                    class="single-line3"
-                    disabled
+                  v-model="item2.is_selected === 'y' ? true : false"
+                  class="single-line3"
+                  disabled
                 >{{ getOptionOrderByIndex(index2)
-                  }}{{ item2.option_content }}</el-checkbox>
+                }}{{ item2.option_content }}</el-checkbox>
               </el-tooltip>
             </li>
           </ul>

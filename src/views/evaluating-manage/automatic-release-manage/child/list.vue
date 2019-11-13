@@ -78,9 +78,9 @@
       />
       <el-table-column align="center" label="考试名称" min-width="100" show-overflow-tooltip prop="revolution_name" />
       <el-table-column align="center" label="周期类型" min-width="90" show-overflow-tooltip prop="revolutionTypeDesc" />
-      <el-table-column align="center" label="周期" min-width="60" show-overflow-tooltip prop="revolution" >
+      <el-table-column align="center" label="周期" min-width="60" show-overflow-tooltip prop="revolution">
         <template slot-scope="scope">
-          <span>{{ scope.row.revolution === 0?'--': scope.row.revolution}}</span>
+          <span>{{ scope.row.revolution === 0?'--': scope.row.revolution }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="已发布场次" min-width="100" show-overflow-tooltip prop="total_count">
@@ -91,9 +91,9 @@
       <el-table-column align="center" label="考核小组" min-width="90" show-overflow-tooltip prop="groupName" />
       <el-table-column align="center" label="状态" min-width="60" show-overflow-tooltip>
         <template slot-scope="scope">
-          <el-tag type="warning" v-if="scope.row.auto_status === 1">{{ scope.row.autoStatusDesc }}</el-tag>
-          <el-tag type="success" v-if="scope.row.auto_status === 2">{{ scope.row.autoStatusDesc }}</el-tag>
-          <el-tag type="danger" v-if="scope.row.auto_status === 3">{{ scope.row.autoStatusDesc }}</el-tag>
+          <el-tag v-if="scope.row.auto_status === 1" type="warning">{{ scope.row.autoStatusDesc }}</el-tag>
+          <el-tag v-if="scope.row.auto_status === 2" type="success">{{ scope.row.autoStatusDesc }}</el-tag>
+          <el-tag v-if="scope.row.auto_status === 3" type="danger">{{ scope.row.autoStatusDesc }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column align="center" label="创建人" min-width="80" show-overflow-tooltip prop="userNickName" />
@@ -101,8 +101,8 @@
       <el-table-column class-name="status-col" label="操作" width="230" align="center" fixed="right">
         <template slot-scope="scope">
           <el-button size="mini" @click="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
-          <el-button size="mini" v-if="scope.row.auto_status == 2" @click="stop(scope.row)"><i class="iconfont iconzanting1" />暂停</el-button>
-          <el-button size="mini" v-else @click="publish(scope.row)"><i class="iconfont iconfabu1" />发布</el-button>
+          <el-button v-if="scope.row.auto_status == 2" size="mini" @click="stop(scope.row)"><i class="iconfont iconzanting1" />暂停</el-button>
+          <el-button v-else size="mini" @click="publish(scope.row)"><i class="iconfont iconfabu1" />发布</el-button>
           <el-button size="mini" @click="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
         </template>
       </el-table-column>
@@ -133,7 +133,7 @@
     </el-dialog>
     <el-dialog v-el-drag-dialog class="selectCompany" width="400px" title="选择小组" :visible.sync="isVisibleSystemManage">
       <el-form :model="listQuery" label-width="100px">
-        <tenants-groups-roles :is-render-role="false" whichGroup="manageEgroupInfo" @tenantsGroupsRolesVal="tenantsGroupsRolesVal2" />
+        <tenants-groups-roles :is-render-role="false" which-group="manageEgroupInfo" @tenantsGroupsRolesVal="tenantsGroupsRolesVal2" />
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="selectCompany">确定</el-button>

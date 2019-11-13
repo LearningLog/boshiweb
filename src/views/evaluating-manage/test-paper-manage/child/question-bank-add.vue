@@ -27,19 +27,19 @@
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
               <el-form-item label="试题类型">
-              <el-select
-              v-model="listQuery.topicType"
-              placeholder="请选择试题类型"
-              clearable
-              filterable
-              >
-              <el-option
-              v-for="item in topicType"
-              :key="item._id"
-              :label="item.topicName"
-              :value="item._id"
-              />
-              </el-select>
+                <el-select
+                  v-model="listQuery.topicType"
+                  placeholder="请选择试题类型"
+                  clearable
+                  filterable
+                >
+                  <el-option
+                    v-for="item in topicType"
+                    :key="item._id"
+                    :label="item.topicName"
+                    :value="item._id"
+                  />
+                </el-select>
               </el-form-item>
               <el-form-item label="创建时间">
                 <el-date-picker

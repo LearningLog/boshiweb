@@ -21,13 +21,13 @@ export default {
     selectedOptions: {
       type: Array,
       default() {
-        return [];
+        return []
       }
     },
     targetUser: {
       type: Object,
       default() {
-        return {};
+        return {}
       }
     }
   },
@@ -52,7 +52,7 @@ export default {
     },
     targetUser: function(val, val2) {
       if (val) {
-        for(let key in val) {
+        for (const key in val) {
           const item = val[key]
           item.forEach(value => {
             this.selectedOptions.push([key, value])
