@@ -30,6 +30,7 @@ const state = {
   allRoles: [], // 所有角色
   allEgroup: [], // 所有小组
   applicationInfo: {}, // 应用信息
+  userPermission: {}, // 用户权限
   isSystemManage: false
 }
 
@@ -62,6 +63,7 @@ const mutations = {
     state.applicationInfo = applicationInfo
   },
   IS_SYSTEN_MANAGE: (state, userPermission) => {
+    state.userPermission = userPermission
     if (userPermission.manageType === 1) {
       state.isSystemManage = true
     } else {

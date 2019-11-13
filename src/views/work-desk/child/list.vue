@@ -9,7 +9,7 @@
         <el-row v-show="popoverVisible">
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
-              <el-form-item label="租户">
+              <el-form-item v-show="showCustom" label="租户">
                 <el-select v-model="listQuery.selectCompanyId" placeholder="请选择租户" clearable filterable @change="findUserListByGroupId()">
                   <el-option
                     v-for="item in custom_list"
@@ -113,7 +113,7 @@
         <template slot-scope="scope">
           <el-button size="mini" @click="download(scope.row)"><i class="iconfont icondownload" />下载</el-button>
 
-          <span v-if="getFileListData(scope.row.mainFileId).file_status===4"><el-button size="mini" @click="pushToKnowledge(scope.row)"><i class="iconfont iconxiugai" />推送</el-button></span>
+          <span v-if="getFileListData(scope.row.mainFileId).file_status===3"><el-button size="mini" @click="pushToKnowledge(scope.row)"><i class="iconfont iconxiugai" />推送</el-button></span>
           <span v-else><el-button size="mini" class="dis" disabled="disabled"><i class="iconfont iconxiugai" />推送</el-button></span>
           <el-button size="mini" @click="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
         </template>
@@ -148,7 +148,6 @@
           />
         </el-scrollbar>
       </div>
-
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="save_menu">确认</el-button>
         <el-button type="primary" plain @click="cancel_push">取消</el-button>
@@ -159,12 +158,13 @@
 
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import { getFileList, findUserListByGroupId, del, getDownloadToken } from '@/api/work-desk'
+import { getFileList, findUserListByGroupId, del, getDownloadToken, pushToKnowledge } from '@/api/work-desk'
 import { getCustomManageList } from '@/api/systemManage-roleManage'
 import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
 import { getFileShowSize, parseTime } from '@/utils/index'
-
+import elDragDialog from '@/directive/el-drag-dialog'
 export default {
+  directives: { elDragDialog },
   components: { Pagination },
   data() {
     return {
@@ -181,9 +181,7 @@ export default {
         endTime: null, // 结束时间
         fileStatusList: []// 文件上传状态
       },
-      query2: {
-        groupId: null
-      },
+
       file_status: {
         0: '已提交',
         1: '编码中',
@@ -201,12 +199,28 @@ export default {
       listLoading: true, // 表格是否开启遮罩
       isDisabled: false, // 推送按钮是否可用
       menu_tree_flag: false, // 是否显示树
-      treeData: []// 推送的知识库菜单
+      treeData: [], // 推送的知识库菜单
+      defaultProps: {
+        children: 'children',
+        label: 'label'
+      },
+      selectNodes: [], // 选择的树的节点
+      fileId: '', // 当前文件id
+      showCustom: true// 租户查询是否显示
     }
   },
   created() {
+    const manageType = this.$store.state.user.userPermission.manageType
+
     this.get_list()
-    this.getCustomManageList()
+
+    if (manageType !== 1) {
+      this.showCustom = false
+      this.listQuery.selectCompanyId = this.$store.state.user.userPermission.groupId
+    } else {
+      this.getCustomManageList()
+      this.showCustom = true
+    }
     this.findUserListByGroupId()
   },
   methods: {
@@ -239,11 +253,6 @@ export default {
       this.listQuery.fileStatusList = []
       this.get_list()
     },
-    // 监听三组数据变化
-    tenantsGroupsRolesVal(val) {
-      this.listQuery.selectGroupId = val.companyIds
-      this.listQuery.egroup = val.egroupId
-    },
     // 获取租户列表
     getCustomManageList() {
       getCustomManageList().then(response => {
@@ -252,8 +261,7 @@ export default {
     },
     // 根据租户id查询用户列表
     findUserListByGroupId() {
-      this.query2.groupId = this.listQuery.selectCompanyId
-      findUserListByGroupId(this.query2).then(response => {
+      findUserListByGroupId({ groupId: this.listQuery.selectCompanyId }).then(response => {
         this.user_list = response.data
       })
     },
@@ -366,19 +374,20 @@ export default {
     },
     // 推送至知识库
     pushToKnowledge(row) {
+      this.fileId = row.mainFileId
       const groupId = this.getFileListData(row.mainFileId).groupId
       this.initializeTreeData(groupId)
       this.menu_tree_flag = true
     },
     // 初始化推送菜单树的数据
     initializeTreeData(val) {
-      const companyTree = { label: '企业知识库', type: 'company' }
-      const groupTree = { label: '小组知识库', type: 'egroup' }
+      const companyTree = { label: '企业知识库', id: val, type: 'company' }
+      const groupTree = { label: '小组知识库', id: 'allEgroup', type: 'egroup' }
       getUserEgroupInfo({ selectCompanyId: val }).then(response => {
         const groupList = response.data.egroupInfo
         const groupNames = []
         for (let i = 0; i < groupList.length; i++) {
-          groupNames.push({ label: groupList[i].groupName, value: groupList[i]._id })
+          groupNames.push({ label: groupList[i].groupName, id: groupList[i].inc })
         }
         groupTree.children = groupNames
         this.treeData = [companyTree, groupTree]
@@ -386,32 +395,35 @@ export default {
     },
     // 选择菜单 单选
     menu_tree_check_fn(data, checked, indeterminate) {
-      console.log(this.$refs.tree.getCheckedNodes());
-      debugger
-      this.menu_tree_checked.checkey = [data.id]
+      if (data.type === 'egroup') {
+        this.$message.warning('请选择小组！')
+        this.$refs.tree.setCheckedKeys([])
+        return
+      }
       if (checked === true) {
-        const need_ids = []
-        const need_lables = []
-        const cur_id = data.id
-        const menu_dt = this.menu_dt[1]
-        const cur_arr = menu_dt[cur_id]
-        cur_arr.forEach(item => {
-          need_ids.push(item.id)
-          need_lables.push(item.label)
-        })
-        this.menu_tree_checked.ids = need_ids
-        this.menu_tree_checked.lables = need_lables
         this.$refs.tree.setCheckedKeys([data.id])
-        this.menu_tree_checked.dt = data
       } else {
         if (this.menu_tree_checked.id === data.id) {
           this.$refs.tree.setCheckedKeys([data.id])
         }
       }
+      this.selectNodes = this.$refs.tree.getCheckedNodes()
     },
     // 取消推送
     cancel_push() {
       this.menu_tree_flag = false
+    },
+    // 开始推送
+    save_menu() {
+      if (this.selectNodes.length === 0) {
+        this.$message.warning('请选择推送路径！')
+        return
+      }
+      console.log(this.selectNodes)
+      const ownerId = this.selectNodes[0].id
+      pushToKnowledge({ fileId: this.fileId, ownerId: ownerId + '', parentId: ownerId + '' }).then(() => {
+        this.$message.warning('推送成功！')
+      })
     },
     // 查看详情
     detail(row) {
