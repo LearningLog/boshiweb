@@ -21,13 +21,13 @@
           v-if="activeStep !== 3"
           type="primary"
           @click="nextStep"
-        ><i class="addIcon iconfont iconshangyibu" />下一步</el-button>
+        ><i class="addIcon iconfont iconxiayibu" />下一步</el-button>
         <el-button
           v-if="activeStep === 3"
           v-no-more-click
           type="primary"
           @click="publish('exam')"
-        ><i class="addIcon iconfont iconshangyibu" />发布</el-button>
+        ><i class="addIcon iconfont iconfabu1" />发布</el-button>
       </div>
     </div>
     <div>
@@ -756,7 +756,6 @@
 </template>
 <script>
 import { publishExam, publishExam2 } from '@/api/evolutionManage-examination'
-import SelectFile from '@/components/SelectFile'
 import AddLabels from '@/components/AddEvalLabels'
 import AddSkills from '@/components/AddEvalSkills'
 import Examiners from '@/components/Examiners'
@@ -768,7 +767,6 @@ const $ = window.$
 
 export default {
   components: {
-    SelectFile,
     AddLabels,
     AddSkills,
     Examiners
@@ -1528,7 +1526,13 @@ export default {
     // 监听选择人员
     getExaminers(val) {
       this.targetUser = val
-      if (val.length && val[0].length >= 2) {
+      var flag = true
+      for (var key in val) {
+        if (!val[key][0]) {
+          flag = false
+        }
+      }
+      if (flag) {
         this.exam.memer = '111'
       } else {
         this.exam.memer = ''

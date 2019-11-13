@@ -120,7 +120,7 @@ export default {
     },
     egroup: {
       type: [Number, String],
-      default: ''
+      default: 0
     }
   },
   data() {

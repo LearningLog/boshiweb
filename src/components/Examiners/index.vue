@@ -72,7 +72,15 @@ export default {
       )
     },
     handleChange(val) {
-      this.$emit('examiners', val)
+      var obj = {}
+      val.forEach(item => {
+        if (!obj[item[0]]) {
+          obj[item[0]] = [item[1]]
+        } else {
+          obj[item[0]].push(item[1])
+        }
+      })
+      this.$emit('examiners', obj)
     }
   }
 }

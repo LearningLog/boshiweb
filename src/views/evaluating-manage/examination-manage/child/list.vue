@@ -128,7 +128,9 @@ export default {
       checkedDelList: [], // 选择删除的list
       exam: {}, // 考试详情
       selectCompanyId: '', // 编辑的当前行selectCompanyId
-      scoreCount: 0 // 编辑的当前行考试总分scoreCount
+      scoreCount: 0, // 编辑的当前行考试总分scoreCount
+      companyId: '', // 新增选择的租户
+      egroup: '' // 新增选择的小组
     }
   },
 
@@ -147,6 +149,7 @@ export default {
         this.total = response.data.page.totalCount
       })
     },
+
     // 搜索
     topSearch() {
       this.time_range = this.time_range || []
@@ -154,6 +157,7 @@ export default {
       this.listQuery.endTime = this.time_range[1]
       this.get_list()
     },
+
     // 重置
     reset() {
       this.isReset = true
@@ -166,12 +170,14 @@ export default {
       this.listQuery.endTime = ''
       this.get_list()
     },
+
     // 监听三组数据变化
     tenantsGroupsRolesVal(val) {
       this.listQuery.selectCompanyId = val.companyIds
       this.listQuery.egroup = val.egroupId
       this.listQuery.roleId = val.roleId
     },
+
     // 新增监听三组数据变化
     tenantsGroupsRolesVal2(val) {
       this.companyId = val.companyIds

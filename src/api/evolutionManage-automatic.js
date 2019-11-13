@@ -25,3 +25,39 @@ export function delAuto(data) {
   })
 }
 
+// 发布
+export function publish(data) {
+  return request({
+    url: '/evaluation/automatic/publish',
+    method: 'post',
+    data
+  })
+}
+
+// 暂停
+export function stop(data) {
+  return request({
+    url: '/evaluation/automatic/stop',
+    method: 'post',
+    data
+  })
+}
+
+// 保存
+export function submit(data) {
+  return request({
+    url: '/evaluation/automatic/submit',
+    method: 'post',
+    data
+  })
+}
+
+// 保存并发布
+export function saveThenPublish(data) {
+  return request({
+    url: '/evaluation/automatic/saveThenPublish',
+    method: 'post',
+    data
+  })
+}
+

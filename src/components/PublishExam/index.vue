@@ -197,10 +197,16 @@ export default {
     // 监听选择人员
     getExaminers(val) {
       this.targetUser = val
-      if (val.length && val[0].length >= 2) {
-        this.paparForm.memer = '111'
+      var flag = true
+      for (var key in val) {
+        if (!val[key][0]) {
+          flag = false
+        }
+      }
+      if (flag) {
+        this.exam.memer = '111'
       } else {
-        this.paparForm.memer = ''
+        this.exam.memer = ''
       }
     },
     // 取消
@@ -216,16 +222,7 @@ export default {
           this.paparForm.begin_time = this.paparForm.time_range[0]
           this.paparForm.end_time = this.paparForm.time_range[1]
           delete this.paparForm.time_range
-
-          var obj = {}
-          this.targetUser.forEach(item => {
-            if (!obj[item[0]]) {
-              obj[item[0]] = [item[1]]
-            } else {
-              obj[item[0]].push(item[1])
-            }
-          })
-          this.paparForm.targetUser = obj
+          this.paparForm.targetUser = this.targetUser
           this.$emit('publishExam', this.paparForm)
         }
       })

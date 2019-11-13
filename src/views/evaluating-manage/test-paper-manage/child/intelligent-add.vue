@@ -419,7 +419,7 @@ export default {
         egroup: this.egroup,
         topic_label: this.intelligenceForm.topic_label,
         topic_skill: this.intelligenceForm.topic_skill,
-        ids: []
+        ids: this.intelligenceForm.ids
       }
       getTopicCount(params).then(res => {
         this.topicsNumDetail = res.data
@@ -654,7 +654,7 @@ export default {
       if (this.id) {
         this.$router.push({
           path: '/evaluating-manage/test-paper-manage/edit',
-          query: { _id: this.id, selectCompanyId: this.selectCompanyId, egroup: this.egroup, isedit: 1  }
+          query: { _id: this.id, selectCompanyId: this.selectCompanyId, egroup: this.egroup, isedit: 1 }
         })
       } else {
         this.$router.push({
@@ -749,5 +749,11 @@ export default {
 .count .judge {
   margin-bottom: 20px;
   color: #999;
+}
+.tag {
+  display: inline;
+}
+.tag /deep/ .el-tag {
+  margin-right: 10px;
 }
 </style>
