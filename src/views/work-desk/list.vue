@@ -69,7 +69,7 @@
       </transition>
     </div>
     <div id="topBtn">
-      <el-button type="primary" @click="alert(1111)"><i class="iconfont iconjia" />新增</el-button>
+      <el-button type="primary" @click="showUpload()"><i class="iconfont iconziyuan" />上传资料</el-button>
     </div>
     <el-table
       v-loading="listLoading"
@@ -157,6 +157,7 @@
 </template>
 
 <script>
+import store from '@/store'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { getFileList, getFileListManage, findUserListByGroupId, del, getDownloadToken, pushToKnowledge } from '@/api/work-desk'
 import { getCustomManageList } from '@/api/systemManage-roleManage'
@@ -224,8 +225,13 @@ export default {
       this.showCustom = true
     }
     this.findUserListByGroupId()
+    store.dispatch('fileUpload/belongs', { data_type: 3 })
   },
   methods: {
+    // 启动上传
+    showUpload() {
+      store.dispatch('fileUpload/isVisibility', 1)
+    },
     // 获取列表数据
     get_list() {
       this.listLoading = true

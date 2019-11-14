@@ -13,7 +13,7 @@
       <div class="content">
         <div id="filePicker">
           <div class="drag-upload">
-            <i class="iconfont iconziyuan"></i>
+            <i class="iconfont iconziyuan" />
             <p>可拖拽文件至此直接上传</p>
           </div>
         </div>
@@ -22,19 +22,19 @@
             <div id="file-list">
               <ul v-for="(file, index) in fileList" :key="file.id" class="file-item" :class="`file-${file.id}`">
                 <li class="file-type" :icon="fileCategory(file.ext)">
-                  <i class="iconfont icontupian1" v-if="fileCategory(file.ext) === 'image'"></i>
-                  <i class="iconfont iconshipinwenjian" v-else-if="fileCategory(file.ext) === 'video'"></i>
-                  <i class="iconfont iconyinpinwenjian" v-else-if="fileCategory(file.ext) === 'audio'"></i>
-                  <i class="iconfont icondoc" v-else-if="fileCategory(file.ext) === 'text'"></i>
-                  <i class="iconfont iconpdf" v-else-if="fileCategory(file.ext) === 'pdf'"></i>
-                  <i class="iconfont iconyasuobao" v-else-if="fileCategory(file.ext) === 'compressed'"></i>
-                  <i class="iconfont iconzu" v-else></i>
+                  <i v-if="fileCategory(file.ext) === 'image'" class="iconfont icontupian1" />
+                  <i v-else-if="fileCategory(file.ext) === 'video'" class="iconfont iconshipinwenjian" />
+                  <i v-else-if="fileCategory(file.ext) === 'audio'" class="iconfont iconyinpinwenjian" />
+                  <i v-else-if="fileCategory(file.ext) === 'text'" class="iconfont icondoc" />
+                  <i v-else-if="fileCategory(file.ext) === 'pdf'" class="iconfont iconpdf" />
+                  <i v-else-if="fileCategory(file.ext) === 'compressed'" class="iconfont iconyasuobao" />
+                  <i v-else class="iconfont iconzu" />
                 </li>
                 <el-tooltip class="file-name-tip" effect="dark" :content="file.name" placement="top-start">
                   <li class="file-name singleLineOmission">{{ file.name }}</li>
                 </el-tooltip>
                 <li class="progress">
-                  <el-progress :percentage="progress" :color="customColors"></el-progress>
+                  <el-progress :percentage="progress" :color="customColors" />
                 </li>
                 <li class="file-size">{{ fileSize(file.size) }}</li>
                 <!--<li class="file-status">上传中...</li>-->
@@ -80,11 +80,6 @@ export default {
     VueWebuploader
   },
   props: {
-    // 上传最大数量 默认为100个
-    belongs: {
-      type: Object,
-      default: null
-    },
     customStyle: {
       type: Object,
       default: function() {
@@ -124,7 +119,7 @@ export default {
     uploader() {
       return this.$refs.uploader
     },
-    ...mapGetters(['visibility', 'isMinimality'])
+    ...mapGetters(['visibility', 'isMinimality', 'belongs'])
   },
   watch: {},
   mounted() {},
@@ -143,6 +138,7 @@ export default {
       store.dispatch('fileUpload/isVisibility', 1)
     },
 
+    // 上传变化
     fileChange(file) {
       if (!file.size) return
       this.fileList.push(file)
@@ -173,7 +169,8 @@ export default {
       file.path = file.path || ''
       const fileId = file.path.split('ZmlsZUlk=')[1]
       const sourceUid = file.source.uid // 文件上传文件唯一id
-      if (this.belongs.data_type === 3) {
+      var currentFile = this.fileQueued.get(sourceUid)
+      if (currentFile.data_type === 3) {
         const params = {
           fileFormat: file.ext,
           fileName: file.name,
@@ -183,10 +180,10 @@ export default {
         }
         deskAddFile(params).then(res => {
           console.log(res)
-          this.$message.success('工作台文件上传成功')
+          this.$message.success('上传成功！')
         })
       } else {
-        const currentFile = this.fileQueued.get(sourceUid)
+        // const currentFile = this.fileQueued.get(sourceUid)
         const params = {
           format: file.ext,
           name: file.name,
@@ -200,11 +197,7 @@ export default {
         }
         knowledgeCreateFile(params).then(res => {
           console.log(res)
-          if (currentFile.data_type === 1) {
-            this.$message.success('企业知识库文件上传成功')
-          } else {
-            this.$message.success('小组知识库文件上传成功')
-          }
+          this.$message.success('上传成功')
         })
       }
     },

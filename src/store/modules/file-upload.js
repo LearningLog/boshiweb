@@ -6,7 +6,8 @@
 */
 const state = {
   visibility: { bottom: '-522px' }, // 是否弹出上传组件
-  isMinimality: false
+  isMinimality: false, // 控制最小化
+  belongs: {} // 上传的文件所属 工作台还是知识库
 }
 
 const mutations = {
@@ -31,6 +32,9 @@ const mutations = {
       }
       state.isMinimality = true
     }
+  },
+  SET_BELONGS: (state, belongs) => {
+    state.belongs = belongs
   }
 }
 
@@ -40,6 +44,9 @@ const actions = {
   },
   minimality({ commit }) {
     commit('SET_VISIBILITY')
+  },
+  belongs({ commit }, belongs) {
+    commit('SET_BELONGS', belongs)
   }
 }
 

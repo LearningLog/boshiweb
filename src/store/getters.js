@@ -16,6 +16,7 @@ const getters = {
   permission_routes: state => state.permission.routes, // 当前登录对象拥有的所有权限
   menuType: state => state.menuManage.menuType,
   visibility: state => state.fileUpload.visibility, // 是否弹出上传组件
-  isMinimality: state => state.fileUpload.isMinimality // 是否弹出上传组件
+  isMinimality: state => state.fileUpload.isMinimality, // 控制最小化
+  belongs: state => state.fileUpload.belongs // 上传的文件所属 工作台还是知识库
 }
 export default getters

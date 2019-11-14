@@ -8,7 +8,7 @@
     <el-tooltip placement="top" content="返回顶部">
       <back-to-top :visibility-height="mainContentHeight" :back-position="0" transition-name="fade" />
     </el-tooltip>
-    <file-uploader :belongs="{ data_type: 3 }" />
+    <file-uploader />
   </section>
 </template>
 
