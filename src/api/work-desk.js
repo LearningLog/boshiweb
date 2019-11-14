@@ -119,10 +119,10 @@ export function getDownloadToken(data) {
   })
 }
 
-// 批量下载文件
-export function batchDownload(data) {
+// 推送至知识库
+export function pushToKnowledge(data) {
   return request({
-    url: 'api/workDeskFile/downloadZipFile',
+    url: '/workDeskPushFile/pushFileToKnowledgeLib',
     method: 'post',
     data
   })

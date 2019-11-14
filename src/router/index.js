@@ -184,14 +184,14 @@ export const asyncRoutes = [
         path: 'list',
         name: 'work-desk-list',
         hidden: true,
-        component: () => import('@/views/work-desk/child/list.vue'),
+        component: () => import('@/views/work-desk/list.vue'),
         meta: { title: '工作台列表', icon: '', activeMenu: '/work-desk' }
       },
       {
         path: 'detail',
         name: 'work-desk-detail',
         hidden: true,
-        component: () => import('@/views/work-desk/child/detail'),
+        component: () => import('@/views/work-desk/detail'),
         meta: { title: '工作详情', icon: '', activeMenu: '/work-desk' }
       }
     ]
