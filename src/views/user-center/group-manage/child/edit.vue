@@ -161,6 +161,7 @@ export default {
           data.groupManageUser = this.form.groupManageUser
           data.groupUser = this.form.groupUser
           data.skillinfo = this.form.skillinfo
+          data._id = this.form._id
           modifyItem(data).then(response => {
             this.$message.success('修改分组成功！')
             this.noLeaveprompt = true
