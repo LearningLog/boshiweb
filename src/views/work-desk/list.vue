@@ -93,7 +93,7 @@
           <div class="f imgInfo">
             <img id="fileImg" :src="getPic(scope.row)">
           </div>
-          <div class="f">
+          <div class="f" @click="detail">
             <p>{{ scope.row.fileName }}</p>
             <p>{{ getFileShowSize(scope.row.fileSize) }}</p>
           </div>
@@ -158,7 +158,7 @@
 
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import { getFileList, findUserListByGroupId, del, getDownloadToken, pushToKnowledge } from '@/api/work-desk'
+import { getFileList, getFileListManage, findUserListByGroupId, del, getDownloadToken, pushToKnowledge } from '@/api/work-desk'
 import { getCustomManageList } from '@/api/systemManage-roleManage'
 import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
 import { getFileShowSize, parseTime } from '@/utils/index'
@@ -188,6 +188,8 @@ export default {
         3: '编码失败',
         4: '编码成功'
       },
+      file_encoding: [], // 编码中的文件
+      manageType: 0, // 权限标识
       checkedDelList: [], // 选择删除的list
       list: [], // 表格数据
       fileList: [], // 文件列表数据
@@ -211,11 +213,10 @@ export default {
     }
   },
   created() {
-    const manageType = this.$store.state.user.userPermission.manageType
-
+    this.manageType = this.$store.state.user.userPermission.manageType
     this.get_list()
 
-    if (manageType !== 1) {
+    if (this.manageType !== 1) {
       this.showCustom = false
       this.listQuery.selectCompanyId = this.$store.state.user.userPermission.groupId
     } else {
@@ -228,12 +229,25 @@ export default {
     // 获取列表数据
     get_list() {
       this.listLoading = true
-      getFileList(this.listQuery).then(response => {
-        this.list = response.data.page.list
-        this.fileList = response.data.filePackageIdWorkDeskFile
-        this.total = response.data.page.totalCount
-        this.listLoading = false
-      })
+      if (this.manageType === 3) {
+        getFileList(this.listQuery).then(response => {
+          this.list = response.data.page.list
+          this.fileList = response.data.filePackageIdWorkDeskFile
+          this.total = response.data.page.totalCount
+          this.listLoading = false
+          this.isNeedRefrssh()
+        })
+      } else if (this.manageType === 1 || this.manageType === 2) {
+        getFileListManage(this.listQuery).then(response => {
+          this.list = response.data.page.list
+          this.fileList = response.data.filePackageIdWorkDeskFile
+          this.total = response.data.page.totalCount
+          this.listLoading = false
+          this.isNeedRefrssh()
+        })
+      } else {
+        this.$message.success('无法获取权限信息！')
+      }
     },
     // 搜索
     topSearch() {
@@ -241,6 +255,22 @@ export default {
       this.listQuery.startTime = this.time_range[0]
       this.listQuery.endTime = this.time_range[1]
       this.get_list()
+    },
+    // 判断是否有编码中的数据需要刷新
+    isNeedRefrssh() {
+      debugger
+      this.file_encoding.length = 0
+      for (let i = 0; i < this.list.length; i++) {
+        if (this.getFileListData(this.list[i].mainFileId).file_status === 1) {
+          this.file_encoding.push(this.list[i].mainFileId)
+        }
+      }
+      console.log(this.file_encoding)
+      if (this.file_encoding.length > 0) {
+        setTimeout(() => {
+          this.get_list()
+        }, 5000)
+      }
     },
     // 重置
     reset() {
