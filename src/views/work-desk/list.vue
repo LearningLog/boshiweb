@@ -258,7 +258,6 @@ export default {
     },
     // 判断是否有编码中的数据需要刷新
     isNeedRefrssh() {
-      debugger
       this.file_encoding.length = 0
       for (let i = 0; i < this.list.length; i++) {
         if (this.getFileListData(this.list[i].mainFileId).file_status === 1) {
