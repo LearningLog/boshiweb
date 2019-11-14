@@ -5,8 +5,8 @@
       <div id="header" class="clearfix">
         <p class="fl title">上传资料</p>
         <div class="fr icons">
-          <span @click="minimality"><i class="minimality iconfont iconiconfontmove" /></span>
-          <span @click="open"><i class="spread iconfont iconhao" /></span>
+          <span v-if="!isMinimality" @click="minimality"><i class="minimality iconfont iconiconfontmove" /></span>
+          <span v-if="isMinimality" @click="open"><i class="spread iconfont iconhao" /></span>
           <span @click="close"><i class="close iconfont iconguanbi" /></span>
         </div>
       </div>
@@ -47,6 +47,9 @@
               <div v-if="!fileList.length" class="no-file"><i class="iconfont icon-empty-file" /> 暂无待上传文件</div>
             </div>
           </el-scrollbar>
+        </div>
+        <div id="btnGroup">
+          <el-button type="primary" @click="clear()">清空上传</el-button>
         </div>
       </div>
       <vue-webuploader
@@ -106,21 +109,22 @@ export default {
         appCode: this.$store.state.user.applicationInfo.appCode
       },
       fileQueued: new Map(), // 上传队列
-      progress: 0, // 进度
       customColors: [
-        {color: '#f56c6c', percentage: 20},
-        {color: '#e6a23c', percentage: 40},
-        {color: '#5cb87a', percentage: 60},
-        {color: '#1989fa', percentage: 80},
-        {color: '#20c7b3', percentage: 100}
-      ]
+        { color: '#f56c6c', percentage: 20 },
+        { color: '#e6a23c', percentage: 40 },
+        { color: '#5cb87a', percentage: 60 },
+        { color: '#1989fa', percentage: 80 },
+        { color: '#20c7b3', percentage: 100 }
+      ],
+      progress: 0, // 进度
+      uploadIndex: 0 // 当前上传的文件下标
     }
   },
   computed: {
     uploader() {
       return this.$refs.uploader
     },
-    ...mapGetters(['visibility'])
+    ...mapGetters(['visibility', 'isMinimality'])
   },
   watch: {},
   mounted() {},
@@ -138,10 +142,10 @@ export default {
     open() {
       store.dispatch('fileUpload/isVisibility', 1)
     },
+
     fileChange(file) {
       if (!file.size) return
       this.fileList.push(file)
-      console.log(file)
       const sourceUid = file.source.uid // 文件上传文件唯一id
       const belongs = {
         data_type: this.belongs.data_type,
@@ -156,10 +160,13 @@ export default {
     // 上传进度
     onProgress(file, percent) {
       this.progress = Math.ceil(percent * 100 * 100) / 100
+      // this.progress[this.uploadIndex] = (Math.ceil(percent * 100 * 100) / 100)
+      // console.log(this.progress)
     },
 
     // 上传成功
     onSuccess(file, response) {
+      this.uploadIndex++
       console.log('上传成功', file)
       console.log(this.belongs)
       console.log('file.path', file.path)
@@ -213,14 +220,39 @@ export default {
 
     // 移除
     remove(file) {
-      // 取消并中断文件上传
-      this.uploader.cancelFile(file)
-      // 在队列中移除文件
-      this.uploader.removeFile(file, true)
+      this.$confirm('确定要删除上传【' + file.name + '】任务吗？', '删除任务', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        // 取消并中断文件上传
+        this.uploader.cancelFile(file)
+        // 在队列中移除文件
+        this.uploader.removeFile(file, true)
 
-      // 在ui上移除
-      const index = this.fileList.findIndex(ele => ele.id === file.id)
-      this.fileList.splice(index, 1)
+        // 在ui上移除
+        const index = this.fileList.findIndex(ele => ele.id === file.id)
+        this.fileList.splice(index, 1)
+      }).catch(() => {})
+    },
+
+    // 清空
+    clear() {
+      var that = this
+      if (this.fileList.length) {
+        this.$confirm('确定要清空上传任务吗？', '清空上传', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          for (var index = 0, len = that.fileList.length; index < len; index++) {
+            var file = that.fileList[index]
+            that.uploader.cancelFile(file)
+            that.uploader.removeFile(file, true)
+            that.fileList.splice(index--, 1)
+          }
+        }).catch(() => {})
+      }
     },
 
     // 文件大小
@@ -331,7 +363,7 @@ export default {
 
     #file-list {
       position: relative;
-      height: 360px;
+      height: 20vh;
       overflow-y: auto;
     }
 

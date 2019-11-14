@@ -15,6 +15,7 @@ const getters = {
   backstageRoutes: state => state.permission.backstageRoutes, // 后台管理权限
   permission_routes: state => state.permission.routes, // 当前登录对象拥有的所有权限
   menuType: state => state.menuManage.menuType,
-  visibility: state => state.fileUpload.visibility // 是否弹出上传组件
+  visibility: state => state.fileUpload.visibility, // 是否弹出上传组件
+  isMinimality: state => state.fileUpload.isMinimality // 是否弹出上传组件
 }
 export default getters

@@ -6,6 +6,7 @@
 */
 const state = {
   visibility: { bottom: '-522px' }, // 是否弹出上传组件
+  isMinimality: false
 }
 
 const mutations = {
@@ -15,17 +16,20 @@ const mutations = {
         visibility: 'visible',
         bottom: '0'
       }
+      state.isMinimality = false
     } else if (isVisibility === 2) {
       state.visibility = {
-        bottom: '-522px',
+        bottom: '-580px',
         transition: '1s'
       }
+      state.isMinimality = false
     } else if (isVisibility === 3) {
       state.visibility = {
-        bottom: '-483px',
+        bottom: '-540px',
         visibility: 'visible',
         transition: '1s'
       }
+      state.isMinimality = true
     }
   }
 }
