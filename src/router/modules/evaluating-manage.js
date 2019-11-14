@@ -176,6 +176,20 @@ const evaluatingManage = {
           hidden: true,
           component: () => import('@/views/evaluating-manage/automatic-release-manage/child/edit'),
           meta: { title: '修改考试', icon: '', activeMenu: '/evaluating-manage/automatic-release-manage' }
+        },
+        {
+          path: 'detail',
+          name: 'automatic-release-edit',
+          hidden: true,
+          component: () => import('@/views/evaluating-manage/automatic-release-manage/child/detail'),
+          meta: { title: '已发布考试', icon: '', activeMenu: '/evaluating-manage/automatic-release-manage' }
+        },
+        {
+          path: 'statistics',
+          name: 'automatic-release-edit',
+          hidden: true,
+          component: () => import('@/views/evaluating-manage/automatic-release-manage/child/statistics'),
+          meta: { title: '考试统计', icon: '', activeMenu: '/evaluating-manage/automatic-release-manage' }
         }
       ]
     },

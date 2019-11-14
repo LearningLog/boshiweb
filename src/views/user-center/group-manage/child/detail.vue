@@ -8,22 +8,22 @@
         <span>{{ form.desc }}</span>
       </el-form-item>
       <el-form-item class="" label="所属企业:">
-        <span>{{ form.createtime }}</span>
+        <span>{{ form.customname }}</span>
       </el-form-item>
       <el-form-item class="" label="分组负责人">
-        <span>{{ form.createtime }}</span>
+        <span>{{ parseMinc(form.mincNameList ) }}</span>
       </el-form-item>
       <el-form-item class="" label="成员人数">
-        <span>{{ form.createtime }}</span>
+        <span>{{ form.incNameList.length }}</span>
       </el-form-item>
       <el-form-item class="" label="分组成员">
-        <span>{{ form.createtime }}</span>
+        <span>{{ parseInc(form.incNameList) }}</span>
       </el-form-item>
       <el-form-item class="" label="分组来源">
-        <span>{{ form.createtime }}</span>
+        <span>{{ form.dataTypeName?form.dataTypeName:'本系统创建' }}</span>
       </el-form-item>
       <el-form-item class="" label="分组技能">
-        <span>{{ form.createtime }}</span>
+        <span>{{ parseSkill(form.skillNameList) }}</span>
       </el-form-item>
     </el-form>
     <div id="btnGroup">
@@ -40,7 +40,10 @@ export default {
       form: { // 表单数据
         skill_name: '', // 分组名称
         desc: '', // 分组描述
-        createtime: '' // 创建时间
+        createtime: '', // 创建时间
+        mincNameList: [],
+        incNameList: [],
+        skillNameList: []
       },
       id: '' // 查询id
     }
@@ -60,6 +63,24 @@ export default {
     // 获取分组授权页面管理类型
     confirm() {
       this.$router.push({ path: '/user-center/group-manage/list' })
+    },
+    parseSkill(data) {
+      const skillNameList = data.map((v, k, arr) => {
+        return v.skill_name
+      })
+      return skillNameList.join('、')
+    },
+    parseMinc(data) {
+      const skillNameList = data.map((v, k, arr) => {
+        return v.nickname
+      })
+      return skillNameList.join('、')
+    },
+    parseInc(data) {
+      const nicknameList = data.map((v, k, arr) => {
+        return v.nickname
+      })
+      return nicknameList.join('、')
     }
   }
 }

@@ -90,10 +90,10 @@
       </el-table-column>
       <el-table-column align="center" label="信息" min-width="150" show-overflow-tooltip>
         <template slot-scope="scope">
-          <div class="f imgInfo">
+          <div class="f imgInfo" @click="preview(scope.row)">
             <img id="fileImg" :src="getPic(scope.row)">
           </div>
-          <div class="f" @click="detail">
+          <div class="f pointer" @click="detail(scope.row)">
             <p>{{ scope.row.fileName }}</p>
             <p>{{ getFileShowSize(scope.row.fileSize) }}</p>
           </div>
@@ -153,6 +153,7 @@
         <el-button type="primary" plain @click="cancel_push">取消</el-button>
       </span>
     </el-dialog>
+    <FilePreview :is-file-preview="isFilePreview" :file-format="fileFormat" :file-type-code="fileTypeCode" :file-url="fileUrl" :title="fileName" @closePreview="closePreview" />
   </div>
 </template>
 
@@ -164,11 +165,17 @@ import { getCustomManageList } from '@/api/systemManage-roleManage'
 import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
 import { getFileShowSize, parseTime } from '@/utils/index'
 import elDragDialog from '@/directive/el-drag-dialog'
+import FilePreview from '@/components/FilePreview'
 export default {
   directives: { elDragDialog },
-  components: { Pagination },
+  components: { Pagination, FilePreview },
   data() {
     return {
+      isFilePreview: false, // 是否打开预览
+      fileFormat: '', // 文件格式
+      fileTypeCode: -1, // 文件类型
+      fileUrl: '', // 文件地址
+      fileName: '', // 文件名称（弹窗title）
       popoverVisible: false, // 高级搜索是否显示
       total: 0, // 总条数
       listQuery: { // 查询条件
@@ -232,6 +239,21 @@ export default {
     showUpload() {
       store.dispatch('fileUpload/isVisibility', 1)
     },
+    // 图片预览
+    preview(row) {
+      this.fileUrl = row.fileUrl
+      this.fileTypeCode = row.fileTypeCode
+      this.fileFormat = row.fileFormat
+      this.fileName = row.fileName
+      this.isFilePreview = true
+    },
+    // 监听预览
+    closePreview() {
+      this.isFilePreview = false
+      this.fileUrl = ''
+      this.fileTypeCode = -1
+      this.title = ''
+    },
     // 获取列表数据
     get_list() {
       this.listLoading = true
@@ -274,7 +296,7 @@ export default {
       if (this.file_encoding.length > 0) {
         setTimeout(() => {
           this.get_list()
-        }, 5000)
+        }, 50000)
       }
     },
     // 重置
@@ -472,7 +494,7 @@ export default {
     },
     // 查看详情
     detail(row) {
-      this.$router.push({ path: '/work-desk/detail', query: { id: row._id }})
+      this.$router.push({ path: '/work-desk/detail', query: { row: row }})
     },
     parseTime(time, cFormat) {
       return parseTime(time, cFormat)
