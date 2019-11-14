@@ -8,15 +8,17 @@
     <el-tooltip placement="top" content="返回顶部">
       <back-to-top :visibility-height="mainContentHeight" :back-position="0" transition-name="fade" />
     </el-tooltip>
+    <file-uploader :belongs="{ data_type: 3 }" />
   </section>
 </template>
 
 <script>
 import BackToTop from '@/components/BackToTop'
+import FileUploader from '@/components/VueWebuploader'
 
 export default {
   name: 'AppMain',
-  components: { BackToTop },
+  components: { BackToTop, FileUploader },
   data() {
     return {
       mainContentHeight: 400

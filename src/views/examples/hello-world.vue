@@ -10,14 +10,16 @@
     <el-button type="primary" plain @click="get()">getCookie</el-button>
     <el-button type="primary" plain @click="del()">delCookie</el-button>
 
+    <el-button type="primary" @click="showUpload">showUpload</el-button>
+    <el-button type="primary" @click="closeUpload">showUpload</el-button>
+
+
     <FilePreview :isFilePreview="isFilePreview" :fileFormat="fileFormat" :fileTypeCode="fileTypeCode" :fileUrl="fileUrl" :title="title" @closePreview="closePreview"></FilePreview>
     <el-button type="primary" plain  @click="pic_1">pic_1</el-button>
     <el-button type="primary" plain  @click="video_1">video_1</el-button>
     <el-button type="primary" plain  @click="audio_1">audio_1</el-button>
     <el-button type="primary" plain  @click="pdf_1">pdf_1</el-button>
 
-
-    <file-uploader :belongs="{ data_type: 3 }" />
     <br><br>
     <!--引入组件-->
     <tinymce :id="content" v-model="content" class="tinymce" :height="300" :width="900" :value="content" />
@@ -25,123 +27,13 @@
     <div class="editor-content vjs-16-9" v-html="content" />
     <div id="video" />
     <div id="video2" />
-    <div class="placeholder-container">
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-      <div>placeholder</div>
-    </div>
     <iframe src="//vjs.zencdn.net/v/oceans.mp4" frameborder="0" />
     <Footer />
   </div>
 </template>
 
 <script>
+  import store from '@/store'
 // 直接使用
 import clip from '@/utils/clipboard'
 // 指令形式使用
@@ -153,7 +45,7 @@ import FilePreview from '@/components/FilePreview' // secondary package based on
 const $ = window.$
 export default {
   name: 'HelloWorld',
-  components: { Tinymce, Footer, FileUploader, FilePreview },
+  components: { Tinymce, Footer, FilePreview },
   directives: {
     clipboard
   },
@@ -191,6 +83,15 @@ export default {
     this.initVideo2()
   },
   methods: {
+    // 启动上传
+    showUpload() {
+      store.dispatch('fileUpload/isVisibility', 1)
+    },
+    // 关闭上传
+    closeUpload() {
+      store.dispatch('fileUpload/isVisibility', 2)
+    },
+    // 预览图片
     pic_1() {
       this.fileUrl = 'https://cdnproduce.yunshicloud.com/5ce7f5106282c91ba828e991/BOSHI/5cf739b36282c9787bfca80e/936F835FF46D453088032E03D70F84FC.jpg'
       this.fileTypeCode = 3
@@ -198,6 +99,7 @@ export default {
       this.title = '图片'
       this.isFilePreview = true
     },
+    // 预览MP4
     video_1() {
       this.fileUrl = 'https://cdnproduce.yunshicloud.com/5bfe7318ec5fb16489a4948c/BOSHI/5d5678ee6282c96fa7cc0ef1/ee8f7494bb412ffc051a9d22d99dc7f4.mp4?ZmlsZUlk=5d89dcd027b2b40015803e29'
       this.fileTypeCode = 1
@@ -205,6 +107,7 @@ export default {
       this.title = '视频'
       this.isFilePreview = true
     },
+    // 预览MP3
     audio_1() {
       this.fileUrl = 'https://cdnproduce.yunshicloud.com/5ce7f5106282c91ba828e991/BOSHI/5cf216c36282c907f331d905/29730452da4ef817800526cbc2266aef.mp3?ZmlsZUlk=5dccbc783bb766001513a410'
       this.fileTypeCode = 2
@@ -212,6 +115,7 @@ export default {
       this.title = '音频'
       this.isFilePreview = true
     },
+    // 预览PDF
     pdf_1() {
       this.fileUrl = 'https://cdnproduce.yunshicloud.com/5ce7f5106282c91ba828e991/BOSHI/5cf216c36282c907f331d905/daafaadbc3f02dd0cb42a8a7baca44e1.pdf?ZmlsZUlk=5dc7cbf13bb76600150a618c'
       this.fileTypeCode = 7

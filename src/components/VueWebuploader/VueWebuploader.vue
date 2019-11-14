@@ -354,7 +354,6 @@ export default {
     cursor: pointer;
     background: #00b7ee;
     padding: 10px 15px;
-    color: #fff;
     text-align: center;
     border-radius: 3px;
     overflow: hidden;
