@@ -5,9 +5,10 @@
       :title="title"
       :append-to-body="true"
       :visible.sync="filePreviewVisible"
+      height="60vh"
       @close="cancel"
     >
-      <img v-if="fileTypeCode === 3" class="img" :src="fileUrl" alt="">
+      <div class="previewImg" :style="previewImg" v-if="fileTypeCode === 3" />
       <div class="vadioPlay">
         <!--<video id="video_1" src="" class="video video-js vjs-big-play-centered" controls preload="auto" v-if="fileTypeCode === 1"></video>-->
         <!--<audio id="audio_1" src="" class="video video-js vjs-big-play-centered" controls preload="auto" v-if="fileTypeCode === 2"></audio>-->
@@ -56,7 +57,8 @@ export default {
   },
   data() {
     return {
-      filePreviewVisible: false
+      filePreviewVisible: false,
+      previewImg: {}
     }
   },
   watch: {
@@ -90,6 +92,11 @@ export default {
           setTimeout(function() {
             that.initVideo(that.fileTypeCode, that.fileUrl)
           })
+        }
+        if (val === 3) {
+          this.previewImg = {
+            backgroundImage: 'url(' + that.fileUrl + ')'
+          }
         }
         if (val === 7) {
           that.openSmallWindowOnScreenMiddle(that.fileUrl, '', that.iWidth || 800, that.iHeight || 600)
@@ -153,6 +160,13 @@ export default {
 </script>
 
 <style scoped>
+  .previewImg {
+    width: 100%;
+    height: 50vh;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
 .img {
   width: 100%;
 }
