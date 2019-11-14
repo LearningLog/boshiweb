@@ -210,11 +210,12 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        const _ids = []
+        const ids = []
         this.delCheckedList.forEach(item => {
-          _ids.push(item._id)
+          debugger
+          ids.push(item._id)
         })
-        deleteMulti({ _ids: _ids }).then(response => {
+        deleteMulti({ ids: ids }).then(response => {
           this.$message.success('批量删除成功！')
           if ((this.list.length - this.delCheckedList.length) === 0) { // 如果当前页数据已删完，则去往上一页
             this.listQuery.currentPage -= 1

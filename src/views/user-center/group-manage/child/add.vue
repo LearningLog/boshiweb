@@ -29,7 +29,7 @@
       </el-form-item>
       <el-form-item label="分组技能" prop="">
         <el-select v-model="form.skillinfo" multiple placeholder="请选择">
-          <el-option v-for="item in allskillList" :key="item.increase_id" :label="item.skill_name" :value="item._id" />
+          <el-option v-for="item in allskillList" :key="item.increase_id" :label="item.skill_name" :value="item.increase_id" />
         </el-select>
       </el-form-item>
       <div id="btnGroup">
@@ -68,16 +68,16 @@ export default {
       noLeaveprompt: false, // 表单提交后，设置为true，据此判断提交不再弹出离开提示
       id: '', // 查询id
       form: {
-        skill_name: '', // 分组名称
+        groupName: '', // 分组名称
         desc: '', // 分组描述
-        selectCompanyId: '', // 选择的租户
+        selectCompanyId: this.$store.state.user.userSystemInfo.userInfo.groupId, // 选择的租户
         groupManageUser: [], // 分组负责人
         groupUser: [], // 分组成员
         skillinfo: []// 分组技能
       },
       custom_list: [], // 所属租户list
       rules: {
-        skill_name: [
+        groupName: [
           { required: true, message: '请输入分组名称（长度在 2 到 20 个字符）', trigger: 'blur' },
           { required: true, message: '请输入分组名称（长度在 2 到 20 个字符）', trigger: 'change' },
           { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' },
@@ -155,10 +155,17 @@ export default {
     save(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          addItem(this.form).then(response => {
-            this.$message.success('修改分组成功！')
+          const data = {}
+          data.groupName = this.form.groupName
+          data.desc = this.form.desc
+          data.selectCompanyId = this.form.selectCompanyId
+          data.groupManageUser = this.form.groupManageUser
+          data.groupUser = this.form.groupUser
+          data.skillinfo = this.form.skillinfo
+          addItem(data).then(response => {
+            this.$message.success('新增分组成功！')
             this.noLeaveprompt = true
-            this.$router.push({ path: '/user-center/group-manage/detail', query: { id: this.id }})
+            this.$router.push({ path: '/user-center/group-manage/detail', query: { id: response.data._id }})
           })
         }
       })
