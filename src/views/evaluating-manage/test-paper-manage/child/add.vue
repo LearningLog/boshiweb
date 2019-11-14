@@ -54,13 +54,13 @@
           <span>添加标签</span>
           <div v-if="paperLabels.length" class="tag">
             <el-tag
-                v-for="(tag, index) in paperLabels"
-                :key="tag.linc"
-                closable
-                size="medium"
-                :disable-transitions="false"
-                type="success"
-                @close="handlePaperLabelDel(index)"
+              v-for="(tag, index) in paperLabels"
+              :key="tag.linc"
+              closable
+              size="medium"
+              :disable-transitions="false"
+              type="success"
+              @close="handlePaperLabelDel(index)"
             >
               {{ tag.lname }}
             </el-tag>
@@ -1235,7 +1235,7 @@ export default {
       this[this.topic0].topic_skill = topic_skill
       this[this.topic0].topic_type = this[this.topic0].topic_type + ''
       this[this.topic0].topic_level = this[this.topic0].topic_level + ''
-      for(let key in this.topic_info[this.editTopicIndex]) {
+      for (const key in this.topic_info[this.editTopicIndex]) {
         delete this.topic_info[this.editTopicIndex][key]
       }
       $.extend(true, this.topic_info[this.editTopicIndex], this[this.topic0])

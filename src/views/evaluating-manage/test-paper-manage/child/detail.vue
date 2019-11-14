@@ -7,9 +7,9 @@
       </div>
       <div class="fr">
         <el-button
-            v-no-more-click
-            type="primary"
-            @click="cancel0"
+          v-no-more-click
+          type="primary"
+          @click="cancel0"
         >确定</el-button>
       </div>
     </div>
@@ -21,13 +21,13 @@
     <el-scrollbar wrap-class="scrollbar-wrapper">
       <div class="topics">
         <div class="paperLabels">
-          <i class="iconfont icontag"></i>
+          <i class="iconfont icontag" />
           <span>标签：</span>
           <el-tag
-              v-for="tag in paperLabels"
-              :key="tag.linc"
-              size="medium"
-              type="success"
+            v-for="tag in paperLabels"
+            :key="tag.linc"
+            size="medium"
+            type="success"
           >
             {{ tag.lname }}
           </el-tag>

@@ -54,13 +54,13 @@
           <span>添加标签</span>
           <div v-if="paperLabels.length" class="tag">
             <el-tag
-                v-for="(tag, index) in paperLabels"
-                :key="tag.linc"
-                closable
-                size="medium"
-                :disable-transitions="false"
-                type="success"
-                @close="handlePaperLabelDel(index)"
+              v-for="(tag, index) in paperLabels"
+              :key="tag.linc"
+              closable
+              size="medium"
+              :disable-transitions="false"
+              type="success"
+              @close="handlePaperLabelDel(index)"
             >
               {{ tag.lname }}
             </el-tag>
@@ -631,7 +631,7 @@
       @addSkills="getSkills"
       @visible3="onvisible3"
     />
-    <PublishExam :select-company-id="testPaper.selectCompanyId" :publish-dialog="publishDialog" :score-count="testPaper.score_count" @publishExam="publishExam"  @visiblePublish="visiblePublish" />
+    <PublishExam :select-company-id="testPaper.selectCompanyId" :publish-dialog="publishDialog" :score-count="testPaper.score_count" @publishExam="publishExam" @visiblePublish="visiblePublish" />
   </div>
 </template>
 
@@ -829,7 +829,7 @@ export default {
         exampaper.egroup = res.data.exampaper.egroup[0]
         this.testPaper = exampaper
         var arrLabels = []
-        for(var key in exampaper.labels) {
+        for (var key in exampaper.labels) {
           arrLabels.push({ linc: key, lname: exampaper.labels[key] })
         }
         this.paperLabels = arrLabels
@@ -1276,7 +1276,6 @@ export default {
         this.publishDialog = true
       }
     },
-
 
     // 监听修改弹窗关闭
     visiblePublish(val) {

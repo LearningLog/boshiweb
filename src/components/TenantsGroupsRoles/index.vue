@@ -89,14 +89,6 @@ export default {
       groupList: [] // 小组
     }
   },
-  watch: {
-    isReset: function(curVal, oldVal) {
-      // 重置
-      this.companyIds = ''
-      this.groupId = ''
-      this.roleId = ''
-    }
-  },
   computed: {
     widths: function() {
       var num = 0
@@ -137,6 +129,14 @@ export default {
         case 3:
           return '33%'
       }
+    }
+  },
+  watch: {
+    isReset: function(curVal, oldVal) {
+      // 重置
+      this.companyIds = ''
+      this.groupId = ''
+      this.roleId = ''
     }
   },
   created() {

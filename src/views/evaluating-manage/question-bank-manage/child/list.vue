@@ -9,7 +9,7 @@
         <el-row v-show="popoverVisible">
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
-              <tenants-groups-roles :is-render-role="false" :isReset="isReset" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" />
+              <tenants-groups-roles :is-render-role="false" :is-reset="isReset" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" />
               <!--<el-form-item label="试题标签">-->
               <!--<el-select-->
               <!--v-model="listQuery.topic_label"-->
@@ -132,7 +132,7 @@
     </div>
     <el-dialog v-el-drag-dialog class="selectCompany" width="400px" title="选择小组" :visible.sync="isVisibleSystemManage">
       <el-form ref="form" :model="listQuery" label-width="100px">
-        <tenants-groups-roles :is-render-role="false" whichGroup="manageEgroupInfo" @tenantsGroupsRolesVal="tenantsGroupsRolesVal2" />
+        <tenants-groups-roles :is-render-role="false" which-group="manageEgroupInfo" @tenantsGroupsRolesVal="tenantsGroupsRolesVal2" />
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="selectCompany">确定</el-button>

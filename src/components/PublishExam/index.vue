@@ -43,7 +43,7 @@
           <el-input v-show="false" v-model="paparForm.memer" />
           <Examiners
             :select-company-id="selectCompanyId"
-            :selectedOptions="selectedOptions"
+            :selected-options="selectedOptions"
             @examiners="getExaminers"
           />
         </el-form-item>
@@ -179,7 +179,7 @@ export default {
         this.paparForm.time_range[1] = val.end_time
         this.selectedOptions = []
         $.extend(true, this.paparForm, val)
-        for(let key in val.target_user) {
+        for (const key in val.target_user) {
           const item = val.target_user[key]
           item.forEach(value => {
             this.selectedOptions.push([key, value])

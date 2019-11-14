@@ -72,8 +72,8 @@ axios.interceptors.response.use(
   }
 )
 
-// 获取文件列表
-export function getFileList(data) {
+// 获取管理员文件列表
+export function getFileListManage(data) {
   return request({
     url: '/workDeskFileList/fileListManage',
     method: 'post',
@@ -81,6 +81,14 @@ export function getFileList(data) {
   })
 }
 
+// 获取普通成员文件列表
+export function getFileList(data) {
+  return request({
+    url: '/workDeskFileList/fileList',
+    method: 'post',
+    data
+  })
+}
 // 根据租户获取用户列表
 export function findUserListByGroupId(data) {
   return request({
@@ -110,7 +118,7 @@ export function download(data) {
   })
 }
 
-//获取下载token信息
+// 获取下载token信息
 export function getDownloadToken(data) {
   return request({
     url: 'workDeskFileList/getToken',
@@ -119,10 +127,10 @@ export function getDownloadToken(data) {
   })
 }
 
-// 批量下载文件
-export function batchDownload(data) {
+// 推送至知识库
+export function pushToKnowledge(data) {
   return request({
-    url: 'api/workDeskFile/downloadZipFile',
+    url: '/workDeskPushFile/pushFileToKnowledgeLib',
     method: 'post',
     data
   })

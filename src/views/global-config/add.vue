@@ -6,7 +6,7 @@
           <el-input v-model="obj.key" placeholder="" maxlength="12" clearable />
         </el-form-item>
         <el-form-item class="pas" label="管理员密码:">
-          <el-input type="password" v-model="pwd" placeholder="" maxlength="64" clearable />
+          <el-input v-model="pwd" type="password" placeholder="" maxlength="64" clearable />
         </el-form-item>
         <el-form-item label="类型" prop="type">
           <el-select v-model="obj.type" placeholder="" clearable>
