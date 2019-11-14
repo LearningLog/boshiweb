@@ -5,7 +5,7 @@
 * @remarks:
 */
 const state = {
-  visibility: { bottom: '-522px' }, // 是否弹出上传组件
+  visibility: { bottom: '-60vh' }, // 是否弹出上传组件
   isMinimality: false, // 控制最小化
   belongs: {} // 上传的文件所属 工作台还是知识库
 }
@@ -20,13 +20,13 @@ const mutations = {
       state.isMinimality = false
     } else if (isVisibility === 2) {
       state.visibility = {
-        bottom: '-580px',
+        bottom: '-60vh',
         transition: '1s'
       }
       state.isMinimality = false
     } else if (isVisibility === 3) {
       state.visibility = {
-        bottom: '-540px',
+        bottom: 'calc(-60vh + 40px)',
         visibility: 'visible',
         transition: '1s'
       }

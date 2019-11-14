@@ -5,8 +5,18 @@
       <div id="header" class="clearfix">
         <p class="fl title">上传资料</p>
         <div class="fr icons">
-          <span v-if="!isMinimality" @click="minimality"><i class="minimality iconfont iconiconfontmove" /></span>
-          <span v-if="isMinimality" @click="open"><i class="spread iconfont iconhao" /></span>
+          <span
+            v-if="!isMinimality"
+            @click="minimality"
+          ><i
+            class="minimality iconfont iconiconfontmove"
+          /></span>
+          <span
+            v-if="isMinimality"
+            @click="open"
+          ><i
+            class="spread iconfont iconhao"
+          /></span>
           <span @click="close"><i class="close iconfont iconguanbi" /></span>
         </div>
       </div>
@@ -18,19 +28,47 @@
           </div>
         </div>
         <div id="file-panel">
-          <el-scrollbar wrap-class="scrollbar-wrapper">
-            <div id="file-list">
-              <ul v-for="(file, index) in fileList" :key="file.id" class="file-item" :class="`file-${file.id}`">
+          <div id="file-list">
+            <el-scrollbar wrap-class="scrollbar-wrapper">
+              <ul
+                v-for="(file, index) in fileList"
+                :key="file.id"
+                class="file-item"
+                :class="`file-${file.id}`"
+              >
                 <li class="file-type" :icon="fileCategory(file.ext)">
-                  <i v-if="fileCategory(file.ext) === 'image'" class="iconfont icontupian1" />
-                  <i v-else-if="fileCategory(file.ext) === 'video'" class="iconfont iconshipinwenjian" />
-                  <i v-else-if="fileCategory(file.ext) === 'audio'" class="iconfont iconyinpinwenjian" />
-                  <i v-else-if="fileCategory(file.ext) === 'text'" class="iconfont icondoc" />
-                  <i v-else-if="fileCategory(file.ext) === 'pdf'" class="iconfont iconpdf" />
-                  <i v-else-if="fileCategory(file.ext) === 'compressed'" class="iconfont iconyasuobao" />
+                  <i
+                    v-if="fileCategory(file.ext) === 'image'"
+                    class="iconfont icontupian1"
+                  />
+                  <i
+                    v-else-if="fileCategory(file.ext) === 'video'"
+                    class="iconfont iconshipinwenjian"
+                  />
+                  <i
+                    v-else-if="fileCategory(file.ext) === 'audio'"
+                    class="iconfont iconyinpinwenjian"
+                  />
+                  <i
+                    v-else-if="fileCategory(file.ext) === 'text'"
+                    class="iconfont icondoc"
+                  />
+                  <i
+                    v-else-if="fileCategory(file.ext) === 'pdf'"
+                    class="iconfont iconpdf"
+                  />
+                  <i
+                    v-else-if="fileCategory(file.ext) === 'compressed'"
+                    class="iconfont iconyasuobao"
+                  />
                   <i v-else class="iconfont iconzu" />
                 </li>
-                <el-tooltip class="file-name-tip" effect="dark" :content="file.name" placement="top-start">
+                <el-tooltip
+                  class="file-name-tip"
+                  effect="dark"
+                  :content="file.name"
+                  placement="top-start"
+                >
                   <li class="file-name singleLineOmission">{{ file.name }}</li>
                 </el-tooltip>
                 <li class="progress">
@@ -41,14 +79,24 @@
                 <li class="file-operate">
                   <!--<a title="开始" @click="resume(file)"><i class="iconfont iconkaishi" /></a>-->
                   <!--<a title="暂停" @click="stop(file)"><i class="iconfont iconzanting1" /></a>-->
-                  <span class="pointer file-remove" title="移除" @click="remove(file)"><i class=" iconfont iconquxiao1" /></span>
+                  <span
+                    class="pointer file-remove"
+                    title="移除"
+                    @click="remove(file)"
+                  ><i
+                    class=" iconfont iconquxiao1"
+                  /></span>
                 </li>
               </ul>
-              <div v-if="!fileList.length" class="no-file"><i class="iconfont icon-empty-file" /> 暂无待上传文件</div>
-            </div>
-          </el-scrollbar>
+              <div v-if="!fileList.length" class="no-file">
+                <i class="iconfont icon-empty-file" /> 暂无待上传文件
+              </div>
+            </el-scrollbar>
+          </div>
         </div>
-        <div id="btnGroup">
+      </div>
+      <div class="clearfix btnGroup">
+        <div id="btnGroup" class="fr">
           <el-button type="primary" @click="clear()">清空上传</el-button>
         </div>
       </div>
@@ -98,7 +146,8 @@ export default {
     return {
       fileList: [], // 上传列表
       url: this.$store.state.user.applicationInfo.uploadUrl, // 租户上传路径
-      formData: { // 参数
+      formData: {
+        // 参数
         userId: this.$store.state.user.applicationInfo.userId,
         companyId: this.$store.state.user.applicationInfo.companyId,
         appCode: this.$store.state.user.applicationInfo.appCode
@@ -217,16 +266,18 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {
-        // 取消并中断文件上传
-        this.uploader.cancelFile(file)
-        // 在队列中移除文件
-        this.uploader.removeFile(file, true)
+      })
+        .then(() => {
+          // 取消并中断文件上传
+          this.uploader.cancelFile(file)
+          // 在队列中移除文件
+          this.uploader.removeFile(file, true)
 
-        // 在ui上移除
-        const index = this.fileList.findIndex(ele => ele.id === file.id)
-        this.fileList.splice(index, 1)
-      }).catch(() => {})
+          // 在ui上移除
+          const index = this.fileList.findIndex(ele => ele.id === file.id)
+          this.fileList.splice(index, 1)
+        })
+        .catch(() => {})
     },
 
     // 清空
@@ -237,14 +288,20 @@ export default {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
-        }).then(() => {
-          for (var index = 0, len = that.fileList.length; index < len; index++) {
-            var file = that.fileList[index]
-            that.uploader.cancelFile(file)
-            that.uploader.removeFile(file, true)
-            that.fileList.splice(index--, 1)
-          }
-        }).catch(() => {})
+        })
+          .then(() => {
+            for (
+              var index = 0, len = that.fileList.length;
+              index < len;
+              index++
+            ) {
+              var file = that.fileList[index]
+              that.uploader.cancelFile(file)
+              that.uploader.removeFile(file, true)
+              that.fileList.splice(index--, 1)
+            }
+          })
+          .catch(() => {})
       }
     },
 
@@ -261,12 +318,25 @@ export default {
         image: ['gif', 'jpg', 'jpeg', 'png', 'bmp', 'webp'],
         video: ['mp4', 'm3u8', 'rmvb', 'avi', 'swf', '3gp', 'mkv', 'flv'],
         audio: ['mp3', 'wma', 'rm', 'wav', 'midi', 'ape', 'flac'],
-        text: ['doc', 'txt', 'docx', 'pages', 'epub', 'numbers', 'csv', 'xls', 'xlsx', 'keynote', 'ppt', 'pptx'],
+        text: [
+          'doc',
+          'txt',
+          'docx',
+          'pages',
+          'epub',
+          'numbers',
+          'csv',
+          'xls',
+          'xlsx',
+          'keynote',
+          'ppt',
+          'pptx'
+        ],
         compressed: ['zip', 'rar'],
         pdf: ['pdf']
       }
 
-      Object.keys(typeMap).forEach((_type) => {
+      Object.keys(typeMap).forEach(_type => {
         const extensions = typeMap[_type]
         if (extensions.indexOf(ext) > -1) {
           type = _type
@@ -275,162 +345,163 @@ export default {
 
       return type
     }
-
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  @import "~@/styles/theme.scss";
-  $h-row: 30px;
+@import "~@/styles/theme.scss";
+$h-row: 30px;
 
-  #mainFileUpload {
-    visibility: hidden;
-    width: 38%;
-    height: 60vh;
-    position: fixed;
-    bottom: -522px;
-    right: 20px;
-    z-index: 999999999;
-    border: 1px solid #e0e0e0;
-    border-radius: 5px;
-    background: #FFFFFF;
-    overflow: hidden;
-    transition: bottom 1s;
+#mainFileUpload {
+  visibility: hidden;
+  width: 38%;
+  height: 60vh;
+  position: fixed;
+  bottom: -522px;
+  right: 20px;
+  z-index: 100;
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+  background: #ffffff;
+  overflow: hidden;
+  transition: bottom 1s;
 
-    > #header {
-      height: 40px;
-      line-height: 40px;
-      padding: 0 20px;
-      background-color: $themeColor;
+  > #header {
+    height: 40px;
+    line-height: 40px;
+    padding: 0 20px;
+    background-color: $themeColor;
 
-      > .title {
-        color: #FFFFFF;
-        margin: 0;
-        font-size: 14px;
-      }
-
-      > .fr.icons span{
-        width: 14px;
-        height: 14px;
-        background-color: #FFFFFF;
-        color: $themeColor;
-        cursor: pointer;
-      }
-
-      > .fr.icons span i{
-        font-size: 14px;
-      }
+    > .title {
+      color: #ffffff;
+      margin: 0;
+      font-size: 14px;
     }
 
-    > .content {
-      padding: 20px;
-
-      > #filePicker {
-        width: 100%;
-        height: 140px;
-        background-color: #FAFAFA;
-        border-radius: 5px;
-
-      }
+    > .fr.icons span {
+      width: 14px;
+      height: 14px;
+      background-color: #ffffff;
+      color: $themeColor;
+      cursor: pointer;
     }
 
-    .drag-upload {
-      width: 200px;
-      margin: 0 auto;
-      margin-top: 18px;
-      color: #BBBBBB;
-
-      > .iconfont {
-        font-size: 50px;
-      }
-    }
-
-    #file-panel {
-      margin-top: 20px;
-    }
-
-    #file-panel .el-scrollbar {
-      height: 40%;
-    }
-
-    #file-list {
-      position: relative;
-      height: 20vh;
-      overflow-y: auto;
-    }
-
-    .file-item {
-      position: relative;
-      height: 30px;
-      line-height: 30px;
-      padding: 0 10px;
-      margin-bottom: 10px;
-      border-bottom: 1px solid #ccc;
-      background-color: #fff;
-      z-index: 1;
-      color: #575757;
-
-      > li {
-        display: inline-block;
-      }
-
-      > .file-type {
-        width: 24px;
-        height: 30px;
-
-        > i {
-          display: table-cell;
-        }
-      }
-      > .file-name {
-        width: 18%;
-      }
-      > .progress {
-        width: 70%;
-
-        > /deep/ .el-progress {
-          width: 100%;
-          height: 30px;
-          line-height: 30px;
-          display: table;
-        }
-      }
-
-      > .file-size {
-        width: 80px;
-        position: absolute;
-        left: 0px;
-        right: 0px;
-        bottom: 0px;
-        top: 0px;
-        margin: 0 auto;
-        font-size: 14px;
-        text-align: center;
-      }
-    }
-
-    .file-remove {
-      display: table-cell;
-    }
-
-    .no-file {
-      text-align: center;
-      color: #575757;
+    > .fr.icons span i {
       font-size: 14px;
     }
   }
-  .file-item .progress /deep/ .el-progress-bar {
-    width: 95%;
+
+  > .content {
+    padding: 1.5vh 20px;
+
+    > #filePicker {
+      width: 100%;
+      height: 15vh;
+      background-color: #fafafa;
+      border-radius: 5px;
+    }
   }
 
-  #filePicker /deep/ .webuploader-pick {
-    width: 100% !important;
-    height: 100% !important;
-    background-color: #FAFAFA !important;
+  .drag-upload {
+    width: 200px;
+    margin: 0 auto;
+    margin-top: 18px;
+    color: #bbbbbb;
+
+    > .iconfont {
+      font-size: 50px;
+    }
   }
 
-  #filePicker /deep/ .webuploader-pick-hover {
-    background-color: #FAFAFA !important;
+  #file-panel {
+    margin-top: 1.5vh;
   }
+
+  #file-panel .el-scrollbar {
+    height: 29vh;
+  }
+
+  #file-list {
+    position: relative;
+    overflow-y: auto;
+  }
+
+  .file-item {
+    position: relative;
+    height: 30px;
+    line-height: 30px;
+    padding: 0 10px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ccc;
+    background-color: #fff;
+    z-index: 1;
+    color: #575757;
+
+    > li {
+      display: inline-block;
+    }
+
+    > .file-type {
+      width: 24px;
+      height: 30px;
+
+      > i {
+        display: table-cell;
+      }
+    }
+    > .file-name {
+      width: 18%;
+    }
+    > .progress {
+      width: 70%;
+
+      > /deep/ .el-progress {
+        width: 100%;
+        height: 30px;
+        line-height: 30px;
+        display: table;
+      }
+    }
+
+    > .file-size {
+      width: 80px;
+      position: absolute;
+      left: 0px;
+      right: 0px;
+      bottom: 0px;
+      top: 0px;
+      margin: 0 auto;
+      font-size: 14px;
+      text-align: center;
+    }
+  }
+
+  .file-remove {
+    display: table-cell;
+  }
+
+  .no-file {
+    text-align: center;
+    color: #575757;
+    font-size: 14px;
+  }
+}
+.btnGroup {
+  margin-right: 20px;
+}
+
+.file-item .progress /deep/ .el-progress-bar {
+  width: 95%;
+}
+
+#filePicker /deep/ .webuploader-pick {
+  width: 100% !important;
+  height: 100% !important;
+  background-color: #fafafa !important;
+}
+
+#filePicker /deep/ .webuploader-pick-hover {
+  background-color: #fafafa !important;
+}
 </style>
