@@ -10,6 +10,11 @@
     <el-button type="primary" plain @click="get()">getCookie</el-button>
     <el-button type="primary" plain @click="del()">delCookie</el-button>
 
+    <FilePreview :isFilePreview="isFilePreview" :fileTypeCode="fileTypeCode" :fileUrl="fileUrl" :title="title" @closePreview="closePreview"></FilePreview>
+    <el-button type="primary" plain  @click="video_1">video_1</el-button>
+    <el-button type="primary" plain  @click="audio_1">audio_1</el-button>
+
+
     <file-uploader :belongs="{ data_type: 3 }" />
     <br><br>
     <!--引入组件-->
@@ -142,15 +147,20 @@ import clipboard from '@/directive/clipboard/index.js'
 import Tinymce from '@/components/Tinymce'
 import Footer from '@/components/Footer'
 import FileUploader from '@/components/VueWebuploader'
+import FilePreview from '@/components/FilePreview' // secondary package based on el-pagination
 const $ = window.$
 export default {
   name: 'HelloWorld',
-  components: { Tinymce, Footer, FileUploader },
+  components: { Tinymce, Footer, FileUploader, FilePreview },
   directives: {
     clipboard
   },
   data() {
     return {
+      isFilePreview: false, // 是否打开预览
+      fileTypeCode: -1, // 文件类型
+      fileUrl: '', // 文件地址
+      title: '', // 文件名称（弹窗title）
       msg: 'Welcome to Your Vue.js App',
       token: null,
       // 可以自定义，必填项。
@@ -178,6 +188,25 @@ export default {
     this.initVideo2()
   },
   methods: {
+    video_1() {
+      this.fileUrl = 'https://cdnproduce.yunshicloud.com/5bfe7318ec5fb16489a4948c/BOSHI/5d5678ee6282c96fa7cc0ef1/ee8f7494bb412ffc051a9d22d99dc7f4.mp4?ZmlsZUlk=5d89dcd027b2b40015803e29'
+      this.fileTypeCode = 1
+      this.isFilePreview = true
+      this.title = '视频'
+    },
+    audio_1() {
+      this.fileUrl = 'https://cdnproduce.yunshicloud.com/5ce7f5106282c91ba828e991/BOSHI/5cf216c36282c907f331d905/29730452da4ef817800526cbc2266aef.mp3?ZmlsZUlk=5dccbc783bb766001513a410'
+      this.fileTypeCode = 2
+      this.isFilePreview = true
+      this.title = '音频'
+    },
+    // 监听预览
+    closePreview() {
+      this.isFilePreview = false
+      this.fileUrl = ''
+      this.fileTypeCode = -1
+      this.title = ''
+    },
     handleCopy(text, event) {
       clip(text, event)
     },
