@@ -89,22 +89,25 @@
         width="50"
         fixed
       />
-      <el-table-column align="center" label="课堂封面" min-width="220">
+      <el-table-column align="center" label="课堂封面" min-width="120">
         <template slot-scope="scope">
-          <img v-if="scope.row.cover_pic" class="logoImg" :src="scope.row.cover_pic" alt="">
+          <el-image
+              class="thumbnail"
+              :src="scope.row.cover_pic"
+              fit="contain"></el-image>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="课堂名称" min-width="100">
+      <el-table-column align="center" label="课堂名称" min-width="120">
         <template slot-scope="scope">
           <el-link type="primary" @click="detail(scope.row)">{{ scope.row.cname }}</el-link>
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="开始时间" min-width="150" align="center" prop="s_time" />
+      <el-table-column class-name="status-col" label="开始时间" min-width="130" align="center" prop="s_time" />
       <el-table-column class-name="status-col" label="发布小组" min-width="120" align="center" prop="groupName" />
       <el-table-column class-name="status-col" label="标签" min-width="100" align="center" prop="labels" />
-      <el-table-column align="center" label="创建人" min-width="100" prop="username" />
-      <el-table-column align="center" label="创建时间" min-width="150" prop="c_time" />
-      <el-table-column class-name="status-col" label="操作" width="220" align="center" fixed="right">
+      <el-table-column align="center" label="创建人" min-width="90" prop="username" />
+      <el-table-column align="center" label="创建时间" min-width="130" prop="c_time" />
+      <el-table-column class-name="status-col" label="操作" width="230" align="center" fixed="right">
         <template slot-scope="scope">
           <el-button size="mini" @click="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
           <el-button size="mini" @click="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
@@ -243,17 +246,17 @@ export default {
 
     // 新增
     add() {
-      this.$router.push({ path: '/online-class/direct-manage/add' })
+      this.$router.push({ path: '/online-class/live-telecast-manage/add' })
     },
 
     // 详情
     detail(row) {
-      this.$router.push({ path: '/online-class/direct-manage/detail', query: { _id: row._id }})
+      this.$router.push({ path: '/online-class/live-telecast-manage/detail', query: { _id: row._id }})
     },
 
     // 单个删除
     del(row) {
-      this.$confirm('确定要删除【' + row.cname + '】吗？', '删除租户', {
+      this.$confirm('确定要删除【' + row.cname + '】吗？', '删除课程', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -271,10 +274,10 @@ export default {
     // 批量删除
     batchDel() {
       if (!this.checkedDelList.length) {
-        this.$message.warning('请选择租户！')
+        this.$message.warning('请选择课程！')
         return false
       }
-      this.$confirm('确定要删除选中的租户吗？', '批量删除租户', {
+      this.$confirm('确定要删除选中的课程吗？', '批量删除', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -295,7 +298,7 @@ export default {
 
     // 修改
     edit(row) {
-      this.$router.push({ path: '/online-class/direct-manage/edit', query: { _id: row._id }})
+      this.$router.push({ path: '/online-class/live-telecast-manage/edit', query: { _id: row._id }})
     }
   }
 }
