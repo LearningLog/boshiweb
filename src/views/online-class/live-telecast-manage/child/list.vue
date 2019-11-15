@@ -9,6 +9,29 @@
         <el-row v-show="popoverVisible">
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
+              <el-form-item label="讲师">
+                <el-input v-model="listQuery.teacher" placeholder="请输入讲师" clearable @keyup.enter.native="topSearch" />
+              </el-form-item>
+              <el-form-item label="开始时间时间">
+                <el-date-picker
+                  v-model="start_time_range"
+                  type="daterange"
+                  range-separator="至"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  value-format="yyyy-MM-dd"
+                />
+              </el-form-item>
+              <el-form-item label="所属小组">
+                <el-select v-model="listQuery.egroup" placeholder="请选择所属小组" clearable filterable>
+                  <el-option
+                    v-for="item in group_list"
+                    :key="item.inc"
+                    :label="item.groupName"
+                    :value="item.inc"
+                  />
+                </el-select>
+              </el-form-item>
               <el-form-item label="标签名称">
                 <el-input v-model="listQuery.labels[0]" placeholder="请输入标签名称" clearable @keyup.enter.native="topSearch" />
               </el-form-item>
@@ -25,20 +48,6 @@
                   value-format="yyyy-MM-dd"
                 />
               </el-form-item>
-              <el-form-item label="讲师">
-                <el-input v-model="listQuery.teacher" placeholder="请输入讲师" clearable @keyup.enter.native="topSearch" />
-              </el-form-item>
-              <el-form-item label="所属小组">
-                <el-select v-model="listQuery.egroup" placeholder="请选择所属小组" clearable filterable>
-                  <el-option
-                    v-for="item in group_list"
-                    :key="item.inc"
-                    :label="item.groupName"
-                    :value="item.inc"
-                  />
-                </el-select>
-              </el-form-item>
-
             </el-form>
             <div id="searchPopoverBtn">
               <el-button type="primary" @click="topSearch">搜索</el-button>
@@ -107,7 +116,7 @@
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
-import { chapetrList, chapetr_del } from '@/api/onlineclass-direct-manage.js'
+import { chapetrList, chapetr_del } from '@/api/live-telecast-manage'
 export default {
   components: { Pagination },
   directives: { elDragDialog },
@@ -125,6 +134,7 @@ export default {
         createTimeend: '', // 结束时间
         egroup: '' // 所属小组
       },
+      start_time_range: [], // 开始时间
       time_range: [], // 创建时间
       group_list: [], // 所属小组list
       list: [], // 表格数据
@@ -158,16 +168,19 @@ export default {
         this.total = response.data.page.totalCount
       })
     },
+
     // 获取所有小组
     getEgroups() {
       getUserEgroupInfo({ selectCompanyId: this.companyIds }).then(response => {
         this.group_list = response.data.egroupInfo
       })
     },
+
     // 搜索
     topSearch() {
       this.get_list()
     },
+
     // 重置
     reset() {
       this.listQuery.cname = ''
@@ -179,18 +192,22 @@ export default {
       this.listQuery.createTimeend = ''
       this.get_list()
     },
+
     // 选中数据
     handleSelectionChange(row) {
       this.checkedDelList = row
     },
+
     // 新增
     add() {
-      this.$router.push({ path: '/online-class/direct-manage/add' })
+      this.$router.push({ path: '/online-class/live-telecast-manage/add' })
     },
+
     // 详情
     detail(row) {
-      this.$router.push({ path: '/online-class/direct-manage/detail', query: { _id: row._id }})
+      this.$router.push({ path: '/online-class/live-telecast-manage/detail', query: { _id: row._id }})
     },
+
     // 单个删除
     del(row) {
       this.$confirm('确定要删除【' + row.cname + '】吗？', '删除租户', {
@@ -207,6 +224,7 @@ export default {
         })
       }).catch(() => {})
     },
+
     // 批量删除
     batchDel() {
       if (!this.checkedDelList.length) {
@@ -231,11 +249,11 @@ export default {
         })
       }).catch(() => {})
     },
+
     // 修改
     edit(row) {
-      this.$router.push({ path: '/online-class/direct-manage/edit', query: { _id: row._id }})
+      this.$router.push({ path: '/online-class/live-telecast-manage/edit', query: { _id: row._id }})
     }
-
   }
 }
 </script>

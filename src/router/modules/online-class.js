@@ -1,9 +1,9 @@
 /**
-* @Author: JiMei
-* @Date: 2019/11/5
-* @Description: 在线路由表
-* @remarks:
-*/
+ * @Author: JiMei
+ * @Date: 2019/11/5
+ * @Description: 在线路由表
+ * @remarks:
+ */
 
 import Layout from '@/layout/layout2'
 
@@ -18,76 +18,125 @@ const onlineClass = {
   },
   children: [
     {
-      path: 'chapter-manage',
-      name: 'chapter-manage',
-      component: () => import('@/views/online-class/chapter-manage/index'),
-      redirect: '/online-class/chapter-manage/list',
-      meta: { title: '标签管理', icon: '', activeMenu: '/online-class/chapter-manage' },
+      path: 'live-telecast-manage',
+      name: 'live-telecast-manage',
+      component: () =>
+        import('@/views/online-class/live-telecast-manage/index'),
+      redirect: '/online-class/live-telecast-manage/list',
+      meta: {
+        title: '直播课堂',
+        icon: '',
+        activeMenu: '/online-class/live-telecast-manage'
+      },
       children: [
         {
-          path: 'add',
-          name: 'chapter-add',
+          path: 'list',
+          name: 'live-telecast-list',
           hidden: true,
-          component: () => import('@/views/online-class/chapter-manage/child/add'),
-          meta: { title: '新增标签', icon: '', activeMenu: '/online-class/chapter-manage' }
+          component: () =>
+            import('@/views/online-class/live-telecast-manage/child/list'),
+          meta: {
+            title: '课堂列表',
+            icon: '',
+            activeMenu: '/online-class/live-telecast-manage'
+          }
+        },
+        {
+          path: 'add',
+          name: 'live-telecast-add',
+          hidden: true,
+          component: () =>
+            import('@/views/online-class/live-telecast-manage/child/add'),
+          meta: {
+            title: '新增课堂',
+            icon: '',
+            activeMenu: '/online-class/live-telecast-manage'
+          }
         },
         {
           path: 'edit',
-          name: 'chapter-edit',
+          name: 'live-telecast-edit',
           hidden: true,
-          component: () => import('@/views/online-class/chapter-manage/child/edit'),
-          meta: { title: '修改标签', icon: '', activeMenu: '/online-class/chapter-manage' }
+          component: () =>
+            import('@/views/online-class/live-telecast-manage/child/edit'),
+          meta: {
+            title: '修改课堂',
+            icon: '',
+            activeMenu: '/online-class/live-telecast-manage'
+          }
         },
         {
           path: 'detail',
-          name: 'chapter-detail',
+          name: 'live-telecast-detail',
           hidden: true,
-          component: () => import('@/views/online-class/chapter-manage/child/detail'),
-          meta: { title: '标签详情', icon: '', activeMenu: '/online-class/chapter-manage' }
-        },
-        {
-          path: 'list',
-          name: 'chapter-list',
-          hidden: true,
-          component: () => import('@/views/online-class/chapter-manage/child/list'),
-          meta: { title: '标签列表', icon: '', activeMenu: '/online-class/chapter-manage' }
+          component: () =>
+            import('@/views/online-class/live-telecast-manage/child/detail'),
+          meta: {
+            title: '课堂详情',
+            icon: '',
+            activeMenu: '/online-class/live-telecast-manage'
+          }
         }
       ]
     },
     {
-      path: 'direct-manage',
-      name: 'direct-manage',
-      component: () => import('@/views/online-class/direct-manage/index'),
-      redirect: '/online-class/direct-manage/list',
-      meta: { title: '直播课堂', icon: '', activeMenu: '/online-class/direct-manage' },
+      path: 'label-manage',
+      name: 'online-class-label-manage',
+      component: () => import('@/views/online-class/label-manage/index'),
+      redirect: '/online-class/label-manage/list',
+      meta: {
+        title: '标签管理',
+        icon: '',
+        activeMenu: '/online-class/label-manage'
+      },
       children: [
         {
-          path: 'add',
-          name: 'direct-add',
+          path: 'list',
+          name: 'online-class-label-list',
           hidden: true,
-          component: () => import('@/views/online-class/direct-manage/child/add'),
-          meta: { title: '新增课堂', icon: '', activeMenu: '/online-class/direct-manage' }
+          component: () =>
+            import('@/views/online-class/label-manage/child/list'),
+          meta: {
+            title: '标签列表',
+            icon: '',
+            activeMenu: '/online-class/label-manage'
+          }
+        },
+        {
+          path: 'add',
+          name: 'online-class-label-add',
+          hidden: true,
+          component: () =>
+            import('@/views/online-class/label-manage/child/add'),
+          meta: {
+            title: '新增标签',
+            icon: '',
+            activeMenu: '/online-class/label-manage'
+          }
         },
         {
           path: 'edit',
-          name: 'direct-edit',
+          name: 'online-class-label-edit',
           hidden: true,
-          component: () => import('@/views/online-class/direct-manage/child/edit'),
-          meta: { title: '修改课堂', icon: '', activeMenu: '/online-class/direct-manage' }
+          component: () =>
+            import('@/views/online-class/label-manage/child/edit'),
+          meta: {
+            title: '修改标签',
+            icon: '',
+            activeMenu: '/online-class/label-manage'
+          }
         },
         {
           path: 'detail',
-          name: 'direct-detail',
+          name: 'online-class-label-detail',
           hidden: true,
-          component: () => import('@/views/online-class/direct-manage/child/detail'),
-          meta: { title: '课堂详情', icon: '', activeMenu: '/online-class/direct-manage' }
-        },
-        {
-          path: 'list',
-          name: 'direct-list',
-          hidden: true,
-          component: () => import('@/views/online-class/direct-manage/child/list'),
-          meta: { title: '课堂列表', icon: '', activeMenu: '/online-class/direct-manage' }
+          component: () =>
+            import('@/views/online-class/label-manage/child/detail'),
+          meta: {
+            title: '标签详情',
+            icon: '',
+            activeMenu: '/online-class/label-manage'
+          }
         }
       ]
     }

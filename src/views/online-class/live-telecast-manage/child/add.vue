@@ -220,7 +220,7 @@
 import { validIntNum, regUName, regPwd } from '@/utils/validate'
 import { VueCropper } from 'vue-cropper'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
-import { chapetr_add } from '@/api/onlineclass-direct-manage.js'
+import { chapetr_add } from '@/api/live-telecast-manage'
 import { uploadFile } from '@/api/uploadFile'
 import { getToken } from '@/utils/auth'
 import { getCustomManageList } from '@/api/systemManage-roleManage'
@@ -468,7 +468,7 @@ export default {
           chapetr_add(this.form).then(response => {
             this.$message.success('新增课程成功！')
             this.noLeaveprompt = true
-            this.$router.push({ path: '/online-class/direct-manage/list' })
+            this.$router.push({ path: '/online-class/live-telecast-manage/list' })
           })
         }
       })

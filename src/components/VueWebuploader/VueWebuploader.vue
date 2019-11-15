@@ -312,6 +312,7 @@ export default {
       this.uploader.removeFile(file, bool)
     },
 
+    // 获取上传文件类型
     getAccept(accept) {
       switch (accept) {
         case 'text':

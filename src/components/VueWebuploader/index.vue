@@ -120,7 +120,7 @@ import store from '@/store'
 import { mapGetters } from 'vuex'
 import VueWebuploader from '@/components/VueWebuploader/VueWebuploader.vue'
 import { deskAddFile, knowledgeCreateFile } from '@/api/uploadFile'
-const $ = window.$
+const WebUploader = window.WebUploader
 
 export default {
   name: 'FileUploader',
@@ -351,7 +351,6 @@ export default {
 
 <style lang="scss" scoped>
 @import "~@/styles/theme.scss";
-$h-row: 30px;
 
 #mainFileUpload {
   visibility: hidden;
