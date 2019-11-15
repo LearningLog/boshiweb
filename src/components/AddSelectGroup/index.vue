@@ -4,13 +4,14 @@
       v-el-drag-dialog
       class="selectCompany"
       width="400px"
-      title="选择小组"
+      :title="title"
       :visible.sync="isVisible"
       @close="close"
     >
       <el-form label-width="100px">
         <tenants-groups-roles
           :is-render-role="false"
+          :isRenderGroup="isRenderGroup"
           which-group="manageEgroupInfo"
           @tenantsGroupsRolesVal="tenantsGroupsRolesVal"
         />
@@ -35,6 +36,14 @@ export default {
     visibleSelectGroup: {
       type: Boolean,
       default: false
+    },
+    title: {
+      type: String,
+      default: '选择小组'
+    },
+    isRenderGroup: {
+      type: Boolean,
+      default: true
     }
   },
   data() {

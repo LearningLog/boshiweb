@@ -8,6 +8,25 @@
       @close="cancel"
     >
       <div class="clearfix searchFile">
+        <div class="fl">
+          <el-upload
+            v-if="isUpload"
+            ref="uploadFile"
+            class="uploadFile"
+            name="thumbnailfile"
+            :action="uploadUrl()"
+            :headers="headers"
+            accept=".ppt,.pptx,.doc,.docx,.pdf,.xls,.xlsx"
+            :data="fileInfo"
+            :limit="2"
+            :show-file-list="false"
+            :on-change="changeUpload"
+            :on-success="handleSuccess"
+            :on-error="handleUploadError"
+          >
+            <el-button type="primary">上传</el-button>
+          </el-upload>
+        </div>
         <div class="fr">
           <el-input
             v-model="listQuery.fileName"
@@ -21,22 +40,27 @@
           </el-input>
         </div>
       </div>
-      <ul class="fileList">
-        <li
-          v-for="(item, index) in list"
-          :key="index"
-          class="itemFile"
-        >
-          <el-radio-group v-model="radio" class="checkbox" @change="checkChange">
-            <el-radio :label="item">{{ item.aaa }}</el-radio>
-          </el-radio-group>
-          <div class="imgCover" :style="{backgroundImage:'url(' + item.fileUrl + ')'}" />
-          <span class="name">{{ item.name }}</span>
-        </li>
-      </ul>
-      <div class="clearfix">
-        <pagination v-show="total>0" :page-sizes="[10]" :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="getFileList" />
-      </div>
+      <el-scrollbar wrap-class="scrollbar-wrapper">
+        <ul v-infinite-scroll="getFileList" class="fileList">
+          <li
+            v-for="(item, index) in list"
+            :key="index"
+            class="itemFile"
+          >
+            <el-radio-group v-model="radio" class="checkbox" @change="checkChange">
+              <el-radio :label="item">{{ item.aaa }}</el-radio>
+            </el-radio-group>
+            <el-image
+              class="imgCover"
+              :src="item.preview_pic || file_knowledge"
+              fit="contain"
+            />
+            <el-tooltip effect="dark" :content="item.name" placement="top">
+              <span class="name">{{ item.name }}</span>
+            </el-tooltip>
+          </li>
+        </ul>
+      </el-scrollbar>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="saveFile">确定</el-button>
         <el-button @click="cancel">取 消</el-button>
@@ -46,12 +70,14 @@
 </template>
 
 <script>
-import Pagination from '@/components/Pagination'
 import elDragDialog from '@/directive/el-drag-dialog'
-import { fileList } from '@/api/work-desk'
+import { getFileListManage } from '@/api/work-desk'
+import { deskAddFile } from '@/api/uploadFile'
+import { getToken } from '@/utils/auth'
+import file_knowledge from '@/assets/images/file_knowledge.png'
+
 export default {
   name: 'SelectFile',
-  components: { Pagination },
   directives: { elDragDialog },
   props: {
     fileTypeList: {
@@ -61,60 +87,127 @@ export default {
     visible: {
       type: Boolean,
       default: false
+    },
+    isUpload: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
     return {
+      file_knowledge,
       selectFilVisible: false,
       total: null,
-      fileName: '', // 文件名称
       listQuery: {
         currentPage: 1,
-        pageSize: 10,
+        pageSize: 15,
         fileName: '',
         fileTypeList: this.fileTypeList || [],
         fileUseList: ['preview_pic', 'preview_file'],
-        file_status: 4
+        file_status: 4,
+        fileIdList: []
       },
       list: [], // 列表
+      queryFileIdList: [], // 需要返回的文件列表
       filePackageIdWorkDeskFile: null, // Map
       checkList: [], // 选中的数据
-      radio: ''
+      radio: '',
+      headers: {
+        Authorization: getToken() // 图片上传 header
+      },
+      fileInfo: {}, // 上传数据 似乎没用。。
+      fileName: '', // 上传的文件名
+      timer: -1
     }
   },
   watch: {
     visible: function(val, val2) {
       if (val) {
-        this.getFileList()
+        var that = this
+        that.getFileList()
+        that.timer = setInterval(function() {
+          that.getFileList()
+        }, 10000)
       }
     }
   },
   methods: {
+    // 获取文件列表
     getFileList() {
-      fileList(this.listQuery).then(res => {
+      getFileListManage(this.listQuery).then(res => {
         this.total = res.data.page.totalCount
         this.list = res.data.page.list
         this.filePackageIdWorkDeskFile = res.data.filePackageIdWorkDeskFile
         this.list.forEach(item => {
           item.name = this.filePackageIdWorkDeskFile[item.mainFileId].name
+          item.subFileList = item.subFileList || []
+          item.subFileList.find(item2 => {
+            if (item2.fileUse === 'preview_pic') {
+              item.preview_pic = item2.fileUrl
+            }
+          })
         })
         this.selectFilVisible = true
       })
     },
+    // 选择文件
     checkChange(val) {
       this.checkList = val
     },
+
+    // 上传路径
+    uploadUrl() {
+      return process.env.VUE_APP_BASE_API + 'system/file/upload/'
+    },
+
+    // 上传按钮   限制图片大小
+    changeUpload(file, fileList) {
+      const suffixs = ['.ppt', '.pptx', '.doc', '.docx', '.pdf', '.xls', '.xlsx']
+      const i = file.name.lastIndexOf('.')
+      const suffix = file.name.slice(i)
+      if (suffixs.indexOf(suffix) === -1) {
+        this.$refs.uploadFile.abort()
+        this.$message.error('文件格式错误！')
+        return false
+      }
+      const isLt5M = file.size / 1024 / 1024 < 50
+      if (!isLt5M) {
+        this.$refs.uploadFile.abort()
+        this.$message.error('上传文件大小不能超过 50MB！')
+        return false
+      }
+      this.fileName = file.name
+    },
+    // 上传成功
+    handleSuccess(res, file, fileList) {
+      const i = file.name.lastIndexOf('.')
+      const suffix = file.name.slice(i)
+      const params = {
+        fileFormat: suffix,
+        fileName: file.name,
+        fileSize: file.size,
+        fileUrl: res.data.saveHttpPath,
+        resourceFileId: res.data.fileId
+      }
+      deskAddFile(params).then(res => {
+        this.$message.success('上传成功，文件正在处理中，请稍后！')
+      })
+    },
+    // 上传失败
+    handleUploadError(response, file, fileList) {
+      this.$message.error('文件上传失败！')
+    },
+
     // 确定
     saveFile() {
-      const checkedFile = this.checkList
-      this.$emit('checkedFile', checkedFile)
+      this.$emit('checkedFile', this.checkList)
       this.selectFilVisible = false
-      this.$emit('visible', { visible: false })
     },
     // 取消
     cancel() {
+      clearInterval(this.timer)
+      this.$emit('checkedFile', this.checkList)
       this.selectFilVisible = false
-      this.$emit('visible', { visible: false })
     }
   }
 }
@@ -140,15 +233,18 @@ export default {
 		text-align: center;
 	}
 	.checkbox {
-		position: absolute;
-		right: 0;
-		top: 0;
-		z-index: 2;
+    position: absolute;
+    right: 4px;
+    top: 4px;
+    z-index: 2;
 	}
+  .checkbox /deep/ .el-radio__label {
+    display: none;
+  }
 	.imgCover {
-		background-size: cover;
 		width: 100%;
-		height: 55px;
+		height: 70px;
+    border: 1px solid #e8e8e8;
 	}
 	.name {
 		display: inline-block;
@@ -158,9 +254,12 @@ export default {
 		text-overflow:ellipsis;
 		white-space:nowrap;
 	}
-	.el-scrollbar {
-		height: 50vh;
-	}
+  .scrollbar-wrapper {
+    overflow-x: hidden;
+  }
+  .el-scrollbar {
+    height: 300px;
+  }
   .global-search {
     width: 200px;
   }

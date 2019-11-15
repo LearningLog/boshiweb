@@ -127,7 +127,7 @@
     <div id="bottomOperation">
       <el-button v-show="total>0" type="danger" plain @click="batchDel"><i class="iconfont iconshanchu" />批量删除</el-button>
     </div>
-    <AddSelectGroup :visibleSelectGroup="visibleSelectGroup" @getSelectGroup="getSelectGroup"></AddSelectGroup>
+    <AddSelectGroup :visibleSelectGroup="visibleSelectGroup" :isRenderGroup="false" title="选择租户" @getSelectGroup="getSelectGroup"></AddSelectGroup>
   </div>
 </template>
 
@@ -194,7 +194,7 @@ export default {
 
     // 获取创建人（实际就是用户）
     getCreater() {
-      findUserListByGroupId({ groupId: this.listQuery.selectCompanyId }).then(res => {
+      findUserListByGroupId({ groupId: this.listQuery.selectCompanyId || this.$store.state.user.userPermission.groupId }).then(res => {
         this.createrList = res.data
       })
     },
@@ -249,7 +249,11 @@ export default {
 
     // 新增
     add() {
-      this.visibleSelectGroup = true
+      if (!this.$store.state.user.isSystemManage) {
+        this.$router.push({ path: '/online-class/live-telecast-manage/add' })
+      } else {
+        this.visibleSelectGroup = true
+      }
     },
 
     // 监听选择小组返回数据
@@ -258,7 +262,7 @@ export default {
       this.egroup = val.egroup
       this.visibleSelectGroup = false
       if (this.egroup) {
-        this.$router.push({ path: '/online-class/live-telecast-manage/add', query: { selectCompanyId: this.companyId, egroup: this.egroup }})
+        this.$router.push({ path: '/online-class/live-telecast-manage/add', query: { selectCompanyId: this.companyId }})
       }
     },
 

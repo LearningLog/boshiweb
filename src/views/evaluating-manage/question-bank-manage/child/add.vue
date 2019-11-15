@@ -755,7 +755,7 @@
         </div>
       </el-tab-pane>
     </el-tabs>
-    <select-file :visible.sync="visible" :file-type-list="['pic']" @checkedFile="checkedFile" @visible="onvisible" />
+    <select-file :visible.sync="visible" :file-type-list="['pic']" @checkedFile="checkedFile" />
     <add-labels :visible2.sync="visible2" :egroup="egroup" :select-company-id="selectCompanyId" :current-labels.sync="currentLabels" @addLabels="getLabels" @visible2="onvisible2" />
     <add-skills :visible3.sync="visible3" :select-company-id="selectCompanyId" :current-skills.sync="currentSkills" @addSkills="getSkills" @visible3="onvisible3" />
   </div>
@@ -994,10 +994,7 @@ export default {
     checkedFile(val) {
       this[this.topic0].topic_resource = val.fileUrl
       this[this.topic0].topic_resource_id = val.mainFileId
-    },
-    // 监听选择文件组件返回数据
-    onvisible(val) {
-      this.visible = val.visible
+      this.visible = false
     },
 
     // 删除题干图片
@@ -1705,7 +1702,7 @@ export default {
   #addTopicVue .preview {
     width: calc(40% - 10px);
     border-left: 8px solid #e2e6ed;
-    height: calc(100vh - 200px);
+    height: calc(100vh - 212px);
     padding: 0 10px;
     box-sizing: border-box;
   }
