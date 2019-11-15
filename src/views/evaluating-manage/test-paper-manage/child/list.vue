@@ -75,21 +75,14 @@
       <el-button v-show="total>0" type="primary" plain @click="exportPaper"><i class="iconfont icondaochu" />批量导出</el-button>
     </div>
     <PublishExam :select-company-id="selectCompanyId" :publish-dialog="publishDialog" :score-count="scoreCount" @publishExam="publishExam" @visiblePublish="visiblePublish" />
-    <el-dialog v-el-drag-dialog class="selectCompany" width="400px" title="选择小组" :visible.sync="isVisibleSystemManage">
-      <el-form ref="form" label-width="100px">
-        <tenants-groups-roles :is-render-role="false" which-group="manageEgroupInfo" @tenantsGroupsRolesVal="tenantsGroupsRolesVal2" />
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="selectCompany">确定</el-button>
-        <el-button @click="isVisibleSystemManage = false">取 消</el-button>
-      </div>
-    </el-dialog>
+    <AddSelectGroup :visibleSelectGroup="visibleSelectGroup" @getSelectGroup="getSelectGroup"></AddSelectGroup>
   </div>
 </template>
 
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
+import AddSelectGroup from '@/components/AddSelectGroup'
 import PublishExam from '@/components/PublishExam'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import { evaluationPaperList, delPaper, generateExportPaper, exportPaperOne, exportPaperMore, publish } from '@/api/test-paper-manage'
@@ -97,13 +90,13 @@ import { skillAllList } from '@/api/userCenter-skillManage'
 import { labelAllList } from '@/api/evaluatingManage-labelManage'
 
 export default {
-  components: { Pagination, TenantsGroupsRoles, PublishExam },
+  components: { Pagination, TenantsGroupsRoles, PublishExam, AddSelectGroup },
   directives: { elDragDialog },
   data() {
     return {
       isReset: false, // 是否重置三组联动数据
       publishDialog: false, // 发布考试弹窗
-      isVisibleSystemManage: false, // 是否弹出选择租户、小组
+      visibleSelectGroup: false, // 是否弹出选择租户、小组
       total: 0, // 总条数
       listQuery: { // 查询条件
         currentPage: 1, // 当前页
@@ -195,32 +188,27 @@ export default {
     resetVal(val) {
       this.isReset = false
     },
-    // 新增监听三组数据变化
-    tenantsGroupsRolesVal2(val) {
-      this.companyId = val.companyIds
-      this.egroup = val.egroupId
-    },
 
     // 选中数据
     handleSelectionChange(row) {
       this.checkedDelList = row
     },
+
     // 新增
     add() {
-      this.isVisibleSystemManage = true
+      this.visibleSelectGroup = true
     },
-    // 新增选择租户、小组
-    selectCompany() {
-      if (!this.companyId && this.$store.state.user.isSystemManage) {
-        this.$message.warning('请先选择租户！')
-        return false
-      } else if (!this.egroup) {
-        this.$message.warning('请先选择小组！')
-        return false
+
+    // 监听选择小组返回数据
+    getSelectGroup(val) {
+      this.companyId = val.selectCompanyId
+      this.egroup = val.egroup
+      this.visibleSelectGroup = false
+      if (this.egroup) {
+        this.$router.push({ path: '/evaluating-manage/test-paper-manage/add', query: { selectCompanyId: this.companyId, egroup: this.egroup }})
       }
-      this.isVisibleSystemManage = false
-      this.$router.push({ path: '/evaluating-manage/test-paper-manage/add', query: { selectCompanyId: this.companyId, egroup: this.egroup }})
     },
+
     // 详情
     detail(row) {
       this.$router.push({ path: '/evaluating-manage/test-paper-manage/detail', query: { _id: row._id }})

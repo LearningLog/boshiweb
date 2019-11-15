@@ -82,15 +82,7 @@
     <div id="bottomOperation">
       <el-button v-show="total>0" type="danger" plain @click="batchDel"><i class="iconfont iconshanchu" />批量删除</el-button>
     </div>
-    <el-dialog v-el-drag-dialog class="selectCompany" width="400px" title="选择小组" :visible.sync="isVisibleSystemManage">
-      <el-form ref="form" :model="listQuery" label-width="100px">
-        <tenants-groups-roles :is-render-role="false" which-group="manageEgroupInfo" @tenantsGroupsRolesVal="tenantsGroupsRolesVal2" @resetVal="resetVal" />
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="selectCompany">确定</el-button>
-        <el-button @click="isVisibleSystemManage = false">取 消</el-button>
-      </div>
-    </el-dialog>
+    <AddSelectGroup :visibleSelectGroup="visibleSelectGroup" @getSelectGroup="getSelectGroup"></AddSelectGroup>
     <PublishExam :select-company-id="selectCompanyId" :publish-dialog="publishDialog" :score-count="scoreCount" :exam="exam" @publishExam="publishExam" @visiblePublish="visiblePublish" />
   </div>
 </template>
@@ -98,17 +90,18 @@
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
+import AddSelectGroup from '@/components/AddSelectGroup'
 import PublishExam from '@/components/PublishExam'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import { getExaminationList, delExam, examDetail, examUpdate } from '@/api/evolutionManage-examination'
 export default {
-  components: { Pagination, TenantsGroupsRoles, PublishExam },
+  components: { Pagination, TenantsGroupsRoles, PublishExam, AddSelectGroup },
   directives: { elDragDialog },
   data() {
     return {
       isReset: false, // 是否重置三组联动数据
       publishDialog: false, // 发布考试弹窗
-      isVisibleSystemManage: false, // 是否弹出选择租户、小组
+      visibleSelectGroup: false, // 是否弹出选择租户、小组
       total: 0, // 总条数
       listQuery: { // 查询条件
         currentPage: 1, // 当前页
@@ -182,32 +175,24 @@ export default {
       this.isReset = false
     },
 
-    // 新增监听三组数据变化
-    tenantsGroupsRolesVal2(val) {
-      this.companyId = val.companyIds
-      this.egroup = val.egroupId
-    },
-
     // 选中数据
     handleSelectionChange(row) {
       this.checkedDelList = row
     },
+
     // 新增
     add() {
-      this.isVisibleSystemManage = true
+      this.visibleSelectGroup = true
     },
 
-    // 新增选择租户、小组
-    selectCompany() {
-      if (!this.companyId && this.$store.state.user.isSystemManage) {
-        this.$message.warning('请先选择租户！')
-        return false
-      } else if (!this.egroup) {
-        this.$message.warning('请先选择小组！')
-        return false
+    // 监听选择小组返回数据
+    getSelectGroup(val) {
+      this.companyId = val.selectCompanyId
+      this.egroup = val.egroup
+      this.visibleSelectGroup = false
+      if (this.egroup) {
+        this.$router.push({ path: '/evaluating-manage/examination-manage/add', query: { selectCompanyId: this.companyId, egroup: this.egroup }})
       }
-      this.isVisibleSystemManage = false
-      this.$router.push({ path: '/evaluating-manage/examination-manage/add', query: { selectCompanyId: this.companyId, egroup: this.egroup }})
     },
 
     // 单个删除

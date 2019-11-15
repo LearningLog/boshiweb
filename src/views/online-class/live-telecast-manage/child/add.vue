@@ -5,10 +5,27 @@
       <el-step title="步骤 2" />
       <el-step title="步骤 3" />
     </el-steps>
-    <div v-if="active==1" class="info">
+    <div class="operator fr">
+      <el-button
+          v-if="active !== 1"
+          type="primary"
+          @click="forwardStep"
+      ><i class="addIcon iconfont iconshangyibu" />上一步</el-button>
+      <el-button
+          v-if="active !== 3"
+          type="primary"
+          @click="nextStep"
+      ><i class="addIcon iconfont iconxiayibu" />下一步</el-button>
+      <el-button
+          v-if="active === 3"
+          v-no-more-click
+          type="primary"
+          @click="publish('exam')"
+      ><i class="addIcon iconfont iconfabu1" />发布</el-button>
+    </div>
+    <div v-if="active === 1" class="info">
       <div class="step">
         <h5>基本信息：</h5>
-        <el-button style="margin-top: 12px;float:right" @click="next">下一步</el-button>
       </div>
       <el-form ref="form" class="form" :model="form" :rules="rules" label-width="120px" :status-icon="true">
         <el-form-item label="课堂名称">
@@ -101,11 +118,9 @@
       </el-form>
     </div>
 
-    <div v-if="active==2" class="info">
+    <div v-if="active === 2" class="info">
       <div class="step">
         <h5>请选择小组：</h5>
-        <el-button style="margin-top: 12px;float:right" @click="next">下一步</el-button>
-        <el-button style="margin-top: 12px;float:right;margin-right:20px" @click="pre">上一步</el-button>
       </div>
       <el-form ref="form" class="form" :model="form" :rules="rules" :status-icon="true" label-width="120px">
         <el-form-item label="所属租户" prop="GroupId">
@@ -128,11 +143,9 @@
 
     </div>
 
-    <div v-if="active==3" class="info">
+    <div v-if="active === 3" class="info">
       <div class="step">
         <h5>课程通知：</h5>
-        <el-button style="margin-top: 12px;float:right">发布</el-button>
-        <el-button style="margin-top: 12px;float:right;margin-right:20px" @click="pre">上一步</el-button>
       </div>
       <el-form ref="form" class="form" :model="form" :rules="rules" label-width="120px" :status-icon="true">
         <el-form-item label="课程通知" prop="Status">
@@ -371,11 +384,11 @@ export default {
   },
   methods: {
     // 下一步
-    next() {
+    nextStep() {
       if (this.active++ > 3) this.active = 1
     },
     // 上一步
-    pre() {
+    forwardStep() {
       if (this.active-- < 2) this.active = 1
     },
     handleCheckAllChange(val) {
@@ -588,6 +601,10 @@ export default {
     // 校验最大用户数为正整数
     intNum(val) {
       this.form.userCount = validIntNum(val)
+    },
+
+    publish() {
+
     }
   },
   beforeRouteLeave(to, from, next) {
@@ -612,6 +629,9 @@ export default {
 
 <style lang="scss" scoped>
 @import "~@/styles/theme.scss";
+.operator {
+  margin-top: 20px;
+}
   #btnGroup{
     padding-left: 120px;
   }

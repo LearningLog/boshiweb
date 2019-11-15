@@ -127,22 +127,25 @@
     <div id="bottomOperation">
       <el-button v-show="total>0" type="danger" plain @click="batchDel"><i class="iconfont iconshanchu" />批量删除</el-button>
     </div>
+    <AddSelectGroup :visibleSelectGroup="visibleSelectGroup" @getSelectGroup="getSelectGroup"></AddSelectGroup>
   </div>
 </template>
 
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
+import AddSelectGroup from '@/components/AddSelectGroup'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import { chapetrList, chapetr_del } from '@/api/live-telecast-manage'
 import { findUserListByGroupId } from '@/api/work-desk'
 import { getLabelListNoPagination } from '@/api/onlineclass-label-manage'
 export default {
-  components: { Pagination, TenantsGroupsRoles },
+  components: { Pagination, TenantsGroupsRoles, AddSelectGroup },
   directives: { elDragDialog },
   data() {
     return {
       isReset: false, // 是否重置三组
+      visibleSelectGroup: false, // 是否弹出选择租户、小组
       total: 0, // 总条数
       listQuery: { // 查询条件
         currentPage: 1, // 当前页
@@ -246,7 +249,17 @@ export default {
 
     // 新增
     add() {
-      this.$router.push({ path: '/online-class/live-telecast-manage/add' })
+      this.visibleSelectGroup = true
+    },
+
+    // 监听选择小组返回数据
+    getSelectGroup(val) {
+      this.companyId = val.selectCompanyId
+      this.egroup = val.egroup
+      this.visibleSelectGroup = false
+      if (this.egroup) {
+        this.$router.push({ path: '/online-class/live-telecast-manage/add', query: { selectCompanyId: this.companyId, egroup: this.egroup }})
+      }
     },
 
     // 详情

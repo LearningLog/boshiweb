@@ -131,30 +131,23 @@
         <el-button @click="visiblePublish = false">取 消</el-button>
       </div>
     </el-dialog>
-    <el-dialog v-el-drag-dialog class="selectCompany" width="400px" title="选择小组" :visible.sync="isVisibleSystemManage">
-      <el-form :model="listQuery" label-width="100px">
-        <tenants-groups-roles :is-render-role="false" which-group="manageEgroupInfo" @tenantsGroupsRolesVal="tenantsGroupsRolesVal2" @resetVal="resetVal" />
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="selectCompany">确定</el-button>
-        <el-button @click="isVisibleSystemManage = false">取 消</el-button>
-      </div>
-    </el-dialog>
+    <AddSelectGroup :visibleSelectGroup="visibleSelectGroup" @getSelectGroup="getSelectGroup"></AddSelectGroup>
   </div>
 </template>
 
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
+import AddSelectGroup from '@/components/AddSelectGroup'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import { getAutomaticList, delAuto, publish, stop } from '@/api/evolutionManage-automatic'
 export default {
-  components: { Pagination, TenantsGroupsRoles },
+  components: { Pagination, TenantsGroupsRoles, AddSelectGroup },
   directives: { elDragDialog },
   data() {
     return {
       visiblePublish: false, // 发布弹窗
-      isVisibleSystemManage: false, // 是否弹出选择租户、小组
+      visibleSelectGroup: false, // 是否弹出选择租户、小组
       isReset: false, // 是否重置三组联动数据
       total: 0, // 总条数
       listQuery: { // 查询条件
@@ -238,12 +231,6 @@ export default {
       this.isReset = false
     },
 
-    // 新增监听三组数据变化
-    tenantsGroupsRolesVal2(val) {
-      this.selectCompanyId = val.companyIds
-      this.egroup = val.egroupId
-    },
-
     // 选中数据
     handleSelectionChange(row) {
       this.checkedDelList = row
@@ -251,20 +238,17 @@ export default {
 
     // 新增
     add() {
-      this.isVisibleSystemManage = true
+      this.visibleSelectGroup = true
     },
 
-    // 新增选择租户、小组
-    selectCompany() {
-      if (!this.selectCompanyId && this.$store.state.user.isSystemManage) {
-        this.$message.warning('请先选择租户！')
-        return false
-      } else if (!this.egroup) {
-        this.$message.warning('请先选择小组！')
-        return false
+    // 监听选择小组返回数据
+    getSelectGroup(val) {
+      this.companyId = val.selectCompanyId
+      this.egroup = val.egroup
+      this.visibleSelectGroup = false
+      if (this.egroup) {
+        this.$router.push({ path: '/evaluating-manage/automatic-release-manage/add', query: { selectCompanyId: this.companyId, egroup: this.egroup }})
       }
-      this.isVisibleSystemManage = false
-      this.$router.push({ path: '/evaluating-manage/automatic-release-manage/add', query: { selectCompanyId: this.selectCompanyId, egroup: this.egroup }})
     },
 
     // 删除
