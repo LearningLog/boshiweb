@@ -15,6 +15,14 @@ export function getLabelList(data) {
     data
   })
 }
+// 获取标签列表，不分页（用于查询条件）
+export function getLabelListNoPagination(data) {
+  return request({
+    url: 'cr/label/findAllLabel',
+    method: 'post',
+    data
+  })
+}
 // 修改标签
 export function label_edit(data) {
   return request({

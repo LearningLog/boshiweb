@@ -34,7 +34,19 @@
               </el-form-item>
               <tenants-groups-roles :is-render-role="false" :isReset="isReset" which-group="manageEgroupInfo" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" @resetVal="resetVal" />
               <el-form-item label="标签名称">
-                <el-input v-model="listQuery.labels[0]" placeholder="请输入标签名称" clearable @keyup.enter.native="topSearch" />
+                <el-select
+                    v-model="listQuery.labels"
+                    placeholder="请选择标签"
+                    clearable
+                    filterable
+                >
+                  <el-option
+                      v-for="item in lablesList"
+                      :key="item.linc"
+                      :label="item.lname"
+                      :value="item.linc"
+                  />
+                </el-select>
               </el-form-item>
               <el-form-item label="创建人">
                 <el-select
@@ -121,6 +133,7 @@ import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import { chapetrList, chapetr_del } from '@/api/live-telecast-manage'
 import { findUserListByGroupId } from '@/api/work-desk'
+import { getLabelListNoPagination } from '@/api/onlineclass-label-manage'
 export default {
   components: { Pagination, TenantsGroupsRoles },
   directives: { elDragDialog },
@@ -133,18 +146,20 @@ export default {
         pageSize: 10, // 当前页请求条数
         cname: '', // 课堂名称
         createUser: '', // 创建人
+        selectCompanyId: '', // 租户
+        egroup: '', // 小组
         labels: [], // 标签
         teacher: '', // 讲师
         startTime: '', // 开始时间
         endTime: '', // 开始时间
         createTimebegin: '', // 创建开始时间
-        createTimeend: '', // 创建结束时间
-        egroup: '' // 所属小组
+        createTimeend: '' // 创建结束时间
       },
       start_time_range: [], // 开始时间
       time_range: [], // 创建时间
       list: [], // 表格数据
       createrList: [], // 创建人list
+      lablesList: [], // 标签list
       listLoading: true, // 是否开启表格遮罩
       popoverVisible: false, // 是否开启高级搜索
       checkedDelList: [] // 选择的list
@@ -153,12 +168,15 @@ export default {
   created() {
     this.get_list()
     this.getCreater()
+    this.getLablesList()
   },
   methods: {
     // 获取初始化数据
     get_list() {
       this.listLoading = true
       this.time_range = this.time_range || []
+      this.listQuery.startTime = this.start_time_range[0]
+      this.listQuery.endTime = this.start_time_range[1]
       this.listQuery.createTimebegin = this.time_range[0]
       this.listQuery.createTimeend = this.time_range[1]
       chapetrList(this.listQuery).then(response => {
@@ -170,8 +188,15 @@ export default {
 
     // 获取创建人（实际就是用户）
     getCreater() {
-      findUserListByGroupId({ selectCompanyId: this.listQuery.selectCompanyId }).then(res => {
+      findUserListByGroupId({ groupId: this.listQuery.selectCompanyId }).then(res => {
         this.createrList = res.data
+      })
+    },
+
+    // 获取标签list
+    getLablesList() {
+      getLabelListNoPagination({ selectCompanyId: this.listQuery.selectCompanyId, egroup: this.listQuery.egroup }).then(res => {
+        this.lablesList = res.data
       })
     },
 
@@ -180,6 +205,7 @@ export default {
       this.listQuery.selectCompanyId = val.companyIds
       this.listQuery.egroup = val.egroupId
       this.getCreater()
+      this.getLablesList()
     },
     // 重置监听三组数据变化
     resetVal(val) {
@@ -199,6 +225,7 @@ export default {
       this.listQuery.labels = ''
       this.listQuery.createUser = ''
       this.listQuery.teacher = ''
+      this.listQuery.selectCompanyId = ''
       this.listQuery.egroup = ''
       this.start_time_range = []
       this.time_range = []
