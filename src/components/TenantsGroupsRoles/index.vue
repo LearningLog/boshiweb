@@ -134,9 +134,12 @@ export default {
   watch: {
     isReset: function(curVal, oldVal) {
       // 重置
-      this.companyIds = ''
-      this.groupId = ''
-      this.roleId = ''
+      if (curVal) {
+        this.companyIds = ''
+        this.groupId = ''
+        this.roleId = ''
+        this.$emit('resetVal')
+      }
     }
   },
   created() {

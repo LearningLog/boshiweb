@@ -1,9 +1,9 @@
 /**
-* @Author: JiMei
-* @Date: 2019/11/6
-* @Description: 在线课堂接口
-* @remarks:
-*/
+ * @Author: JiMei
+ * @Date: 2019/11/6
+ * @Description: 在线课堂接口
+ * @remarks:
+ */
 
 import request from '@/utils/request'
 

@@ -12,41 +12,44 @@
               <el-form-item label="讲师">
                 <el-input v-model="listQuery.teacher" placeholder="请输入讲师" clearable @keyup.enter.native="topSearch" />
               </el-form-item>
-              <el-form-item label="开始时间时间">
+              <el-form-item label="开始时间">
                 <el-date-picker
-                  v-model="start_time_range"
-                  type="daterange"
-                  range-separator="至"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                  value-format="yyyy-MM-dd"
+                    v-model="start_time_range"
+                    type="daterange"
+                    range-separator="至"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                    value-format="yyyy-MM-dd"
                 />
               </el-form-item>
-              <el-form-item label="所属小组">
-                <el-select v-model="listQuery.egroup" placeholder="请选择所属小组" clearable filterable>
-                  <el-option
-                    v-for="item in group_list"
-                    :key="item.inc"
-                    :label="item.groupName"
-                    :value="item.inc"
-                  />
-                </el-select>
+              <el-form-item label="创建时间">
+                <el-date-picker
+                    v-model="time_range"
+                    type="daterange"
+                    range-separator="至"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                    value-format="yyyy-MM-dd"
+                />
               </el-form-item>
+              <tenants-groups-roles :is-render-role="false" :isReset="isReset" which-group="manageEgroupInfo" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" @resetVal="resetVal" />
               <el-form-item label="标签名称">
                 <el-input v-model="listQuery.labels[0]" placeholder="请输入标签名称" clearable @keyup.enter.native="topSearch" />
               </el-form-item>
               <el-form-item label="创建人">
-                <el-input v-model="listQuery.username" placeholder="请输入创建人" clearable @keyup.enter.native="topSearch" />
-              </el-form-item>
-              <el-form-item label="创建时间">
-                <el-date-picker
-                  v-model="time_range"
-                  type="daterange"
-                  range-separator="至"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                  value-format="yyyy-MM-dd"
-                />
+                <el-select
+                    v-model="listQuery.createUser"
+                    placeholder="请选择创建人"
+                    clearable
+                    filterable
+                >
+                  <el-option
+                      v-for="item in createrList"
+                      :key="item._id"
+                      :label="item.nickname"
+                      :value="item._id"
+                  />
+                </el-select>
               </el-form-item>
             </el-form>
             <div id="searchPopoverBtn">
@@ -114,46 +117,42 @@
 
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
-import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
 import { chapetrList, chapetr_del } from '@/api/live-telecast-manage'
+import { findUserListByGroupId } from '@/api/work-desk'
 export default {
-  components: { Pagination },
+  components: { Pagination, TenantsGroupsRoles },
   directives: { elDragDialog },
   data() {
     return {
+      isReset: false, // 是否重置三组
       total: 0, // 总条数
       listQuery: { // 查询条件
         currentPage: 1, // 当前页
         pageSize: 10, // 当前页请求条数
         cname: '', // 课堂名称
-        username: '', // 创建人
+        createUser: '', // 创建人
         labels: [], // 标签
         teacher: '', // 讲师
-        createTimebegin: '', // 开始时间
-        createTimeend: '', // 结束时间
+        startTime: '', // 开始时间
+        endTime: '', // 开始时间
+        createTimebegin: '', // 创建开始时间
+        createTimeend: '', // 创建结束时间
         egroup: '' // 所属小组
       },
       start_time_range: [], // 开始时间
       time_range: [], // 创建时间
-      group_list: [], // 所属小组list
       list: [], // 表格数据
+      createrList: [], // 创建人list
       listLoading: true, // 是否开启表格遮罩
       popoverVisible: false, // 是否开启高级搜索
-      setInformationDialogVisible: false, // 是否打开设置资讯弹窗
-      noList: [], // 未分配的资讯
-      hasList: [], // 已分配的资讯
-      checkedDelList: [], // 选择删除的list
-      defaultProps: { // 穿梭框节点别名
-        key: '_id',
-        label: 'newscategory_name'
-      },
-      setInformationId: '' // 当前设置资讯的id
+      checkedDelList: [] // 选择的list
     }
   },
   created() {
     this.get_list()
-    this.getEgroups()
+    this.getCreater()
   },
   methods: {
     // 获取初始化数据
@@ -169,11 +168,22 @@ export default {
       })
     },
 
-    // 获取所有小组
-    getEgroups() {
-      getUserEgroupInfo({ selectCompanyId: this.companyIds }).then(response => {
-        this.group_list = response.data.egroupInfo
+    // 获取创建人（实际就是用户）
+    getCreater() {
+      findUserListByGroupId({ selectCompanyId: this.listQuery.selectCompanyId }).then(res => {
+        this.createrList = res.data
       })
+    },
+
+    // 监听三组数据变化
+    tenantsGroupsRolesVal(val) {
+      this.listQuery.selectCompanyId = val.companyIds
+      this.listQuery.egroup = val.egroupId
+      this.getCreater()
+    },
+    // 重置监听三组数据变化
+    resetVal(val) {
+      this.isReset = false
     },
 
     // 搜索
@@ -183,11 +193,17 @@ export default {
 
     // 重置
     reset() {
+      this.isReset = true
       this.listQuery.cname = ''
+      this.listQuery.createUser = ''
+      this.listQuery.labels = ''
       this.listQuery.createUser = ''
       this.listQuery.teacher = ''
       this.listQuery.egroup = ''
+      this.start_time_range = []
       this.time_range = []
+      this.listQuery.startTime = ''
+      this.listQuery.endTime = ''
       this.listQuery.createTimebegin = ''
       this.listQuery.createTimeend = ''
       this.get_list()
@@ -200,12 +216,12 @@ export default {
 
     // 新增
     add() {
-      this.$router.push({ path: '/online-class/live-telecast-manage/add' })
+      this.$router.push({ path: '/online-class/direct-manage/add' })
     },
 
     // 详情
     detail(row) {
-      this.$router.push({ path: '/online-class/live-telecast-manage/detail', query: { _id: row._id }})
+      this.$router.push({ path: '/online-class/direct-manage/detail', query: { _id: row._id }})
     },
 
     // 单个删除
@@ -252,7 +268,7 @@ export default {
 
     // 修改
     edit(row) {
-      this.$router.push({ path: '/online-class/live-telecast-manage/edit', query: { _id: row._id }})
+      this.$router.push({ path: '/online-class/direct-manage/edit', query: { _id: row._id }})
     }
   }
 }

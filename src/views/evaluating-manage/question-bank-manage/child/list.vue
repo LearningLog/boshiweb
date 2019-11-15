@@ -9,7 +9,7 @@
         <el-row v-show="popoverVisible">
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
-              <tenants-groups-roles :is-render-role="false" :is-reset="isReset" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" />
+              <tenants-groups-roles :is-render-role="false" :is-reset="isReset" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" @resetVal="resetVal" />
               <!--<el-form-item label="试题标签">-->
               <!--<el-select-->
               <!--v-model="listQuery.topic_label"-->
@@ -245,6 +245,10 @@ export default {
       this.listQuery.egroup = val.egroupId
       this.listQuery.roleId = val.roleId
       this.group = val.group
+    },
+    // 重置监听三组数据变化
+    resetVal(val) {
+      this.isReset = false
     },
     // 新增监听三组数据变化
     tenantsGroupsRolesVal2(val) {

@@ -9,7 +9,7 @@
         <el-row v-show="popoverVisible">
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
-              <tenants-groups-roles :is-render-role="false" :is-reset="isReset" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" />
+              <tenants-groups-roles :is-render-role="false" :is-reset="isReset" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" @resetVal="resetVal" />
               <el-form-item label="模块名称">
                 <el-select v-model="listQuery.egroup" placeholder="请选择模块" clearable filterable>
                   <el-option
@@ -173,6 +173,10 @@ export default {
     tenantsGroupsRolesVal(val) {
       this.listQuery.selectGroupId = val.companyIds
       this.listQuery.egroup = val.egroupId
+    },
+    // 监听三组数据变化
+    resetVal() {
+      this.isReset = false
     },
     closeDetail() {
       this.listQuery2.smsStatus = ''

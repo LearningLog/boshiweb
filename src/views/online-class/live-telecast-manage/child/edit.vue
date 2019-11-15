@@ -312,7 +312,7 @@ export default {
           chapetr_edit(this.form).then(response => {
             this.$message.success('新增课程成功！')
             this.noLeaveprompt = true
-            this.$router.push({ path: '/online-class/live-telecast-manage/list' })
+            this.$router.push({ path: '/online-class/direct-manage/list' })
           })
         }
       })

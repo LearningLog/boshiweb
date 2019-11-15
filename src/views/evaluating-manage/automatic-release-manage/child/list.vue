@@ -9,7 +9,7 @@
         <el-row v-show="popoverVisible">
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
-              <tenants-groups-roles :is-render-role="false" :is-reset="isReset" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" />
+              <tenants-groups-roles :is-render-role="false" :is-reset="isReset" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" @resetVal="resetVal" />
               <el-form-item label="状态">
                 <el-select
                   v-model="listQuery.autoStatus"
@@ -133,7 +133,7 @@
     </el-dialog>
     <el-dialog v-el-drag-dialog class="selectCompany" width="400px" title="选择小组" :visible.sync="isVisibleSystemManage">
       <el-form :model="listQuery" label-width="100px">
-        <tenants-groups-roles :is-render-role="false" which-group="manageEgroupInfo" @tenantsGroupsRolesVal="tenantsGroupsRolesVal2" />
+        <tenants-groups-roles :is-render-role="false" which-group="manageEgroupInfo" @tenantsGroupsRolesVal="tenantsGroupsRolesVal2" @resetVal="resetVal" />
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="selectCompany">确定</el-button>
@@ -232,6 +232,10 @@ export default {
       this.listQuery.egroup = val.egroupId
       this.listQuery.roleId = val.roleId
       this.group = val.group
+    },
+    // 重置监听三组数据变化
+    resetVal(val) {
+      this.isReset = false
     },
 
     // 新增监听三组数据变化

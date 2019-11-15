@@ -9,7 +9,7 @@
         <el-row v-show="popoverVisible">
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
-              <tenants-groups-roles :is-render-role="false" :is-reset="isReset" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" />
+              <tenants-groups-roles :is-render-role="false" :is-reset="isReset" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" @resetVal="resetVal" />
               <el-form-item label="考试状态">
                 <el-select
                   v-model="listQuery.examStatus"
@@ -147,6 +147,11 @@ export default {
       this.listQuery.selectCompanyId = val.companyIds
       this.listQuery.egroup = val.egroupId
       this.listQuery.roleId = val.roleId
+    },
+
+    // 监听三组数据变化
+    resetVal() {
+      this.isReset = false
     },
 
     // 新增监听三组数据变化

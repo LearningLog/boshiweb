@@ -20,7 +20,7 @@
                   <el-option v-for="item in userStatus" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
-              <tenants-groups-roles :is-reset="isReset" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" />
+              <tenants-groups-roles :is-reset="isReset" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" @resetVal="resetVal" />
             </el-form>
             <div id="searchPopoverBtn">
               <el-button type="primary" @click="topSearch">搜索</el-button>
@@ -259,6 +259,10 @@ export default {
       this.listQuery.selectCompanyId = val.companyIds
       this.listQuery.egroup = val.egroupId
       this.listQuery.roleId = val.roleId
+    },
+    // 监听三组数据变化
+    resetVal() {
+      this.isReset = false
     },
     // 是否可选择
     selectable(row, index) {
