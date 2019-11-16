@@ -41,13 +41,12 @@ export default {
     }
   },
   created() {
-    this.id = this.$route.query._id
     this.getInitData()
   },
   methods: {
     // 获取初始数据
     getInitData() {
-      getCustomResourceDetail({ _id: this.id }).then(response => {
+      getCustomResourceDetail({ _id: this.$store.state.user.userSystemInfo.userInfo.groupId }).then(response => {
         this.form = response.data
         this.form.startTime = response.data.startTime || ''
         this.form.endTime = response.data.endTime || ''

@@ -143,6 +143,23 @@ export const asyncRoutes = [
   },
 
   {
+    path: '/enterprise-resource',
+    component: Layout,
+    redirect: '/enterprise-resource/detail',
+    name: 'enterprise-resource',
+    meta: { title: '企业资源', icon: 'iconqiyeguanli' },
+    children: [
+      {
+        path: 'detail',
+        name: 'enterprise-resource-detail',
+        hidden: true,
+        component: () => import('@/views/enterprise-resource/detail'),
+        meta: { title: '资源详情', icon: '', activeMenu: '/enterprise-resource' }
+      }
+    ]
+  },
+
+  {
     path: '/global-config',
     component: Layout,
     redirect: '/global-config/list',

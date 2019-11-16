@@ -202,44 +202,69 @@
           </el-radio-group>
         </el-form-item>
 
-       <div v-show="form.sendSms">
-         <el-form-item label="短信通知设置" class="informationType">
+        <div v-show="form.sendSms">
+          <el-form-item label="短信通知设置" class="informationType">
             <el-checkbox-group v-model="informationTypeList">
               <el-checkbox :label="1">课程创建后立即推送</el-checkbox>
               <el-checkbox :label="2">
                 <span>课程开始前</span>
                 <el-select v-model="form.timeBefore" placeholder="请选择">
                   <el-option
-                      v-for="item in timeBeforeList"
-                      :key="item.id"
-                      :label="item.label"
-                      :value="item.id">
-                  </el-option>
+                    v-for="item in timeBeforeList"
+                    :key="item.id"
+                    :label="item.label"
+                    :value="item.id"
+                  />
                 </el-select>
                 <span>推送</span>
               </el-checkbox>
             </el-checkbox-group>
-         </el-form-item>
-         <el-form-item label="通知人员" class="informationMember">
-           <el-checkbox
-               v-model="checkAll3"
-               :indeterminate="isIndeterminate3"
-               @change="handleCheckAllGroupChange"
-           >全部小组</el-checkbox>
-           <div style="margin: 15px 0;" />
-           <el-checkbox-group
-               v-model="checkedGroupIds3"
-               @change="handleCheckedGroupMemberChange"
-           >
-             <el-checkbox
-                 v-for="(inc, index) in group_inc_list3"
-                 :key="inc"
-                 style="margin: 15px 0;display:block"
-                 :label="inc"
-             >{{ group_groupName_list3[index] }}</el-checkbox>
-           </el-checkbox-group>
-         </el-form-item>
-       </div>
+          </el-form-item>
+          <el-form-item label="通知人员" class="informationMember">
+            <div class="clearfix">
+              <div class="fl groups3">
+                <el-checkbox
+                  v-model="checkAll3"
+                  :indeterminate="isIndeterminate3"
+                  @change="handleCheckAllGroupChange"
+                >全部小组</el-checkbox>
+                <div style="margin: 15px 0;" />
+                <el-checkbox-group
+                  v-model="checkedGroupIds3"
+                  @change="handleCheckedGroupMemberChange"
+                >
+                  <el-checkbox
+                    v-for="(inc, index) in group_inc_list3"
+                    :key="inc"
+                    style="margin: 15px 0;display:block"
+                    :label="inc"
+                    @click.native="stepThreeGroupClick(inc)"
+                  >{{ group_groupName_list3[index] }}</el-checkbox>
+                </el-checkbox-group>
+              </div>
+              <div class="fl members3">
+                <el-checkbox
+                  v-model="checkAllMember"
+                  :indeterminate="isIndeterminateMember"
+                  @change="handleCheckAllMemberChange"
+                >全部成员</el-checkbox>
+                <div style="margin: 15px 0;" />
+                <el-checkbox-group
+                  v-model="checkedMemberIds"
+                  @change="handleCheckedMemberChange"
+                >
+                  <el-checkbox
+                    v-for="(_id, index) in memberIdList"
+                    :key="_id"
+                    style="margin: 15px 0;display:block"
+                    :label="_id"
+                    @click.native="StepThreeMemberClick(_id)"
+                  >{{ memberNames[index] }}</el-checkbox>
+                </el-checkbox-group>
+              </div>
+            </div>
+          </el-form-item>
+        </div>
       </el-form>
     </div>
 
@@ -337,6 +362,7 @@ import { uploadFile } from '@/api/uploadFile'
 import { getToken } from '@/utils/auth'
 import { getCustomManageList } from '@/api/systemManage-roleManage'
 import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
+import { getUserByGroupIds } from '@/api/user'
 import SelectFile from '@/components/SelectFile'
 import AddLabels from '@/components/AddEvalLabels'
 const $ = window.$
@@ -368,7 +394,7 @@ export default {
         selectCompanyId: '', // 所属租户ID
         egroup: '', // 小组
         sendSms: 0, // 课程通知
-        timeBefore: 10, // 课程开始前
+        timeBefore: 10 // 课程开始前
       },
       range_time: [], // 上课时段
       visibleSelectFile: false, // 弹出选择文件
@@ -418,26 +444,32 @@ export default {
       isIndeterminate: false, // 状态，是否已半选择
       checkAll: true, // 是否已全选
       informationTypeList: [1], // 通知类型
-      timeBeforeList:[
+      timeBeforeList: [
         {
           id: 10,
           label: '10分钟'
-        },{
+        },
+        {
           id: 30,
           label: '30分钟'
-        },{
+        },
+        {
           id: 60,
           label: '1小时'
-        },{
+        },
+        {
           id: 60 * 2,
           label: '2小时'
-        },{
+        },
+        {
           id: 60 * 5,
           label: '5小时'
-        },{
+        },
+        {
           id: 60 * 12,
           label: '12小时'
-        },{
+        },
+        {
           id: 60 * 24,
           label: '1天'
         }
@@ -449,14 +481,17 @@ export default {
       group_inc_list3: [], // 第三步所有小组inc list
       group_groupName_list3: [], // 第三步所有小组groupName list
 
-      topic1: {
-        // 课程文件
-        topic_content: '', // 课程名称
-        topic_label: '', // 标签
-        currentLabels: [], // 标签obj
-        topic_resource: '', // 选择的图片
-        topic_resource_id: '' // 主文件id
-      },
+      groupMemberList: [], // 根据小组获取的小组成员（用户）
+      isIndeterminateMember: false, // 状态，是否已半选择
+      checkAllMember: false, // 是否已全选成员
+      checkedMemberIds: [], // 第三步已选中的小组成员
+      memberIdList: [], // 第三步所有成员 id list
+      memberNames: [], // 第三步所有成员 nickname list
+      memberIds: {}, // 所有成员 _id obj
+      currentGroupInc: -1, // 第三步当前点击的小组
+      currenMemberId: '', // 第三步当前点击的成员
+      allCheckedMemberBelongGroupList: [],
+
       rules: {
         cname: [
           {
@@ -504,6 +539,93 @@ export default {
         }
       },
       deep: true // 深层次监听
+    },
+
+    // 监听第三步小组变化
+    checkedGroupIds3: {
+      handler(curVal, oldVal) {
+        var isChecked = false
+        for (var i = 0, len = curVal.length; i < len; i++) {
+          // 判断点击的小组选中状态
+          var item = curVal[i]
+          if (item === this.currentGroupInc) {
+            isChecked = true
+            break
+          }
+        }
+        if (isChecked) {
+          this.groupMemberList.forEach(item => {
+            if (
+              item.einc.indexOf(this.currentGroupInc) > -1 &&
+              this.checkedMemberIds.indexOf(item._id) === -1
+            ) {
+              this.checkedMemberIds.push(item._id)
+            }
+          })
+        } else {
+          this.groupMemberList.forEach(item => {
+            var index = this.checkedMemberIds.indexOf(item._id)
+            if (item.einc.indexOf(this.currentGroupInc) > -1 && index > -1) {
+              this.checkedMemberIds.splice(index, 1)
+            }
+          })
+        }
+        this.currentGroupInc = -1
+      },
+      deep: true // 深层次监听
+    },
+
+    // 监听第三步成员变化
+    checkedMemberIds: {
+      handler(curVal, oldVal) {
+        var isChecked = false
+        for (var i = 0, len = curVal.length; i < len; i++) {
+          // 判断点击的成员选中状态
+          var item = curVal[i]
+          if (item === this.currenMemberId) {
+            isChecked = true
+            break
+          }
+        }
+        var arr = []
+        this.groupMemberList.forEach(item => {
+          if (item._id === this.currenMemberId) {
+            this.allCheckedMemberBelongGroupList = [
+              ...this.allCheckedMemberBelongGroupList,
+              ...item.einc
+            ]
+          }
+        })
+        // this.allCheckedMemberBelongGroupList = [
+        //   ...new Set(this.allCheckedMemberBelongGroupList)
+        // ] // 去重的
+        debugger
+        if (isChecked) {
+          this.groupMemberList.forEach(item => {
+            if (item._id === this.currenMemberId) {
+              this.checkedGroupIds3.forEach((item, index) => {
+                var index2 = arr.indexOf(item)
+                if (index2 === -1) {
+                  this.checkedGroupIds3.splice(index, 1)
+                }
+              })
+            }
+          })
+        } else {
+          this.groupMemberList.forEach(item => {
+            if (item._id === this.currenMemberId) {
+              this.checkedGroupIds3.forEach((item, index) => {
+                var index2 = this.allCheckedMemberBelongGroupList.indexOf(item)
+                if (index2 === -1) {
+                  this.checkedGroupIds3.splice(index, 1)
+                }
+              })
+            }
+          })
+        }
+        this.currenMemberId = ''
+      },
+      deep: true // 深层次监听
     }
   },
   created() {
@@ -519,6 +641,12 @@ export default {
           if (valid) {
             this.$refs.form2.validate(valid => {
               if (valid) {
+                if (!this.group_list.length) {
+                  this.$message.warning(
+                    '您暂时没有管理小组，请联系企业管理员进行小组管理！'
+                  )
+                  return false
+                }
                 this.active++
               }
             })
@@ -533,7 +661,9 @@ export default {
         }
         const checkedCount = this.checkedGroupIds3.length
         this.checkAll3 = checkedCount === this.checkedGroups.length
-        this.isIndeterminate3 = checkedCount > 0 && checkedCount < this.checkedGroups.length
+        this.isIndeterminate3 =
+          checkedCount > 0 && checkedCount < this.checkedGroups.length
+        this.getUserByGroupIds()
       }
     },
 
@@ -541,6 +671,7 @@ export default {
     forwardStep() {
       if (this.active === 3) {
         this.group_inc_list3.length = 0
+        this.groupMemberList.length = 0
       }
       this.active--
     },
@@ -689,7 +820,12 @@ export default {
     getEgroups() {
       getUserEgroupInfo({ selectCompanyId: this.selectCompanyId }).then(
         response => {
-          this.group_list = response.data.manageEgroupInfo
+          this.group_list = response.data.manageEgroupInfo || []
+          this.group_inc_list.length = 0
+          this.group_groupName_list.length = 0
+          for (var key in this.groupIncs) {
+            delete this.groupIncs[key]
+          }
           this.group_list.forEach(item => {
             this.group_inc_list.push(item.inc)
             this.group_groupName_list.push(item.groupName)
@@ -719,7 +855,7 @@ export default {
     // 为第三步过滤当前小组
     filterGroupFor3() {
       this.checkedGroupIds3.forEach((item, index) => {
-        const i = this.checkedGroupIds.findIndex(function (item2) {
+        const i = this.checkedGroupIds.findIndex(function(item2) {
           return item === item2
         })
         if (i === -1) {
@@ -744,7 +880,7 @@ export default {
 
     // 第三步全选
     handleCheckAllGroupChange(val) {
-      this.checkedGroupIds3 = val ?  [].concat(this.group_inc_list3): []
+      this.checkedGroupIds3 = val ? [].concat(this.group_inc_list3) : []
       this.isIndeterminate3 = false
       console.log(this.checkedGroupIds3)
     },
@@ -756,6 +892,93 @@ export default {
       this.isIndeterminate3 =
         checkedCount > 0 && checkedCount < this.checkedGroups.length
       console.log(this.checkedGroupIds3)
+    },
+
+    // 根据小组获取小组成员（用户）
+    getUserByGroupIds() {
+      getUserByGroupIds({
+        egroups: this.checkedGroupIds,
+        selectCompanyId: this.form.selectCompanyId
+      }).then(res => {
+        var member = res.data
+
+        var groupIdUserIds = {}
+        var allUserIds = new Set()
+
+        var userList = []
+        var groupList = []
+        member.forEach(function(group, index) {
+          var gId = group.egroup
+          var gUsers = group.user
+          if (!gUsers) {
+            return true
+          }
+          var gUserIds = []
+          groupIdUserIds[gId] = gUserIds
+
+          gUsers.forEach(function(user, u_index) {
+            if (user.egroups.length == 1) {
+              user.egroupList = [group.egroup]
+            } else {
+              const egroupList = []
+              $.each(user.egroups, function(index2, item2) {
+                egroupList.push(item2.inc)
+              })
+              user.egroupList = egroupList
+            }
+            var userId = user._id
+            gUserIds.push(userId)
+
+            if (allUserIds.has(userId)) {
+              return true
+            }
+            allUserIds.add(userId)
+
+            userList.push(user)
+          })
+
+          delete group['user']
+        })
+        console.log(userList)
+        this.groupMemberList = userList || []
+        this.memberIdList.length = 0
+        this.memberNames.length = 0
+        for (var key in this.memberIds) {
+          delete this.memberIds[key]
+        }
+        this.groupMemberList.forEach(item => {
+          this.memberIdList.push(item._id)
+          this.memberNames.push(item.nickname)
+          this.memberIds[item._id] = item
+          // $.extend(true, this.memberIds[item._id], item)
+        })
+      })
+    },
+
+    // 成员全选
+    handleCheckAllMemberChange(val) {
+      this.checkedMemberIds = val ? [].concat(this.memberIdList) : []
+      this.isIndeterminateMember = false
+      console.log(this.checkedMemberIds)
+    },
+
+    // 成员单选
+    handleCheckedMemberChange(value) {
+      const checkedCount = value.length
+      this.checkAllMember = checkedCount === this.groupMemberList.length
+      this.isIndeterminateMember =
+        checkedCount > 0 && checkedCount < this.groupMemberList.length
+      console.log(this.checkedMemberIds)
+    },
+
+    // 第三步小组点击事件
+    stepThreeGroupClick(inc) {
+      this.currentGroupInc = inc
+    },
+
+    // 第三步成员点击事件
+    StepThreeMemberClick(_id) {
+      this.currenMemberId = _id
     },
 
     // 提交
@@ -881,5 +1104,8 @@ export default {
 }
 .informationType /deep/ .el-select {
   width: 100px;
+}
+.groups3 {
+  width: 50%;
 }
 </style>
