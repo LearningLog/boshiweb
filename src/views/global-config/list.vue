@@ -18,8 +18,8 @@
       highlight-current-row
     >
       <el-table-column align="center" label="key" min-width="140" show-overflow-tooltip prop="key" />
-      <el-table-column label="数据类型" min-width="110" align="center" show-overflow-tooltip prop="type" />
-      <el-table-column class-name="status-col" label="值" min-width="70" align="center" show-overflow-tooltip prop="value" />
+      <el-table-column label="数据类型" min-width="100" align="center" show-overflow-tooltip prop="type" />
+      <el-table-column class-name="status-col" label="值" min-width="200" align="center" show-overflow-tooltip prop="value" />
       <el-table-column class-name="status-col" label="操作" width="160" align="center" fixed="right" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-button size="mini" @click="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>

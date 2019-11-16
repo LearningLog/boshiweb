@@ -178,7 +178,6 @@ export default {
     // 监听对象变化
     form: {
       handler(val) {
-        debugger
         if (val) {
           this.dataIsChange++
         }
