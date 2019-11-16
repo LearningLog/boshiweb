@@ -105,14 +105,14 @@
       >
         <el-form-item label="直播源" prop="live_count">
           <el-radio-group v-model="form.live_count">
-            <el-radio :label="1">两路视频直播</el-radio>
-            <el-radio :label="0">一路视频直播</el-radio>
+            <el-radio :label="2">两路视频直播</el-radio>
+            <el-radio :label="1">一路视频直播</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="评论控制" prop="can_discuss">
           <el-radio-group v-model="form.can_discuss">
             <el-radio :label="1">开启</el-radio>
-            <el-radio :label="0">关闭</el-radio>
+            <el-radio :label="2">关闭</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="课程封面" class="logoClass">
@@ -320,13 +320,11 @@
 </template>
 
 <script>
-import { validIntNum, regUName, regPwd } from '@/utils/validate'
 import { VueCropper } from 'vue-cropper'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import { chapetr_add } from '@/api/live-telecast-manage'
 import { uploadFile } from '@/api/uploadFile'
 import { getToken } from '@/utils/auth'
-import { getCustomManageList } from '@/api/systemManage-roleManage'
 import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
 import { getEgroupAndUserinfo } from '@/api/userCenter-userManage'
 import SelectFile from '@/components/SelectFile'
@@ -362,7 +360,7 @@ export default {
         s_time: '', // 开始时间
         e_time: '', // 开始时间
         selectCompanyId: '', // 所属租户ID
-        egroup: '', // 小组
+        egroup: null, // 小组
         sendSms: 0, // 课程通知
         sendSms1: 0, // 课程通知
         timeBefore: 10, // 课程开始前
@@ -623,9 +621,9 @@ export default {
       this.fileList = []
       this.$refs.coverPic.clearFiles()
     },
-    // logo删除前
+    // 课堂封面删除前
     beforeRemove(file, fileList) {
-      return this.$confirm('您确定要删除logo吗？', '删除图片', {
+      return this.$confirm('您确定要删除课堂封面吗？', '删除图片', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -653,8 +651,8 @@ export default {
         uploadFile(formData).then(response => {
           this.$message.success('上传成功！')
           this.deskTopImageUrl = response.data.saveHttpPath
-          this.form.cover_pic_id = response.data.saveHttpPath
-          this.form.cover_pic = response.data.id
+          this.form.cover_pic_id = response.data.id
+          this.form.cover_pic = response.data.saveHttpPath
           this.fileList = [
             {
               name: response.data.originalFilename,
@@ -774,10 +772,14 @@ export default {
       this.form.userList.length = 0
       var userList = []
       this.groupsAndMembers.forEach(item => {
-        this.form.groupList.push(item[0])
         userList.push(item[1])
       })
       this.form.userList = [...new Set(userList)]
+
+      // // 获取 groupList
+      // this.checkedGroups.forEach(item => {
+      //   this.form.groupList.push(item.inc)
+      // })
     },
 
     // 处理第三步小组和成员的变化
@@ -794,6 +796,7 @@ export default {
       })
       this.form.can_discuss = this.form.can_discuss + ''
       // 判断获取informationType
+      this.form.sendSms = this.form.sendSms1
       if (this.informationTypeList.length === 2) {
         this.form.informationType = 3
       } else if (this.informationTypeList.length === 1) {
@@ -801,6 +804,7 @@ export default {
       } else {
         this.form.sendSms = 0
       }
+      this.form.groupList = this.checkedGroupIds
       delete this.form.range_time
       chapetr_add(this.form).then(response => {
         this.$message.success('新增课程成功！')
@@ -940,5 +944,8 @@ export default {
   width: 190px;
   background-color: #f5f7fa;
   padding-left: 20px;
+}
+/deep/ .el-tag {
+  margin-right: 10px;
 }
 </style>

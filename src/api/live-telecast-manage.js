@@ -26,7 +26,7 @@ export function chapetr_del(data) {
 // 新增课堂
 export function chapetr_add(data) {
   return request({
-    url: '/cr/chapter/create',
+    url: '/cr/chapter/createV2',
     method: 'post',
     data
   })
