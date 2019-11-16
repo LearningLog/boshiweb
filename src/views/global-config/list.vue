@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div id="topSearch">
-      <el-input v-model="listQuery.customname" placeholder="" clearable @keyup.enter.native="topSearch">
+      <el-input v-model="listQuery.key" placeholder="请输入key" clearable @keyup.enter.native="topSearch" @change="topSearch">
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
       </el-input>
       <span id="advancedSearchBtn" />
@@ -18,8 +18,8 @@
       highlight-current-row
     >
       <el-table-column align="center" label="key" min-width="140" show-overflow-tooltip prop="key" />
-      <el-table-column label="类型" min-width="110" align="center" show-overflow-tooltip prop="type" />
-      <el-table-column class-name="status-col" label="value" min-width="70" align="center" show-overflow-tooltip prop="value" />
+      <el-table-column label="数据类型" min-width="110" align="center" show-overflow-tooltip prop="type" />
+      <el-table-column class-name="status-col" label="值" min-width="70" align="center" show-overflow-tooltip prop="value" />
       <el-table-column class-name="status-col" label="操作" width="160" align="center" fixed="right" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-button size="mini" @click="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
@@ -43,8 +43,7 @@ export default {
       listQuery: { // 查询条件
         currentPage: 1, // 当前页
         pageSize: 10, // 当前页请求条数
-        customname: null, // 租户名称
-        payTypeName: null // 套餐类型
+        key: '' // key
       },
       list: [], // 表格数据
       listLoading: true // 表格是否开启遮罩
@@ -61,7 +60,6 @@ export default {
         this.list = []
         this.type = 'string'
         for (var key in res.data) {
-          // console.log(res.data[key])
           this.type = this.getJsonObjType(res.data[key], key)
           this.list.push({ key: key, value: JSON.stringify(res.data[key]), type: this.type })
         }
@@ -90,15 +88,22 @@ export default {
     },
     // 搜索
     topSearch() {
-      // this.get_list()
-      const list1 = this.list.filter(item => item.key === this.listQuery.customname)
-      console.log(list1)
-      this.list = list1
-      console.log(this.list)
+      if (this.listQuery.key) {
+        var arr = []
+        this.list.forEach(item => {
+          if (item.key.indexOf(this.listQuery.key) > -1) {
+            arr.push(item)
+          }
+        })
+        this.list.length = 0
+        this.list = arr
+      } else {
+        this.get_list()
+      }
     },
     // 新增
     add() {
-      this.$router.push({ path: '/global-config/add', query: { pid: this.pid, pname: this.pname }})
+      this.$router.push({ path: '/global-config/add' })
     },
     // 编辑
     edit(row) {
