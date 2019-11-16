@@ -104,8 +104,8 @@
       </el-table-column>
       <el-table-column class-name="status-col" label="开始时间" min-width="130" align="center" prop="s_time" />
       <el-table-column class-name="status-col" label="发布小组" min-width="120" align="center" prop="groupName" />
-      <el-table-column class-name="status-col" label="标签" min-width="100" align="center" prop="labels" />
-      <el-table-column align="center" label="创建人" min-width="90" prop="username" />
+      <el-table-column class-name="status-col" label="标签" min-width="100" align="center" prop="labelNames" />
+      <el-table-column align="center" label="创建人" min-width="90" prop="userNickName" />
       <el-table-column align="center" label="创建时间" min-width="130" prop="c_time" />
       <el-table-column class-name="status-col" label="操作" width="230" align="center" fixed="right">
         <template slot-scope="scope">

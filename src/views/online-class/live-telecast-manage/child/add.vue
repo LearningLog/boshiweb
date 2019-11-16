@@ -784,7 +784,7 @@ export default {
 
     // 处理第三步小组和成员的变化
     handleChangeMembers(val) {
-
+      console.log(val)
     },
 
     // 发布
@@ -806,6 +806,7 @@ export default {
       }
       this.form.groupList = this.checkedGroupIds
       delete this.form.range_time
+      console.log(this.form)
       chapetr_add(this.form).then(response => {
         this.$message.success('新增课程成功！')
         this.noLeaveprompt = true

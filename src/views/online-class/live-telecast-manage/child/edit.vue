@@ -549,8 +549,8 @@ export default {
         this.form.sendSms = data.sendSms || 0
         this.form.sendSms1 = data.sendSms || 0
         this.form.timeBefore = data.timeBefore
-        this.form.groupList = data.groupList
-        this.form.userList = data.userList
+        this.form.groupList = data.groupList || []
+        this.form.userList = data.userList || []
         this.checkedGroupIds = data.egroup
         this.getEgroups()
 
@@ -801,6 +801,26 @@ export default {
           }
         })
         this.list2 = this.list
+
+        // 此两处的循环为了回显第三步的小组和成员
+        var userList = []
+        this.list2.forEach(item => {
+          item.userinfo = item.userinfo || []
+          item.userinfo.forEach(item2 => {
+            item2.pinc = item.inc
+            userList.push(item2)
+          })
+        })
+        // 此两处的循环为了回显第三步的小组和成员
+        this.groupsAndMembers.length = 0
+        this.form.userList.forEach(item => {
+          userList.forEach(item2 => {
+            if (item === item2._id) {
+              this.groupsAndMembers.push([item2.pinc, item2._id])
+            }
+          })
+        })
+
         this.$nextTick(() => {
           $('.examiners /deep/ .el-cascader-menu:first-child li:first-child').click()
         })
