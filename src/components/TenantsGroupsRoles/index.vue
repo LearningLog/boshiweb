@@ -1,6 +1,6 @@
 <template>
   <div class="tenantsGroupsRoles" :style="{ width: widths }">
-    <el-form-item v-if="isSystemManage" label="所属租户" :style="{ width: itemWidth }">
+    <el-form-item v-if="isSystemManage" label="租户" :style="{ width: itemWidth }">
       <el-select
         v-model="companyIds"
         placeholder="请选择租户"

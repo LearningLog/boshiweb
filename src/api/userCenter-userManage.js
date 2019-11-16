@@ -85,3 +85,12 @@ export function batchGroupsManage(data) {
     data
   })
 }
+
+// 获取管理小组和人员
+export function getEgroupAndUserinfo(data) {
+  return request({
+    url: '/system/userV2/getEgroupAndUserinfo',
+    method: 'post',
+    data
+  })
+}

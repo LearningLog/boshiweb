@@ -65,7 +65,7 @@ export default {
     this.get_list()
   },
   methods: {
-    // 获取标签列表
+    // 获取小组和人员列表
     get_list() {
       getExamUserInfo({ selectCompanyId: this.selectCompanyId }).then(
         response => {
@@ -75,7 +75,7 @@ export default {
             item.id = item.inc
             if (item.userinfo) {
               item.userinfo.forEach(item2 => {
-                item2.name = item2.username
+                item2.name = item2.nickname
                 item2.id = item2._id
               })
             }
@@ -104,7 +104,10 @@ export default {
 
 <style scoped>
 /deep/ .el-cascader-menu:last-child {
-  border-right: solid 1px #dfe4ed;
+  border-right: solid 0px #dfe4ed;
+}
+/deep/ .el-cascader-menu {
+  width: 50%;
 }
 .examiners .el-cascader-panel {
   width: 379px;
