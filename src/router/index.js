@@ -209,7 +209,7 @@ export const asyncRoutes = [
         name: 'work-desk-detail',
         hidden: true,
         component: () => import('@/views/work-desk/detail'),
-        meta: { title: '工作详情', icon: '', activeMenu: '/work-desk' }
+        meta: { title: '详情', icon: '', activeMenu: '/work-desk' }
       }
     ]
   },

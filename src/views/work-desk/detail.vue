@@ -1,14 +1,31 @@
 <template>
-  <div>
+  <div class="app-container">
     <div class="detailForm">
-
-      <div class="detailFormContent">
-        <div class="f pic"><img class="pic" :src="getPic(form)"></div>
-        <div class="f file-info" style="width: 500px;margin-left: 10%;">
-          <p><b style="font-size: 30px;">{{ form.fileName }}</b></p>
-          文件ID：<p>{{ form.mainFileId }}</p>
-          文件大小：<p>{{ getFileShowSize(form.fileSize) }}</p>
-          创建时间：<p>{{ parseTime(form.createTimestamp) }}</p>
+      <div class="detailFormContent clearfix">
+        <div class="fl pic">
+          <el-image
+              class="thumbnailPic"
+              :src="getPic(form) || file_knowledge"
+              fit="contain"></el-image>
+        </div>
+        <div class="fl file-info m0a">
+          <el-form ref="form" :model="form" class="formDetail" label-width="100px">
+            <el-form-item label="">
+              <h1 class="tc" style="font-size: 30px;">{{ form.fileName }}</h1>
+            </el-form-item>
+            <el-form-item label="文件ID：">
+              <span>{{ form.mainFileId }}</span>
+            </el-form-item>
+            <el-form-item label="文件ID：">
+              <span>{{ form.mainFileId }}</span>
+            </el-form-item>
+            <el-form-item label="文件大小：">
+              <span>{{ getFileShowSize(form.fileSize) }}</span>
+            </el-form-item>
+            <el-form-item label="创建时间：">
+              <span>{{ parseTime(form.createTimestamp) }}</span>
+            </el-form-item>
+          </el-form>
         </div>
       </div>
     </div>
@@ -21,13 +38,13 @@
         fit
         highlight-current-row
       >
-        <el-table-column align="center" label="文件名" min-width="50" show-overflow-tooltip prop="fileName" />
-        <el-table-column align="center" label="格式" min-width="20" show-overflow-tooltip prop="fileFormat" />
-        <el-table-column align="center" label="文件地址" min-width="100" show-overflow-tooltip prop="fileUrl" />
-        <el-table-column align="center" label="文件大小" min-width="30" show-overflow-tooltip>
+        <el-table-column align="center" label="文件名" min-width="100" show-overflow-tooltip prop="fileName" />
+        <el-table-column align="center" label="格式" min-width="60" show-overflow-tooltip prop="fileFormat" />
+        <el-table-column align="center" label="文件地址" min-width="200" show-overflow-tooltip prop="fileUrl" />
+        <el-table-column align="center" label="文件大小" min-width="90" show-overflow-tooltip>
           <template slot-scope="scope">{{ getFileShowSize(scope.row.fileSize) }} </template>
         </el-table-column>
-        <el-table-column class-name="status-col" label="操作" width="210" align="center" fixed="right">
+        <el-table-column class-name="status-col" label="操作" width="160" align="center" fixed="right">
           <template slot-scope="scope">
             <el-button size="mini" @click="handleCopy(scope.row,$event)"><i class="iconfont iconchakan" />一键复制链接</el-button>
           </template>
@@ -43,9 +60,12 @@
 // 直接使用
 import clip from '@/utils/clipboard'
 import { getFileShowSize, parseTime } from '@/utils/index'
+import file_knowledge from '@/assets/images/file_knowledge.png'
+
 export default {
   data() {
     return {
+      file_knowledge,
       listLoading: false,
       list: [],
       form: []
@@ -69,7 +89,6 @@ export default {
           return subFile[i].fileUrl
         }
       }
-      return 'business/knowledgeLib/img/file_knowledge.png'
     },
     parseTime(time, cFormat) {
       return parseTime(time, cFormat)
@@ -84,12 +103,22 @@ export default {
 <style lang="scss" scoped>
   @import "~@/styles/theme.scss";
   @import "~@/styles/variables.scss";
-  .pic{
+  .thumbnailPic{
     width: 300px;
-    height:300px
+    height:300px;
+    border: 1px solid #e8e8e8;
+    vertical-align: middle;
+  }
+  .file-info {
+    width: calc(100% - 320px);
+  }
+  .formDetail {
+    width: 50%;
+    margin: 0 auto;
   }
   .detailForm {
     border: 1px solid #f2f2f2;
+    margin-bottom: 20px;
 
     > .detailFormTop {
       color: #666666;

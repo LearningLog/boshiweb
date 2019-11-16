@@ -76,7 +76,6 @@
       :data="list"
       element-loading-text="Loading"
       border
-      fit
       highlight-current-row
       @selection-change="handleSelectionChange"
     >
@@ -85,36 +84,47 @@
         width="50"
         fixed
       />
-      <el-table-column align="center" label="序号" min-width="20" show-overflow-tooltip>
-        <template slot-scope="scope">{{ scope.$index+1 }} </template>
-      </el-table-column>
-      <el-table-column align="center" label="信息" min-width="150" show-overflow-tooltip>
+      <el-table-column align="center" label="序号" width="60" show-overflow-tooltip>
         <template slot-scope="scope">
-          <div class="f imgInfo" @click="preview(scope.row)">
-            <img id="fileImg" :src="getPic(scope.row)">
-          </div>
-          <div class="f pointer" @click="detail(scope.row)">
-            <p>{{ scope.row.fileName }}</p>
-            <p>{{ getFileShowSize(scope.row.fileSize) }}</p>
+          <span>{{ scope.$index + (listQuery.currentPage - 1) * listQuery.pageSize + 1 }} </span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="信息" min-width="240" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <div class="clearfix">
+            <div class="fl pointer" @click="preview(scope.row)">
+              <el-image
+                  class="thumbnail"
+                  :src="getPic(scope.row) || file_knowledge"
+                  fit="contain"></el-image>
+            </div>
+            <div class="fl pointer fileDetail" @click="detail(scope.row)">
+              <p class="fileDetailItem">{{ scope.row.fileName }}</p>
+              <p class="fileDetailItem"><span>文件大小：</span>{{ getFileShowSize(scope.row.fileSize) }}</p>
+              <p class="fileDetailItem"><span>文件格式：</span>{{ scope.row.fileFormat }}</p>
+            </div>
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="来源" min-width="70" align="center" show-overflow-tooltip prop="fileSourceName" />
-      <el-table-column align="center" label="创建人" min-width="30" show-overflow-tooltip>
+      <el-table-column align="center" label="来源" min-width="90" show-overflow-tooltip prop="fileSourceName" />
+      <el-table-column align="center" label="创建人" min-width="90" show-overflow-tooltip>
         <template slot-scope="scope">{{ getFileListData(scope.row.mainFileId).nickName }} </template>
       </el-table-column>
-      <el-table-column align="center" label="创建时间" min-width="70" show-overflow-tooltip>
+      <el-table-column align="center" label="创建时间" min-width="130" show-overflow-tooltip>
         <template slot-scope="scope">{{ parseTime(scope.row.createTimestamp) }} </template>
       </el-table-column>
-      <el-table-column align="center" label="文档状态" min-width="50" show-overflow-tooltip>
-        <template slot-scope="scope">{{ getFileStatusDesc(getFileListData(scope.row.mainFileId).file_status) }} </template>
-      </el-table-column>
-      <el-table-column class-name="status-col" label="操作" width="210" align="center" fixed="right">
+      <el-table-column align="center" label="文档状态" min-width="80" show-overflow-tooltip>
         <template slot-scope="scope">
-          <el-button size="mini" @click="download(scope.row)"><i class="iconfont icondownload" />下载</el-button>
-
+          <el-tag v-if="getFileListData(scope.row.mainFileId).file_status === 3" type="danger">{{ getFileStatusDesc(getFileListData(scope.row.mainFileId).file_status) }}</el-tag>
+          <el-tag v-else-if="getFileListData(scope.row.mainFileId).file_status === 4" type="success">{{ getFileStatusDesc(getFileListData(scope.row.mainFileId).file_status) }}</el-tag>
+          <el-tag v-else type="warning">{{ getFileStatusDesc(getFileListData(scope.row.mainFileId).file_status) }}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column class-name="status-col" label="操作" width="220" align="center" fixed="right">
+        <template slot-scope="scope">
+          <el-button size="mini" @click="download(scope.row)"><i class="iconfont iconwechaticon16" />下载</el-button>
           <span v-if="getFileListData(scope.row.mainFileId).file_status===4"><el-button size="mini" @click="pushToKnowledge(scope.row)"><i class="iconfont iconxiugai" />推送</el-button></span>
-          <span v-else><el-button size="mini" class="dis" disabled="disabled"><i class="iconfont iconxiugai" />推送</el-button></span>
+          <span v-else><el-button size="mini" disabled="disabled"><i class="iconfont iconfabu1" />推送</el-button></span>
           <el-button size="mini" @click="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
         </template>
       </el-table-column>
@@ -166,11 +176,14 @@ import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
 import { getFileShowSize, parseTime } from '@/utils/index'
 import elDragDialog from '@/directive/el-drag-dialog'
 import FilePreview from '@/components/FilePreview'
+import file_knowledge from '@/assets/images/file_knowledge.png'
+
 export default {
   directives: { elDragDialog },
   components: { Pagination, FilePreview },
   data() {
     return {
+      file_knowledge,
       isFilePreview: false, // 是否打开预览
       fileFormat: '', // 文件格式
       fileTypeCode: -1, // 文件类型
@@ -292,7 +305,6 @@ export default {
           this.file_encoding.push(this.list[i].mainFileId)
         }
       }
-      console.log(this.file_encoding)
       if (this.file_encoding.length > 0) {
         setTimeout(() => {
           this.get_list()
@@ -417,17 +429,10 @@ export default {
           return subFile[i].fileUrl
         }
       }
-      return 'business/knowledgeLib/img/file_knowledge.png'
     },
     // 选中数据
     handleSelectionChange(row) {
       this.checkedDelList = row
-      /* if (row.length === 0) {
-        return
-      }
-      for (let i = 0; i < row.length; i++) {
-        this.checkedDelList.push(row[i].mainFileId)
-      }*/
     },
     // 推送至知识库
     pushToKnowledge(row) {
@@ -505,19 +510,22 @@ export default {
   }
 }
 </script>
-<style>
-  .imgInfo{
-    width:110px;
-    height:110px
+<style lang="scss" scoped>
+  .fileDetail {
+    margin-left: 10px;
   }
-  #fileImg{
-    height:100%;
-    width:100%
+  .fileDetail p {
+    margin: 0;
   }
-  .f{
-    float:left
+  .fileDetailItem {
+    text-align: left;
   }
-  .dis{
-    color:#ccc
+  .fileDetailItem span {
+    display: inline-block;
+    width: 60px;
+    text-align: right;
+  }
+  .el-table .el-table__row td {
+    height: 116px;
   }
 </style>
