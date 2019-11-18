@@ -102,7 +102,6 @@
           <el-link type="primary" @click="detail(scope.row)">{{ scope.row.cname }}</el-link>
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="开始时间" min-width="130" align="center" prop="s_time" />
       <el-table-column class-name="status-col" label="发布小组" min-width="120" align="center" prop="groupName" />
       <el-table-column class-name="status-col" label="标签" min-width="100" align="center" prop="labelNames" />
       <el-table-column align="center" label="创建人" min-width="90" prop="userNickName" />
@@ -161,7 +160,7 @@ export default {
         endTime: '', // 开始时间
         createTimebegin: '', // 创建开始时间
         createTimeend: '', // 创建结束时间
-        type: 1 // 1，直播课堂；2，点播课堂
+        type: 2 // 1，直播课堂；2，点播课堂
       },
       start_time_range: [], // 开始时间
       time_range: [], // 创建时间
@@ -258,7 +257,7 @@ export default {
     getSelectGroup(val) {
       this.visibleSelectGroup = false
       if (val.egroup) {
-        this.$router.push({ path: '/online-class/live-telecast-manage/add', query: { selectCompanyId: val.selectCompanyId, egroup: val.egroup }})
+        this.$router.push({ path: '/online-class/spaced-sowing/add', query: { selectCompanyId: val.selectCompanyId, egroup: val.egroup }})
       }
     },
 
@@ -269,7 +268,7 @@ export default {
 
     // 详情
     detail(row) {
-      this.$router.push({ path: '/online-class/live-telecast-manage/detail', query: { _id: row._id }})
+      this.$router.push({ path: '/online-class/spaced-sowing/detail', query: { _id: row._id }})
     },
 
     // 单个删除
@@ -316,7 +315,7 @@ export default {
 
     // 修改
     edit(row) {
-      this.$router.push({ path: '/online-class/live-telecast-manage/edit', query: { _id: row._id }})
+      this.$router.push({ path: '/online-class/spaced-sowing/edit', query: { _id: row._id }})
     }
   }
 }

@@ -58,7 +58,7 @@
         </el-form-item>
         <el-form-item label="上课时段" prop="s_time">
           <el-date-picker
-            v-model="form.range_time"
+            v-model="range_time"
             type="datetimerange"
             range-separator="至"
             start-placeholder="开始日期"
@@ -75,7 +75,7 @@
           />
           <div class="checkFile" @click="selectFile">选择</div>
         </el-form-item>
-        <el-form-item label="课堂标签" class="addLabel">
+        <el-form-item label="添加标签" class="addLabel">
           <div v-if="currentLabels.length" class="tag">
             <el-tag
               v-for="(tag, index) in currentLabels"
@@ -105,7 +105,7 @@
       >
         <el-form-item label="直播源" prop="live_count">
           <el-radio-group v-model="form.live_count">
-            <!--<el-radio :label="2">两路视频直播</el-radio>-->
+            <el-radio :label="2">两路视频直播</el-radio>
             <el-radio :label="1">一路视频直播</el-radio>
           </el-radio-group>
         </el-form-item>
@@ -322,7 +322,7 @@
 <script>
 import { VueCropper } from 'vue-cropper'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
-import { chapetr_add } from '@/api/live-telecast-manage'
+import { getOneChapter, chapetr_add } from '@/api/live-telecast-manage'
 import { uploadFile } from '@/api/uploadFile'
 import { getToken } from '@/utils/auth'
 import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
@@ -343,8 +343,8 @@ export default {
       dataIsChange: 0, // 计数器，据此判断表单是否已编辑
       noLeaveprompt: false, // 表单提交后，设置为true，据此判断提交不再弹出离开提示
       active: 1, // 当前step
-      form: {
-        // 表单数据
+      form: { // 表单数据
+        _id: '', // 直播课堂Id
         cname: '', // 课堂名称
         teacher: '', // 主讲老师
         brief: '', // 课程简介
@@ -414,7 +414,7 @@ export default {
       checkedGroups: [], // 选择的小组
       checkedGroupIds: [], // 第二步已选中的小组
       isIndeterminate: false, // 状态，是否已半选择
-      checkAll: true, // 是否已全选
+      checkAll: false, // 是否已全选
       informationTypeList: [1], // 通知类型
       timeBeforeList: [
         {
@@ -507,11 +507,57 @@ export default {
     }
   },
   created() {
-    this.form.selectCompanyId = this.$route.query.selectCompanyId
-    this.form.egroup = this.$route.query.egroup * 1
-    this.getEgroups()
+    this.form._id = this.$route.query._id
+    this.getChapterDetail()
   },
   methods: {
+    // 获取直播详情
+    getChapterDetail() {
+      getOneChapter({ _id: this.form._id }).then(res => {
+        const { data } = res
+        this.form._id = data._id
+        this.form.cname = data.cname
+        this.form.teacher = data.teacher
+        this.form.brief = data.brief
+        this.form.live_count = data.live_count
+        this.form.can_discuss = data.can_discuss * 1
+        this.form.chapter_file = data.chapter_file
+        this.form.chapter_masterId = data.chapter_masterId
+        this.form.chapter_name = data.chapter_name
+        this.form.informationType = data.informationType
+        if (data.informationType === 1 || data.informationType === 2) {
+          this.informationTypeList[0] = data.informationType
+        } else if (data.informationType === 3) {
+          this.informationTypeList[0] = 1
+          this.informationTypeList[1] = 2
+        } else {
+          this.informationTypeList = []
+        }
+        this.form.labels = data.labels
+        this.currentLabels = data.labelName
+        this.form.cover_pic_id = data.cover_pic_id
+        this.form.cover_pic = data.cover_pic
+        if (this.form.cover_pic) {
+          this.fileList = [{ name: '', url: data.cover_pic }]
+          $('.coverPic .el-upload--picture-card').hide()
+        }
+        this.form.s_time = data.s_time
+        this.form.e_time = data.e_time
+        this.range_time =[data.s_time, data.e_time]
+        this.form.selectCompanyId = data.groupId
+        this.form.egroup = data.egroup[0] || null
+        this.form.sendSms = data.sendSms || 0
+        this.form.sendSms1 = data.sendSms || 0
+        this.form.timeBefore = data.timeBefore
+        this.form.groupList = data.groupList || []
+        this.form.userList = data.userList || []
+        this.checkedGroupIds = data.egroup
+        this.getEgroups()
+
+        this.dataIsChange = -1
+      })
+    },
+
     // 下一步
     nextStep() {
       if (this.active === 1) {
@@ -548,6 +594,7 @@ export default {
 
     // 获取s_time，e_time
     handleTimeChange(val) {
+      console.log(val)
       this.form.s_time = val[0]
       this.form.e_time = val[1]
     },
@@ -651,8 +698,8 @@ export default {
         uploadFile(formData).then(response => {
           this.$message.success('上传成功！')
           this.deskTopImageUrl = response.data.saveHttpPath
-          this.form.cover_pic_id = response.data.id
-          this.form.cover_pic = response.data.saveHttpPath
+          this.form.cover_pic_id = response.data.saveHttpPath
+          this.form.cover_pic = response.data.id
           this.fileList = [
             {
               name: response.data.originalFilename,
@@ -701,7 +748,13 @@ export default {
             this.group_groupName_list.push(item.groupName)
             this.groupIncs[item.inc] = item
           })
-          this.checkedGroupIds = this.group_inc_list
+          if (this.checkedGroupIds.length === this.group_list.length) {
+            this.checkAll = true
+          } else if (this.checkedGroupIds.length) {
+            this.isIndeterminate = true
+          } else {
+            this.isIndeterminate = false
+          }
         }
       )
     },
@@ -717,7 +770,7 @@ export default {
       const checkedCount = value.length
       this.checkAll = checkedCount === this.group_list.length
       this.isIndeterminate =
-        checkedCount > 0 && checkedCount < this.group_list.length
+          checkedCount > 0 && checkedCount < this.group_list.length
     },
 
     // 获取第二步选择小组
@@ -748,6 +801,26 @@ export default {
           }
         })
         this.list2 = this.list
+
+        // 此两处的循环为了回显第三步的小组和成员
+        var userList = []
+        this.list2.forEach(item => {
+          item.userinfo = item.userinfo || []
+          item.userinfo.forEach(item2 => {
+            item2.pinc = item.inc
+            userList.push(item2)
+          })
+        })
+        // 此两处的循环为了回显第三步的小组和成员
+        this.groupsAndMembers.length = 0
+        this.form.userList.forEach(item => {
+          userList.forEach(item2 => {
+            if (item === item2._id) {
+              this.groupsAndMembers.push([item2.pinc, item2._id])
+            }
+          })
+        })
+
         this.$nextTick(() => {
           $('.examiners /deep/ .el-cascader-menu:first-child li:first-child').click()
         })
@@ -768,9 +841,11 @@ export default {
           this.groupsAndMembers.splice(i--, 1)
         }
       }
+      this.form.groupList.length = 0
       this.form.userList.length = 0
       var userList = []
       this.groupsAndMembers.forEach(item => {
+        this.form.groupList.push(item[0])
         userList.push(item[1])
       })
       this.form.userList = [...new Set(userList)]
@@ -778,7 +853,7 @@ export default {
 
     // 处理第三步小组和成员的变化
     handleChangeMembers(val) {
-      console.log(val)
+
     },
 
     // 发布
@@ -790,7 +865,6 @@ export default {
       })
       this.form.can_discuss = this.form.can_discuss + ''
       // 判断获取informationType
-      this.form.sendSms = this.form.sendSms1
       if (this.informationTypeList.length === 2) {
         this.form.informationType = 3
       } else if (this.informationTypeList.length === 1) {
@@ -798,9 +872,6 @@ export default {
       } else {
         this.form.sendSms = 0
       }
-      this.form.groupList = this.checkedGroupIds
-      delete this.form.range_time
-      console.log(this.form)
       chapetr_add(this.form).then(response => {
         this.$message.success('新增课程成功！')
         this.noLeaveprompt = true
@@ -835,112 +906,112 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "~@/styles/theme.scss";
-.operator {
-  margin-top: 20px;
-}
-.chapterFile /deep/ .el-input {
-  width: calc(100% - 80px);
-}
+  @import "~@/styles/theme.scss";
+  .operator {
+    margin-top: 20px;
+  }
+  .chapterFile /deep/ .el-input {
+    width: calc(100% - 80px);
+  }
 
-.addLabel {
-  margin-bottom: 20px;
-}
-.tag {
-  display: inline;
-}
+  .addLabel {
+    margin-bottom: 20px;
+  }
+  .tag {
+    display: inline;
+  }
 
-/deep/ .el-upload-dragger {
-  border: none;
-  width: auto;
-  height: auto;
-}
+  /deep/ .el-upload-dragger {
+    border: none;
+    width: auto;
+    height: auto;
+  }
 
-.vueCropper {
-  text-align: left;
-}
-// 截图
-.cropper-content {
-  .cropper {
-    width: calc(100% - 200px);
-    height: 340px;
+  .vueCropper {
+    text-align: left;
+  }
+  // 截图
+  .cropper-content {
+    .cropper {
+      width: calc(100% - 200px);
+      height: 340px;
+      display: inline-block;
+    }
+  }
+  .show-preview {
+    float: right;
+    width: 140px;
     display: inline-block;
   }
-}
-.show-preview {
-  float: right;
-  width: 140px;
-  display: inline-block;
-}
-.previewImg {
-  width: 180px;
-  height: 180px;
-}
-.logoClass /deep/ .el-form-item__content {
-  line-height: 18px;
-}
-/deep/ .el-upload-list li {
-  margin-bottom: 0;
-}
-.step {
-  width: 60%;
-  height: 60px;
-  margin: 15px auto;
-  border-bottom: 1px solid #eee;
-}
-.step h5 {
-  float: left;
-}
+  .previewImg {
+    width: 180px;
+    height: 180px;
+  }
+  .logoClass /deep/ .el-form-item__content {
+    line-height: 18px;
+  }
+  /deep/ .el-upload-list li {
+    margin-bottom: 0;
+  }
+  .step {
+    width: 60%;
+    height: 60px;
+    margin: 15px auto;
+    border-bottom: 1px solid #eee;
+  }
+  .step h5 {
+    float: left;
+  }
 
-.checkFile {
-  display: inline-block;
-  width: 60px;
-  height: 32px;
-  line-height: 32px;
-  cursor: pointer;
-  text-align: center;
-  margin-left: 6px;
-  border-radius: 3px;
-  color: #ffffff;
-  background-color: $themeColor;
-  border-color: $themeColor;
-}
-.checkFile:hover {
-  opacity: 0.8;
-}
-.informationType /deep/ .el-select {
-  width: 100px;
-}
-.groups3 {
-  width: 50%;
-}
+  .checkFile {
+    display: inline-block;
+    width: 60px;
+    height: 32px;
+    line-height: 32px;
+    cursor: pointer;
+    text-align: center;
+    margin-left: 6px;
+    border-radius: 3px;
+    color: #ffffff;
+    background-color: $themeColor;
+    border-color: $themeColor;
+  }
+  .checkFile:hover {
+    opacity: 0.8;
+  }
+  .informationType /deep/ .el-select {
+    width: 100px;
+  }
+  .groups3 {
+    width: 50%;
+  }
 
-.step2 /deep/ .el-scrollbar {
-  height: calc(100vh - 350px);
-}
+  .step2 /deep/ .el-scrollbar {
+    height: calc(100vh - 350px);
+  }
 
-/deep/ .el-cascader-menu:last-child {
-  border-right: solid 0px #dfe4ed;
-}
-/deep/ .el-cascader-menu {
-  width: 50%;
-}
-.examiners .el-cascader-panel {
-  width: 379px;
-}
-.examiners .group {
-  display: inline-block;
-  width: 188px;
-  background-color: #f5f7fa;
-  padding-left: 20px;
-}
-.examiners .member {
-  display: inline-block;
-  width: 190px;
-  background-color: #f5f7fa;
-  padding-left: 20px;
-}
-/deep/ .el-tag {
-  margin-right: 10px;
-}
+  /deep/ .el-cascader-menu:last-child {
+    border-right: solid 0px #dfe4ed;
+  }
+  /deep/ .el-cascader-menu {
+    width: 50%;
+  }
+  .examiners .el-cascader-panel {
+    width: 379px;
+  }
+  .examiners .group {
+    display: inline-block;
+    width: 188px;
+    background-color: #f5f7fa;
+    padding-left: 20px;
+  }
+  .examiners .member {
+    display: inline-block;
+    width: 190px;
+    background-color: #f5f7fa;
+    padding-left: 20px;
+  }
+  /deep/ .el-tag {
+    margin-right: 10px;
+  }
 </style>

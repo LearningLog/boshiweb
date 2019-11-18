@@ -32,7 +32,8 @@
       v-el-drag-dialog
       title="所属菜单"
       :visible.sync="menu_tree_flag"
-      width="50%"
+      width="38%"
+      height="60vh"
     >
       <div class="menu_tree_box">
         <el-scrollbar wrap-class="scrollbar-wrapper">
@@ -356,10 +357,12 @@ export default {
   .actcolor{
     color: $themeColor;
   }
-  .menu_tree_box{
-    .el-scrollbar {
-      height: 58vh;
-      width: 100%;
-    }
+  .menu_tree_box {
+    width: 60%;
+    margin: 0 auto;
+  }
+  .menu_tree_box /deep/ .el-scrollbar {
+    height: calc(60vh - 170px);
+    width: 100%;
   }
 </style>

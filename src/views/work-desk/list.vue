@@ -139,7 +139,8 @@
       v-el-drag-dialog
       title="推送"
       :visible.sync="menu_tree_flag"
-      width="50%"
+      width="38%"
+      height="60vh"
     >
       <div class="menu_tree_box">
         <el-scrollbar wrap-class="scrollbar-wrapper">
@@ -527,5 +528,12 @@ export default {
   }
   .el-table .el-table__row td {
     height: 116px;
+  }
+  .menu_tree_box {
+    width: 60%;
+    margin: 0 auto;
+  }
+  .menu_tree_box /deep/ .el-scrollbar {
+    height: calc(60vh - 170px);
   }
 </style>

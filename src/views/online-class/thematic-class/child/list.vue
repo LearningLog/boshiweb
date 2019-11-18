@@ -127,7 +127,7 @@
     <div id="bottomOperation">
       <el-button v-show="total>0" type="danger" plain @click="batchDel"><i class="iconfont iconshanchu" />批量删除</el-button>
     </div>
-    <AddSelectGroup :visibleSelectGroup="visibleSelectGroup" @getSelectGroup="getSelectGroup"></AddSelectGroup>
+    <AddSelectGroup :visibleSelectGroup="visibleSelectGroup" :isRenderGroup="false" title="选择租户" @getSelectGroup="getSelectGroup"></AddSelectGroup>
   </div>
 </template>
 
@@ -160,8 +160,7 @@ export default {
         startTime: '', // 开始时间
         endTime: '', // 开始时间
         createTimebegin: '', // 创建开始时间
-        createTimeend: '', // 创建结束时间
-        type: 1 // 1，直播课堂；2，点播课堂
+        createTimeend: '' // 创建结束时间
       },
       start_time_range: [], // 开始时间
       time_range: [], // 创建时间
@@ -251,14 +250,20 @@ export default {
 
     // 新增
     add() {
-      this.visibleSelectGroup = true
+      if (!this.$store.state.user.isSystemManage) {
+        this.$router.push({ path: '/online-class/live-telecast-manage/add' })
+      } else {
+        this.visibleSelectGroup = true
+      }
     },
 
     // 监听选择小组返回数据
     getSelectGroup(val) {
+      this.companyId = val.selectCompanyId
+      this.egroup = val.egroup
       this.visibleSelectGroup = false
-      if (val.egroup) {
-        this.$router.push({ path: '/online-class/live-telecast-manage/add', query: { selectCompanyId: val.selectCompanyId, egroup: val.egroup }})
+      if (this.egroup) {
+        this.$router.push({ path: '/online-class/live-telecast-manage/add', query: { selectCompanyId: this.companyId }})
       }
     },
 

@@ -8,7 +8,6 @@
     >
       <el-step title="第一步：填写课程信息" />
       <el-step title="第二步：选择发布小组" />
-      <el-step title="第三步：课程发布设置" />
     </el-steps>
     <div class="operator fr">
       <el-button
@@ -17,12 +16,12 @@
         @click="forwardStep"
       ><i class="addIcon iconfont iconshangyibu" />上一步</el-button>
       <el-button
-        v-if="active !== 3"
+        v-if="active !== 2"
         type="primary"
         @click="nextStep()"
       ><i class="addIcon iconfont iconxiayibu" />下一步</el-button>
       <el-button
-        v-if="active === 3"
+        v-if="active === 2"
         v-no-more-click
         type="primary"
         @click="publish('form')"
@@ -48,24 +47,13 @@
             clearable
           />
         </el-form-item>
-        <el-form-item label="主讲老师" prop="teacher">
+        <el-form-item label="点播视频" class="chapterFile" prop="video_name">
           <el-input
-            v-model="form.teacher"
-            placeholder="请输入主讲老师"
-            maxlength="10"
-            clearable
+              v-model="form.video_name"
+              disabled
+              placeholder="请选择视频"
           />
-        </el-form-item>
-        <el-form-item label="上课时段" prop="s_time">
-          <el-date-picker
-            v-model="form.range_time"
-            type="datetimerange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            @change="handleTimeChange"
-          />
+          <div class="checkFile" @click="selectVideo">选择</div>
         </el-form-item>
         <el-form-item label="课件" class="chapterFile">
           <el-input
@@ -74,6 +62,31 @@
             placeholder="支持格式 ppt、word、pdf、excel，建议课件不超过30页"
           />
           <div class="checkFile" @click="selectFile">选择</div>
+        </el-form-item>
+        <el-form-item label="课程封面" class="logoClass">
+          <el-upload
+              ref="coverPic"
+              class="coverPic"
+              name="thumbnailfile"
+              :action="uploadUrl()"
+              :headers="headers"
+              accept=".jpg,.png,.gif,.jepg,.jpeg"
+              drag
+              :data="fileInfo"
+              :limit="2"
+              :file-list="fileList"
+              list-type="picture-card"
+              :auto-upload="false"
+              :on-change="changeUpload"
+              :on-success="handleSuccess"
+              :on-error="handleUploadError"
+              :on-preview="handlePreview"
+              :before-remove="beforeRemove"
+              :on-remove="handleRemove"
+          >
+            <!--<img v-if="deskTopImageUrl" :src="deskTopImageUrl" class="avatar">-->
+            <i class="el-icon-plus avatar-uploader-icon" />
+          </el-upload>
         </el-form-item>
         <el-form-item label="课堂标签" class="addLabel">
           <div v-if="currentLabels.length" class="tag">
@@ -91,62 +104,19 @@
           </div>
           <i class="pointer el-icon-circle-plus-outline" @click="addLabels" />
         </el-form-item>
-      </el-form>
-      <div class="step">
-        <h5>播放设置：</h5>
-      </div>
-      <el-form
-        ref="form2"
-        class="form"
-        :model="form"
-        :rules="rules"
-        label-width="120px"
-        :status-icon="true"
-      >
-        <el-form-item label="直播源" prop="live_count">
-          <el-radio-group v-model="form.live_count">
-            <!--<el-radio :label="2">两路视频直播</el-radio>-->
-            <el-radio :label="1">一路视频直播</el-radio>
-          </el-radio-group>
+        <el-form-item label="课程简介">
+          <el-input
+              v-model="form.brief"
+              type="textarea"
+              :rows="2"
+              placeholder="请输入课程简介"
+          />
         </el-form-item>
         <el-form-item label="评论控制" prop="can_discuss">
           <el-radio-group v-model="form.can_discuss">
             <el-radio :label="1">开启</el-radio>
             <el-radio :label="2">关闭</el-radio>
           </el-radio-group>
-        </el-form-item>
-        <el-form-item label="课程封面" class="logoClass">
-          <el-upload
-            ref="coverPic"
-            class="coverPic"
-            name="thumbnailfile"
-            :action="uploadUrl()"
-            :headers="headers"
-            accept=".jpg,.png,.gif,.jepg,.jpeg"
-            drag
-            :data="fileInfo"
-            :limit="2"
-            :file-list="fileList"
-            list-type="picture-card"
-            :auto-upload="false"
-            :on-change="changeUpload"
-            :on-success="handleSuccess"
-            :on-error="handleUploadError"
-            :on-preview="handlePreview"
-            :before-remove="beforeRemove"
-            :on-remove="handleRemove"
-          >
-            <!--<img v-if="deskTopImageUrl" :src="deskTopImageUrl" class="avatar">-->
-            <i class="el-icon-plus avatar-uploader-icon" />
-          </el-upload>
-        </el-form-item>
-        <el-form-item label="课程简介">
-          <el-input
-            v-model="form.brief"
-            type="textarea"
-            :rows="2"
-            placeholder="请输入课程简介"
-          />
         </el-form-item>
       </el-form>
     </div>
@@ -182,55 +152,6 @@
             >{{ group_groupName_list[index] }}</el-checkbox>
           </el-checkbox-group>
         </el-scrollbar>
-      </el-form>
-    </div>
-
-    <div v-if="active === 3" class="info">
-      <div class="step">
-        <h5>课程通知：</h5>
-      </div>
-      <el-form
-        ref="form4"
-        class="form"
-        :model="form"
-        :rules="rules"
-        label-width="120px"
-        :status-icon="true"
-      >
-        <el-form-item class="required" label="课程通知" prop="sendSms">
-          <el-radio-group v-model="form.sendSms1">
-            <el-radio :label="1">开启</el-radio>
-            <el-radio :label="0">关闭</el-radio>
-          </el-radio-group>
-        </el-form-item>
-
-        <div v-show="form.sendSms1">
-          <el-form-item label="短信通知设置" class="informationType">
-            <el-checkbox-group v-model="informationTypeList">
-              <el-checkbox :label="1">课程创建后立即推送</el-checkbox>
-              <el-checkbox :label="2">
-                <span>课程开始前</span>
-                <el-select v-model="form.timeBefore" placeholder="请选择">
-                  <el-option
-                    v-for="item in timeBeforeList"
-                    :key="item.id"
-                    :label="item.label"
-                    :value="item.id"
-                  />
-                </el-select>
-                <span>推送</span>
-              </el-checkbox>
-            </el-checkbox-group>
-          </el-form-item>
-          <el-form-item v-show="informationTypeList.length" label="通知人员" class="informationMember">
-            <div class="examiners">
-              <div>
-                <span class="group">选择小组</span><span class="member">选择人员</span>
-              </div>
-              <el-cascader-panel v-model="groupsAndMembers" :options="list2" :props="props" @change="handleChangeMembers" />
-            </div>
-          </el-form-item>
-        </div>
       </el-form>
     </div>
 
@@ -303,6 +224,52 @@
       <img width="100%" :src="logoUrl" alt="">
     </el-dialog>
 
+    <el-dialog
+        v-el-drag-dialog
+        title="选择视频"
+        width="592px"
+        :visible.sync="visibleSelectVideo"
+    >
+      <div class="clearfix searchFile">
+        <div class="fr">
+          <el-input
+              v-model="listQuery.fileName"
+              class="global-search"
+              placeholder="请输入文件名称"
+              clearable
+              @keyup.enter.native="getFileList"
+              @clear="getFileList"
+          >
+            <el-button slot="append" icon="el-icon-search" @click="getFileList" />
+          </el-input>
+        </div>
+      </div>
+      <el-scrollbar wrap-class="scrollbar-wrapper">
+        <ul v-infinite-scroll="getFileList" class="fileList">
+          <li
+              v-for="(item, index) in videolist"
+              :key="index"
+              class="itemFile"
+          >
+            <el-radio-group v-model="radio" class="checkbox" @change="checkVideoChange">
+              <el-radio :label="item">{{ item.aaa }}</el-radio>
+            </el-radio-group>
+            <el-image
+                class="imgCover"
+                :src="item.preview_pic || file_knowledge"
+                fit="contain"
+            />
+            <el-tooltip effect="dark" :content="item.name" placement="top">
+              <span class="name">{{ item.name }}</span>
+            </el-tooltip>
+          </li>
+        </ul>
+      </el-scrollbar>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="saveFile">确定</el-button>
+        <el-button @click="cancel">取 消</el-button>
+      </div>
+    </el-dialog>
     <select-file
       :visible.sync="visibleSelectFile"
       :is-upload="true"
@@ -322,13 +289,14 @@
 <script>
 import { VueCropper } from 'vue-cropper'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
+import { getFileListManage } from '@/api/work-desk'
 import { chapetr_add } from '@/api/live-telecast-manage'
 import { uploadFile } from '@/api/uploadFile'
 import { getToken } from '@/utils/auth'
 import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
-import { getEgroupAndUserinfo } from '@/api/userCenter-userManage'
 import SelectFile from '@/components/SelectFile'
 import AddLabels from '@/components/AddEvalLabels'
+import file_knowledge from '@/assets/images/file_knowledge.png'
 const $ = window.$
 
 export default {
@@ -340,35 +308,44 @@ export default {
   directives: { elDragDialog },
   data() {
     return {
+      file_knowledge,
       dataIsChange: 0, // 计数器，据此判断表单是否已编辑
       noLeaveprompt: false, // 表单提交后，设置为true，据此判断提交不再弹出离开提示
+      total: 0,
+      filePackageIdWorkDeskFile: {}, // Map
+      checkVideoList: [], // 选中的数据
+      radio: '',
+      listQuery: {
+        currentPage: 1,
+        pageSize: 15,
+        fileName: '',
+        fileTypeList: ['video'],
+        fileUseList: ['preview_pic', 'preview_file'],
+        file_status: 4,
+        fileIdList: []
+      },
+      videolist: [], // 视频列表
       active: 1, // 当前step
       form: {
         // 表单数据
         cname: '', // 课堂名称
-        teacher: '', // 主讲老师
         brief: '', // 课程简介
-        live_count: 1, // 直播源
         can_discuss: 1, // 评论控制
+        video_url: '', // 选择的视频文件url
+        video_masterId: '', // 选择的视频文件 的主文件, 在文系统件中 id
+        video_name: '', // 选择的视频文件 在文件系统名称
         chapter_file: '', // 课件 文件地址
         chapter_masterId: '', // 课件 主文件id
         chapter_name: '', // 课件 文件名称
-        informationType: -1, // 1：立即发送短信，2：定时发送短信，3：立即且定时发送短信
         labels: [], // 课时标签自增id数组
         cover_pic_id: '', // 课程封面 id
         cover_pic: '', // 课程封面 url
-        s_time: '', // 开始时间
-        e_time: '', // 开始时间
         selectCompanyId: '', // 所属租户ID
         egroup: null, // 小组
-        sendSms: 0, // 课程通知
-        sendSms1: 0, // 课程通知
-        timeBefore: 10, // 课程开始前
         groupList: [], // 发布组集合
-        userList: [], // 发布用户集合
-        type: 1 // 类型（1直播  2点播）
+        type: 2 // 类型（1直播  2点播）
       },
-      range_time: [], // 上课时段
+      visibleSelectVideo: false, // 弹出选择视频
       visibleSelectFile: false, // 弹出选择文件
       visible2: false, // 弹出选择标签
       currentLabels: [], // 标签obj
@@ -415,48 +392,6 @@ export default {
       checkedGroupIds: [], // 第二步已选中的小组
       isIndeterminate: false, // 状态，是否已半选择
       checkAll: true, // 是否已全选
-      informationTypeList: [1], // 通知类型
-      timeBeforeList: [
-        {
-          id: 10,
-          label: '10分钟'
-        },
-        {
-          id: 30,
-          label: '30分钟'
-        },
-        {
-          id: 60,
-          label: '1小时'
-        },
-        {
-          id: 60 * 2,
-          label: '2小时'
-        },
-        {
-          id: 60 * 5,
-          label: '5小时'
-        },
-        {
-          id: 60 * 12,
-          label: '12小时'
-        },
-        {
-          id: 60 * 24,
-          label: '1天'
-        }
-      ], // 开始前时间
-
-      list: [],
-      list2: [],
-      groupsAndMembers: [],
-      props: {
-        multiple: true,
-        value: 'id',
-        label: 'name',
-        children: 'userinfo'
-      },
-
       rules: {
         cname: [
           {
@@ -470,21 +405,8 @@ export default {
             trigger: 'change'
           }
         ],
-        teacher: [
-          {
-            required: true,
-            message: '请输入主讲老师（长度在 1 到 10 个字符）',
-            trigger: 'blur'
-          },
-          {
-            required: true,
-            message: '请输入主讲老师（长度在 1 到 10 个字符）',
-            trigger: 'change'
-          }
-        ],
-        s_time: [
-          { required: true, message: '请选择上课时段', trigger: 'blur' },
-          { required: true, message: '请选择上课时段', trigger: 'change' }
+        video_name: [
+          { required: true, message: '请选择点播视频', trigger: 'change' }
         ],
         live_count: [
           { required: true, message: '请选择直播源', trigger: 'change' }
@@ -512,22 +434,66 @@ export default {
     this.getEgroups()
   },
   methods: {
+
+    // 选择视频
+    selectVideo() {
+      this.listQuery.currentPage = 0
+      this.videolist.length = 0
+      this.visibleSelectVideo = true
+    },
+
+    // 获取文件列表
+    getFileList() {
+      getFileListManage(this.listQuery).then(res => {
+        this.total = res.data.page.totalCount
+        res.data.page.list.forEach(item => {
+          this.videolist.push(item)
+        })
+        for (var key in res.data.filePackageIdWorkDeskFile) {
+          this.filePackageIdWorkDeskFile[key] = res.data.filePackageIdWorkDeskFile[key]
+        }
+        this.videolist.forEach(item => {
+          item.name = this.filePackageIdWorkDeskFile[item.mainFileId].name
+          item.subFileList = item.subFileList || []
+          item.subFileList.find(item2 => {
+            if (item2.fileUse === 'preview_pic') {
+              item.preview_pic = item2.fileUrl
+            }
+          })
+        })
+      })
+    },
+
+    // 选择文件
+    checkVideoChange(val) {
+      this.checkVideoList = val
+      console.log(this.checkVideoList)
+    },
+
+    // 确定
+    saveFile() {
+      this.form.video_url = this.checkVideoList.fileUrl
+      this.form.video_masterId = this.checkVideoList.mainFileId
+      this.form.video_name = this.checkVideoList.fileName
+      this.visibleSelectVideo = false
+    },
+    // 取消
+    cancel() {
+      this.visibleSelectVideo = false
+    },
+
     // 下一步
     nextStep() {
       if (this.active === 1) {
         this.$refs.form1.validate(valid => {
           if (valid) {
-            this.$refs.form2.validate(valid => {
-              if (valid) {
-                if (!this.group_list.length) {
-                  this.$message.warning(
-                    '您暂时没有管理小组，请联系企业管理员进行小组管理！'
-                  )
-                  return false
-                }
-                this.active++
-              }
-            })
+            if (!this.group_list.length) {
+              this.$message.warning(
+                '您暂时没有管理小组，请联系企业管理员进行小组管理！'
+              )
+              return false
+            }
+            this.active++
           }
         })
       } else if (this.active === 2) {
@@ -537,19 +503,12 @@ export default {
           this.active++
           this.getCheckedGroups()
         }
-        this.getEgroupAndUserinfo()
       }
     },
 
     // 上一步
     forwardStep() {
       this.active--
-    },
-
-    // 获取s_time，e_time
-    handleTimeChange(val) {
-      this.form.s_time = val[0]
-      this.form.e_time = val[1]
     },
 
     // 选择课件
@@ -720,92 +679,19 @@ export default {
         checkedCount > 0 && checkedCount < this.group_list.length
     },
 
-    // 获取第二步选择小组
-    getCheckedGroups() {
-      this.checkedGroups.length = 0
-      this.checkedGroupIds.forEach(item => {
-        this.checkedGroups.push(this.groupIncs[item])
-      })
-    },
-
-    // 根据小组获取小组成员（用户）
-    getEgroupAndUserinfo() {
-      this.list.length = 0
-      this.list2.length = 0
-      getEgroupAndUserinfo({
-        egroup: this.checkedGroupIds,
-        selectCompanyId: this.form.selectCompanyId
-      }).then(res => {
-        this.list = res.data.groupList
-        this.list.forEach((item, index) => {
-          item.name = item.groupName
-          item.id = item.inc
-          if (item.userinfo) {
-            item.userinfo.forEach(item2 => {
-              item2.name = item2.nickname
-              item2.id = item2._id
-            })
-          }
-        })
-        this.list2 = this.list
-        this.$nextTick(() => {
-          $('.examiners /deep/ .el-cascader-menu:first-child li:first-child').click()
-        })
-      })
-    },
-
-    // 根据第二步选择的小组删除第三步之前选择的小组数据
-    // 然后获取小组和成员
-    step3RemoveGroupsByStep2() {
-      var groupIncList = []
-      this.list2.forEach(item => {
-        groupIncList.push(item.inc)
-      })
-      for (var i = 0; i < this.groupsAndMembers.length; i++) {
-        var item = this.groupsAndMembers[i]
-        var index2 = groupIncList.indexOf(item[0])
-        if (index2 === -1) {
-          this.groupsAndMembers.splice(i--, 1)
-        }
-      }
-      this.form.userList.length = 0
-      var userList = []
-      this.groupsAndMembers.forEach(item => {
-        userList.push(item[1])
-      })
-      this.form.userList = [...new Set(userList)]
-    },
-
-    // 处理第三步小组和成员的变化
-    handleChangeMembers(val) {
-      console.log(val)
-    },
-
     // 发布
     publish() {
-      this.step3RemoveGroupsByStep2()
       this.form.labels.length = 0
       this.currentLabels.forEach(item => {
         this.form.labels.push(item.linc)
       })
       this.form.can_discuss = this.form.can_discuss + ''
-      // 判断获取informationType
-      this.form.sendSms = this.form.sendSms1
-      if (this.informationTypeList.length === 2) {
-        this.form.informationType = 3
-      } else if (this.informationTypeList.length === 1) {
-        this.form.informationType = this.informationTypeList[0]
-      } else {
-        this.form.sendSms = 0
-      }
       this.form.groupList = this.checkedGroupIds
-      delete this.form.range_time
-      console.log(this.form)
       chapetr_add(this.form).then(response => {
         this.$message.success('新增课程成功！')
         this.noLeaveprompt = true
         this.$router.push({
-          path: '/online-class/live-telecast-manage/list'
+          path: '/online-class/spaced-sowing/list'
         })
       })
     }
@@ -836,6 +722,7 @@ export default {
 
 <style lang="scss" scoped>
 @import "~@/styles/theme.scss";
+
 .operator {
   margin-top: 20px;
 }
@@ -942,5 +829,56 @@ export default {
 }
 /deep/ .el-tag {
   margin-right: 10px;
+}
+
+/*选择视频*/
+.searchFile {
+  margin-bottom: 16px;
+}
+.selectFile {
+  display: inline-block;
+}
+/deep/ .el-dialog__wrapper .el-dialog__body {
+  padding: 10px 20px;
+}
+.itemFile {
+  display: inline-block;
+  position: relative;
+  width: 100px;
+  margin: 0 10px 10px 0;
+  text-align: center;
+  font-size: 12px;
+  text-align: center;
+}
+.checkbox {
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  z-index: 2;
+}
+.checkbox /deep/ .el-radio__label {
+  display: none;
+}
+.imgCover {
+  width: 100%;
+  height: 70px;
+  border: 1px solid #e8e8e8;
+}
+.name {
+  display: inline-block;
+  margin-top: 4px;
+  width: 100%;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.scrollbar-wrapper {
+  overflow-x: hidden;
+}
+.el-scrollbar {
+  height: 300px;
+}
+.global-search {
+  width: 200px;
 }
 </style>

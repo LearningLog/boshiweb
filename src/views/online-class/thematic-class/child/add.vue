@@ -75,7 +75,7 @@
           />
           <div class="checkFile" @click="selectFile">选择</div>
         </el-form-item>
-        <el-form-item label="课堂标签" class="addLabel">
+        <el-form-item label="添加标签" class="addLabel">
           <div v-if="currentLabels.length" class="tag">
             <el-tag
               v-for="(tag, index) in currentLabels"
@@ -105,7 +105,7 @@
       >
         <el-form-item label="直播源" prop="live_count">
           <el-radio-group v-model="form.live_count">
-            <!--<el-radio :label="2">两路视频直播</el-radio>-->
+            <el-radio :label="2">两路视频直播</el-radio>
             <el-radio :label="1">一路视频直播</el-radio>
           </el-radio-group>
         </el-form-item>
@@ -156,7 +156,7 @@
         <h5 class="required">请选择小组：</h5>
       </div>
 
-      <el-form
+        <el-form
         ref="form3"
         class="form"
         :model="form"
@@ -169,20 +169,20 @@
           :indeterminate="isIndeterminate"
           @change="handleCheckAllChange"
         >全部小组</el-checkbox>
-        <el-scrollbar wrap-class="scrollbar-wrapper">
-          <el-checkbox-group
-            v-model="checkedGroupIds"
-            @change="handleCheckedGroupChange"
-          >
-            <el-checkbox
-              v-for="(inc, index) in group_inc_list"
-              :key="inc"
-              style="margin: 15px 0;display:block"
-              :label="inc"
-            >{{ group_groupName_list[index] }}</el-checkbox>
-          </el-checkbox-group>
-        </el-scrollbar>
-      </el-form>
+          <el-scrollbar wrap-class="scrollbar-wrapper">
+            <el-checkbox-group
+              v-model="checkedGroupIds"
+              @change="handleCheckedGroupChange"
+            >
+              <el-checkbox
+                v-for="(inc, index) in group_inc_list"
+                :key="inc"
+                style="margin: 15px 0;display:block"
+                :label="inc"
+              >{{ group_groupName_list[index] }}</el-checkbox>
+            </el-checkbox-group>
+          </el-scrollbar>
+        </el-form>
     </div>
 
     <div v-if="active === 3" class="info">
@@ -222,7 +222,7 @@
               </el-checkbox>
             </el-checkbox-group>
           </el-form-item>
-          <el-form-item v-show="informationTypeList.length" label="通知人员" class="informationMember">
+          <el-form-item label="通知人员" class="informationMember" v-show="informationTypeList.length">
             <div class="examiners">
               <div>
                 <span class="group">选择小组</span><span class="member">选择人员</span>
@@ -366,7 +366,7 @@ export default {
         timeBefore: 10, // 课程开始前
         groupList: [], // 发布组集合
         userList: [], // 发布用户集合
-        type: 1 // 类型（1直播  2点播）
+        type: 1, // 类型（1直播  2点播）
       },
       range_time: [], // 上课时段
       visibleSelectFile: false, // 弹出选择文件
@@ -761,19 +761,25 @@ export default {
       this.list2.forEach(item => {
         groupIncList.push(item.inc)
       })
-      for (var i = 0; i < this.groupsAndMembers.length; i++) {
+      for(var i = 0; i < this.groupsAndMembers.length; i++) {
         var item = this.groupsAndMembers[i]
         var index2 = groupIncList.indexOf(item[0])
         if (index2 === -1) {
           this.groupsAndMembers.splice(i--, 1)
         }
       }
+      this.form.groupList.length = 0
       this.form.userList.length = 0
       var userList = []
       this.groupsAndMembers.forEach(item => {
         userList.push(item[1])
       })
       this.form.userList = [...new Set(userList)]
+
+      // // 获取 groupList
+      // this.checkedGroups.forEach(item => {
+      //   this.form.groupList.push(item.inc)
+      // })
     },
 
     // 处理第三步小组和成员的变化

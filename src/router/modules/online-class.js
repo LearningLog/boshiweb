@@ -80,6 +80,130 @@ const onlineClass = {
       ]
     },
     {
+      path: 'spaced-sowing',
+      name: 'spaced-sowing',
+      component: () =>
+        import('@/views/online-class/spaced-sowing/index'),
+      redirect: '/online-class/spaced-sowing/list',
+      meta: {
+        title: '点播课堂',
+        icon: '',
+        activeMenu: '/online-class/spaced-sowing'
+      },
+      children: [
+        {
+          path: 'list',
+          name: 'spaced-sowing-list',
+          hidden: true,
+          component: () =>
+            import('@/views/online-class/spaced-sowing/child/list'),
+          meta: {
+            title: '课堂列表',
+            icon: '',
+            activeMenu: '/online-class/spaced-sowing'
+          }
+        },
+        {
+          path: 'add',
+          name: 'spaced-sowing-add',
+          hidden: true,
+          component: () =>
+            import('@/views/online-class/spaced-sowing/child/add'),
+          meta: {
+            title: '新增课堂',
+            icon: '',
+            activeMenu: '/online-class/spaced-sowing'
+          }
+        },
+        {
+          path: 'edit',
+          name: 'spaced-sowing-edit',
+          hidden: true,
+          component: () =>
+            import('@/views/online-class/spaced-sowing/child/edit'),
+          meta: {
+            title: '修改课堂',
+            icon: '',
+            activeMenu: '/online-class/spaced-sowing'
+          }
+        },
+        {
+          path: 'detail',
+          name: 'spaced-sowing-detail',
+          hidden: true,
+          component: () =>
+            import('@/views/online-class/spaced-sowing/child/detail'),
+          meta: {
+            title: '课堂详情',
+            icon: '',
+            activeMenu: '/online-class/spaced-sowing'
+          }
+        }
+      ]
+    },
+    {
+      path: 'thematic-class',
+      name: 'thematic-class',
+      component: () =>
+        import('@/views/online-class/thematic-class/index'),
+      redirect: '/online-class/thematic-class/list',
+      meta: {
+        title: '专题课堂',
+        icon: '',
+        activeMenu: '/online-class/thematic-class'
+      },
+      children: [
+        {
+          path: 'list',
+          name: 'thematic-class-list',
+          hidden: true,
+          component: () =>
+            import('@/views/online-class/thematic-class/child/list'),
+          meta: {
+            title: '课堂列表',
+            icon: '',
+            activeMenu: '/online-class/thematic-class'
+          }
+        },
+        {
+          path: 'add',
+          name: 'thematic-class-add',
+          hidden: true,
+          component: () =>
+            import('@/views/online-class/thematic-class/child/add'),
+          meta: {
+            title: '新增课堂',
+            icon: '',
+            activeMenu: '/online-class/thematic-class'
+          }
+        },
+        {
+          path: 'edit',
+          name: 'thematic-class-edit',
+          hidden: true,
+          component: () =>
+            import('@/views/online-class/thematic-class/child/edit'),
+          meta: {
+            title: '修改课堂',
+            icon: '',
+            activeMenu: '/online-class/thematic-class'
+          }
+        },
+        {
+          path: 'detail',
+          name: 'thematic-class-detail',
+          hidden: true,
+          component: () =>
+            import('@/views/online-class/thematic-class/child/detail'),
+          meta: {
+            title: '课堂详情',
+            icon: '',
+            activeMenu: '/online-class/thematic-class'
+          }
+        }
+      ]
+    },
+    {
       path: 'label-manage',
       name: 'online-class-label-manage',
       component: () => import('@/views/online-class/label-manage/index'),

@@ -47,3 +47,11 @@ export function getOneChapter(data) {
     data
   })
 }
+// 更新课堂
+export function chapetrUpdate(data) {
+  return request({
+    url: '/cr/chapter/updateV2',
+    method: 'post',
+    data
+  })
+}
