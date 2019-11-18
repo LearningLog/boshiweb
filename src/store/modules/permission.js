@@ -1,4 +1,5 @@
 import { asyncRoutes, constantRoutes } from '@/router'
+import Cookies from 'js-cookie'
 
 /**
  * 根据后端返回的路由表对比前端路由表，返回对应路由表
@@ -68,22 +69,22 @@ const state = {
   routes: [], // 当前完整路由
   addRoutes: [], // 当前权限路由
   currentPath: '', // 当前path
-  currentSystem: sessionStorage.getItem('currentSystem') ? sessionStorage.getItem('currentSystem') : '', // 当前所在系统
+  currentSystem: Cookies.get('currentSystem') ? Cookies.get('currentSystem') : '', // 当前所在系统
   systemRoutes: [], // 系统管理路由
   backstageRoutes: [], // 后台管理路由
-  systemHomePath: sessionStorage.getItem('systemHomePath') ? sessionStorage.getItem('systemHomePath') : '', // 系统管理首页
-  backstageHomePath: sessionStorage.getItem('backstageHomePath') ? sessionStorage.getItem('backstageHomePath') : '', // 后台管理首页
-  allPermissionCode: sessionStorage.getItem('allPermissionCode') ? JSON.parse(sessionStorage.getItem('allPermissionCode')) : '', // 系统设置的所有权限code
-  userPermission: sessionStorage.getItem('userPermission') ? JSON.parse(sessionStorage.getItem('userPermission')) : '', // 当前用户的身份权限信息
-  userPermissionDetailList: sessionStorage.getItem('userPermissionDetailList') ? JSON.parse(sessionStorage.getItem('userPermissionDetailList')) : '' // 当前用户所拥有的所有权限
+  systemHomePath: Cookies.get('systemHomePath') ? Cookies.get('systemHomePath') : '', // 系统管理首页
+  backstageHomePath: Cookies.get('backstageHomePath') ? Cookies.get('backstageHomePath') : '', // 后台管理首页
+  allPermissionCode: Cookies.get('allPermissionCode') ? JSON.parse(Cookies.get('allPermissionCode')) : '', // 系统设置的所有权限code
+  userPermission: Cookies.get('userPermission') ? JSON.parse(Cookies.get('userPermission')) : '', // 当前用户的身份权限信息
+  userPermissionDetailList: Cookies.get('userPermissionDetailList') ? JSON.parse(Cookies.get('userPermissionDetailList')) : '' // 当前用户所拥有的所有权限
 }
 
 const mutations = {
   // 设置权限路由
   SET_ROUTES: (state, routes) => {
-    if (!state.currentSystem && !sessionStorage.getItem('currentSystem')) {
+    if (!state.currentSystem && !Cookies.get('currentSystem')) {
       state.currentSystem = getCurrentSystem(state.currentPath)
-      sessionStorage.setItem('currentSystem', state.currentSystem)
+      Cookies.set('currentSystem', state.currentSystem)
       if (state.currentSystem === 'systemManage' && state.systemRoutes.length > 0) {
         state.addRoutes = state.systemRoutes
         state.routes = constantRoutes.concat(state.systemRoutes)
@@ -134,31 +135,31 @@ const mutations = {
   // 设置系统管理首页
   SET_SYSTEM_HOME_PATH: (state, path) => {
     state.systemHomePath = path
-    sessionStorage.setItem('systemHomePath', path)
+    Cookies.set('systemHomePath', path)
   },
 
   // 设置后台管理首页
   SET_BACKSTAGE__HOME_PATH: (state, path) => {
     state.backstageHomePath = path
-    sessionStorage.setItem('backstageHomePath', path)
+    Cookies.set('backstageHomePath', path)
   },
 
   // 系统设置的所有按钮code
   SET_ALL_PERMISSION_CODE: (state, allPermissionCode) => {
     state.allPermissionCode = allPermissionCode
-    sessionStorage.setItem('allPermissionCode', JSON.stringify(allPermissionCode))
+    Cookies.set('allPermissionCode', JSON.stringify(allPermissionCode))
   },
 
   // 当前用户的身份权限信息
   SET_USER_PERMISSION_INFO: (state, userPermission) => {
     state.allPermissionCode = userPermission
-    sessionStorage.setItem('userPermission', JSON.stringify(userPermission))
+    Cookies.set('userPermission', JSON.stringify(userPermission))
   },
 
   // 当前用户所拥有的所有权限
   SET_USER_HAS_PERMISSION_LIST: (state, userPermissionDetailList) => {
     state.allPermissionCode = userPermissionDetailList
-    sessionStorage.setItem('userPermissionDetailList', JSON.stringify(userPermissionDetailList))
+    Cookies.set('userPermissionDetailList', JSON.stringify(userPermissionDetailList))
   }
 }
 
@@ -187,11 +188,11 @@ const actions = {
   set_permission_routes({ commit }, type) {
     if (type === 1) { // 系统管理
       commit('SET_CURRENT_SYSTEM', 'systemManage')
-      sessionStorage.setItem('currentSystem', 'systemManage')
+      Cookies.set('currentSystem', 'systemManage')
       commit('SET_ROUTES', state.systemRoutes)
     } else { // 后台管理
       commit('SET_CURRENT_SYSTEM', 'backstageManage')
-      sessionStorage.setItem('currentSystem', 'backstageManage')
+      Cookies.set('currentSystem', 'backstageManage')
       commit('SET_ROUTES', state.backstageRoutes)
     }
   },

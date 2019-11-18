@@ -225,20 +225,20 @@
     </el-dialog>
 
     <el-dialog
-        v-el-drag-dialog
-        title="选择视频"
-        width="592px"
-        :visible.sync="visibleSelectVideo"
+      v-el-drag-dialog
+      title="选择视频"
+      width="592px"
+      :visible.sync="visibleSelectVideo"
     >
       <div class="clearfix searchFile">
         <div class="fr">
           <el-input
-              v-model="listQuery.fileName"
-              class="global-search"
-              placeholder="请输入文件名称"
-              clearable
-              @keyup.enter.native="getFileList"
-              @clear="getFileList"
+            v-model="listQuery.fileName"
+            class="global-search"
+            placeholder="请输入文件名称"
+            clearable
+            @keyup.enter.native="getFileList"
+            @clear="getFileList"
           >
             <el-button slot="append" icon="el-icon-search" @click="getFileList" />
           </el-input>
@@ -247,17 +247,17 @@
       <el-scrollbar wrap-class="scrollbar-wrapper">
         <ul v-infinite-scroll="getFileList" class="fileList">
           <li
-              v-for="(item, index) in videolist"
-              :key="index"
-              class="itemFile"
+            v-for="(item, index) in videolist"
+            :key="index"
+            class="itemFile"
           >
             <el-radio-group v-model="radio" class="checkbox" @change="checkVideoChange">
               <el-radio :label="item">{{ item.aaa }}</el-radio>
             </el-radio-group>
             <el-image
-                class="imgCover"
-                :src="item.preview_pic || file_knowledge"
-                fit="contain"
+              class="imgCover"
+              :src="item.preview_pic || file_knowledge"
+              fit="contain"
             />
             <el-tooltip effect="dark" :content="item.name" placement="top">
               <span class="name">{{ item.name }}</span>
@@ -276,12 +276,12 @@
       @checkedFile="checkedFile"
     />
     <AddLessonEvalLabels
-        :visible2.sync="visible2"
-        :current-labels.sync="currentLabels"
-        :select-company-id="form.selectCompanyId"
-        :egroup="form.egroup"
-        @AddLessonEvalLabels="getLabels"
-        @visibleAddLessonEvalLabels="onvisible2"
+      :visible2.sync="visible2"
+      :current-labels.sync="currentLabels"
+      :select-company-id="form.selectCompanyId"
+      :egroup="form.egroup"
+      @AddLessonEvalLabels="getLabels"
+      @visibleAddLessonEvalLabels="onvisible2"
     />
   </div>
 </template>
@@ -730,7 +730,7 @@ export default {
         this.$message.success('课程修改成功！')
         this.noLeaveprompt = true
         this.$router.push({
-          path: '/online-class/spaced-sowing/list'
+          path: '/online-class/on-demand/list'
         })
       })
     }
@@ -760,167 +760,167 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  @import "~@/styles/theme.scss";
-  .operator {
-    margin-top: 20px;
-  }
-  .chapterFile /deep/ .el-input {
-    width: calc(100% - 80px);
-  }
+	@import "~@/styles/theme.scss";
+	.operator {
+		margin-top: 20px;
+	}
+	.chapterFile /deep/ .el-input {
+		width: calc(100% - 80px);
+	}
 
-  .addLabel {
-    margin-bottom: 20px;
-  }
-  .tag {
-    display: inline;
-  }
+	.addLabel {
+		margin-bottom: 20px;
+	}
+	.tag {
+		display: inline;
+	}
 
-  /deep/ .el-upload-dragger {
-    border: none;
-    width: auto;
-    height: auto;
-  }
+	/deep/ .el-upload-dragger {
+		border: none;
+		width: auto;
+		height: auto;
+	}
 
-  .vueCropper {
-    text-align: left;
-  }
-  // 截图
-  .cropper-content {
-    .cropper {
-      width: calc(100% - 260px);
-      height: 340px;
-      display: inline-block;
-    }
-  }
-  .show-preview {
-    float: right;
-    width: 140px;
-    display: inline-block;
-  }
-  .previewImg {
-    width: 240px;
-    height: 136px;
-  }
-  .logoClass /deep/ .el-form-item__content {
-    line-height: 18px;
-  }
-  /deep/ .el-upload-list li {
-    margin-bottom: 0;
-  }
-  .step {
-    width: 60%;
-    height: 60px;
-    margin: 15px auto;
-    border-bottom: 1px solid #eee;
-  }
-  .step h5 {
-    float: left;
-  }
+	.vueCropper {
+		text-align: left;
+	}
+	// 截图
+	.cropper-content {
+		.cropper {
+			width: calc(100% - 260px);
+			height: 340px;
+			display: inline-block;
+		}
+	}
+	.show-preview {
+		float: right;
+		width: 140px;
+		display: inline-block;
+	}
+	.previewImg {
+		width: 240px;
+		height: 136px;
+	}
+	.logoClass /deep/ .el-form-item__content {
+		line-height: 18px;
+	}
+	/deep/ .el-upload-list li {
+		margin-bottom: 0;
+	}
+	.step {
+		width: 60%;
+		height: 60px;
+		margin: 15px auto;
+		border-bottom: 1px solid #eee;
+	}
+	.step h5 {
+		float: left;
+	}
 
-  .checkFile {
-    display: inline-block;
-    width: 60px;
-    height: 32px;
-    line-height: 32px;
-    cursor: pointer;
-    text-align: center;
-    margin-left: 6px;
-    border-radius: 3px;
-    color: #ffffff;
-    background-color: $themeColor;
-    border-color: $themeColor;
-  }
-  .checkFile:hover {
-    opacity: 0.8;
-  }
-  .informationType /deep/ .el-select {
-    width: 100px;
-  }
-  .groups3 {
-    width: 50%;
-  }
+	.checkFile {
+		display: inline-block;
+		width: 60px;
+		height: 32px;
+		line-height: 32px;
+		cursor: pointer;
+		text-align: center;
+		margin-left: 6px;
+		border-radius: 3px;
+		color: #ffffff;
+		background-color: $themeColor;
+		border-color: $themeColor;
+	}
+	.checkFile:hover {
+		opacity: 0.8;
+	}
+	.informationType /deep/ .el-select {
+		width: 100px;
+	}
+	.groups3 {
+		width: 50%;
+	}
 
-  .step2 /deep/ .el-scrollbar {
-    height: calc(100vh - 350px);
-  }
+	.step2 /deep/ .el-scrollbar {
+		height: calc(100vh - 350px);
+	}
 
-  /deep/ .el-cascader-menu:last-child {
-    border-right: solid 0px #dfe4ed;
-  }
-  /deep/ .el-cascader-menu {
-    width: 50%;
-  }
-  .examiners .el-cascader-panel {
-    width: 379px;
-  }
-  .examiners .group {
-    display: inline-block;
-    width: 188px;
-    background-color: #f5f7fa;
-    padding-left: 20px;
-  }
-  .examiners .member {
-    display: inline-block;
-    width: 190px;
-    background-color: #f5f7fa;
-    padding-left: 20px;
-  }
-  /deep/ .el-tag {
-    margin-right: 10px;
-  }
+	/deep/ .el-cascader-menu:last-child {
+		border-right: solid 0px #dfe4ed;
+	}
+	/deep/ .el-cascader-menu {
+		width: 50%;
+	}
+	.examiners .el-cascader-panel {
+		width: 379px;
+	}
+	.examiners .group {
+		display: inline-block;
+		width: 188px;
+		background-color: #f5f7fa;
+		padding-left: 20px;
+	}
+	.examiners .member {
+		display: inline-block;
+		width: 190px;
+		background-color: #f5f7fa;
+		padding-left: 20px;
+	}
+	/deep/ .el-tag {
+		margin-right: 10px;
+	}
 
-  /*选择视频*/
-  .searchFile {
-    margin-bottom: 16px;
-  }
-  .selectFile {
-    display: inline-block;
-  }
-  /deep/ .el-dialog__wrapper .el-dialog__body {
-    padding: 10px 20px;
-  }
-  .itemFile {
-    display: inline-block;
-    position: relative;
-    width: 100px;
-    margin: 0 10px 10px 0;
-    text-align: center;
-    font-size: 12px;
-    text-align: center;
-  }
-  .checkbox {
-    position: absolute;
-    right: 4px;
-    top: 4px;
-    z-index: 2;
-  }
-  .checkbox /deep/ .el-radio__label {
-    display: none;
-  }
-  .imgCover {
-    width: 100%;
-    height: 70px;
-    border: 1px solid #e8e8e8;
-  }
-  .name {
-    display: inline-block;
-    margin-top: 4px;
-    width: 100%;
-    overflow:hidden;
-    text-overflow:ellipsis;
-    white-space:nowrap;
-  }
-  .scrollbar-wrapper {
-    overflow-x: hidden;
-  }
-  .el-scrollbar {
-    height: 300px;
-  }
-  .global-search {
-    width: 200px;
-  }
-  .logoClass /deep/ .el-upload-list--picture-card .el-upload-list__item {
-    width: 240px;
-    height: 136px;
-  }
+	/*选择视频*/
+	.searchFile {
+		margin-bottom: 16px;
+	}
+	.selectFile {
+		display: inline-block;
+	}
+	/deep/ .el-dialog__wrapper .el-dialog__body {
+		padding: 10px 20px;
+	}
+	.itemFile {
+		display: inline-block;
+		position: relative;
+		width: 100px;
+		margin: 0 10px 10px 0;
+		text-align: center;
+		font-size: 12px;
+		text-align: center;
+	}
+	.checkbox {
+		position: absolute;
+		right: 4px;
+		top: 4px;
+		z-index: 2;
+	}
+	.checkbox /deep/ .el-radio__label {
+		display: none;
+	}
+	.imgCover {
+		width: 100%;
+		height: 70px;
+		border: 1px solid #e8e8e8;
+	}
+	.name {
+		display: inline-block;
+		margin-top: 4px;
+		width: 100%;
+		overflow:hidden;
+		text-overflow:ellipsis;
+		white-space:nowrap;
+	}
+	.scrollbar-wrapper {
+		overflow-x: hidden;
+	}
+	.el-scrollbar {
+		height: 300px;
+	}
+	.global-search {
+		width: 200px;
+	}
+	.logoClass /deep/ .el-upload-list--picture-card .el-upload-list__item {
+		width: 240px;
+		height: 136px;
+	}
 </style>

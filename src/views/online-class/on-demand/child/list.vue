@@ -265,7 +265,7 @@ export default {
     // 新增
     add() {
       if (!this.$store.state.user.isSystemManage) {
-        this.$router.push({ path: '/online-class/live-telecast-manage/add' })
+        this.$router.push({ path: '/online-class/on-demand/add' })
       } else {
         this.visibleSelectGroup = true
       }
@@ -275,7 +275,7 @@ export default {
     getSelectGroup(val) {
       this.visibleSelectGroup = false
       if (this.egroup) {
-        this.$router.push({ path: '/online-class/spaced-sowing/add', query: { selectCompanyId: val.selectCompanyId }})
+        this.$router.push({ path: '/online-class/on-demand/add', query: { selectCompanyId: val.selectCompanyId }})
       }
     },
 
@@ -286,7 +286,7 @@ export default {
 
     // 详情
     detail(row) {
-      this.$router.push({ path: '/online-class/spaced-sowing/detail', query: { _id: row._id }})
+      this.$router.push({ path: '/online-class/on-demand/detail', query: { _id: row._id }})
     },
 
     // 评分详情
@@ -338,7 +338,7 @@ export default {
 
     // 修改
     edit(row) {
-      this.$router.push({ path: '/online-class/spaced-sowing/edit', query: { _id: row._id }})
+      this.$router.push({ path: '/online-class/on-demand/edit', query: { _id: row._id }})
     }
   }
 }

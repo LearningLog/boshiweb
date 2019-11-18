@@ -340,7 +340,7 @@ export default {
   directives: { elDragDialog },
   data() {
     return {
-      dataIsChange: 0, // 计数器，据此判断表单是否已编辑
+      dataIsChange: -2, // 计数器，据此判断表单是否已编辑
       noLeaveprompt: false, // 表单提交后，设置为true，据此判断提交不再弹出离开提示
       active: 1, // 当前step
       form: { // 表单数据
@@ -553,8 +553,6 @@ export default {
         this.form.userList = data.userList || []
         this.checkedGroupIds = data.egroup || []
         this.getEgroups()
-
-        this.dataIsChange = -1
       })
     },
 

@@ -49,9 +49,9 @@
         </el-form-item>
         <el-form-item label="点播视频" class="chapterFile" prop="video_name">
           <el-input
-              v-model="form.video_name"
-              disabled
-              placeholder="请选择视频"
+            v-model="form.video_name"
+            disabled
+            placeholder="请选择视频"
           />
           <div class="checkFile" @click="selectVideo">选择</div>
         </el-form-item>
@@ -65,24 +65,24 @@
         </el-form-item>
         <el-form-item label="课程封面" class="logoClass">
           <el-upload
-              ref="coverPic"
-              class="coverPic"
-              name="thumbnailfile"
-              :action="uploadUrl()"
-              :headers="headers"
-              accept=".jpg,.png,.gif,.jepg,.jpeg"
-              drag
-              :data="fileInfo"
-              :limit="2"
-              :file-list="fileList"
-              list-type="picture-card"
-              :auto-upload="false"
-              :on-change="changeUpload"
-              :on-success="handleSuccess"
-              :on-error="handleUploadError"
-              :on-preview="handlePreview"
-              :before-remove="beforeRemove"
-              :on-remove="handleRemove"
+            ref="coverPic"
+            class="coverPic"
+            name="thumbnailfile"
+            :action="uploadUrl()"
+            :headers="headers"
+            accept=".jpg,.png,.gif,.jepg,.jpeg"
+            drag
+            :data="fileInfo"
+            :limit="2"
+            :file-list="fileList"
+            list-type="picture-card"
+            :auto-upload="false"
+            :on-change="changeUpload"
+            :on-success="handleSuccess"
+            :on-error="handleUploadError"
+            :on-preview="handlePreview"
+            :before-remove="beforeRemove"
+            :on-remove="handleRemove"
           >
             <!--<img v-if="deskTopImageUrl" :src="deskTopImageUrl" class="avatar">-->
             <i class="el-icon-plus avatar-uploader-icon" />
@@ -106,10 +106,10 @@
         </el-form-item>
         <el-form-item label="课程简介">
           <el-input
-              v-model="form.brief"
-              type="textarea"
-              :rows="2"
-              placeholder="请输入课程简介"
+            v-model="form.brief"
+            type="textarea"
+            :rows="2"
+            placeholder="请输入课程简介"
           />
         </el-form-item>
         <el-form-item label="评论控制" prop="can_discuss">
@@ -290,7 +290,7 @@
 import { VueCropper } from 'vue-cropper'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import { getFileListManage } from '@/api/work-desk'
-import { chapetr_add } from '@/api/live-telecast-manage'
+import { getOneChapter, chapetrUpdate } from '@/api/live-telecast-manage'
 import { uploadFile } from '@/api/uploadFile'
 import { getToken } from '@/utils/auth'
 import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
@@ -309,7 +309,7 @@ export default {
   data() {
     return {
       file_knowledge,
-      dataIsChange: 0, // 计数器，据此判断表单是否已编辑
+      dataIsChange: -2, // 计数器，据此判断表单是否已编辑
       noLeaveprompt: false, // 表单提交后，设置为true，据此判断提交不再弹出离开提示
       total: 0,
       filePackageIdWorkDeskFile: {}, // Map
@@ -326,7 +326,8 @@ export default {
       },
       videolist: [], // 视频列表
       active: 1, // 当前step
-      form: {
+      form: { // 表单数据
+        _id: '', // 直播课堂Id
         // 表单数据
         cname: '', // 课堂名称
         brief: '', // 课程简介
@@ -391,7 +392,9 @@ export default {
       checkedGroups: [], // 选择的小组
       checkedGroupIds: [], // 第二步已选中的小组
       isIndeterminate: false, // 状态，是否已半选择
-      checkAll: true, // 是否已全选
+      checkAll: false, // 是否已全选
+      informationTypeList: [1], // 通知类型
+
       rules: {
         cname: [
           {
@@ -429,11 +432,40 @@ export default {
     }
   },
   created() {
-    this.form.selectCompanyId = this.$route.query.selectCompanyId
-    this.form.egroup = this.$route.query.egroup * 1
-    this.getEgroups()
+    this.form._id = this.$route.query._id
+    this.getChapterDetail()
   },
   methods: {
+
+    // 获取直播详情
+    getChapterDetail() {
+      getOneChapter({ _id: this.form._id }).then(res => {
+        const { data } = res
+        this.form._id = data._id
+        this.form.cname = data.cname
+        this.form.brief = data.brief
+        this.form.can_discuss = data.can_discuss * 1
+        this.form.video_url = data.video_url
+        this.form.video_name = data.video_name
+        this.form.video_masterId = data.video_masterId
+        this.form.chapter_file = data.chapter_file
+        this.form.chapter_masterId = data.chapter_masterId
+        this.form.chapter_name = data.chapter_name
+        this.form.labels = data.labels
+        this.currentLabels = data.labelName || []
+        this.form.cover_pic_id = data.cover_pic_id
+        this.form.cover_pic = data.cover_pic
+        if (this.form.cover_pic) {
+          this.fileList = [{ name: '', url: data.cover_pic }]
+          $('.coverPic .el-upload--picture-card').hide()
+        }
+        this.form.selectCompanyId = data.groupId
+        this.form.egroup = data.egroup || []
+        this.form.groupList = data.egroup || []
+        this.checkedGroupIds = data.egroup || []
+        this.getEgroups()
+      })
+    },
 
     // 选择视频
     selectVideo() {
@@ -501,7 +533,6 @@ export default {
           this.$message.warning('请选择小组！')
         } else {
           this.active++
-          this.getCheckedGroups()
         }
       }
     },
@@ -610,8 +641,8 @@ export default {
         uploadFile(formData).then(response => {
           this.$message.success('上传成功！')
           this.deskTopImageUrl = response.data.saveHttpPath
-          this.form.cover_pic_id = response.data.id
-          this.form.cover_pic = response.data.saveHttpPath
+          this.form.cover_pic_id = response.data.saveHttpPath
+          this.form.cover_pic = response.data.id
           this.fileList = [
             {
               name: response.data.originalFilename,
@@ -660,7 +691,13 @@ export default {
             this.group_groupName_list.push(item.groupName)
             this.groupIncs[item.inc] = item
           })
-          this.checkedGroupIds = this.group_inc_list
+          if (this.checkedGroupIds.length === this.group_list.length) {
+            this.checkAll = true
+          } else if (this.checkedGroupIds.length) {
+            this.isIndeterminate = true
+          } else {
+            this.isIndeterminate = false
+          }
         }
       )
     },
@@ -676,7 +713,7 @@ export default {
       const checkedCount = value.length
       this.checkAll = checkedCount === this.group_list.length
       this.isIndeterminate =
-        checkedCount > 0 && checkedCount < this.group_list.length
+          checkedCount > 0 && checkedCount < this.group_list.length
     },
 
     // 发布
@@ -687,11 +724,11 @@ export default {
       })
       this.form.can_discuss = this.form.can_discuss + ''
       this.form.groupList = this.checkedGroupIds
-      chapetr_add(this.form).then(response => {
-        this.$message.success('新增课程成功！')
+      chapetrUpdate(this.form).then(response => {
+        this.$message.success('课程修改成功！')
         this.noLeaveprompt = true
         this.$router.push({
-          path: '/online-class/spaced-sowing/list'
+          path: '/online-class/on-demand/list'
         })
       })
     }
@@ -721,168 +758,167 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "~@/styles/theme.scss";
+  @import "~@/styles/theme.scss";
+  .operator {
+    margin-top: 20px;
+  }
+  .chapterFile /deep/ .el-input {
+    width: calc(100% - 80px);
+  }
 
-.operator {
-  margin-top: 20px;
-}
-.chapterFile /deep/ .el-input {
-  width: calc(100% - 80px);
-}
+  .addLabel {
+    margin-bottom: 20px;
+  }
+  .tag {
+    display: inline;
+  }
 
-.addLabel {
-  margin-bottom: 20px;
-}
-.tag {
-  display: inline;
-}
+  /deep/ .el-upload-dragger {
+    border: none;
+    width: auto;
+    height: auto;
+  }
 
-/deep/ .el-upload-dragger {
-  border: none;
-  width: auto;
-  height: auto;
-}
-
-.vueCropper {
-  text-align: left;
-}
-// 截图
-.cropper-content {
-  .cropper {
-    width: calc(100% - 260px);
-    height: 340px;
+  .vueCropper {
+    text-align: left;
+  }
+  // 截图
+  .cropper-content {
+    .cropper {
+      width: calc(100% - 260px);
+      height: 340px;
+      display: inline-block;
+    }
+  }
+  .show-preview {
+    float: right;
+    width: 140px;
     display: inline-block;
   }
-}
-.show-preview {
-  float: right;
-  width: 140px;
-  display: inline-block;
-}
-.previewImg {
-  width: 240px;
-  height: 136px;
-}
-.logoClass /deep/ .el-form-item__content {
-  line-height: 18px;
-}
-/deep/ .el-upload-list li {
-  margin-bottom: 0;
-}
-.step {
-  width: 60%;
-  height: 60px;
-  margin: 15px auto;
-  border-bottom: 1px solid #eee;
-}
-.step h5 {
-  float: left;
-}
+  .previewImg {
+    width: 240px;
+    height: 136px;
+  }
+  .logoClass /deep/ .el-form-item__content {
+    line-height: 18px;
+  }
+  /deep/ .el-upload-list li {
+    margin-bottom: 0;
+  }
+  .step {
+    width: 60%;
+    height: 60px;
+    margin: 15px auto;
+    border-bottom: 1px solid #eee;
+  }
+  .step h5 {
+    float: left;
+  }
 
-.checkFile {
-  display: inline-block;
-  width: 60px;
-  height: 32px;
-  line-height: 32px;
-  cursor: pointer;
-  text-align: center;
-  margin-left: 6px;
-  border-radius: 3px;
-  color: #ffffff;
-  background-color: $themeColor;
-  border-color: $themeColor;
-}
-.checkFile:hover {
-  opacity: 0.8;
-}
-.informationType /deep/ .el-select {
-  width: 100px;
-}
-.groups3 {
-  width: 50%;
-}
+  .checkFile {
+    display: inline-block;
+    width: 60px;
+    height: 32px;
+    line-height: 32px;
+    cursor: pointer;
+    text-align: center;
+    margin-left: 6px;
+    border-radius: 3px;
+    color: #ffffff;
+    background-color: $themeColor;
+    border-color: $themeColor;
+  }
+  .checkFile:hover {
+    opacity: 0.8;
+  }
+  .informationType /deep/ .el-select {
+    width: 100px;
+  }
+  .groups3 {
+    width: 50%;
+  }
 
-.step2 /deep/ .el-scrollbar {
-  height: calc(100vh - 350px);
-}
+  .step2 /deep/ .el-scrollbar {
+    height: calc(100vh - 350px);
+  }
 
-/deep/ .el-cascader-menu:last-child {
-  border-right: solid 0px #dfe4ed;
-}
-/deep/ .el-cascader-menu {
-  width: 50%;
-}
-.examiners .el-cascader-panel {
-  width: 379px;
-}
-.examiners .group {
-  display: inline-block;
-  width: 188px;
-  background-color: #f5f7fa;
-  padding-left: 20px;
-}
-.examiners .member {
-  display: inline-block;
-  width: 190px;
-  background-color: #f5f7fa;
-  padding-left: 20px;
-}
-/deep/ .el-tag {
-  margin-right: 10px;
-}
+  /deep/ .el-cascader-menu:last-child {
+    border-right: solid 0px #dfe4ed;
+  }
+  /deep/ .el-cascader-menu {
+    width: 50%;
+  }
+  .examiners .el-cascader-panel {
+    width: 379px;
+  }
+  .examiners .group {
+    display: inline-block;
+    width: 188px;
+    background-color: #f5f7fa;
+    padding-left: 20px;
+  }
+  .examiners .member {
+    display: inline-block;
+    width: 190px;
+    background-color: #f5f7fa;
+    padding-left: 20px;
+  }
+  /deep/ .el-tag {
+    margin-right: 10px;
+  }
 
-/*选择视频*/
-.searchFile {
-  margin-bottom: 16px;
-}
-.selectFile {
-  display: inline-block;
-}
-/deep/ .el-dialog__wrapper .el-dialog__body {
-  padding: 10px 20px;
-}
-.itemFile {
-  display: inline-block;
-  position: relative;
-  width: 100px;
-  margin: 0 10px 10px 0;
-  text-align: center;
-  font-size: 12px;
-  text-align: center;
-}
-.checkbox {
-  position: absolute;
-  right: 4px;
-  top: 4px;
-  z-index: 2;
-}
-.checkbox /deep/ .el-radio__label {
-  display: none;
-}
-.imgCover {
-  width: 100%;
-  height: 70px;
-  border: 1px solid #e8e8e8;
-}
-.name {
-  display: inline-block;
-  margin-top: 4px;
-  width: 100%;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-}
-.scrollbar-wrapper {
-  overflow-x: hidden;
-}
-.el-scrollbar {
-  height: 300px;
-}
-.global-search {
-  width: 200px;
-}
-.logoClass /deep/ .el-upload-list--picture-card .el-upload-list__item {
-  width: 240px;
-  height: 136px;
-}
+  /*选择视频*/
+  .searchFile {
+    margin-bottom: 16px;
+  }
+  .selectFile {
+    display: inline-block;
+  }
+  /deep/ .el-dialog__wrapper .el-dialog__body {
+    padding: 10px 20px;
+  }
+  .itemFile {
+    display: inline-block;
+    position: relative;
+    width: 100px;
+    margin: 0 10px 10px 0;
+    text-align: center;
+    font-size: 12px;
+    text-align: center;
+  }
+  .checkbox {
+    position: absolute;
+    right: 4px;
+    top: 4px;
+    z-index: 2;
+  }
+  .checkbox /deep/ .el-radio__label {
+    display: none;
+  }
+  .imgCover {
+    width: 100%;
+    height: 70px;
+    border: 1px solid #e8e8e8;
+  }
+  .name {
+    display: inline-block;
+    margin-top: 4px;
+    width: 100%;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .scrollbar-wrapper {
+    overflow-x: hidden;
+  }
+  .el-scrollbar {
+    height: 300px;
+  }
+  .global-search {
+    width: 200px;
+  }
+  .logoClass /deep/ .el-upload-list--picture-card .el-upload-list__item {
+    width: 240px;
+    height: 136px;
+  }
 </style>

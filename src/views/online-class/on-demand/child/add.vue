@@ -39,13 +39,29 @@
         label-width="120px"
         :status-icon="true"
       >
-        <el-form-item label="专题名称" prop="lesson_name">
+        <el-form-item label="课堂名称" prop="cname">
           <el-input
-              v-model="form.lesson_name"
-              placeholder="请输入专题名称"
-              maxlength="50"
-              clearable
+            v-model="form.cname"
+            placeholder="请输入课堂名称"
+            maxlength="50"
+            clearable
           />
+        </el-form-item>
+        <el-form-item label="点播视频" class="chapterFile" prop="video_name">
+          <el-input
+              v-model="form.video_name"
+              disabled
+              placeholder="请选择视频"
+          />
+          <div class="checkFile" @click="selectVideo">选择</div>
+        </el-form-item>
+        <el-form-item label="课件" class="chapterFile">
+          <el-input
+            v-model="form.chapter_name"
+            disabled
+            placeholder="支持格式 ppt、word、pdf、excel，建议课件不超过30页"
+          />
+          <div class="checkFile" @click="selectFile">选择</div>
         </el-form-item>
         <el-form-item label="课程封面" class="logoClass">
           <el-upload
@@ -72,29 +88,35 @@
             <i class="el-icon-plus avatar-uploader-icon" />
           </el-upload>
         </el-form-item>
-        <el-form-item label="标签" class="addLabel">
+        <el-form-item label="课堂标签" class="addLabel">
           <div v-if="currentLabels.length" class="tag">
             <el-tag
-                v-for="(tag, index) in currentLabels"
-                :key="tag.linc"
-                closable
-                size="medium"
-                :disable-transitions="false"
-                type="success"
-                @close="handleLabelDel(index)"
+              v-for="(tag, index) in currentLabels"
+              :key="tag.linc"
+              closable
+              size="medium"
+              :disable-transitions="false"
+              type="success"
+              @close="handleLabelDel(index)"
             >
               {{ tag.lname }}
             </el-tag>
           </div>
           <i class="pointer el-icon-circle-plus-outline" @click="addLabels" />
         </el-form-item>
-        <el-form-item label="专题简介">
+        <el-form-item label="课程简介">
           <el-input
               v-model="form.brief"
               type="textarea"
               :rows="2"
               placeholder="请输入课程简介"
           />
+        </el-form-item>
+        <el-form-item label="评论控制" prop="can_discuss">
+          <el-radio-group v-model="form.can_discuss">
+            <el-radio :label="1">开启</el-radio>
+            <el-radio :label="2">关闭</el-radio>
+          </el-radio-group>
         </el-form-item>
       </el-form>
     </div>
@@ -202,6 +224,57 @@
       <img width="100%" :src="logoUrl" alt="">
     </el-dialog>
 
+    <el-dialog
+        v-el-drag-dialog
+        title="选择视频"
+        width="592px"
+        :visible.sync="visibleSelectVideo"
+    >
+      <div class="clearfix searchFile">
+        <div class="fr">
+          <el-input
+              v-model="listQuery.fileName"
+              class="global-search"
+              placeholder="请输入文件名称"
+              clearable
+              @keyup.enter.native="getFileList"
+              @clear="getFileList"
+          >
+            <el-button slot="append" icon="el-icon-search" @click="getFileList" />
+          </el-input>
+        </div>
+      </div>
+      <el-scrollbar wrap-class="scrollbar-wrapper">
+        <ul v-infinite-scroll="getFileList" class="fileList">
+          <li
+              v-for="(item, index) in videolist"
+              :key="index"
+              class="itemFile"
+          >
+            <el-radio-group v-model="radio" class="checkbox" @change="checkVideoChange">
+              <el-radio :label="item">{{ item.aaa }}</el-radio>
+            </el-radio-group>
+            <el-image
+                class="imgCover"
+                :src="item.preview_pic || file_knowledge"
+                fit="contain"
+            />
+            <el-tooltip effect="dark" :content="item.name" placement="top">
+              <span class="name">{{ item.name }}</span>
+            </el-tooltip>
+          </li>
+        </ul>
+      </el-scrollbar>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="saveFile">确定</el-button>
+        <el-button @click="cancel">取 消</el-button>
+      </div>
+    </el-dialog>
+    <select-file
+      :visible.sync="visibleSelectFile"
+      :is-upload="true"
+      @checkedFile="checkedFile"
+    />
     <AddLessonEvalLabels
         :visible2.sync="visible2"
         :current-labels.sync="currentLabels"
@@ -216,36 +289,64 @@
 <script>
 import { VueCropper } from 'vue-cropper'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
-import { thematicClassDetail, updateThematicClass } from '@/api/thematic-class'
+import { getFileListManage } from '@/api/work-desk'
+import { chapetr_add } from '@/api/live-telecast-manage'
 import { uploadFile } from '@/api/uploadFile'
 import { getToken } from '@/utils/auth'
 import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
+import SelectFile from '@/components/SelectFile'
 import AddLessonEvalLabels from '@/components/AddLessonEvalLabels'
+import file_knowledge from '@/assets/images/file_knowledge.png'
 const $ = window.$
 
 export default {
   components: {
+    SelectFile, // 添加图片
     AddLessonEvalLabels, // 添加标签
     VueCropper // 图片裁剪组件
   },
   directives: { elDragDialog },
   data() {
     return {
-      dataIsChange: -2, // 计数器，据此判断表单是否已编辑
+      file_knowledge,
+      dataIsChange: -1, // 计数器，据此判断表单是否已编辑
       noLeaveprompt: false, // 表单提交后，设置为true，据此判断提交不再弹出离开提示
+      total: 0,
+      filePackageIdWorkDeskFile: {}, // Map
+      checkVideoList: [], // 选中的数据
+      radio: '',
+      listQuery: {
+        currentPage: 1,
+        pageSize: 15,
+        fileName: '',
+        fileTypeList: ['video'],
+        fileUseList: ['preview_pic', 'preview_file'],
+        file_status: 4,
+        fileIdList: []
+      },
+      videolist: [], // 视频列表
       active: 1, // 当前step
-      form: { // 表单数据
-        _id: '', // 直播课堂Id
+      form: {
         // 表单数据
-        lesson_name: '', // 课堂名称
+        cname: '', // 课堂名称
         brief: '', // 课程简介
+        can_discuss: 1, // 评论控制
+        video_url: '', // 选择的视频文件url
+        video_masterId: '', // 选择的视频文件 的主文件, 在文系统件中 id
+        video_name: '', // 选择的视频文件 在文件系统名称
+        chapter_file: '', // 课件 文件地址
+        chapter_masterId: '', // 课件 主文件id
+        chapter_name: '', // 课件 文件名称
         labels: [], // 课时标签自增id数组
         cover_pic_id: '', // 课程封面 id
         cover_pic: '', // 课程封面 url
         selectCompanyId: '', // 所属租户ID
+        egroup: [], // 小组
         groupList: [], // 发布组集合
-        is_reviews: 1 // 是否开启点评 1是，2否
+        type: 2 // 类型（1直播  2点播）
       },
+      visibleSelectVideo: false, // 弹出选择视频
+      visibleSelectFile: false, // 弹出选择文件
       visible2: false, // 弹出选择标签
       currentLabels: [], // 标签obj
       headers: {
@@ -290,10 +391,9 @@ export default {
       checkedGroups: [], // 选择的小组
       checkedGroupIds: [], // 第二步已选中的小组
       isIndeterminate: false, // 状态，是否已半选择
-      checkAll: false, // 是否已全选
-
+      checkAll: true, // 是否已全选
       rules: {
-        lesson_name: [
+        cname: [
           {
             required: true,
             message: '请输入课堂名称（长度在 1 到 50 个字符）',
@@ -304,6 +404,15 @@ export default {
             message: '请输入课堂名称（长度在 1 到 50 个字符）',
             trigger: 'change'
           }
+        ],
+        video_name: [
+          { required: true, message: '请选择点播视频', trigger: 'change' }
+        ],
+        live_count: [
+          { required: true, message: '请选择直播源', trigger: 'change' }
+        ],
+        can_discuss: [
+          { required: true, message: '请选择评论控制', trigger: 'change' }
         ]
       }
     }
@@ -320,32 +429,57 @@ export default {
     }
   },
   created() {
-    this.form._id = this.$route.query._id
-    this.getChapterDetail()
+    this.form.selectCompanyId = this.$route.query.selectCompanyId
+    this.form.egroup = this.$route.query.egroup * 1
+    this.getEgroups()
   },
   methods: {
 
-    // 获取直播详情
-    getChapterDetail() {
-      thematicClassDetail({ _id: this.form._id }).then(res => {
-        const { data } = res
-        this.form._id = data._id
-        this.form.lesson_name = data.lesson_name
-        this.form.brief = data.brief
-        this.form.labels = data.labels
-        this.currentLabels = data.labelName || []
-        this.form.cover_pic_id = data.cover_pic_id
-        this.form.cover_pic = data.cover_pic
-        if (this.form.cover_pic) {
-          this.fileList = [{ name: '', url: data.cover_pic }]
-          $('.coverPic .el-upload--picture-card').hide()
+    // 选择视频
+    selectVideo() {
+      this.listQuery.currentPage = 0
+      this.videolist.length = 0
+      this.visibleSelectVideo = true
+    },
+
+    // 获取文件列表
+    getFileList() {
+      getFileListManage(this.listQuery).then(res => {
+        this.total = res.data.page.totalCount
+        res.data.page.list.forEach(item => {
+          this.videolist.push(item)
+        })
+        for (var key in res.data.filePackageIdWorkDeskFile) {
+          this.filePackageIdWorkDeskFile[key] = res.data.filePackageIdWorkDeskFile[key]
         }
-        this.form.selectCompanyId = data.groupId
-        this.form.egroup = data.egroup[0] || null
-        this.form.groupList = data.egroup || []
-        this.checkedGroupIds = data.egroup || []
-        this.getEgroups()
+        this.videolist.forEach(item => {
+          item.name = this.filePackageIdWorkDeskFile[item.mainFileId].name
+          item.subFileList = item.subFileList || []
+          item.subFileList.find(item2 => {
+            if (item2.fileUse === 'preview_pic') {
+              item.preview_pic = item2.fileUrl
+            }
+          })
+        })
       })
+    },
+
+    // 选择文件
+    checkVideoChange(val) {
+      this.checkVideoList = val
+      console.log(this.checkVideoList)
+    },
+
+    // 确定
+    saveFile() {
+      this.form.video_url = this.checkVideoList.fileUrl
+      this.form.video_masterId = this.checkVideoList.mainFileId
+      this.form.video_name = this.checkVideoList.fileName
+      this.visibleSelectVideo = false
+    },
+    // 取消
+    cancel() {
+      this.visibleSelectVideo = false
     },
 
     // 下一步
@@ -367,6 +501,7 @@ export default {
           this.$message.warning('请选择小组！')
         } else {
           this.active++
+          this.getCheckedGroups()
         }
       }
     },
@@ -374,6 +509,19 @@ export default {
     // 上一步
     forwardStep() {
       this.active--
+    },
+
+    // 选择课件
+    selectFile() {
+      this.visibleSelectFile = true
+    },
+
+    // 监听选择文件组件返回数据
+    checkedFile(val) {
+      this.form.chapter_file = val.fileUrl
+      this.form.chapter_name = val.fileName
+      this.form.chapter_masterId = val.mainFileId
+      this.visibleSelectFile = false
     },
 
     // 添加标签
@@ -462,8 +610,8 @@ export default {
         uploadFile(formData).then(response => {
           this.$message.success('上传成功！')
           this.deskTopImageUrl = response.data.saveHttpPath
-          this.form.cover_pic_id = response.data.saveHttpPath
-          this.form.cover_pic = response.data.id
+          this.form.cover_pic_id = response.data.id
+          this.form.cover_pic = response.data.saveHttpPath
           this.fileList = [
             {
               name: response.data.originalFilename,
@@ -512,13 +660,7 @@ export default {
             this.group_groupName_list.push(item.groupName)
             this.groupIncs[item.inc] = item
           })
-          if (this.checkedGroupIds.length === this.group_list.length) {
-            this.checkAll = true
-          } else if (this.checkedGroupIds.length) {
-            this.isIndeterminate = true
-          } else {
-            this.isIndeterminate = false
-          }
+          this.checkedGroupIds = this.group_inc_list
         }
       )
     },
@@ -534,7 +676,7 @@ export default {
       const checkedCount = value.length
       this.checkAll = checkedCount === this.group_list.length
       this.isIndeterminate =
-          checkedCount > 0 && checkedCount < this.group_list.length
+        checkedCount > 0 && checkedCount < this.group_list.length
     },
 
     // 发布
@@ -543,12 +685,13 @@ export default {
       this.currentLabels.forEach(item => {
         this.form.labels.push(item.linc)
       })
+      this.form.can_discuss = this.form.can_discuss + ''
       this.form.groupList = this.checkedGroupIds
-      updateThematicClass(this.form).then(response => {
-        this.$message.success('专题课程修改成功！')
+      chapetr_add(this.form).then(response => {
+        this.$message.success('新增课程成功！')
         this.noLeaveprompt = true
         this.$router.push({
-          path: '/online-class/thematic-class/list'
+          path: '/online-class/on-demand/list'
         })
       })
     }
@@ -578,117 +721,168 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  @import "~@/styles/theme.scss";
-  .operator {
-    margin-top: 20px;
-  }
-  .chapterFile /deep/ .el-input {
-    width: calc(100% - 80px);
-  }
+@import "~@/styles/theme.scss";
 
-  .addLabel {
-    margin-bottom: 20px;
-  }
-  .tag {
-    display: inline;
-  }
+.operator {
+  margin-top: 20px;
+}
+.chapterFile /deep/ .el-input {
+  width: calc(100% - 80px);
+}
 
-  /deep/ .el-upload-dragger {
-    border: none;
-    width: auto;
-    height: auto;
-  }
+.addLabel {
+  margin-bottom: 20px;
+}
+.tag {
+  display: inline;
+}
 
-  .vueCropper {
-    text-align: left;
-  }
-  // 截图
-  .cropper-content {
-    .cropper {
-      width: calc(100% - 260px);
-      height: 340px;
-      display: inline-block;
-    }
-  }
-  .show-preview {
-    float: right;
-    width: 140px;
+/deep/ .el-upload-dragger {
+  border: none;
+  width: auto;
+  height: auto;
+}
+
+.vueCropper {
+  text-align: left;
+}
+// 截图
+.cropper-content {
+  .cropper {
+    width: calc(100% - 260px);
+    height: 340px;
     display: inline-block;
   }
-  .previewImg {
-    width: 240px;
-    height: 136px;
-  }
-  .logoClass /deep/ .el-form-item__content {
-    line-height: 18px;
-  }
-  /deep/ .el-upload-list li {
-    margin-bottom: 0;
-  }
-  .step {
-    width: 60%;
-    height: 60px;
-    margin: 15px auto;
-    border-bottom: 1px solid #eee;
-  }
-  .step h5 {
-    float: left;
-  }
+}
+.show-preview {
+  float: right;
+  width: 140px;
+  display: inline-block;
+}
+.previewImg {
+  width: 240px;
+  height: 136px;
+}
+.logoClass /deep/ .el-form-item__content {
+  line-height: 18px;
+}
+/deep/ .el-upload-list li {
+  margin-bottom: 0;
+}
+.step {
+  width: 60%;
+  height: 60px;
+  margin: 15px auto;
+  border-bottom: 1px solid #eee;
+}
+.step h5 {
+  float: left;
+}
 
-  .checkFile {
-    display: inline-block;
-    width: 60px;
-    height: 32px;
-    line-height: 32px;
-    cursor: pointer;
-    text-align: center;
-    margin-left: 6px;
-    border-radius: 3px;
-    color: #ffffff;
-    background-color: $themeColor;
-    border-color: $themeColor;
-  }
-  .checkFile:hover {
-    opacity: 0.8;
-  }
-  .informationType /deep/ .el-select {
-    width: 100px;
-  }
-  .groups3 {
-    width: 50%;
-  }
+.checkFile {
+  display: inline-block;
+  width: 60px;
+  height: 32px;
+  line-height: 32px;
+  cursor: pointer;
+  text-align: center;
+  margin-left: 6px;
+  border-radius: 3px;
+  color: #ffffff;
+  background-color: $themeColor;
+  border-color: $themeColor;
+}
+.checkFile:hover {
+  opacity: 0.8;
+}
+.informationType /deep/ .el-select {
+  width: 100px;
+}
+.groups3 {
+  width: 50%;
+}
 
-  .step2 /deep/ .el-scrollbar {
-    height: calc(100vh - 350px);
-  }
+.step2 /deep/ .el-scrollbar {
+  height: calc(100vh - 350px);
+}
 
-  /deep/ .el-cascader-menu:last-child {
-    border-right: solid 0px #dfe4ed;
-  }
-  /deep/ .el-cascader-menu {
-    width: 50%;
-  }
-  .examiners .el-cascader-panel {
-    width: 379px;
-  }
-  .examiners .group {
-    display: inline-block;
-    width: 188px;
-    background-color: #f5f7fa;
-    padding-left: 20px;
-  }
-  .examiners .member {
-    display: inline-block;
-    width: 190px;
-    background-color: #f5f7fa;
-    padding-left: 20px;
-  }
-  /deep/ .el-tag {
-    margin-right: 10px;
-  }
+/deep/ .el-cascader-menu:last-child {
+  border-right: solid 0px #dfe4ed;
+}
+/deep/ .el-cascader-menu {
+  width: 50%;
+}
+.examiners .el-cascader-panel {
+  width: 379px;
+}
+.examiners .group {
+  display: inline-block;
+  width: 188px;
+  background-color: #f5f7fa;
+  padding-left: 20px;
+}
+.examiners .member {
+  display: inline-block;
+  width: 190px;
+  background-color: #f5f7fa;
+  padding-left: 20px;
+}
+/deep/ .el-tag {
+  margin-right: 10px;
+}
 
-  .logoClass /deep/ .el-upload-list--picture-card .el-upload-list__item {
-    width: 240px;
-    height: 136px;
-  }
+/*选择视频*/
+.searchFile {
+  margin-bottom: 16px;
+}
+.selectFile {
+  display: inline-block;
+}
+/deep/ .el-dialog__wrapper .el-dialog__body {
+  padding: 10px 20px;
+}
+.itemFile {
+  display: inline-block;
+  position: relative;
+  width: 100px;
+  margin: 0 10px 10px 0;
+  text-align: center;
+  font-size: 12px;
+  text-align: center;
+}
+.checkbox {
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  z-index: 2;
+}
+.checkbox /deep/ .el-radio__label {
+  display: none;
+}
+.imgCover {
+  width: 100%;
+  height: 70px;
+  border: 1px solid #e8e8e8;
+}
+.name {
+  display: inline-block;
+  margin-top: 4px;
+  width: 100%;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.scrollbar-wrapper {
+  overflow-x: hidden;
+}
+.el-scrollbar {
+  height: 300px;
+}
+.global-search {
+  width: 200px;
+}
+.logoClass /deep/ .el-upload-list--picture-card .el-upload-list__item {
+  width: 240px;
+  height: 136px;
+}
 </style>

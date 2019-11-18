@@ -16,8 +16,8 @@
                   clearable
                   filterable
                 >
-                  <el-option :value="1">直播课堂</el-option>
-                  <el-option :value="2">点播课堂</el-option>
+                  <el-option :value="1" label="直播课堂"></el-option>
+                  <el-option :value="2" label="点播课堂"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="创建时间">
@@ -40,7 +40,10 @@
       </transition>
     </div>
     <div id="topBtn">
-      <el-button type="primary" @click="add"><i class="iconfont iconjia" />新增</el-button>
+      <el-button type="primary" @click="add(1)"><i class="iconfont iconjia" />新增直播</el-button>
+      <el-button type="primary" @click="add(2)"><i class="iconfont iconjia" />新增点播</el-button>
+      <el-button type="primary" @click="selectLesson"><i class="iconfont iconjia" />选择已有课堂</el-button>
+      <el-button type="primary" @click="lessonDetail"><i class="iconfont iconjia" />专题详情</el-button>
     </div>
     <el-table
       v-loading="listLoading"
@@ -60,7 +63,7 @@
       </el-table-column>
       <el-table-column align="center" label="课堂名称" min-width="120">
         <template slot-scope="scope">
-          <el-link type="primary" @click="detail(scope.row)">{{ scope.row.lesson_name }}</el-link>
+          <el-link type="primary" @click="detail(scope.row)">{{ scope.row.cname }}</el-link>
         </template>
       </el-table-column>
       <el-table-column label="课堂类型" min-width="80" align="center">
@@ -107,7 +110,8 @@ export default {
       time_range: [], // 创建时间
       list: [], // 表格数据
       listLoading: true, // 是否开启表格遮罩
-      popoverVisible: false // 是否开启高级搜索
+      popoverVisible: false, // 是否开启高级搜索
+      type: null // 1,直播课堂；2，点播课堂
     }
   },
   created() {
@@ -144,9 +148,14 @@ export default {
     },
 
     // 新增
-    add() {
+    add(type) {
+      this.type = type
       if (!this.$store.state.user.isSystemManage) {
-        this.$router.push({ path: '/online-class/thematic-class/add' })
+        if (this.type === 1) {
+          this.$router.push({ path: '/online-class/thematic-class/live-telecast-add', query: { lesson_id: this.listQuery.lesson_id }})
+        } else {
+          this.$router.push({ path: '/online-class/thematic-class/on-demand-add', query: { lesson_id: this.listQuery.lesson_id }})
+        }
       } else {
         this.visibleSelectGroup = true
       }
@@ -156,8 +165,22 @@ export default {
     getSelectGroup(val) {
       this.visibleSelectGroup = false
       if (this.egroup) {
-        this.$router.push({ path: '/online-class/thematic-class/add', query: { selectCompanyId: val.selectCompanyId }})
+        if (this.type === 1) {
+          this.$router.push({ path: '/online-class/thematic-class/live-telecast-add', query: { selectCompanyId: val.selectCompanyId, lesson_id: this.listQuery.lesson_id }})
+        } else {
+          this.$router.push({ path: '/online-class/thematic-class/on-demand-add', query: { selectCompanyId: val.selectCompanyId, lesson_id: this.listQuery.lesson_id }})
+        }
       }
+    },
+
+    // 选择已有课堂
+    selectLesson() {
+
+    },
+
+    // 专题详情
+    lessonDetail() {
+
     },
 
     // 修改
@@ -197,6 +220,11 @@ export default {
           this.get_list()
         })
       }).catch(() => {})
+    },
+
+    // 课程详情
+    detail(row) {
+
     }
   }
 }

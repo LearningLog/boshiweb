@@ -80,63 +80,63 @@ const onlineClass = {
       ]
     },
     {
-      path: 'spaced-sowing',
-      name: 'spaced-sowing',
+      path: 'on-demand',
+      name: 'on-demand',
       component: () =>
-        import('@/views/online-class/spaced-sowing/index'),
-      redirect: '/online-class/spaced-sowing/list',
+        import('@/views/online-class/on-demand/index'),
+      redirect: '/online-class/on-demand/list',
       meta: {
         title: '点播课堂',
         icon: '',
-        activeMenu: '/online-class/spaced-sowing'
+        activeMenu: '/online-class/on-demand'
       },
       children: [
         {
           path: 'list',
-          name: 'spaced-sowing-list',
+          name: 'on-demand-list',
           hidden: true,
           component: () =>
-            import('@/views/online-class/spaced-sowing/child/list'),
+            import('@/views/online-class/on-demand/child/list'),
           meta: {
             title: '课堂列表',
             icon: '',
-            activeMenu: '/online-class/spaced-sowing'
+            activeMenu: '/online-class/on-demand'
           }
         },
         {
           path: 'add',
-          name: 'spaced-sowing-add',
+          name: 'on-demand-add',
           hidden: true,
           component: () =>
-            import('@/views/online-class/spaced-sowing/child/add'),
+            import('@/views/online-class/on-demand/child/add'),
           meta: {
             title: '新增课堂',
             icon: '',
-            activeMenu: '/online-class/spaced-sowing'
+            activeMenu: '/online-class/on-demand'
           }
         },
         {
           path: 'edit',
-          name: 'spaced-sowing-edit',
+          name: 'on-demand-edit',
           hidden: true,
           component: () =>
-            import('@/views/online-class/spaced-sowing/child/edit'),
+            import('@/views/online-class/on-demand/child/edit'),
           meta: {
             title: '修改课堂',
             icon: '',
-            activeMenu: '/online-class/spaced-sowing'
+            activeMenu: '/online-class/on-demand'
           }
         },
         {
           path: 'detail',
-          name: 'spaced-sowing-detail',
+          name: 'on-demand-detail',
           hidden: true,
           component: () =>
-            import('@/views/online-class/spaced-sowing/child/detail'),
+            import('@/views/online-class/on-demand/child/detail'),
           meta: {
             title: '课堂详情',
             icon: '',
-            activeMenu: '/online-class/spaced-sowing'
+            activeMenu: '/online-class/on-demand'
           }
         }
       ]
@@ -209,6 +209,54 @@ const onlineClass = {
             import('@/views/online-class/thematic-class/child/detail'),
           meta: {
             title: '专题详情',
+            icon: '',
+            activeMenu: '/online-class/thematic-class'
+          }
+        },
+        {
+          path: 'live-telecast-add',
+          name: 'thematic-live-telecast-add',
+          hidden: true,
+          component: () =>
+            import('@/views/online-class/thematic-class/child/live-telecast-add'),
+          meta: {
+            title: '新增直播课堂',
+            icon: '',
+            activeMenu: '/online-class/thematic-class'
+          }
+        },
+        {
+          path: 'live-telecast-edit',
+          name: 'thematic-live-telecast-edit',
+          hidden: true,
+          component: () =>
+            import('@/views/online-class/thematic-class/child/live-telecast-edit'),
+          meta: {
+            title: '新增直播课堂',
+            icon: '',
+            activeMenu: '/online-class/thematic-class'
+          }
+        },
+        {
+          path: 'on-demand-add',
+          name: 'thematic-on-demand-add',
+          hidden: true,
+          component: () =>
+            import('@/views/online-class/thematic-class/child/on-demand-add'),
+          meta: {
+            title: '修改点播课堂',
+            icon: '',
+            activeMenu: '/online-class/thematic-class'
+          }
+        },
+        {
+          path: 'on-demand-edit',
+          name: 'thematic-on-demand-edit',
+          hidden: true,
+          component: () =>
+            import('@/views/online-class/thematic-class/child/on-demand-edit'),
+          meta: {
+            title: '修改点播课堂',
             icon: '',
             activeMenu: '/online-class/thematic-class'
           }
