@@ -1,7 +1,6 @@
 import { login, logout, getInfo, getMenuList, getAllRoles, getAllEgroup, getUserApplicationInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
-import Cookies from 'js-cookie'
 import store from '../index'
 const qs = require('querystring')
 
@@ -12,12 +11,12 @@ const { logo_name } = defaultSettings
  * 退出登录，清除cookie
  */
 export function clearCookie() {
-  Cookies.remove('homePath')
-  Cookies.remove('systemHomePath')
-  Cookies.remove('backstageHomePath')
-  Cookies.remove('allButtonPermission')
-  Cookies.remove('currentButtonPermission')
-  // Cookies.remove('currentSystem')
+  sessionStorage.removeItem('homePath')
+  sessionStorage.removeItem('systemHomePath')
+  sessionStorage.removeItem('backstageHomePath')
+  sessionStorage.removeItem('allButtonPermission')
+  sessionStorage.removeItem('currentButtonPermission')
+  // sessionStorage.removeItem('currentSystem')
 }
 
 const state = {
