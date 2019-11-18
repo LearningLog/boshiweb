@@ -69,3 +69,12 @@ export function removeOneChapterInLesson(data) {
     data
   })
 }
+
+// 选择已有课堂保存
+export function selectChaptersToLesson(data) {
+  return request({
+    url: 'cr/lesson/addChaptersToLesson',
+    method: 'post',
+    data
+  })
+}

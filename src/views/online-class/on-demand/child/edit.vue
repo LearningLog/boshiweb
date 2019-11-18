@@ -279,7 +279,7 @@
         :visible2.sync="visible2"
         :current-labels.sync="currentLabels"
         :select-company-id="form.selectCompanyId"
-        :egroup="form.egroup"
+        :egroup="egroup"
         @AddLessonEvalLabels="getLabels"
         @visibleAddLessonEvalLabels="onvisible2"
     />
@@ -460,7 +460,7 @@ export default {
           $('.coverPic .el-upload--picture-card').hide()
         }
         this.form.selectCompanyId = data.groupId
-        this.form.egroup = data.egroup || []
+        this.egroup = data.egroup || []
         this.form.groupList = data.egroup || []
         this.checkedGroupIds = data.egroup || []
         this.getEgroups()

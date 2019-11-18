@@ -260,6 +260,17 @@ const onlineClass = {
             icon: '',
             activeMenu: '/online-class/thematic-class'
           }
+        },
+        {
+          path: 'select-lesson',
+          name: 'select-lesson',
+          hidden: true,
+          component: () => import('@/views/online-class/thematic-class/child/select-lesson'),
+          meta: {
+            title: '选择课堂',
+            icon: '',
+            activeMenu: '/online-class/thematic-class'
+          }
         }
       ]
     },

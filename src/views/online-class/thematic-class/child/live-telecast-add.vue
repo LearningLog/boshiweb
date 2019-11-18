@@ -340,12 +340,12 @@ export default {
   directives: { elDragDialog },
   data() {
     return {
-      lesson_id: '', // 专题id
-      dataIsChange: 0, // 计数器，据此判断表单是否已编辑
+      dataIsChange: -1, // 计数器，据此判断表单是否已编辑
       noLeaveprompt: false, // 表单提交后，设置为true，据此判断提交不再弹出离开提示
       active: 1, // 当前step
       form: {
         // 表单数据
+        lesson_id: '', // 专题id
         cname: '', // 课堂名称
         teacher: '', // 主讲老师
         brief: '', // 课程简介
@@ -508,7 +508,7 @@ export default {
     }
   },
   created() {
-    this.lesson_id = this.$route.query.lesson_id
+    this.form.lesson_id = this.$route.query.lesson_id
     this.form.selectCompanyId = this.$route.query.selectCompanyId
     this.form.egroup = this.$route.query.egroup * 1
     this.getEgroups()
@@ -807,8 +807,8 @@ export default {
         this.$message.success('新增课程成功！')
         this.noLeaveprompt = true
         this.$router.push({
-          path: '/online-class/thematic-class/thematic-manage'
-        })
+          path: '/online-class/thematic-class/thematic-manage',
+          query: { _id: this.form.lesson_id }})
       })
     }
   },

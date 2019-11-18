@@ -309,7 +309,7 @@ export default {
   data() {
     return {
       file_knowledge,
-      dataIsChange: 0, // 计数器，据此判断表单是否已编辑
+      dataIsChange: -2, // 计数器，据此判断表单是否已编辑
       noLeaveprompt: false, // 表单提交后，设置为true，据此判断提交不再弹出离开提示
       total: 0,
       filePackageIdWorkDeskFile: {}, // Map
@@ -327,8 +327,8 @@ export default {
       videolist: [], // 视频列表
       active: 1, // 当前step
       form: { // 表单数据
+        lesson_id: '', // 专题id
         _id: '', // 直播课堂Id
-        // 表单数据
         cname: '', // 课堂名称
         brief: '', // 课程简介
         can_discuss: 1, // 评论控制
@@ -432,6 +432,7 @@ export default {
     }
   },
   created() {
+    this.form.lesson_id = this.$route.query.lesson_id
     this.form._id = this.$route.query._id
     this.getChapterDetail()
   },
@@ -464,8 +465,6 @@ export default {
         this.form.groupList = data.egroup || []
         this.checkedGroupIds = data.egroup || []
         this.getEgroups()
-
-        this.dataIsChange = -1
       })
     },
 
@@ -730,8 +729,8 @@ export default {
         this.$message.success('课程修改成功！')
         this.noLeaveprompt = true
         this.$router.push({
-          path: '/online-class/on-demand/list'
-        })
+          path: '/online-class/thematic-class/thematic-manage',
+          query: { _id: this.form.lesson_id }})
       })
     }
   },

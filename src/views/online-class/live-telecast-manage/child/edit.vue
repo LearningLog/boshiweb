@@ -312,7 +312,7 @@
         :visible2.sync="visible2"
         :current-labels.sync="currentLabels"
         :select-company-id="form.selectCompanyId"
-        :egroup="form.egroup"
+        :egroup="egroup"
         @AddLessonEvalLabels="getLabels"
         @visibleAddLessonEvalLabels="onvisible2"
     />
@@ -360,7 +360,6 @@ export default {
         s_time: '', // 开始时间
         e_time: '', // 开始时间
         selectCompanyId: '', // 所属租户ID
-        egroup: [], // 小组
         sendSms: 0, // 课程通知
         sendSms1: 0, // 课程通知
         timeBefore: 10, // 课程开始前
@@ -368,6 +367,7 @@ export default {
         userList: [], // 发布用户集合
         type: 1 // 类型（1直播  2点播）
       },
+      egroup: [], // 小组
       range_time: [], // 上课时段
       visibleSelectFile: false, // 弹出选择文件
       visible2: false, // 弹出选择标签
@@ -545,7 +545,7 @@ export default {
         this.form.e_time = data.e_time
         this.range_time = [data.s_time, data.e_time]
         this.form.selectCompanyId = data.groupId
-        this.form.egroup = data.egroup || []
+        this.egroup = data.egroup || []
         this.form.sendSms = data.sendSms || 0
         this.form.sendSms1 = data.sendSms || 0
         this.form.timeBefore = data.timeBefore

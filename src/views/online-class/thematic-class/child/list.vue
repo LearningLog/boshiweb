@@ -282,7 +282,7 @@ export default {
 
     // 课堂管理
     manage(row) {
-      this.$router.push({ path: '/online-class/thematic-class/thematic-manage', query: { _id: row._id }})
+      this.$router.push({ path: '/online-class/thematic-class/thematic-manage', query: { _id: row._id, selectCompanyId: row.groupId }})
     },
 
     // 修改

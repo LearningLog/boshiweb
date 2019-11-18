@@ -16,8 +16,8 @@
                   clearable
                   filterable
                 >
-                  <el-option :value="1" label="直播课堂"></el-option>
-                  <el-option :value="2" label="点播课堂"></el-option>
+                  <el-option :value="1" label="直播课堂" />
+                  <el-option :value="2" label="点播课堂" />
                 </el-select>
               </el-form-item>
               <el-form-item label="创建时间">
@@ -43,7 +43,7 @@
       <el-button type="primary" @click="add(1)"><i class="iconfont iconjia" />新增直播</el-button>
       <el-button type="primary" @click="add(2)"><i class="iconfont iconjia" />新增点播</el-button>
       <el-button type="primary" @click="selectLesson"><i class="iconfont iconjia" />选择已有课堂</el-button>
-      <el-button type="primary" @click="lessonDetail"><i class="iconfont iconjia" />专题详情</el-button>
+      <el-button type="primary" @click="lessonDetail"><i class="iconfont iconchakan" />专题详情</el-button>
     </div>
     <el-table
       v-loading="listLoading"
@@ -107,6 +107,7 @@ export default {
         startTime: '', // 开始时间
         endTime: '' // 开始时间
       },
+      selectCompanyId: '', // 租户id
       time_range: [], // 创建时间
       list: [], // 表格数据
       listLoading: true, // 是否开启表格遮罩
@@ -116,6 +117,7 @@ export default {
   },
   created() {
     this.listQuery.lesson_id = this.$route.query._id
+    this.listQuery.selectCompanyId = this.$route.query.selectCompanyId
     this.get_list()
   },
   methods: {
@@ -175,7 +177,7 @@ export default {
 
     // 选择已有课堂
     selectLesson() {
-
+      this.$router.push({ path: '/online-class/thematic-class/select-lesson', query: { lesson_id: this.listQuery.lesson_id, selectCompanyId: this.selectCompanyId }})
     },
 
     // 专题详情
@@ -185,7 +187,11 @@ export default {
 
     // 修改
     edit(row) {
-      this.$router.push({ path: '/online-class/thematic-class/edit', query: { _id: row._id }})
+      if (row.type === 1) {
+        this.$router.push({ path: '/online-class/thematic-class/live-telecast-edit', query: { lesson_id: this.listQuery.lesson_id, _id: row._id }})
+      } else {
+        this.$router.push({ path: '/online-class/thematic-class/on-demand-edit', query: { lesson_id: this.listQuery.lesson_id, _id: row._id }})
+      }
     },
 
     // 删除
@@ -212,7 +218,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        removeOneChapterInLesson({ _id: row._id }).then(response => {
+        removeOneChapterInLesson({ chapter_ids: row._id, lesson_id: this.listQuery.lesson_id }).then(response => {
           this.$message.success('移除成功！')
           if ((this.list.length - 1) === 0) { // 如果当前页数据已删完，则去往上一页
             this.listQuery.currentPage -= 1
