@@ -98,7 +98,7 @@
 </template>
 
 <script>
-import { getLabelList } from '@/api/evaluatingManage-labelManage.js'
+import { getLabelList } from '@/api/onlineclass-label-manage'
 import Pagination from '@/components/Pagination'
 import elDragDialog from '@/directive/el-drag-dialog'
 export default {
@@ -192,14 +192,14 @@ export default {
     // 确定
     save() {
       const checkList = this.checkedList
-      this.$emit('addLabels', checkList)
+      this.$emit('AddLessonEvalLabels', checkList)
       this.selectLabelsVisible = false
-      this.$emit('visible2', { visible: false })
+      this.$emit('visibleAddLessonEvalLabels', { visible: false })
     },
     // 取消
     cancel() {
       this.selectLabelsVisible = false
-      this.$emit('visible2', { visible: false })
+      this.$emit('visibleAddLessonEvalLabels', { visible: false })
     }
   }
 }

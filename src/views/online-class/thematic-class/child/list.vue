@@ -121,15 +121,16 @@
       <el-table-column align="center" label="创建时间" min-width="130" prop="c_time" />
       <el-table-column class-name="status-col" label="操作" width="260" align="center" fixed="right">
         <template slot-scope="scope">
-          <el-button size="mini" @click="edit(scope.row)"><i class="iconfont iconxiugai" />课堂管理</el-button>
-          <el-button size="mini" @click="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
+          <el-button size="mini" @click="manage(scope.row)"><i class="iconfont iconxiugai" />课堂管理</el-button>
+          <el-button size="mini" @click="share(scope.row, $event)"><i class="iconfont iconfenxiang" />分享</el-button>
           <el-dropdown trigger="click">
             <el-button size="mini">
               <i class="iconfont icongengduo" />更多
             </el-button>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item @click.native="share(scope.row, $event)"><i class="iconfont iconfenxiang" />分享</el-dropdown-item>
-              <el-dropdown-item @click.native="detail(scope.row)"><i class="iconfont iconchakan" />详情</el-dropdown-item>
+              <el-dropdown-item @click.native="detail(scope.row)"><i class="iconfont iconchakan" />专题详情</el-dropdown-item>
+              <el-dropdown-item @click.native="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-dropdown-item>
+              <el-dropdown-item @click.native="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </template>
@@ -279,6 +280,16 @@ export default {
       }
     },
 
+    // 课堂管理
+    manage(row) {
+      this.$router.push({ path: '/online-class/thematic-class/one-thematic-class-list', query: { _id: row._id }})
+    },
+
+    // 修改
+    edit(row) {
+      this.$router.push({ path: '/online-class/thematic-class/edit', query: { _id: row._id }})
+    },
+
     // 分享
     share(row, event) {
       clip(row._id, event)
@@ -334,11 +345,6 @@ export default {
           this.get_list()
         })
       }).catch(() => {})
-    },
-
-    // 修改
-    edit(row) {
-      this.$router.push({ path: '/online-class/thematic-class/one-thematic-class-list.vue', query: { _id: row._id }})
     }
   }
 }

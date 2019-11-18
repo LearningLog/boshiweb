@@ -275,13 +275,13 @@
       :is-upload="true"
       @checkedFile="checkedFile"
     />
-    <add-labels
-      :visible2.sync="visible2"
-      :current-labels.sync="currentLabels"
-      :select-company-id="form.selectCompanyId"
-      :egroup="form.egroup"
-      @addLabels="getLabels"
-      @visible2="onvisible2"
+    <AddLessonEvalLabels
+        :visible2.sync="visible2"
+        :current-labels.sync="currentLabels"
+        :select-company-id="form.selectCompanyId"
+        :egroup="form.egroup"
+        @AddLessonEvalLabels="getLabels"
+        @visibleAddLessonEvalLabels="onvisible2"
     />
   </div>
 </template>
@@ -295,14 +295,14 @@ import { uploadFile } from '@/api/uploadFile'
 import { getToken } from '@/utils/auth'
 import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
 import SelectFile from '@/components/SelectFile'
-import AddLabels from '@/components/AddEvalLabels'
+import AddLessonEvalLabels from '@/components/AddLessonEvalLabels'
 import file_knowledge from '@/assets/images/file_knowledge.png'
 const $ = window.$
 
 export default {
   components: {
     SelectFile, // 添加图片
-    AddLabels, // 添加标签
+    AddLessonEvalLabels, // 添加标签
     VueCropper // 图片裁剪组件
   },
   directives: { elDragDialog },
@@ -341,7 +341,7 @@ export default {
         cover_pic_id: '', // 课程封面 id
         cover_pic: '', // 课程封面 url
         selectCompanyId: '', // 所属租户ID
-        egroup: null, // 小组
+        egroup: [], // 小组
         groupList: [], // 发布组集合
         type: 2 // 类型（1直播  2点播）
       },
@@ -687,7 +687,6 @@ export default {
       })
       this.form.can_discuss = this.form.can_discuss + ''
       this.form.groupList = this.checkedGroupIds
-      this.form.egroup = this.checkedGroupIds
       chapetr_add(this.form).then(response => {
         this.$message.success('新增课程成功！')
         this.noLeaveprompt = true
@@ -750,7 +749,7 @@ export default {
 // 截图
 .cropper-content {
   .cropper {
-    width: calc(100% - 200px);
+    width: calc(100% - 260px);
     height: 340px;
     display: inline-block;
   }

@@ -160,7 +160,7 @@ const onlineClass = {
           component: () =>
             import('@/views/online-class/thematic-class/child/list'),
           meta: {
-            title: '课堂列表',
+            title: '专题列表',
             icon: '',
             activeMenu: '/online-class/thematic-class'
           }
@@ -172,7 +172,7 @@ const onlineClass = {
           component: () =>
             import('@/views/online-class/thematic-class/child/add'),
           meta: {
-            title: '新增课堂',
+            title: '新增专题',
             icon: '',
             activeMenu: '/online-class/thematic-class'
           }
@@ -184,7 +184,7 @@ const onlineClass = {
           component: () =>
             import('@/views/online-class/thematic-class/child/edit'),
           meta: {
-            title: '修改课堂',
+            title: '修改专题',
             icon: '',
             activeMenu: '/online-class/thematic-class'
           }
@@ -196,7 +196,7 @@ const onlineClass = {
           component: () =>
             import('@/views/online-class/thematic-class/child/detail'),
           meta: {
-            title: '课堂详情',
+            title: '专题详情',
             icon: '',
             activeMenu: '/online-class/thematic-class'
           }

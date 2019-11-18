@@ -275,13 +275,13 @@
       :is-upload="true"
       @checkedFile="checkedFile"
     />
-    <add-labels
-      :visible2.sync="visible2"
-      :current-labels.sync="currentLabels"
-      :select-company-id="form.selectCompanyId"
-      :egroup="form.egroup"
-      @addLabels="getLabels"
-      @visible2="onvisible2"
+    <AddLessonEvalLabels
+        :visible2.sync="visible2"
+        :current-labels.sync="currentLabels"
+        :select-company-id="form.selectCompanyId"
+        :egroup="form.egroup"
+        @AddLessonEvalLabels="getLabels"
+        @visibleAddLessonEvalLabels="onvisible2"
     />
   </div>
 </template>
@@ -295,14 +295,14 @@ import { uploadFile } from '@/api/uploadFile'
 import { getToken } from '@/utils/auth'
 import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
 import SelectFile from '@/components/SelectFile'
-import AddLabels from '@/components/AddEvalLabels'
+import AddLessonEvalLabels from '@/components/AddLessonEvalLabels'
 import file_knowledge from '@/assets/images/file_knowledge.png'
 const $ = window.$
 
 export default {
   components: {
     SelectFile, // 添加图片
-    AddLabels, // 添加标签
+    AddLessonEvalLabels, // 添加标签
     VueCropper // 图片裁剪组件
   },
   directives: { elDragDialog },
@@ -342,7 +342,7 @@ export default {
         cover_pic_id: '', // 课程封面 id
         cover_pic: '', // 课程封面 url
         selectCompanyId: '', // 所属租户ID
-        egroup: null, // 小组
+        egroup: [], // 小组
         groupList: [], // 发布组集合
         type: 2 // 类型（1直播  2点播）
       },
@@ -443,9 +443,7 @@ export default {
         const { data } = res
         this.form._id = data._id
         this.form.cname = data.cname
-        this.form.teacher = data.teacher
         this.form.brief = data.brief
-        this.form.live_count = data.live_count
         this.form.can_discuss = data.can_discuss * 1
         this.form.video_url = data.video_url
         this.form.video_name = data.video_name
@@ -453,15 +451,6 @@ export default {
         this.form.chapter_file = data.chapter_file
         this.form.chapter_masterId = data.chapter_masterId
         this.form.chapter_name = data.chapter_name
-        this.form.informationType = data.informationType
-        if (data.informationType === 1 || data.informationType === 2) {
-          this.informationTypeList[0] = data.informationType
-        } else if (data.informationType === 3) {
-          this.informationTypeList[0] = 1
-          this.informationTypeList[1] = 2
-        } else {
-          this.informationTypeList = []
-        }
         this.form.labels = data.labels
         this.currentLabels = data.labelName || []
         this.form.cover_pic_id = data.cover_pic_id
@@ -470,16 +459,9 @@ export default {
           this.fileList = [{ name: '', url: data.cover_pic }]
           $('.coverPic .el-upload--picture-card').hide()
         }
-        this.form.s_time = data.s_time
-        this.form.e_time = data.e_time
-        this.range_time = [data.s_time, data.e_time]
         this.form.selectCompanyId = data.groupId
-        this.form.egroup = data.egroup[0] || null
-        this.form.sendSms = data.sendSms || 0
-        this.form.sendSms1 = data.sendSms || 0
-        this.form.timeBefore = data.timeBefore
+        this.form.egroup = data.egroup || []
         this.form.groupList = data.egroup || []
-        this.form.userList = data.userList || []
         this.checkedGroupIds = data.egroup || []
         this.getEgroups()
 
@@ -744,7 +726,6 @@ export default {
       })
       this.form.can_discuss = this.form.can_discuss + ''
       this.form.groupList = this.checkedGroupIds
-      this.form.egroup = this.checkedGroupIds
       chapetrUpdate(this.form).then(response => {
         this.$message.success('课程修改成功！')
         this.noLeaveprompt = true
@@ -806,7 +787,7 @@ export default {
   // 截图
   .cropper-content {
     .cropper {
-      width: calc(100% - 200px);
+      width: calc(100% - 260px);
       height: 340px;
       display: inline-block;
     }

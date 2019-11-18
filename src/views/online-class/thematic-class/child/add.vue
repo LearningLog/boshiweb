@@ -202,13 +202,13 @@
       <img width="100%" :src="logoUrl" alt="">
     </el-dialog>
 
-    <add-labels
-      :visible2.sync="visible2"
-      :current-labels.sync="currentLabels"
-      :select-company-id="form.selectCompanyId"
-      :egroup="form.egroup"
-      @addLabels="getLabels"
-      @visible2="onvisible2"
+    <AddLessonEvalLabels
+        :visible2.sync="visible2"
+        :current-labels.sync="currentLabels"
+        :select-company-id="form.selectCompanyId"
+        :egroup="form.egroup"
+        @AddLessonEvalLabels="getLabels"
+        @visibleAddLessonEvalLabels="onvisible2"
     />
   </div>
 </template>
@@ -216,24 +216,21 @@
 <script>
 import { VueCropper } from 'vue-cropper'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
-import { getFileListManage } from '@/api/work-desk'
 import { createThematicClass } from '@/api/thematic-class'
 import { uploadFile } from '@/api/uploadFile'
 import { getToken } from '@/utils/auth'
 import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
-import AddLabels from '@/components/AddEvalLabels'
-import file_knowledge from '@/assets/images/file_knowledge.png'
+import AddLessonEvalLabels from '@/components/AddLessonEvalLabels'
 const $ = window.$
 
 export default {
   components: {
-    AddLabels, // 添加标签
+    AddLessonEvalLabels, // 添加标签
     VueCropper // 图片裁剪组件
   },
   directives: { elDragDialog },
   data() {
     return {
-      file_knowledge,
       dataIsChange: 0, // 计数器，据此判断表单是否已编辑
       noLeaveprompt: false, // 表单提交后，设置为true，据此判断提交不再弹出离开提示
       active: 1, // 当前step
@@ -245,7 +242,7 @@ export default {
         cover_pic_id: '', // 课程封面 id
         cover_pic: '', // 课程封面 url
         selectCompanyId: '', // 所属租户ID
-        egroup: null, // 小组
+        egroup: [], // 小组
         groupList: [], // 发布组集合
         is_reviews: 1 // 是否开启点评 1是，2否
       },
@@ -327,53 +324,6 @@ export default {
     this.getEgroups()
   },
   methods: {
-
-    // 选择视频
-    selectVideo() {
-      this.listQuery.currentPage = 0
-      this.videolist.length = 0
-      this.visibleSelectVideo = true
-    },
-
-    // 获取文件列表
-    getFileList() {
-      getFileListManage(this.listQuery).then(res => {
-        this.total = res.data.page.totalCount
-        res.data.page.list.forEach(item => {
-          this.videolist.push(item)
-        })
-        for (var key in res.data.filePackageIdWorkDeskFile) {
-          this.filePackageIdWorkDeskFile[key] = res.data.filePackageIdWorkDeskFile[key]
-        }
-        this.videolist.forEach(item => {
-          item.name = this.filePackageIdWorkDeskFile[item.mainFileId].name
-          item.subFileList = item.subFileList || []
-          item.subFileList.find(item2 => {
-            if (item2.fileUse === 'preview_pic') {
-              item.preview_pic = item2.fileUrl
-            }
-          })
-        })
-      })
-    },
-
-    // 选择文件
-    checkVideoChange(val) {
-      this.checkVideoList = val
-      console.log(this.checkVideoList)
-    },
-
-    // 确定
-    saveFile() {
-      this.form.video_url = this.checkVideoList.fileUrl
-      this.form.video_masterId = this.checkVideoList.mainFileId
-      this.form.video_name = this.checkVideoList.fileName
-      this.visibleSelectVideo = false
-    },
-    // 取消
-    cancel() {
-      this.visibleSelectVideo = false
-    },
 
     // 下一步
     nextStep() {
@@ -568,10 +518,10 @@ export default {
       this.form.can_discuss = this.form.can_discuss + ''
       this.form.groupList = this.checkedGroupIds
       createThematicClass(this.form).then(response => {
-        this.$message.success('新增课程成功！')
+        this.$message.success('新增专题课程成功！')
         this.noLeaveprompt = true
         this.$router.push({
-          path: '/online-class/spaced-sowing/list'
+          path: '/online-class/thematic-class/list'
         })
       })
     }
@@ -629,7 +579,7 @@ export default {
   // 截图
   .cropper-content {
     .cropper {
-      width: calc(100% - 200px);
+      width: calc(100% - 260px);
       height: 340px;
       display: inline-block;
     }
@@ -711,56 +661,6 @@ export default {
     margin-right: 10px;
   }
 
-  /*选择视频*/
-  .searchFile {
-    margin-bottom: 16px;
-  }
-  .selectFile {
-    display: inline-block;
-  }
-  /deep/ .el-dialog__wrapper .el-dialog__body {
-    padding: 10px 20px;
-  }
-  .itemFile {
-    display: inline-block;
-    position: relative;
-    width: 100px;
-    margin: 0 10px 10px 0;
-    text-align: center;
-    font-size: 12px;
-    text-align: center;
-  }
-  .checkbox {
-    position: absolute;
-    right: 4px;
-    top: 4px;
-    z-index: 2;
-  }
-  .checkbox /deep/ .el-radio__label {
-    display: none;
-  }
-  .imgCover {
-    width: 100%;
-    height: 70px;
-    border: 1px solid #e8e8e8;
-  }
-  .name {
-    display: inline-block;
-    margin-top: 4px;
-    width: 100%;
-    overflow:hidden;
-    text-overflow:ellipsis;
-    white-space:nowrap;
-  }
-  .scrollbar-wrapper {
-    overflow-x: hidden;
-  }
-  .el-scrollbar {
-    height: 300px;
-  }
-  .global-search {
-    width: 200px;
-  }
   .logoClass /deep/ .el-upload-list--picture-card .el-upload-list__item {
     width: 240px;
     height: 136px;

@@ -33,3 +33,21 @@ export function createThematicClass(data) {
     data
   })
 }
+
+// 专题课堂详情
+export function thematicClassDetail(data) {
+  return request({
+    url: 'cr/lesson/findById',
+    method: 'post',
+    data
+  })
+}
+
+// 修改课堂
+export function updateThematicClass(data) {
+  return request({
+    url: '/cr/lesson/update',
+    method: 'post',
+    data
+  })
+}

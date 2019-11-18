@@ -308,13 +308,13 @@
       :is-upload="true"
       @checkedFile="checkedFile"
     />
-    <add-labels
-      :visible2.sync="visible2"
-      :current-labels.sync="currentLabels"
-      :select-company-id="form.selectCompanyId"
-      :egroup="form.egroup"
-      @addLabels="getLabels"
-      @visible2="onvisible2"
+    <AddLessonEvalLabels
+        :visible2.sync="visible2"
+        :current-labels.sync="currentLabels"
+        :select-company-id="form.selectCompanyId"
+        :egroup="form.egroup"
+        @AddLessonEvalLabels="getLabels"
+        @visibleAddLessonEvalLabels="onvisible2"
     />
   </div>
 </template>
@@ -328,13 +328,13 @@ import { getToken } from '@/utils/auth'
 import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
 import { getEgroupAndUserinfo } from '@/api/userCenter-userManage'
 import SelectFile from '@/components/SelectFile'
-import AddLabels from '@/components/AddEvalLabels'
+import AddLessonEvalLabels from '@/components/AddLessonEvalLabels'
 const $ = window.$
 
 export default {
   components: {
     SelectFile, // 添加图片
-    AddLabels, // 添加标签
+    AddLessonEvalLabels, // 添加标签
     VueCropper // 图片裁剪组件
   },
   directives: { elDragDialog },
@@ -360,7 +360,7 @@ export default {
         s_time: '', // 开始时间
         e_time: '', // 开始时间
         selectCompanyId: '', // 所属租户ID
-        egroup: null, // 小组
+        egroup: [], // 小组
         sendSms: 0, // 课程通知
         sendSms1: 0, // 课程通知
         timeBefore: 10, // 课程开始前
@@ -545,7 +545,7 @@ export default {
         this.form.e_time = data.e_time
         this.range_time = [data.s_time, data.e_time]
         this.form.selectCompanyId = data.groupId
-        this.form.egroup = data.egroup[0] || null
+        this.form.egroup = data.egroup || []
         this.form.sendSms = data.sendSms || 0
         this.form.sendSms1 = data.sendSms || 0
         this.form.timeBefore = data.timeBefore
@@ -871,7 +871,6 @@ export default {
         this.form.sendSms = 0
       }
       this.form.groupList = this.checkedGroupIds
-      this.form.egroup = this.checkedGroupIds
       chapetrUpdate(this.form).then(response => {
         this.$message.success('课程修改成功！')
         this.noLeaveprompt = true
@@ -933,7 +932,7 @@ export default {
   // 截图
   .cropper-content {
     .cropper {
-      width: calc(100% - 200px);
+      width: calc(100% - 260px);
       height: 340px;
       display: inline-block;
     }

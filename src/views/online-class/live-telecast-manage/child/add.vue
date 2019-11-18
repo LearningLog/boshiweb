@@ -308,13 +308,13 @@
       :is-upload="true"
       @checkedFile="checkedFile"
     />
-    <add-labels
+    <AddLessonEvalLabels
       :visible2.sync="visible2"
       :current-labels.sync="currentLabels"
       :select-company-id="form.selectCompanyId"
       :egroup="form.egroup"
-      @addLabels="getLabels"
-      @visible2="onvisible2"
+      @AddLessonEvalLabels="getLabels"
+      @visibleAddLessonEvalLabels="onvisible2"
     />
   </div>
 </template>
@@ -328,13 +328,13 @@ import { getToken } from '@/utils/auth'
 import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
 import { getEgroupAndUserinfo } from '@/api/userCenter-userManage'
 import SelectFile from '@/components/SelectFile'
-import AddLabels from '@/components/AddEvalLabels'
+import AddLessonEvalLabels from '@/components/AddLessonEvalLabels'
 const $ = window.$
 
 export default {
   components: {
     SelectFile, // 添加图片
-    AddLabels, // 添加标签
+    AddLessonEvalLabels, // 添加标签
     VueCropper // 图片裁剪组件
   },
   directives: { elDragDialog },
@@ -799,7 +799,6 @@ export default {
         this.form.sendSms = 0
       }
       this.form.groupList = this.checkedGroupIds
-      this.form.egroup = this.checkedGroupIds
       delete this.form.range_time
       console.log(this.form)
       chapetr_add(this.form).then(response => {
