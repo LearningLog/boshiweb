@@ -41,7 +41,7 @@
         </div>
       </div>
       <el-scrollbar wrap-class="scrollbar-wrapper">
-        <ul v-infinite-scroll="getFileList" class="fileList">
+        <ul v-infinite-scroll="scrollGetFileList" class="fileList">
           <li
             v-for="(item, index) in list"
             :key="index"
@@ -55,9 +55,9 @@
               :src="item.preview_pic || file_knowledge"
               fit="contain"
             />
-            <el-tooltip effect="dark" :content="item.name" placement="top">
+            <!--<el-tooltip effect="dark" :content="item.name" placement="top">-->
               <span class="name">{{ item.name }}</span>
-            </el-tooltip>
+            <!--</el-tooltip>-->
           </li>
         </ul>
       </el-scrollbar>
@@ -109,7 +109,7 @@ export default {
       },
       list: [], // 列表
       queryFileIdList: [], // 需要返回的文件列表
-      filePackageIdWorkDeskFile: null, // Map
+      filePackageIdWorkDeskFile: {}, // Map
       checkList: [], // 选中的数据
       radio: '',
       headers: {
@@ -124,7 +124,9 @@ export default {
     visible: function(val, val2) {
       if (val) {
         var that = this
-        that.getFileList()
+        this.listQuery.currentPage = 0
+        this.list.length = 0
+        this.selectFilVisible = true
         that.timer = setInterval(function() {
           that.getFileList()
         }, 10000)
@@ -132,12 +134,22 @@ export default {
     }
   },
   methods: {
+    // 滚动加载的逻辑
+    scrollGetFileList() {
+      this.listQuery.currentPage++
+      this.getFileList()
+    },
+
     // 获取文件列表
     getFileList() {
       getFileListManage(this.listQuery).then(res => {
         this.total = res.data.page.totalCount
-        this.list = res.data.page.list
-        this.filePackageIdWorkDeskFile = res.data.filePackageIdWorkDeskFile
+        res.data.page.list.forEach(item => {
+          this.list.push(item)
+        })
+        for (var key in res.data.filePackageIdWorkDeskFile) {
+          this.filePackageIdWorkDeskFile[key] = res.data.filePackageIdWorkDeskFile[key]
+        }
         this.list.forEach(item => {
           item.name = this.filePackageIdWorkDeskFile[item.mainFileId].name
           item.subFileList = item.subFileList || []
@@ -147,7 +159,6 @@ export default {
             }
           })
         })
-        this.selectFilVisible = true
       })
     },
     // 选择文件
@@ -206,8 +217,8 @@ export default {
     // 取消
     cancel() {
       clearInterval(this.timer)
-      this.$emit('checkedFile', this.checkList)
       this.selectFilVisible = false
+      this.$emit('checkedFile', this.checkList)
     }
   }
 }
