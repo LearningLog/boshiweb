@@ -148,7 +148,7 @@ const onlineClass = {
         import('@/views/online-class/thematic-class/index'),
       redirect: '/online-class/thematic-class/list',
       meta: {
-        title: '专题课堂',
+        title: '专题课程',
         icon: '',
         activeMenu: '/online-class/thematic-class'
       },

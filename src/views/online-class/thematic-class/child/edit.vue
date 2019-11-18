@@ -75,7 +75,7 @@
           />
           <div class="checkFile" @click="selectFile">选择</div>
         </el-form-item>
-        <el-form-item label="添加标签" class="addLabel">
+        <el-form-item label="课堂标签" class="addLabel">
           <div v-if="currentLabels.length" class="tag">
             <el-tag
               v-for="(tag, index) in currentLabels"
@@ -105,7 +105,7 @@
       >
         <el-form-item label="直播源" prop="live_count">
           <el-radio-group v-model="form.live_count">
-            <el-radio :label="2">两路视频直播</el-radio>
+            <!--<el-radio :label="2">两路视频直播</el-radio>-->
             <el-radio :label="1">一路视频直播</el-radio>
           </el-radio-group>
         </el-form-item>
@@ -322,7 +322,7 @@
 <script>
 import { VueCropper } from 'vue-cropper'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
-import { getOneChapter, chapetr_add } from '@/api/live-telecast-manage'
+import { getOneChapter, chapetrUpdate } from '@/api/live-telecast-manage'
 import { uploadFile } from '@/api/uploadFile'
 import { getToken } from '@/utils/auth'
 import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
@@ -543,15 +543,15 @@ export default {
         }
         this.form.s_time = data.s_time
         this.form.e_time = data.e_time
-        this.range_time =[data.s_time, data.e_time]
+        this.range_time = [data.s_time, data.e_time]
         this.form.selectCompanyId = data.groupId
         this.form.egroup = data.egroup[0] || null
         this.form.sendSms = data.sendSms || 0
         this.form.sendSms1 = data.sendSms || 0
         this.form.timeBefore = data.timeBefore
-        this.form.groupList = data.groupList || []
+        this.form.groupList = data.egroup || []
         this.form.userList = data.userList || []
-        this.checkedGroupIds = data.egroup
+        this.checkedGroupIds = data.egroup || []
         this.getEgroups()
 
         this.dataIsChange = -1
@@ -841,11 +841,9 @@ export default {
           this.groupsAndMembers.splice(i--, 1)
         }
       }
-      this.form.groupList.length = 0
       this.form.userList.length = 0
       var userList = []
       this.groupsAndMembers.forEach(item => {
-        this.form.groupList.push(item[0])
         userList.push(item[1])
       })
       this.form.userList = [...new Set(userList)]
@@ -872,8 +870,10 @@ export default {
       } else {
         this.form.sendSms = 0
       }
-      chapetr_add(this.form).then(response => {
-        this.$message.success('新增课程成功！')
+      this.form.groupList = this.checkedGroupIds
+      this.form.egroup = this.checkedGroupIds
+      chapetrUpdate(this.form).then(response => {
+        this.$message.success('课程修改成功！')
         this.noLeaveprompt = true
         this.$router.push({
           path: '/online-class/live-telecast-manage/list'
@@ -1013,5 +1013,9 @@ export default {
   }
   /deep/ .el-tag {
     margin-right: 10px;
+  }
+  .logoClass /deep/ .el-upload-list--picture-card .el-upload-list__item {
+    width: 240px;
+    height: 136px;
   }
 </style>

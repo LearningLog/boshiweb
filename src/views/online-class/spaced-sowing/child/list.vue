@@ -9,57 +9,54 @@
         <el-row v-show="popoverVisible">
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
-              <el-form-item label="讲师">
-                <el-input v-model="listQuery.teacher" placeholder="请输入讲师" clearable @keyup.enter.native="topSearch" />
-              </el-form-item>
+              <tenants-groups-roles :is-render-role="false" :is-reset="isReset" which-group="manageEgroupInfo" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" @resetVal="resetVal" />
               <el-form-item label="开始时间">
                 <el-date-picker
-                    v-model="start_time_range"
-                    type="daterange"
-                    range-separator="至"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                    value-format="yyyy-MM-dd"
+                  v-model="start_time_range"
+                  type="daterange"
+                  range-separator="至"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  value-format="yyyy-MM-dd"
                 />
               </el-form-item>
               <el-form-item label="创建时间">
                 <el-date-picker
-                    v-model="time_range"
-                    type="daterange"
-                    range-separator="至"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                    value-format="yyyy-MM-dd"
+                  v-model="time_range"
+                  type="daterange"
+                  range-separator="至"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  value-format="yyyy-MM-dd"
                 />
               </el-form-item>
-              <tenants-groups-roles :is-render-role="false" :isReset="isReset" which-group="manageEgroupInfo" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" @resetVal="resetVal" />
               <el-form-item label="标签名称">
                 <el-select
-                    v-model="listQuery.labels"
-                    placeholder="请选择标签"
-                    clearable
-                    filterable
+                  v-model="labels"
+                  placeholder="请选择标签"
+                  clearable
+                  filterable
                 >
                   <el-option
-                      v-for="item in lablesList"
-                      :key="item.linc"
-                      :label="item.lname"
-                      :value="item.linc"
+                    v-for="item in lablesList"
+                    :key="item.linc"
+                    :label="item.lname"
+                    :value="item.linc"
                   />
                 </el-select>
               </el-form-item>
               <el-form-item label="创建人">
                 <el-select
-                    v-model="listQuery.createUser"
-                    placeholder="请选择创建人"
-                    clearable
-                    filterable
+                  v-model="listQuery.createUser"
+                  placeholder="请选择创建人"
+                  clearable
+                  filterable
                 >
                   <el-option
-                      v-for="item in createrList"
-                      :key="item._id"
-                      :label="item.nickname"
-                      :value="item._id"
+                    v-for="item in createrList"
+                    :key="item._id"
+                    :label="item.nickname"
+                    :value="item._id"
                   />
                 </el-select>
               </el-form-item>
@@ -89,12 +86,13 @@
         width="50"
         fixed
       />
-      <el-table-column align="center" label="课堂封面" min-width="120">
+      <el-table-column align="center" label="课堂封面" min-width="166">
         <template slot-scope="scope">
           <el-image
-              class="thumbnail"
-              :src="scope.row.cover_pic"
-              fit="contain"></el-image>
+            class="thumbnail-online-class"
+            :src="scope.row.cover_pic"
+            fit="contain"
+          />
         </template>
       </el-table-column>
       <el-table-column align="center" label="课堂名称" min-width="120">
@@ -102,8 +100,23 @@
           <el-link type="primary" @click="detail(scope.row)">{{ scope.row.cname }}</el-link>
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="发布小组" min-width="120" align="center" prop="groupName" />
       <el-table-column class-name="status-col" label="标签" min-width="100" align="center" prop="labelNames" />
+      <!--<el-table-column class-name="status-col" label="开始时间" min-width="130" align="center" prop="s_time" />-->
+      <el-table-column class-name="status-col" label="课程评价" min-width="150" align="center">
+        <template slot-scope="scope">
+          <span class="pointer" @click="rateDetail(scope.row)">
+            <el-rate
+                v-if="scope.row.general_level"
+                v-model="scope.row.general_level"
+                disabled
+                show-score
+                text-color="#ff9900"
+            />
+          </span>
+          <span v-if="!scope.row.general_level && scope.row.general_level !== 0">--</span>
+        </template>
+      </el-table-column>
+      <el-table-column class-name="status-col" label="小组" min-width="120" align="center" prop="groupName" />
       <el-table-column align="center" label="创建人" min-width="90" prop="userNickName" />
       <el-table-column align="center" label="创建时间" min-width="130" prop="c_time" />
       <el-table-column class-name="status-col" label="操作" width="230" align="center" fixed="right">
@@ -126,7 +139,7 @@
     <div id="bottomOperation">
       <el-button v-show="total>0" type="danger" plain @click="batchDel"><i class="iconfont iconshanchu" />批量删除</el-button>
     </div>
-    <AddSelectGroup :visibleSelectGroup="visibleSelectGroup" :isRenderGroup="false" title="选择租户" @getSelectGroup="getSelectGroup"></AddSelectGroup>
+    <AddSelectGroup :visible-select-group="visibleSelectGroup" :is-render-group="false" title="选择租户" @getSelectGroup="getSelectGroup" />
   </div>
 </template>
 
@@ -155,13 +168,13 @@ export default {
         selectCompanyId: '', // 租户
         egroup: '', // 小组
         labels: [], // 标签
-        teacher: '', // 讲师
         startTime: '', // 开始时间
         endTime: '', // 开始时间
         createTimebegin: '', // 创建开始时间
         createTimeend: '', // 创建结束时间
         type: 2 // 1，直播课堂；2，点播课堂
       },
+      labels: null, // 标签
       start_time_range: [], // 开始时间
       time_range: [], // 创建时间
       list: [], // 表格数据
@@ -186,6 +199,7 @@ export default {
       this.listQuery.endTime = this.start_time_range[1]
       this.listQuery.createTimebegin = this.time_range[0]
       this.listQuery.createTimeend = this.time_range[1]
+      this.listQuery.labels = this.labels ? [this.labels] : null
       chapetrList(this.listQuery).then(response => {
         this.listLoading = false
         this.list = response.data.page.list
@@ -230,8 +244,8 @@ export default {
       this.listQuery.cname = ''
       this.listQuery.createUser = ''
       this.listQuery.labels = ''
+      this.labels = null
       this.listQuery.createUser = ''
-      this.listQuery.teacher = ''
       this.listQuery.selectCompanyId = ''
       this.listQuery.egroup = ''
       this.start_time_range = []
@@ -273,6 +287,11 @@ export default {
     // 详情
     detail(row) {
       this.$router.push({ path: '/online-class/spaced-sowing/detail', query: { _id: row._id }})
+    },
+
+    // 评分详情
+    rateDetail(row) {
+
     },
 
     // 单个删除

@@ -1,7 +1,7 @@
 <template>
   <div class="tenant-list-box">
     <div id="topSearch">
-      <el-input v-model="listQuery.cname" placeholder="请输入课程名称" clearable @keyup.enter.native="topSearch">
+      <el-input v-model="listQuery.cname" placeholder="请输入专题名称" clearable @keyup.enter.native="topSearch">
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
       </el-input>
       <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">高级搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
@@ -9,57 +9,54 @@
         <el-row v-show="popoverVisible">
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
-              <el-form-item label="讲师">
-                <el-input v-model="listQuery.teacher" placeholder="请输入讲师" clearable @keyup.enter.native="topSearch" />
-              </el-form-item>
+              <tenants-groups-roles :is-render-role="false" :is-reset="isReset" which-group="manageEgroupInfo" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" @resetVal="resetVal" />
               <el-form-item label="开始时间">
                 <el-date-picker
-                    v-model="start_time_range"
-                    type="daterange"
-                    range-separator="至"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                    value-format="yyyy-MM-dd"
+                  v-model="start_time_range"
+                  type="daterange"
+                  range-separator="至"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  value-format="yyyy-MM-dd"
                 />
               </el-form-item>
               <el-form-item label="创建时间">
                 <el-date-picker
-                    v-model="time_range"
-                    type="daterange"
-                    range-separator="至"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                    value-format="yyyy-MM-dd"
+                  v-model="time_range"
+                  type="daterange"
+                  range-separator="至"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  value-format="yyyy-MM-dd"
                 />
               </el-form-item>
-              <tenants-groups-roles :is-render-role="false" :isReset="isReset" which-group="manageEgroupInfo" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" @resetVal="resetVal" />
               <el-form-item label="标签名称">
                 <el-select
-                    v-model="listQuery.labels"
-                    placeholder="请选择标签"
-                    clearable
-                    filterable
+                  v-model="labels"
+                  placeholder="请选择标签"
+                  clearable
+                  filterable
                 >
                   <el-option
-                      v-for="item in lablesList"
-                      :key="item.linc"
-                      :label="item.lname"
-                      :value="item.linc"
+                    v-for="item in lablesList"
+                    :key="item.linc"
+                    :label="item.lname"
+                    :value="item.linc"
                   />
                 </el-select>
               </el-form-item>
               <el-form-item label="创建人">
                 <el-select
-                    v-model="listQuery.createUser"
-                    placeholder="请选择创建人"
-                    clearable
-                    filterable
+                  v-model="listQuery.createUser"
+                  placeholder="请选择创建人"
+                  clearable
+                  filterable
                 >
                   <el-option
-                      v-for="item in createrList"
-                      :key="item._id"
-                      :label="item.nickname"
-                      :value="item._id"
+                    v-for="item in createrList"
+                    :key="item._id"
+                    :label="item.nickname"
+                    :value="item._id"
                   />
                 </el-select>
               </el-form-item>
@@ -89,27 +86,42 @@
         width="50"
         fixed
       />
-      <el-table-column align="center" label="课堂封面" min-width="120">
+      <el-table-column align="center" label="课堂封面" min-width="166">
         <template slot-scope="scope">
           <el-image
-              class="thumbnail"
-              :src="scope.row.cover_pic"
-              fit="contain"></el-image>
+            class="thumbnail-online-class"
+            :src="scope.row.cover_pic"
+            fit="contain"
+          />
         </template>
       </el-table-column>
       <el-table-column align="center" label="课堂名称" min-width="120">
         <template slot-scope="scope">
-          <el-link type="primary" @click="detail(scope.row)">{{ scope.row.cname }}</el-link>
+          <el-link type="primary" @click="detail(scope.row)">{{ scope.row.lesson_name }}</el-link>
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="开始时间" min-width="130" align="center" prop="s_time" />
-      <el-table-column class-name="status-col" label="发布小组" min-width="120" align="center" prop="groupName" />
       <el-table-column class-name="status-col" label="标签" min-width="100" align="center" prop="labelNames" />
-      <el-table-column align="center" label="创建人" min-width="90" prop="userNickName" />
-      <el-table-column align="center" label="创建时间" min-width="130" prop="c_time" />
-      <el-table-column class-name="status-col" label="操作" width="230" align="center" fixed="right">
+      <el-table-column class-name="status-col" label="课堂数" min-width="64" align="center" prop="chapter_count" />
+      <!--<el-table-column class-name="status-col" label="开始时间" min-width="130" align="center" prop="s_time" />-->
+      <el-table-column class-name="status-col" label="专题评价" min-width="150" align="center">
         <template slot-scope="scope">
-          <el-button size="mini" @click="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
+          <span class="pointer" @click="rateDetail(scope.row)">
+            <el-rate
+                v-if="scope.row.general_level"
+                v-model="scope.row.general_level"
+                disabled
+                show-score
+                text-color="#ff9900"
+            />
+          </span>
+          <span v-if="!scope.row.general_level && scope.row.general_level !== 0">--</span>
+        </template>
+      </el-table-column>
+      <el-table-column class-name="status-col" label="小组" min-width="120" align="center" prop="groupName" />
+      <el-table-column align="center" label="创建时间" min-width="130" prop="c_time" />
+      <el-table-column class-name="status-col" label="操作" width="260" align="center" fixed="right">
+        <template slot-scope="scope">
+          <el-button size="mini" @click="edit(scope.row)"><i class="iconfont iconxiugai" />课堂管理</el-button>
           <el-button size="mini" @click="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
           <el-dropdown trigger="click">
             <el-button size="mini">
@@ -127,7 +139,7 @@
     <div id="bottomOperation">
       <el-button v-show="total>0" type="danger" plain @click="batchDel"><i class="iconfont iconshanchu" />批量删除</el-button>
     </div>
-    <AddSelectGroup :visibleSelectGroup="visibleSelectGroup" :isRenderGroup="false" title="选择租户" @getSelectGroup="getSelectGroup"></AddSelectGroup>
+    <AddSelectGroup :visible-select-group="visibleSelectGroup" :is-render-group="false" title="选择租户" @getSelectGroup="getSelectGroup" />
   </div>
 </template>
 
@@ -137,7 +149,7 @@ import Pagination from '@/components/Pagination' // secondary package based on e
 import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
 import AddSelectGroup from '@/components/AddSelectGroup'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
-import { chapetrList, chapetr_del } from '@/api/live-telecast-manage'
+import { getThematicClassList, deletethematicClass } from '@/api/thematic-class'
 import { findUserListByGroupId } from '@/api/work-desk'
 import { getLabelListNoPagination } from '@/api/onlineclass-label-manage'
 export default {
@@ -156,12 +168,12 @@ export default {
         selectCompanyId: '', // 租户
         egroup: '', // 小组
         labels: [], // 标签
-        teacher: '', // 讲师
         startTime: '', // 开始时间
         endTime: '', // 开始时间
         createTimebegin: '', // 创建开始时间
         createTimeend: '' // 创建结束时间
       },
+      labels: null, // 标签
       start_time_range: [], // 开始时间
       time_range: [], // 创建时间
       list: [], // 表格数据
@@ -186,7 +198,8 @@ export default {
       this.listQuery.endTime = this.start_time_range[1]
       this.listQuery.createTimebegin = this.time_range[0]
       this.listQuery.createTimeend = this.time_range[1]
-      chapetrList(this.listQuery).then(response => {
+      this.listQuery.labels = this.labels ? [this.labels] : null
+      getThematicClassList(this.listQuery).then(response => {
         this.listLoading = false
         this.list = response.data.page.list
         this.total = response.data.page.totalCount
@@ -230,6 +243,7 @@ export default {
       this.listQuery.cname = ''
       this.listQuery.createUser = ''
       this.listQuery.labels = ''
+      this.labels = null
       this.listQuery.createUser = ''
       this.listQuery.teacher = ''
       this.listQuery.selectCompanyId = ''
@@ -251,7 +265,7 @@ export default {
     // 新增
     add() {
       if (!this.$store.state.user.isSystemManage) {
-        this.$router.push({ path: '/online-class/live-telecast-manage/add' })
+        this.$router.push({ path: '/online-class/thematic-class/add' })
       } else {
         this.visibleSelectGroup = true
       }
@@ -259,11 +273,9 @@ export default {
 
     // 监听选择小组返回数据
     getSelectGroup(val) {
-      this.companyId = val.selectCompanyId
-      this.egroup = val.egroup
       this.visibleSelectGroup = false
       if (this.egroup) {
-        this.$router.push({ path: '/online-class/live-telecast-manage/add', query: { selectCompanyId: this.companyId }})
+        this.$router.push({ path: '/online-class/thematic-class/add', query: { selectCompanyId: val.selectCompanyId }})
       }
     },
 
@@ -274,17 +286,22 @@ export default {
 
     // 详情
     detail(row) {
-      this.$router.push({ path: '/online-class/live-telecast-manage/detail', query: { _id: row._id }})
+      this.$router.push({ path: '/online-class/thematic-class/detail', query: { _id: row._id }})
+    },
+
+    // 评分详情
+    rateDetail(row) {
+
     },
 
     // 单个删除
     del(row) {
-      this.$confirm('确定要删除【' + row.cname + '】吗？', '删除课程', {
+      this.$confirm('确定要删除【' + row.lesson_name + '】吗？', '删除课程', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        chapetr_del({ _id: row._id }).then(response => {
+        deletethematicClass({ _id: row._id }).then(response => {
           this.$message.success('删除成功！')
           if ((this.list.length - 1) === 0) { // 如果当前页数据已删完，则去往上一页
             this.listQuery.currentPage -= 1
@@ -309,7 +326,7 @@ export default {
         this.checkedDelList.forEach(item => {
           _ids.push(item._id)
         })
-        chapetr_del({ idList: _ids }).then(response => {
+        deletethematicClass({ idList: _ids }).then(response => {
           this.$message.success('批量删除成功！')
           if ((this.list.length - this.checkedDelList.length) === 0) { // 如果当前页数据已删完，则去往上一页
             this.listQuery.currentPage -= 1
@@ -321,7 +338,7 @@ export default {
 
     // 修改
     edit(row) {
-      this.$router.push({ path: '/online-class/live-telecast-manage/edit', query: { _id: row._id }})
+      this.$router.push({ path: '/online-class/thematic-class/one-thematic-class-list.vue', query: { _id: row._id }})
     }
   }
 }

@@ -274,8 +274,8 @@
         <div
           class="show-preview"
           :style="{
-            width: '180px',
-            height: '180px',
+            width: '240px',
+            height: '136px',
             overflow: 'hidden',
             margin: '5px'
           }"
@@ -393,10 +393,10 @@ export default {
         canScale: false, // 图片是否允许滚轮缩放
         fixedBox: false, // 固定截图框大小 不允许改变
         fixed: true, // 是否开启截图框宽高固定比例
-        fixedNumber: [1, 1], // 截图框的宽高比例
+        fixedNumber: [30, 17], // 截图框的宽高比例
         autoCrop: true, // 是否默认生成截图框
-        autoCropWidth: 180, // 默认生成截图框宽度 只有自动截图开启 宽度高度才生效
-        autoCropHeight: 180, // 默认生成截图框高度 只有自动截图开启 宽度高度才生效
+        autoCropWidth: 240, // 默认生成截图框宽度 只有自动截图开启 宽度高度才生效
+        autoCropHeight: 136, // 默认生成截图框高度 只有自动截图开启 宽度高度才生效
         full: false, // 是否输出原图比例的截图
         canMoveBox: true, // 截图框能否拖动
         original: false, // 上传图片按照原始比例渲染
@@ -944,8 +944,8 @@ export default {
     display: inline-block;
   }
   .previewImg {
-    width: 180px;
-    height: 180px;
+    width: 240px;
+    height: 136px;
   }
   .logoClass /deep/ .el-form-item__content {
     line-height: 18px;
@@ -1013,5 +1013,9 @@ export default {
   }
   /deep/ .el-tag {
     margin-right: 10px;
+  }
+  .logoClass /deep/ .el-upload-list--picture-card .el-upload-list__item {
+    width: 240px;
+    height: 136px;
   }
 </style>
