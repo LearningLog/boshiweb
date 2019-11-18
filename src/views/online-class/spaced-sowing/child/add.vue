@@ -687,6 +687,7 @@ export default {
       })
       this.form.can_discuss = this.form.can_discuss + ''
       this.form.groupList = this.checkedGroupIds
+      this.form.egroup = this.checkedGroupIds
       chapetr_add(this.form).then(response => {
         this.$message.success('新增课程成功！')
         this.noLeaveprompt = true

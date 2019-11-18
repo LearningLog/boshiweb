@@ -799,6 +799,7 @@ export default {
         this.form.sendSms = 0
       }
       this.form.groupList = this.checkedGroupIds
+      this.form.egroup = this.checkedGroupIds
       delete this.form.range_time
       console.log(this.form)
       chapetr_add(this.form).then(response => {

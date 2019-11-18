@@ -127,7 +127,7 @@
     <div id="bottomOperation">
       <el-button v-show="total>0" type="danger" plain @click="batchDel"><i class="iconfont iconshanchu" />批量删除</el-button>
     </div>
-    <AddSelectGroup :visibleSelectGroup="visibleSelectGroup" @getSelectGroup="getSelectGroup"></AddSelectGroup>
+    <AddSelectGroup :visibleSelectGroup="visibleSelectGroup" :isRenderGroup="false" title="选择租户" @getSelectGroup="getSelectGroup"></AddSelectGroup>
   </div>
 </template>
 
@@ -251,14 +251,18 @@ export default {
 
     // 新增
     add() {
-      this.visibleSelectGroup = true
+      if (!this.$store.state.user.isSystemManage) {
+        this.$router.push({ path: '/online-class/live-telecast-manage/add' })
+      } else {
+        this.visibleSelectGroup = true
+      }
     },
 
     // 监听选择小组返回数据
     getSelectGroup(val) {
       this.visibleSelectGroup = false
-      if (val.egroup) {
-        this.$router.push({ path: '/online-class/live-telecast-manage/add', query: { selectCompanyId: val.selectCompanyId, egroup: val.egroup }})
+      if (this.egroup) {
+        this.$router.push({ path: '/online-class/live-telecast-manage/add', query: { selectCompanyId: val.selectCompanyId }})
       }
     },
 

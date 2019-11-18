@@ -290,7 +290,7 @@
 import { VueCropper } from 'vue-cropper'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import { getFileListManage } from '@/api/work-desk'
-import { getOneChapter, chapetr_add } from '@/api/live-telecast-manage'
+import { getOneChapter, chapetrUpdate } from '@/api/live-telecast-manage'
 import { uploadFile } from '@/api/uploadFile'
 import { getToken } from '@/utils/auth'
 import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
@@ -478,9 +478,9 @@ export default {
         this.form.sendSms = data.sendSms || 0
         this.form.sendSms1 = data.sendSms || 0
         this.form.timeBefore = data.timeBefore
-        this.form.groupList = data.groupList || []
+        this.form.groupList = data.egroup || []
         this.form.userList = data.userList || []
-        this.checkedGroupIds = data.groupList || []
+        this.checkedGroupIds = data.egroup || []
         this.getEgroups()
 
         this.dataIsChange = -1
@@ -744,7 +744,8 @@ export default {
       })
       this.form.can_discuss = this.form.can_discuss + ''
       this.form.groupList = this.checkedGroupIds
-      chapetr_add(this.form).then(response => {
+      this.form.egroup = this.checkedGroupIds
+      chapetrUpdate(this.form).then(response => {
         this.$message.success('课程修改成功！')
         this.noLeaveprompt = true
         this.$router.push({
