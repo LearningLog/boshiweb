@@ -51,3 +51,21 @@ export function updateThematicClass(data) {
     data
   })
 }
+
+// 专题管理列表
+export function findChapterListForLesson(data) {
+  return request({
+    url: 'cr/lesson/findChapterListForLessonV2',
+    method: 'post',
+    data
+  })
+}
+
+// 移除
+export function removeOneChapterInLesson(data) {
+  return request({
+    url: 'cr/lesson/removeOneChapterInLesson',
+    method: 'post',
+    data
+  })
+}

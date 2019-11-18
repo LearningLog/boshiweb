@@ -166,6 +166,18 @@ const onlineClass = {
           }
         },
         {
+          path: 'thematic-manage',
+          name: 'thematic-manage',
+          hidden: true,
+          component: () =>
+            import('@/views/online-class/thematic-class/child/thematic-manage'),
+          meta: {
+            title: '课堂管理',
+            icon: '',
+            activeMenu: '/online-class/thematic-class'
+          }
+        },
+        {
           path: 'add',
           name: 'thematic-class-add',
           hidden: true,
