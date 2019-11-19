@@ -42,3 +42,12 @@ export function updatePartInfo(data) {
     data
   })
 }
+
+// 直播设置
+export function broadcastOperate(data) {
+  return request({
+    url: 'cr/chapter/broadcastOperate',
+    method: 'post',
+    data
+  })
+}

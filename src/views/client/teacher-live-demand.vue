@@ -219,21 +219,25 @@
                 >
                   <template slot-scope="scope">
                     <el-button
+		                  :disabled="loginUser === scope.row.userId"
                       v-if="scope.row.shotOff === 1"
                       size="mini"
                       @click="isRemove(scope.row, 2)"
                     ><i class="iconfont iconjia" />加入</el-button>
                     <el-button
+		                    :disabled="loginUser === scope.row.userId"
                       v-else
                       size="mini"
                       @click="isRemove(scope.row, 1)"
                     ><i class="iconfont iconshanchu" />移除</el-button>
                     <el-button
+		                    :disabled="loginUser === scope.row.userId"
                       v-if="scope.row.forbid === 1"
                       size="mini"
                       @click="isNoWord(scope.row, 2)"
                     ><i class="iconfont iconfayan" />发言</el-button>
                     <el-button
+		                    :disabled="loginUser === scope.row.userId"
                       v-else
                       size="mini"
                       @click="isNoWord(scope.row, 1)"
@@ -310,8 +314,10 @@
             <i class="iconfont iconxitong" />
             <span>成员管理</span>
           </div>
-          <div class="itemOperate pointer">
-            <el-button class="open">开始直播</el-button>
+          <div class="itemOperate pointer" v-if="chapter.type === 1">
+            <el-button v-if="chapter.allow_broadcast === 1" class="open" @click="openLive">开始直播</el-button>
+            <el-button v-else-if="chapter.allow_broadcast === 2" class="end" @click="endLive">结束直播</el-button>
+            <el-button v-else disabled>已结束</el-button>
           </div>
           <div
             class="itemOperate pointer"
@@ -346,7 +352,8 @@ import {
   findDetailInfoById,
   getUserList,
   updateUser,
-  updatePartInfo
+  updatePartInfo,
+  broadcastOperate
 } from '@/api/client/student-live-demand'
 
 export default {
@@ -547,6 +554,22 @@ export default {
         this.$message.success('课程设置成功！')
         this.findDetailInfoById()
       })
+    },
+
+    // 开始直播
+    openLive() {
+      broadcastOperate({ _id: this.id, broadcast_mark: 'open' }).then(res => {
+        this.$message.success('开启成功！')
+        this.findDetailInfoById()
+      })
+    },
+
+    // 结束直播
+    endLive() {
+      broadcastOperate({ _id: this.id, broadcast_mark: 'close' }).then(res => {
+        this.$message.success('结束成功！')
+        this.findDetailInfoById()
+      })
     }
   }
 }
@@ -629,7 +652,7 @@ $border_color: #243752;
     }
   }
 
-  .open {
+  .bottomOperate .open, .bottomOperate .end {
     background-color: red;
     color: #fff;
     border: red;
