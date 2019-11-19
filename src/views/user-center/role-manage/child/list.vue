@@ -148,11 +148,11 @@ export default {
     },
     // 详情
     detail(row) {
-      this.$router.push({ path: '/systemManage/roleManage/detail', query: { id: row._id }})
+      this.$router.push({ path: '/user-center/role-manage/detail', query: { id: row._id }})
     },
     // 新增
     add() {
-      this.$router.push({ path: '/systemManage/roleManage/add' })
+      this.$router.push({ path: '/user-center/role-manage/add' })
     },
     // 删除单个角色
     delete_fn(row) {
@@ -200,11 +200,11 @@ export default {
     },
     // 修改
     go_edit_fn(row) {
-      this.$router.push({ path: '/systemManage/roleManage/edit', query: { id: row._id }})
+      this.$router.push({ path: '/user-center/role-manage/edit', query: { id: row._id }})
     },
     // 授权
     authorize_fn(row) {
-      this.$router.push({ path: '/systemManage/roleManage/authorize', query: { id: row._id }})
+      this.$router.push({ path: '/user-center/role-manage/authorize', query: { id: row._id }})
     }
   }
 }

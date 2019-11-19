@@ -90,14 +90,14 @@ export default {
           role_edit(this.form).then(response => {
             this.$message.success('修改角色成功！')
             this.noLeaveprompt = true
-            this.$router.push({ path: '/systemManage/roleManage/detail', query: { id: this.id }})
+            this.$router.push({ path: '/user-center/role-manage/detail', query: { id: this.id }})
           })
         }
       })
     },
     // 取消
     cancel(formName) {
-      this.$router.push({ path: '/systemManage/roleManage/list' })
+      this.$router.push({ path: '/user-center/role-manage/list' })
     }
   },
   beforeRouteLeave(to, from, next) {

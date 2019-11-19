@@ -80,14 +80,14 @@ export default {
           role_add(this.form).then(response => {
             this.$message.success('添加角色成功！')
             this.noLeaveprompt = true
-            this.$router.push({ path: '/systemManage/roleManage/detail', query: { id: response.data._id }})
+            this.$router.push({ path: '/user-center/role-manage/detail', query: { id: response.data._id }})
           })
         }
       })
     },
     // 取消
     cancel(formName) {
-      this.$router.push({ path: '/systemManage/roleManage/list' })
+      this.$router.push({ path: '/user-center/role-manage/list' })
     }
   },
   beforeRouteLeave(to, from, next) {

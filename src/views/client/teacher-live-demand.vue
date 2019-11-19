@@ -162,98 +162,97 @@
             <p class="statistics">
               已上线人数/总人数： {{ online }}/{{ total2 }}
             </p>
-            <el-table
-              v-loading="listLoading"
-              :data="userList"
-              element-loading-text="Loading"
-              border
-              fit
-              highlight-current-row
-            >
-              <el-table-column
-                align="center"
-                label="姓名"
-                min-width="90"
-                prop="userName"
-                show-overflow-tooltip
+            <el-scrollbar wrap-class="scrollbar-wrapper">
+              <el-table
+                v-loading="listLoading"
+                :data="userList"
+                fit
+              >
+                <el-table-column
+                  align="center"
+                  label="姓名"
+                  min-width="90"
+                  prop="userName"
+                  show-overflow-tooltip
+                />
+                <el-table-column
+                  align="center"
+                  label="小组"
+                  min-width="90"
+                  prop="groupId"
+                  show-overflow-tooltip
+                />
+                <el-table-column
+                  class-name="status-col"
+                  label="转态"
+                  min-width="150"
+                  align="center"
+                  show-overflow-tooltip
+                >
+                  <template slot-scope="scope">
+                    <el-tag
+                      v-if="scope.row.status === 1"
+                      type="success"
+                    >已上线</el-tag>
+                    <el-tag v-else type="danger">未上线</el-tag>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  align="center"
+                  label="上线时间"
+                  min-width="140"
+                  show-overflow-tooltip
+                >
+                  <template slot-scope="scope">
+                    <span v-if="scope.row.time">{{
+                      parseTime(scope.row.time)
+                    }}</span>
+                    <span v-else>--</span>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  class-name="status-col"
+                  label="操作"
+                  width="160"
+                  align="center"
+                  fixed="right"
+                >
+                  <template slot-scope="scope">
+                    <el-button
+                      v-if="scope.row.shotOff === 1"
+                      size="mini"
+                      @click="isRemove(scope.row, 2)"
+                    ><i class="iconfont iconjia" />加入</el-button>
+                    <el-button
+                      v-else
+                      size="mini"
+                      @click="isRemove(scope.row, 1)"
+                    ><i class="iconfont iconshanchu" />移除</el-button>
+                    <el-button
+                      v-if="scope.row.forbid === 1"
+                      size="mini"
+                      @click="isNoWord(scope.row, 2)"
+                    ><i class="iconfont iconfayan" />发言</el-button>
+                    <el-button
+                      v-else
+                      size="mini"
+                      @click="isNoWord(scope.row, 1)"
+                    ><i class="iconfont iconjinzhifayan" />禁言</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+              <pagination
+                v-show="total > 0"
+                :total="total"
+                :page-sizes="[]"
+                :page.sync="listQuery.currentPage"
+                :limit.sync="listQuery.pageSize"
+                @pagination="getUserList"
               />
-              <el-table-column
-                align="center"
-                label="小组"
-                min-width="90"
-                prop="groupId"
-                show-overflow-tooltip
-              />
-
-              <el-table-column
-                class-name="status-col"
-                label="课程评价"
-                min-width="150"
-                align="center"
-                show-overflow-tooltip
-              >
-                <template slot-scope="scope">
-                  <el-tag
-                    v-if="scope.row.status === 1"
-                    type="success"
-                  >已上线</el-tag>
-                  <el-tag v-else type="danger">未上线</el-tag>
-                </template>
-              </el-table-column>
-              <el-table-column
-                align="center"
-                label="上线时间"
-                min-width="140"
-                show-overflow-tooltip
-              >
-                <template slot-scope="scope">
-                  <span v-if="scope.row.time">{{
-                    parseTime(scope.row.time)
-                  }}</span>
-                  <span v-else>--</span>
-                </template>
-              </el-table-column>
-              <el-table-column
-                class-name="status-col"
-                label="操作"
-                width="160"
-                align="center"
-                fixed="right"
-              >
-                <template slot-scope="scope">
-                  <el-button
-                    v-if="scope.row.shotOff === 1"
-                    size="mini"
-                    @click="isRemove(scope.row, 2)"
-                  ><i class="iconfont iconjia" />加入</el-button>
-                  <el-button
-                    v-else
-                    size="mini"
-                    @click="isRemove(scope.row, 1)"
-                  ><i class="iconfont iconshanchu" />移除</el-button>
-                  <el-button
-                    v-if="scope.row.forbid === 1"
-                    size="mini"
-                    @click="isNoWord(scope.row, 2)"
-                  ><i class="iconfont iconfayan" />发言</el-button>
-                  <el-button
-                    v-else
-                    size="mini"
-                    @click="isNoWord(scope.row, 1)"
-                  ><i class="iconfont iconjinzhifayan" />禁言</el-button>
-                </template>
-              </el-table-column>
-            </el-table>
-            <pagination
-              v-show="total > 0"
-              :total="total"
-              :page.sync="listQuery.currentPage"
-              :limit.sync="listQuery.pageSize"
-              @pagination="getUserList"
-            />
+            </el-scrollbar>
           </div>
           <div v-show="isActiveSet === 3" class="activeSet3">
-            active3
+            <embed :src="chapter.chapter_file" type="application/pdf">
           </div>
           <div v-show="isActiveSet === 4" class="activeSet4">
             <div class="form-edit">
@@ -366,7 +365,7 @@ export default {
       },
       loginUser: '', // 当前登录人
       live_info: [], // 直播信息
-      listLoading: true, // 是否开启表格遮罩
+      listLoading: false, // 是否开启表格遮罩
       userList: [], // 成员list
       total: 0, // 总条数
       listQuery: {
@@ -445,6 +444,7 @@ export default {
     getUserList() {
       this.listLoading = true
       getUserList(this.listQuery).then(res => {
+        this.listLoading = false
         this.userList = res.data.page.list
         this.total = res.data.page.totalCount
         this.online = res.data.online
@@ -603,12 +603,14 @@ $border_color: #243752;
 
     > .bottomOperate {
       position: fixed;
+	    z-index: 9999;
       bottom: 0;
       left: 0%;
       width: calc(100% - 325px);
       height: 70px;
       line-height: 60px;
       border-top: 1px solid rgba(255, 255, 255, 0.5);
+	    background-color: $lesson-detail-blue;
     }
   }
   .itemOperate {
@@ -708,4 +710,66 @@ $border_color: #243752;
 #btnGroup{
 	padding-left: 100px;
 }
+/* 表格内背景颜色 */
+.activeSet2 /deep/ .el-table th, .activeSet2 /deep/ .el-table tr, .activeSet2 /deep/ .el-table td {
+	border-right: none !important;
+	 background-color: $lesson-detail-blue;
+	color: #FFFFFF;
+}
+.activeSet2 /deep/ .el-table .el-button {
+	background-color: $lesson-detail-blue;
+	color: #FFFFFF;
+}
+.activeSet2 /deep/ .el-table__row.hover-row > td, .activeSet2 /deep/ .el-table__row.current-row > td {
+	color: $themeColor;
+	background: #f1f5fd!important;
+}
+
+.activeSet2 /deep/ .el-table__row.hover-row > td .el-button, .activeSet2 /deep/ .el-table__row.current-row > td .el-button {
+	color: $themeColor;
+	border-color: $themeColor;
+	transition:all 0.5s;
+	-o-transition:all 0.5s;
+	-ms-transition:all 0.5s;
+	-moz-transition:all 0.5s;
+	-webkit-transition:all 0.5s;
+}
+
+.activeSet2 /deep/ .el-table__row:hover {
+	color: $themeColor;
+	border-color: $themeColor;
+	background: #f1f5fd!important;
+	transition:all 0.5s;
+	-o-transition:all 0.5s;
+	-ms-transition:all 0.5s;
+	-moz-transition:all 0.5s;
+	-webkit-transition:all 0.5s;
+}
+
+.activeSet2 /deep/ .el-table__row.hover-row > td .el-button:hover, .activeSet2 /deep/ .el-table__row.current-row > td .el-button:hover {
+	color: #FFF;
+	border-color: $themeColor;
+	background: $themeColor;
+	transition:all 0.5s;
+	-o-transition:all 0.5s;
+	-ms-transition:all 0.5s;
+	-moz-transition:all 0.5s;
+	-webkit-transition:all 0.5s;
+}
+.activeSet2 /deep/ .pagination-container {
+	background-color: $lesson-detail-blue;
+}
+.activeSet2 /deep/ .el-pagination .el-pagination__total, .activeSet2 /deep/ .el-pagination .el-pagination__jump{
+	color: #FFFFFF;
+}
+embed {
+	width: 100%;
+	height: calc(100vh - 176px);
+}
+	.activeSet2 /deep/ .el-scrollbar {
+		height: calc(100vh - 188px);
+	}
+	.statistics {
+		margin-top: 0;
+	}
 </style>

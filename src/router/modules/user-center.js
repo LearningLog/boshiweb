@@ -133,46 +133,46 @@ const userCenter = {
       ]
     },
     {
-      path: 'roleManage',
-      component: () => import('@/views/user-center/roleManage/index'),
-      redirect: '/user-center/roleManage/list',
-      name: 'roleManage',
-      meta: { title: '角色管理', icon: '', activeMenu: '/user-center/roleManage' },
+      path: 'role-manage',
+      component: () => import('@/views/user-center/role-manage/index'),
+      redirect: '/user-center/role-manage/list',
+      name: 'role-manage',
+      meta: { title: '角色管理', icon: '', activeMenu: '/user-center/role-manage' },
       children: [
         {
           path: 'list',
           name: 'roleList',
           hidden: true,
-          component: () => import('@/views/user-center/roleManage/child/list.vue'),
-          meta: { title: '角色管理列表', icon: '', activeMenu: '/user-center/roleManage' }
+          component: () => import('@/views/user-center/role-manage/child/list.vue'),
+          meta: { title: '角色管理列表', icon: '', activeMenu: '/user-center/role-manage' }
         },
         {
           path: 'add',
-          component: () => import('@/views/user-center/roleManage/child/add.vue'),
+          component: () => import('@/views/user-center/role-manage/child/add.vue'),
           name: 'roleAdd',
           hidden: true,
-          meta: { title: '新增角色', icon: '', activeMenu: '/user-center/roleManage' }
+          meta: { title: '新增角色', icon: '', activeMenu: '/user-center/role-manage' }
         },
         {
           path: 'edit',
           name: 'roleEdit',
           hidden: true,
-          component: () => import('@/views/user-center/roleManage/child/edit'),
-          meta: { title: '修改角色', icon: '', activeMenu: '/user-center/roleManage' }
+          component: () => import('@/views/user-center/role-manage/child/edit'),
+          meta: { title: '修改角色', icon: '', activeMenu: '/user-center/role-manage' }
         },
         {
           path: 'detail',
           name: 'roleDetail',
           hidden: true,
-          component: () => import('@/views/user-center/roleManage/child/detail'),
-          meta: { title: '角色详情', icon: '', activeMenu: '/user-center/roleManage' }
+          component: () => import('@/views/user-center/role-manage/child/detail'),
+          meta: { title: '角色详情', icon: '', activeMenu: '/user-center/role-manage' }
         },
         {
           path: 'authorize',
           name: 'roleAuthorize',
           hidden: true,
-          component: () => import('@/views/user-center/roleManage/child/authorize'),
-          meta: { title: '角色授权', icon: '', activeMenu: '/user-center/roleManage' }
+          component: () => import('@/views/user-center/role-manage/child/authorize'),
+          meta: { title: '角色授权', icon: '', activeMenu: '/user-center/role-manage' }
         }
       ]
     }

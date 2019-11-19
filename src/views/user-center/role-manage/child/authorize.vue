@@ -154,12 +154,12 @@ export default {
       setRoleAuthority(param).then(response => {
         this.$message.success('角色授权成功！')
         this.noLeaveprompt = true
-        this.$router.push({ path: '/systemManage/roleManage/list' })
+        this.$router.push({ path: '/user-center/role-manage/list' })
       })
     },
     // 取消
     cancel(formName) {
-      this.$router.push({ path: '/systemManage/roleManage/list' })
+      this.$router.push({ path: '/user-center/role-manage/list' })
     }
   },
   beforeRouteLeave(to, from, next) {

@@ -117,7 +117,7 @@ export default {
     },
     // 确定
     confirm() {
-      this.$router.push({ path: '/systemManage/roleManage/list' })
+      this.$router.push({ path: '/user-center/role-manage/list' })
     }
   }
 }
