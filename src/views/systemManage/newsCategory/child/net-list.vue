@@ -51,7 +51,7 @@
           <span>{{ scope.row.website_desc }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="创建时间" min-width="130" show-overflow-tooltip>
+      <el-table-column align="center" label="创建时间" min-width="140" show-overflow-tooltip>
         <template slot-scope="scope">
           <span>{{ scope.row.createtime }}</span>
         </template>

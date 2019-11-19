@@ -74,7 +74,7 @@
         </template>
       </el-table-column>
       <el-table-column label="描述" min-width="100" align="center" show-overflow-tooltip prop="desc" />
-      <el-table-column align="center" label="创建时间" min-width="130" show-overflow-tooltip prop="createtime" />
+      <el-table-column align="center" label="创建时间" min-width="140" show-overflow-tooltip prop="createtime" />
       <el-table-column align="center" label="所属企业" min-width="140" show-overflow-tooltip prop="customname" />
       <el-table-column align="center" label="管理员" show-overflow-tooltip min-width="240">
         <template slot-scope="scope">

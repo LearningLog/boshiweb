@@ -68,16 +68,20 @@
         type="selection"
         width="55"
       />
-      <el-table-column label="序号" min-width="100" align="center" show-overflow-tooltip prop="linc" />
-      <el-table-column align="center" label="名称" show-overflow-tooltip>
+      <el-table-column label="序号" width="60" align="center" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <span>{{ scope.$index + (listQuery.currentPage - 1) * listQuery.pageSize + 1 }} </span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="名称" min-width="120" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-link type="primary" @click="detail(scope.row)">{{ scope.row.customname }}</el-link>
         </template>
       </el-table-column>
-      <el-table-column label="描述" min-width="100" align="center" show-overflow-tooltip prop="ldesc" />
-      <el-table-column align="center" label="小组" min-width="140" show-overflow-tooltip prop="groupName" />
-      <el-table-column align="center" label="创建时间" min-width="130" show-overflow-tooltip prop="c_time" />
-      <el-table-column class-name="status-col" label="操作" width="230" align="center" fixed="right" show-overflow-tooltip>
+      <el-table-column label="描述" min-width="120" align="center" show-overflow-tooltip prop="ldesc" />
+      <el-table-column align="center" label="小组" min-width="120" show-overflow-tooltip prop="groupName" />
+      <el-table-column align="center" label="创建时间" min-width="140" show-overflow-tooltip prop="c_time" />
+      <el-table-column class-name="status-col" label="操作" width="160" align="center" fixed="right" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-button size="mini" @click="go_edit_fn(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
           <el-button size="mini" @click="delete_fn(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>

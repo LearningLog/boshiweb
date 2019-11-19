@@ -74,7 +74,7 @@
       </el-table-column>
       <el-table-column class-name="status-col" label="标签" min-width="100" align="center" prop="labelNames" />
       <el-table-column class-name="status-col" label="课堂数" min-width="64" align="center" prop="chapter_count" />
-      <!--<el-table-column class-name="status-col" label="开始时间" min-width="130" align="center" prop="s_time" />-->
+      <!--<el-table-column class-name="status-col" label="开始时间" min-width="140" align="center" prop="s_time" />-->
       <el-table-column class-name="status-col" label="专题评价" min-width="150" align="center">
         <template slot-scope="scope">
           <span>
@@ -90,7 +90,7 @@
         </template>
       </el-table-column>
       <el-table-column class-name="status-col" label="小组" min-width="120" align="center" prop="groupName" />
-      <el-table-column align="center" label="创建时间" min-width="130" prop="c_time" />
+      <el-table-column align="center" label="创建时间" min-width="140" prop="c_time" />
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="get_list" />
   </div>

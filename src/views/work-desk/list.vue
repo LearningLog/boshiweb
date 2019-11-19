@@ -110,7 +110,7 @@
       <el-table-column align="center" label="创建人" min-width="90" show-overflow-tooltip>
         <template slot-scope="scope">{{ getFileListData(scope.row.mainFileId).nickName }} </template>
       </el-table-column>
-      <el-table-column align="center" label="创建时间" min-width="130" show-overflow-tooltip>
+      <el-table-column align="center" label="创建时间" min-width="140" show-overflow-tooltip>
         <template slot-scope="scope">{{ parseTime(scope.row.createTimestamp) }} </template>
       </el-table-column>
       <el-table-column align="center" label="文档状态" min-width="80" show-overflow-tooltip>
@@ -123,7 +123,7 @@
       <el-table-column class-name="status-col" label="操作" width="220" align="center" fixed="right">
         <template slot-scope="scope">
           <el-button size="mini" @click="download(scope.row)"><i class="iconfont iconwechaticon16" />下载</el-button>
-          <span v-if="getFileListData(scope.row.mainFileId).file_status===4"><el-button size="mini" @click="pushToKnowledge(scope.row)"><i class="iconfont iconxiugai" />推送</el-button></span>
+          <span v-if="getFileListData(scope.row.mainFileId).file_status===4"><el-button size="mini" @click="pushToKnowledge(scope.row)"><i class="iconfont iconfabu1" />推送</el-button></span>
           <span v-else><el-button size="mini" disabled="disabled"><i class="iconfont iconfabu1" />推送</el-button></span>
           <el-button size="mini" @click="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
         </template>
@@ -131,9 +131,9 @@
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="get_list" />
     <div id="bottomOperation">
-      <el-button v-show="total>0" type="danger" plain @click="batchPush"><i class="iconfont iconshanchu" />批量推送</el-button>
+      <el-button v-show="total>0" type="primary" plain @click="batchPush"><i class="iconfont iconfabu1" />批量推送</el-button>
       <el-button v-show="total>0" type="danger" plain @click="batchDel"><i class="iconfont iconshanchu" />批量删除</el-button>
-      <el-button v-show="total>0" type="danger" plain @click="batchDownload"><i class="iconfont iconshanchu" />批量下载</el-button>
+      <el-button v-show="total>0" type="primary" plain @click="batchDownload"><i class="iconfont iconwechaticon16" />批量下载</el-button>
     </div>
     <el-dialog
       v-el-drag-dialog

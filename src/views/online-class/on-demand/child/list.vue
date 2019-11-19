@@ -101,7 +101,7 @@
         </template>
       </el-table-column>
       <el-table-column class-name="status-col" label="标签" min-width="100" align="center" prop="labelNames" />
-      <!--<el-table-column class-name="status-col" label="开始时间" min-width="130" align="center" prop="s_time" />-->
+      <!--<el-table-column class-name="status-col" label="开始时间" min-width="140" align="center" prop="s_time" />-->
       <el-table-column class-name="status-col" label="课程评价" min-width="150" align="center">
         <template slot-scope="scope">
           <span class="pointer" @click="rateDetail(scope.row)">
@@ -118,7 +118,7 @@
       </el-table-column>
       <el-table-column class-name="status-col" label="小组" min-width="120" align="center" prop="groupName" />
       <el-table-column align="center" label="创建人" min-width="90" prop="userNickName" />
-      <el-table-column align="center" label="创建时间" min-width="130" prop="c_time" />
+      <el-table-column align="center" label="创建时间" min-width="140" prop="c_time" />
       <el-table-column class-name="status-col" label="操作" width="230" align="center" fixed="right">
         <template slot-scope="scope">
           <el-button size="mini" @click="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>

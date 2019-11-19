@@ -50,8 +50,8 @@
           >
             <el-table-column align="center" label="员工" min-width="120" show-overflow-tooltip prop="nickname" />
             <el-table-column align="center" label="所属分组" min-width="100" show-overflow-tooltip prop="user_group" />
-            <el-table-column align="center" label="答题时间" min-width="130" show-overflow-tooltip prop="time_consuming" />
-            <el-table-column align="center" label="用时" min-width="130" show-overflow-tooltip prop="time_consuming" />
+            <el-table-column align="center" label="答题时间" min-width="140" show-overflow-tooltip prop="time_consuming" />
+            <el-table-column align="center" label="用时" min-width="140" show-overflow-tooltip prop="time_consuming" />
             <el-table-column align="center" label="得分" min-width="60" show-overflow-tooltip prop="answer_score" />
             <el-table-column align="center" label="错误数" min-width="50" show-overflow-tooltip prop="error_sum" />
             <el-table-column class-name="status-col" label="操作" width="100" align="center" fixed="right">

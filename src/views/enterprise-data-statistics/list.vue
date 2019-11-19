@@ -38,7 +38,7 @@
       highlight-current-row
     >
       <el-table-column align="center" label="租户名称" min-width="130" show-overflow-tooltip prop="customname" />
-      <el-table-column label="创建时间" min-width="130" align="center" show-overflow-tooltip>
+      <el-table-column label="创建时间" min-width="140" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           <span>{{ scope.row.createtime }}</span>
         </template>

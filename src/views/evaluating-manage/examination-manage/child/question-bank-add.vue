@@ -131,7 +131,7 @@
       <el-table-column
         align="center"
         label="创建时间"
-        min-width="130"
+        min-width="140"
         prop="c_time"
         show-overflow-tooltip
       />

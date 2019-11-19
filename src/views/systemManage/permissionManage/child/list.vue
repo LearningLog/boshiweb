@@ -55,7 +55,7 @@
       <el-table-column label="菜单模块" min-width="120" align="center" show-overflow-tooltip prop="modulename" />
       <el-table-column class-name="status-col" label="描述" align="center" show-overflow-tooltip prop="permissiondesc" />
       <el-table-column class-name="status-col" label="菜单" min-width="120" align="center" show-overflow-tooltip prop="permissionbelongmenuname" />
-      <el-table-column align="center" label="创建时间" min-width="130" show-overflow-tooltip prop="createtime" />
+      <el-table-column align="center" label="创建时间" min-width="140" show-overflow-tooltip prop="createtime" />
       <el-table-column class-name="status-col" label="操作" width="230" align="center" fixed="right" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-button size="mini" @click="go_edit_fn(scope.row._id)"><i class="iconfont iconxiugai" />修改</el-button>

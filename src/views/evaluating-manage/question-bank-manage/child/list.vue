@@ -117,7 +117,7 @@
           <span>{{ scope.row.skillName || '' }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="创建时间" min-width="130" prop="c_time" show-overflow-tooltip />
+      <el-table-column align="center" label="创建时间" min-width="140" prop="c_time" show-overflow-tooltip />
       <el-table-column align="center" label="引用次数" min-width="80" prop="quote_count" show-overflow-tooltip />
       <el-table-column class-name="status-col" label="操作" width="160" align="center" fixed="right">
         <template slot-scope="scope">

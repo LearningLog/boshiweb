@@ -42,7 +42,7 @@
       <el-table-column class-name="status-col" label="操作模块" min-width="60" align="center" show-overflow-tooltip prop="moduleName" />
       <el-table-column align="center" label="操作人" min-width="70" show-overflow-tooltip prop="userNickName" />
       <el-table-column align="center" label="小组" min-width="100" show-overflow-tooltip prop="groupNameDesc" />
-      <el-table-column align="center" label="操作时间" min-width="130" show-overflow-tooltip prop="createTime" />
+      <el-table-column align="center" label="操作时间" min-width="140" show-overflow-tooltip prop="createTime" />
       <el-table-column align="center" label="发送人数" min-width="50" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-link type="primary" @click="operateDetail(scope.row)">{{ scope.row.successCount + scope.row.errorCount }}</el-link>
