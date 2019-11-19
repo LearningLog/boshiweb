@@ -10,15 +10,11 @@ import store from '@/store'
 import { resetRouter } from '@/router'
 
 export async function updateMenuRoute() {
-  const { systemRoutes, backstageRoutes } = await store.dispatch('user/getInfo')
+  const { responseRoutes } = await store.dispatch('user/getInfo')
 
-  // const accessRoutes = await store.dispatch('permission/generateRoutes', { systemRoutes, backstageRoutes })
-  await store.dispatch('permission/generateRoutes', { systemRoutes, backstageRoutes })
-
-  // 动态添加可访问路由
-  // router.addRoutes(accessRoutes)
+  const accessRoutes = await store.dispatch('permission/generateRoutes', responseRoutes)
   // 生成菜单前先初始化router
   resetRouter()
-  router.addRoutes(store.state.permission.systemRoutes)
-  await store.dispatch('permission/set_permission_routes', 1)
+  // 动态添加可访问路由
+  router.addRoutes(accessRoutes)
 }

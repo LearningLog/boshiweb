@@ -31,18 +31,13 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 import { editMenu, getMenu } from '@/api/systemManage-menuManage'
 import { updateMenuRoute } from '@/utils/update-menu-router'
 
 export default {
-  computed: {
-    ...mapGetters([
-      'menuType'
-    ])
-  },
   data() {
     return {
+      menuType: [], // 菜单类型
       dataIsChange: 0, // 计数器，据此判断表单是否已编辑
       noLeaveprompt: false, // 表单提交后，设置为true，据此判断提交不再弹出离开提示
       form: { // 表单数据
@@ -92,6 +87,7 @@ export default {
   created() {
     this.id = this.$route.query.id
     this.pname = this.$route.query.pname
+    this.menuType = this.$store.state.menuManage.menuType
     this.getMenu()
   },
   methods: {

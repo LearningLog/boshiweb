@@ -13,11 +13,8 @@ const { logo_name } = defaultSettings
  */
 export function clearCookie() {
   Cookies.remove('homePath')
-  Cookies.remove('systemHomePath')
-  Cookies.remove('backstageHomePath')
   Cookies.remove('allButtonPermission')
   Cookies.remove('currentButtonPermission')
-  // Cookies.remove('currentSystem')
 }
 
 const state = {
@@ -118,8 +115,7 @@ const actions = {
         })
         const routes = {}
         response.data = response.data || {}
-        routes.systemRoutes = response.data.systemMenus || []
-        routes.backstageRoutes = response.data.tenementMenus || []
+        routes.responseRoutes = response.data.tenementMenus.concat(response.data.systemMenus)
         commit('IS_SYSTEN_MANAGE', response.data.userPermission)
         routes.allButtonPermission = {
           allPermissionCode: response.data.allPermissionCode,

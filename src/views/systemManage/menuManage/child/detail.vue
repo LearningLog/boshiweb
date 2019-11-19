@@ -28,12 +28,8 @@
 
 <script>
 import { getMenu } from '@/api/systemManage-menuManage'
-import { mapGetters } from 'vuex'
 
 export default {
-  computed: {
-    ...mapGetters(['menuType'])
-  },
   data() {
     return {
       form: { // 表单数据
@@ -43,10 +39,12 @@ export default {
         menuurl: '', // 菜单路径path
         type: '' // 菜案模块
       },
+      menuType: [], // 菜单类型
       id: '' // 查询id
     }
   },
   created() {
+    this.menuType = this.$store.state.menuManage.menuType
     this.id = this.$route.query._id
     this.pname = this.$route.query.pname
     this.getMenu()
