@@ -33,14 +33,13 @@
 </template>
 
 <script>
-  import store from '@/store'
+import store from '@/store'
 // 直接使用
 import clip from '@/utils/clipboard'
 // 指令形式使用
 import clipboard from '@/directive/clipboard/index.js'
 import Tinymce from '@/components/Tinymce'
 import Footer from '@/components/Footer'
-import FileUploader from '@/components/VueWebuploader'
 import FilePreview from '@/components/FilePreview' // secondary package based on el-pagination
 const $ = window.$
 export default {

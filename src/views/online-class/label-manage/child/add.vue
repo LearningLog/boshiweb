@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import { label_add } from '@/api/onlineclass-label-manage.js'
+import { label_add } from '@/api/onlineclass-label-manage'
 import { getCustomManageList } from '@/api/systemManage-roleManage'
 import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
 export default {

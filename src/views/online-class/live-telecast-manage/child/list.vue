@@ -89,7 +89,7 @@
         width="50"
         fixed
       />
-      <el-table-column align="center" label="课堂封面" min-width="166">
+      <el-table-column align="center" label="课堂封面" min-width="166" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-image
             class="thumbnail-online-class"
@@ -98,12 +98,12 @@
           />
         </template>
       </el-table-column>
-      <el-table-column align="center" label="课堂名称" min-width="120">
+      <el-table-column align="center" label="课堂名称" min-width="120" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-link type="primary" @click="detail(scope.row)">{{ scope.row.cname }}</el-link>
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="标签" min-width="100" align="center" prop="labelNames" />
+      <el-table-column class-name="status-col" label="标签" min-width="100" align="center" prop="labelNames" show-overflow-tooltip />
       <!--<el-table-column class-name="status-col" label="开始时间" min-width="140" align="center" prop="s_time" />-->
       <el-table-column class-name="status-col" label="课程评价" min-width="150" align="center">
         <template slot-scope="scope">
@@ -119,9 +119,9 @@
           <span v-if="!scope.row.general_level && scope.row.general_level !== 0">--</span>
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="小组" min-width="120" align="center" prop="groupName" />
-      <el-table-column align="center" label="创建人" min-width="90" prop="userNickName" />
-      <el-table-column align="center" label="创建时间" min-width="140" prop="c_time" />
+      <el-table-column class-name="status-col" label="小组" min-width="120" align="center" prop="groupName" show-overflow-tooltip />
+      <el-table-column align="center" label="创建人" min-width="90" prop="userNickName" show-overflow-tooltip />
+      <el-table-column align="center" label="创建时间" min-width="140" prop="c_time" show-overflow-tooltip />
       <el-table-column class-name="status-col" label="操作" width="230" align="center" fixed="right">
         <template slot-scope="scope">
           <el-button size="mini" @click="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
@@ -291,7 +291,7 @@ export default {
 
     // 详情
     detail(row) {
-      this.$router.push({ path: '/online-class/live-telecast-manage/detail', query: { _id: row._id }})
+      this.$router.push({ path: '/client/teacher-live-demand', query: { _id: row._id }})
     },
 
     // 评分详情

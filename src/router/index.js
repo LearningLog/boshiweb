@@ -13,6 +13,7 @@ import userCenter from './modules/user-center'
 import evaluatingManage from './modules/evaluating-manage'
 import systemSetting from './modules/system-setting'
 import onlineClass from './modules/online-class'
+import client from './modules/client'
 /**
  * 注意: 菜单项sub-menu 仅在 route children.length >= 1 时显示
  * 详情请看此地址: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
@@ -73,28 +74,6 @@ export const constantRoutes = [
   },
 
   {
-    path: '/example',
-    component: Layout,
-    redirect: '/example/hello-world',
-    name: 'Example',
-    meta: { title: 'Example', icon: 'iconqiye' },
-    children: [
-      {
-        path: 'fileUpload',
-        name: 'fileUpload',
-        component: () => import('@/views/examples/fileUpload'),
-        meta: { title: 'fileUpload', icon: '' }
-      },
-      {
-        path: 'hello-world',
-        name: 'Hello-world',
-        component: () => import('@/views/examples/hello-world'),
-        meta: { title: 'Hello World', icon: '' }
-      }
-    ]
-  },
-
-  {
     path: '/404',
     component: () => import('@/views/404'),
     hidden: true
@@ -111,6 +90,8 @@ export const asyncRoutes = [
   evaluatingManage,
   systemSetting,
   onlineClass,
+  client,
+
   {
     path: '/enterpriseData',
     component: Layout,

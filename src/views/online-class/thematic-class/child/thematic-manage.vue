@@ -52,7 +52,7 @@
       fit
       highlight-current-row
     >
-      <el-table-column align="center" label="课堂封面" min-width="166">
+      <el-table-column align="center" label="课堂封面" min-width="166" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-image
             class="thumbnail-online-class"
@@ -61,17 +61,17 @@
           />
         </template>
       </el-table-column>
-      <el-table-column align="center" label="课堂名称" min-width="120">
+      <el-table-column align="center" label="课堂名称" min-width="120" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-link type="primary" @click="detail(scope.row)">{{ scope.row.cname }}</el-link>
         </template>
       </el-table-column>
-      <el-table-column label="课堂类型" min-width="80" align="center">
+      <el-table-column label="课堂类型" min-width="80" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           <span>{{ scope.row.type === 1 ? '直播课堂' : '点播课堂' }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="创建人" min-width="100" prop="userNickName" />
+      <el-table-column align="center" label="创建人" min-width="100" prop="userNickName" show-overflow-tooltip />
       <el-table-column class-name="status-col" label="操作" width="230" align="center" fixed="right">
         <template slot-scope="scope">
           <el-button size="mini" @click="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
