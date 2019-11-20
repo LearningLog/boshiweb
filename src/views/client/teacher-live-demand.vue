@@ -358,24 +358,24 @@
       </div>
       <div class="fl comment">
         <div class="video-wapper">
-          <div class="video-item" id="livePlay1"></div>
-          <div class="video-item" id="livePlay2"></div>
+          <div id="livePlay1" class="video-item" />
+          <div id="livePlay2" class="video-item" />
         </div>
         <div class="top-text">讨论</div>
-        <div class="comment-wapper-nocomment" v-if="!commentsList.length">
+        <div v-show="!commentsList.length" class="comment-wapper-nocomment">
           <img :src="nocomment" alt="暂无评论">
         </div>
-        <div class="comment-wapper" v-else>
-          <el-scrollbar wrap-class="scrollbar-wrapper">
-            <ul ref="comments" class="comments-list" v-infinite-scroll="scrollGetCommentsList">
+        <div v-show="commentsList.length" class="comment-wapper">
+          <el-scrollbar id="content" ref="comments" wrap-class="scrollbar-wrapper" @scroll="handleScroll($event)">
+            <ul class="comments-list">
               <li v-for="(item, index) in commentsList" :key="index" class="infinite-list-item clearfix">
                 <div class="item-top clearfix">
                   <div class="fl">
-                    <el-avatar class="header" :src="item.header || defaultAvatar"></el-avatar>
+                    <el-avatar class="header" :src="item.header || defaultAvatar" />
                     <span class="uname">{{ item.uname }}</span>
                   </div>
                   <span class="fr c_time">
-                    {{ item.c_time }}
+                    {{ parseTime(item.c_timestamp) }}
                   </span>
                 </div>
                 <div class="msg">{{ item.msg }}</div>
@@ -384,7 +384,7 @@
           </el-scrollbar>
         </div>
         <div class="comment-send">
-          <el-input class="comment-input" v-model="comment" clearable @keyup.enter.native="sendComment"></el-input><el-button class="comment-btn" type="primary" @click="sendComment">发送</el-button>
+          <el-input v-model="comment" class="comment-input" clearable @keyup.enter.native="sendComment" /><el-button class="comment-btn" type="primary" @click="sendComment">发送</el-button>
         </div>
       </div>
     </el-main>
@@ -398,7 +398,6 @@ import Pagination from '@/components/Pagination'
 import nocomment from '@/assets/images/nocomment.png'
 import defaultAvatar from '@/assets/images/default-avatar.png'
 import { mapGetters } from 'vuex'
-import { scrollTo } from '@/utils/scroll-to'
 const $ = window.$
 import {
   findDetailInfoById,
@@ -415,6 +414,7 @@ export default {
     return {
       nocomment,
       defaultAvatar,
+      flag: 0, // 第一次进入滚动到底部
       shareVisible: false, // 是否显示分享
       shareUrl: '', // 分享地址
       isActiveSet: 1, // 底部设置按钮高亮
@@ -439,8 +439,7 @@ export default {
       total3: 0, // 总条数
       listQuery2: {
         // 查询条件
-        currentPage: 1, // 当前页
-        pageSize: 6, // 当前页请求条数
+        discussId: '', // 最后一条消息
         cid: '' // 课程id
       },
       total2: 0, // 总人数
@@ -492,10 +491,28 @@ export default {
       'realTimeMessage'
     ])
   },
+  watch: {
+    // 监听实时消息变化
+    realTimeMessage: {
+      handler(val, oldVal) {
+        var that = this
+        if (val && val.type === 'msg') {
+          this.commentsList.push(val)
+          const comments = that.$refs.comments.wrap
+          this.$nextTick(() => {
+            comments.scrollTop = comments.scrollHeight
+          })
+        }
+      },
+      deep: true // 深层次监听
+    }
+  },
   beforeDestroy() {
     // 销毁video实例，避免出现节点不存在 但是flash一直在执行,也避免重新进入页面video未重新声明
     $('#livePlay1').dispose({ id: 'myVideo1' })
     $('#livePlay2').dispose({ id: 'myVideo2' })
+    const comments = this.$refs.comments.wrap
+    comments.removeEventListener('scroll', this.handleScroll)
   },
   created() {
     this.id = this.$route.query._id
@@ -514,20 +531,8 @@ export default {
     this.initVideo()
     this.initVideo2()
     this.$ws.open(this.id)
-  },
-  watch: {
-    // 监听实时消息变化
-    realTimeMessage: {
-      handler(val, oldVal) {
-        console.log('val', val)
-        if (val && val.type === 'msg') {
-          this.commentsList.push(val)
-          const scrollHeight = this.$refs.comments.scrollHeight
-          scrollTo(scrollHeight, 20)
-        }
-      },
-      deep: true // 深层次监听
-    }
+    const comments = this.$refs.comments.wrap
+    comments.addEventListener('scroll', this.handleScroll)
   },
   methods: {
     // 获取课堂详情
@@ -722,24 +727,43 @@ export default {
       })
     },
 
-    // 滚动加载的逻辑
-    scrollGetCommentsList() {
-      if (this.commentsList.length >= this.total3) {
-        return false
-      }
-      this.listQuery2.currentPage++
-      this.getComments()
-    },
-
     // 获取评论
     getComments() {
       getComments(this.listQuery2).then(res => {
         this.total3 = res.data.page.totalCount
         res.data.page.list = res.data.page.list || []
-        res.data.page.list.forEach(item => {
-          this.commentsList.push(item)
-        })
+        this.listQuery2.discussId = res.data.page.list[0] ? res.data.page.list[0]._id : ''
+        this.commentsList = res.data.page.list.concat(this.commentsList)
+        console.log('length', this.commentsList.length)
+        if (this.flag === 0) {
+          this.$nextTick(() => {
+            const comments = this.$refs.comments.wrap
+            comments.scrollTop = comments.scrollHeight
+          })
+        } else if (this.flag !== 1) {
+          var len = res.data.page.list ? res.data.page.list.length : 0
+          this.$nextTick(() => {
+            var height = 0
+            $('.comments-list li').each(function(index, item) {
+              if (index < len) {
+                height += $(item).height()
+              }
+            })
+            const comments = this.$refs.comments.wrap
+            comments.scrollTop = height
+          })
+        }
+        this.flag++
       })
+    },
+
+    // 向上滚动刷新
+    handleScroll() {
+      const comments = this.$refs.comments.wrap
+      if ((comments.scrollTop === 0) && this.flag !== 1 && this.commentsList.length < this.total3) {
+        this.getComments()
+      }
+      this.flag++
     },
 
     // 发送评论
@@ -1046,6 +1070,8 @@ embed {
       }
       .msg {
         padding: 4px 0 10px 34px;
+        overflow-wrap: break-word;
+        word-break: break-all;
       }
     }
     .comment-wapper /deep/ .el-scrollbar {
