@@ -72,7 +72,7 @@ export default {
         this.$message.warning('请先选择租户！')
         return false
       }
-      if (!this.egroup) {
+      if (!this.egroup && this.isRenderGroup) {
         this.$message.warning('请先选择小组！')
         return false
       }

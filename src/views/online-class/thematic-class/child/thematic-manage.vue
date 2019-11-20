@@ -166,7 +166,7 @@ export default {
     // 监听选择小组返回数据
     getSelectGroup(val) {
       this.visibleSelectGroup = false
-      if (this.egroup) {
+      if (val.selectCompanyId) {
         if (this.type === 1) {
           this.$router.push({ path: '/online-class/thematic-class/live-telecast-add', query: { selectCompanyId: val.selectCompanyId, lesson_id: this.listQuery.lesson_id }})
         } else {

@@ -275,7 +275,7 @@ export default {
     // 监听选择小组返回数据
     getSelectGroup(val) {
       this.visibleSelectGroup = false
-      if (this.egroup) {
+      if (val.selectCompanyId) {
         this.$router.push({ path: '/online-class/thematic-class/add', query: { selectCompanyId: val.selectCompanyId }})
       }
     },

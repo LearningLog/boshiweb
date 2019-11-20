@@ -279,7 +279,7 @@ export default {
     // 监听选择小组返回数据
     getSelectGroup(val) {
       this.visibleSelectGroup = false
-      if (this.egroup) {
+      if (val.selectCompanyId) {
         this.$router.push({ path: '/online-class/live-telecast-manage/add', query: { selectCompanyId: val.selectCompanyId }})
       }
     },
