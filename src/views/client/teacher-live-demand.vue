@@ -158,16 +158,16 @@
               </div>
             </div>
           </div>
-          <div v-if="loginUser === chapter.user_id" v-show="isActiveSet === 2" class="activeSet2">
+          <div
+            v-if="loginUser === chapter.user_id"
+            v-show="isActiveSet === 2"
+            class="activeSet2"
+          >
             <p class="statistics">
               已上线人数/总人数： {{ online }}/{{ total2 }}
             </p>
             <el-scrollbar wrap-class="scrollbar-wrapper">
-              <el-table
-                v-loading="listLoading"
-                :data="userList"
-                fit
-              >
+              <el-table v-loading="listLoading" :data="userList" fit>
                 <el-table-column
                   align="center"
                   label="姓名"
@@ -219,26 +219,26 @@
                 >
                   <template slot-scope="scope">
                     <el-button
-		                  :disabled="loginUser === scope.row.userId"
                       v-if="scope.row.shotOff === 1"
+                      :disabled="loginUser === scope.row.userId"
                       size="mini"
                       @click="isRemove(scope.row, 2)"
                     ><i class="iconfont iconjia" />加入</el-button>
                     <el-button
-		                    :disabled="loginUser === scope.row.userId"
                       v-else
+                      :disabled="loginUser === scope.row.userId"
                       size="mini"
                       @click="isRemove(scope.row, 1)"
                     ><i class="iconfont iconshanchu" />移除</el-button>
                     <el-button
-		                    :disabled="loginUser === scope.row.userId"
                       v-if="scope.row.forbid === 1"
+                      :disabled="loginUser === scope.row.userId"
                       size="mini"
                       @click="isNoWord(scope.row, 2)"
                     ><i class="iconfont iconfayan" />发言</el-button>
                     <el-button
-		                    :disabled="loginUser === scope.row.userId"
                       v-else
+                      :disabled="loginUser === scope.row.userId"
                       size="mini"
                       @click="isNoWord(scope.row, 1)"
                     ><i class="iconfont iconjinzhifayan" />禁言</el-button>
@@ -260,7 +260,14 @@
           </div>
           <div v-show="isActiveSet === 4" class="activeSet4">
             <div class="form-edit">
-              <el-form ref="chapterForm" class="form" :model="chapterForm" :rules="rules" label-width="100px" :status-icon="true">
+              <el-form
+                ref="chapterForm"
+                class="form"
+                :model="chapterForm"
+                :rules="rules"
+                label-width="100px"
+                :status-icon="true"
+              >
                 <el-form-item label="课堂名称" prop="cname">
                   <el-input
                     v-model="chapterForm.cname"
@@ -293,7 +300,11 @@
                 </el-form-item>
               </el-form>
               <div id="btnGroup">
-                <el-button v-no-more-click type="primary" @click="updatePartInfo('form')">提交</el-button>
+                <el-button
+                  v-no-more-click
+                  type="primary"
+                  @click="updatePartInfo('form')"
+                >提交</el-button>
               </div>
             </div>
           </div>
@@ -314,9 +325,17 @@
             <i class="iconfont iconxitong" />
             <span>成员管理</span>
           </div>
-          <div class="itemOperate pointer" v-if="chapter.type === 1">
-            <el-button v-if="chapter.allow_broadcast === 1" class="open" @click="openLive">开始直播</el-button>
-            <el-button v-else-if="chapter.allow_broadcast === 2" class="end" @click="endLive">结束直播</el-button>
+          <div v-if="chapter.type === 1" class="itemOperate pointer">
+            <el-button
+              v-if="chapter.allow_broadcast === 1"
+              class="open"
+              @click="openLive"
+            >开始直播</el-button>
+            <el-button
+              v-else-if="chapter.allow_broadcast === 2"
+              class="end"
+              @click="endLive"
+            >结束直播</el-button>
             <el-button v-else disabled>已结束</el-button>
           </div>
           <div
@@ -426,8 +445,11 @@ export default {
     this.id = this.$route.query._id
     this.listQuery.chapterId = this.$route.query._id
     this.chapterForm._id = this.$route.query._id
-    this.shareUrl = process.env.VUE_APP_BASE_API + '/client/teacher-live-demand?_id=' + this.id
-	  this.loginUser = this.$store.state.user.userSystemInfo.userInfo._id
+    this.shareUrl =
+      process.env.VUE_APP_BASE_API +
+      '/client/teacher-live-demand?_id=' +
+      this.id
+    this.loginUser = this.$store.state.user.userSystemInfo.userInfo._id
     this.findDetailInfoById()
   },
   methods: {
@@ -547,7 +569,7 @@ export default {
       }
     },
 
-	  // 课程设置
+    // 课程设置
     updatePartInfo() {
       this.chapterForm.can_discuss = this.chapterForm.can_discuss + ''
       updatePartInfo(this.chapterForm).then(res => {
@@ -626,14 +648,14 @@ $border_color: #243752;
 
     > .bottomOperate {
       position: fixed;
-	    z-index: 9999;
+      z-index: 9999;
       bottom: 0;
       left: 0%;
       width: calc(100% - 325px);
       height: 70px;
       line-height: 60px;
       border-top: 1px solid rgba(255, 255, 255, 0.5);
-	    background-color: $lesson-detail-blue;
+      background-color: $lesson-detail-blue;
     }
   }
   .itemOperate {
@@ -652,7 +674,8 @@ $border_color: #243752;
     }
   }
 
-  .bottomOperate .open, .bottomOperate .end {
+  .bottomOperate .open,
+  .bottomOperate .end {
     background-color: red;
     color: #fff;
     border: red;
@@ -714,10 +737,12 @@ $border_color: #243752;
     margin-top: 20px;
   }
 }
-.topSet /deep/ .el-form-item__label, .topSet /deep/ .el-radio__label {
+.topSet /deep/ .el-form-item__label,
+.topSet /deep/ .el-radio__label {
   color: #ffffff !important;
 }
-.topSet /deep/ .el-input__inner, .topSet /deep/ .el-textarea__inner {
+.topSet /deep/ .el-input__inner,
+.topSet /deep/ .el-textarea__inner {
   background: rgba(0, 0, 0, 0.4);
   color: #fff;
 }
@@ -730,69 +755,75 @@ $border_color: #243752;
   cursor: pointer;
 }
 
-#btnGroup{
-	padding-left: 100px;
+#btnGroup {
+  padding-left: 100px;
 }
 /* 表格内背景颜色 */
-.activeSet2 /deep/ .el-table th, .activeSet2 /deep/ .el-table tr, .activeSet2 /deep/ .el-table td {
-	border-right: none !important;
-	 background-color: $lesson-detail-blue;
-	color: #FFFFFF;
+.activeSet2 /deep/ .el-table th,
+.activeSet2 /deep/ .el-table tr,
+.activeSet2 /deep/ .el-table td {
+  border-right: none !important;
+  background-color: $lesson-detail-blue;
+  color: #ffffff;
 }
 .activeSet2 /deep/ .el-table .el-button {
-	background-color: $lesson-detail-blue;
-	color: #FFFFFF;
+  background-color: $lesson-detail-blue;
+  color: #ffffff;
 }
-.activeSet2 /deep/ .el-table__row.hover-row > td, .activeSet2 /deep/ .el-table__row.current-row > td {
-	color: $themeColor;
-	background: #f1f5fd!important;
+.activeSet2 /deep/ .el-table__row.hover-row > td,
+.activeSet2 /deep/ .el-table__row.current-row > td {
+  color: $themeColor;
+  background: #f1f5fd !important;
 }
 
-.activeSet2 /deep/ .el-table__row.hover-row > td .el-button, .activeSet2 /deep/ .el-table__row.current-row > td .el-button {
-	color: $themeColor;
-	border-color: $themeColor;
-	transition:all 0.5s;
-	-o-transition:all 0.5s;
-	-ms-transition:all 0.5s;
-	-moz-transition:all 0.5s;
-	-webkit-transition:all 0.5s;
+.activeSet2 /deep/ .el-table__row.hover-row > td .el-button,
+.activeSet2 /deep/ .el-table__row.current-row > td .el-button {
+  color: $themeColor;
+  border-color: $themeColor;
+  transition: all 0.5s;
+  -o-transition: all 0.5s;
+  -ms-transition: all 0.5s;
+  -moz-transition: all 0.5s;
+  -webkit-transition: all 0.5s;
 }
 
 .activeSet2 /deep/ .el-table__row:hover {
-	color: $themeColor;
-	border-color: $themeColor;
-	background: #f1f5fd!important;
-	transition:all 0.5s;
-	-o-transition:all 0.5s;
-	-ms-transition:all 0.5s;
-	-moz-transition:all 0.5s;
-	-webkit-transition:all 0.5s;
+  color: $themeColor;
+  border-color: $themeColor;
+  background: #f1f5fd !important;
+  transition: all 0.5s;
+  -o-transition: all 0.5s;
+  -ms-transition: all 0.5s;
+  -moz-transition: all 0.5s;
+  -webkit-transition: all 0.5s;
 }
 
-.activeSet2 /deep/ .el-table__row.hover-row > td .el-button:hover, .activeSet2 /deep/ .el-table__row.current-row > td .el-button:hover {
-	color: #FFF;
-	border-color: $themeColor;
-	background: $themeColor;
-	transition:all 0.5s;
-	-o-transition:all 0.5s;
-	-ms-transition:all 0.5s;
-	-moz-transition:all 0.5s;
-	-webkit-transition:all 0.5s;
+.activeSet2 /deep/ .el-table__row.hover-row > td .el-button:hover,
+.activeSet2 /deep/ .el-table__row.current-row > td .el-button:hover {
+  color: #fff;
+  border-color: $themeColor;
+  background: $themeColor;
+  transition: all 0.5s;
+  -o-transition: all 0.5s;
+  -ms-transition: all 0.5s;
+  -moz-transition: all 0.5s;
+  -webkit-transition: all 0.5s;
 }
 .activeSet2 /deep/ .pagination-container {
-	background-color: $lesson-detail-blue;
+  background-color: $lesson-detail-blue;
 }
-.activeSet2 /deep/ .el-pagination .el-pagination__total, .activeSet2 /deep/ .el-pagination .el-pagination__jump{
-	color: #FFFFFF;
+.activeSet2 /deep/ .el-pagination .el-pagination__total,
+.activeSet2 /deep/ .el-pagination .el-pagination__jump {
+  color: #ffffff;
 }
 embed {
-	width: 100%;
-	height: calc(100vh - 176px);
+  width: 100%;
+  height: calc(100vh - 176px);
 }
-	.activeSet2 /deep/ .el-scrollbar {
-		height: calc(100vh - 188px);
-	}
-	.statistics {
-		margin-top: 0;
-	}
+.activeSet2 /deep/ .el-scrollbar {
+  height: calc(100vh - 188px);
+}
+.statistics {
+  margin-top: 0;
+}
 </style>
