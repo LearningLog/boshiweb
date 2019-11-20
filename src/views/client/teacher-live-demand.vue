@@ -36,7 +36,7 @@
     <el-main class="main">
       <div class="fl set">
         <div class="topSet">
-          <div v-show="isActiveSet === 1" class="activeSet1">
+          <div v-if="chapter.type === 1" v-show="isActiveSet === 1" class="activeSet1">
             <p class="tip">小提示：设置完成，点击开启直播按钮即可</p>
             <div class="selectType">
               <span
@@ -159,7 +159,7 @@
             </div>
           </div>
           <div
-            v-if="loginUser === chapter.user_id"
+            v-if="loginUser === chapter.user_id && chapter.type === 1"
             v-show="isActiveSet === 2"
             class="activeSet2"
           >
@@ -311,6 +311,7 @@
         </div>
         <div class="bottomOperate tc">
           <div
+		        v-if="chapter.type === 1"
             class="itemOperate pointer"
             :class="{ activeSet: isActiveSet === 1 }"
             @click="active(1)"
@@ -318,6 +319,7 @@
             <i class="iconfont iconxitong" /><span>直播源设置</span>
           </div>
           <div
+						v-if="loginUser === chapter.user_id && chapter.type === 1"
             class="itemOperate pointer"
             :class="{ activeSet: isActiveSet === 2 }"
             @click="active(2)"
@@ -528,8 +530,8 @@ export default {
     this.getComments()
   },
   mounted() {
-    this.initVideo()
-    this.initVideo2()
+    this.initVideo1()
+    // this.initVideo2() // 机位2
     this.$ws.open(this.id)
     const comments = this.$refs.comments.wrap
     comments.addEventListener('scroll', this.handleScroll)
@@ -540,6 +542,9 @@ export default {
       findDetailInfoById({ id: this.id, isNeedValidateAuthCode: '2' }).then(
         res => {
           this.chapter = res.data.chapter
+	        if (this.chapter.type === 2) {
+            this.isActiveSet = 3
+	        }
           this.live_info = res.data.live_info
 
           this.chapterForm.cname = res.data.chapter.cname
@@ -677,7 +682,7 @@ export default {
     },
 
     // 机位1
-    initVideo() {
+    initVideo1() {
       var that = this
       $(function() {
         $('#livePlay1').videoPlayer({

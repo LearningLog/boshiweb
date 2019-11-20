@@ -286,7 +286,7 @@ export default {
 
     // 详情
     detail(row) {
-      this.$router.push({ path: '/online-class/on-demand/detail', query: { _id: row._id }})
+      this.$router.push({ path: '/client/teacher-live-demand', query: { _id: row._id }})
     },
 
     // 评分详情
