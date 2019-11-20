@@ -136,6 +136,9 @@ export default {
   methods: {
     // 滚动加载的逻辑
     scrollGetFileList() {
+      if (this.list.length >= this.total) {
+        return false
+      }
       this.listQuery.currentPage++
       this.getFileList()
     },

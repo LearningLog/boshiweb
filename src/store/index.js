@@ -9,6 +9,7 @@ import menuManage from './modules/menu-manage'
 import testPaper from './modules/test-paper'
 import examinationManage from './modules/examination-manage'
 import fileUpload from './modules/file-upload'
+import realTimeMessage from './modules/real-time-message'
 
 Vue.use(Vuex)
 
@@ -21,7 +22,8 @@ const store = new Vuex.Store({
     menuManage,
     testPaper,
     examinationManage,
-    fileUpload
+    fileUpload,
+    realTimeMessage
   },
   getters
 })

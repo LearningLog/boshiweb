@@ -367,8 +367,8 @@
         </div>
         <div class="comment-wapper" v-else>
           <el-scrollbar wrap-class="scrollbar-wrapper">
-            <ul class="comments-list" v-infinite-scroll="getComments" style="overflow:auto">
-              <li v-for="item in commentsList" :key="item._id" class="infinite-list-item clearfix">
+            <ul ref="comments" class="comments-list" v-infinite-scroll="scrollGetCommentsList">
+              <li v-for="(item, index) in commentsList" :key="index" class="infinite-list-item clearfix">
                 <div class="item-top clearfix">
                   <div class="fl">
                     <el-avatar class="header" :src="item.header || defaultAvatar"></el-avatar>
@@ -397,6 +397,8 @@ import { parseTime } from '@/utils/index'
 import Pagination from '@/components/Pagination'
 import nocomment from '@/assets/images/nocomment.png'
 import defaultAvatar from '@/assets/images/default-avatar.png'
+import { mapGetters } from 'vuex'
+import { scrollTo } from '@/utils/scroll-to'
 const $ = window.$
 import {
   findDetailInfoById,
@@ -433,6 +435,13 @@ export default {
         currentPage: 1, // 当前页
         pageSize: 10, // 当前页请求条数
         chapterId: '' // 课程id
+      },
+      total3: 0, // 总条数
+      listQuery2: {
+        // 查询条件
+        currentPage: 1, // 当前页
+        pageSize: 6, // 当前页请求条数
+        cid: '' // 课程id
       },
       total2: 0, // 总人数
       online: 0, // 在线人数
@@ -477,6 +486,12 @@ export default {
       }
     }
   },
+  computed: {
+    // 使用对象展开运算符将 getter 混入 computed 对象中
+    ...mapGetters([
+      'realTimeMessage'
+    ])
+  },
   beforeDestroy() {
     // 销毁video实例，避免出现节点不存在 但是flash一直在执行,也避免重新进入页面video未重新声明
     $('#livePlay1').dispose({ id: 'myVideo1' })
@@ -485,6 +500,7 @@ export default {
   created() {
     this.id = this.$route.query._id
     this.listQuery.chapterId = this.$route.query._id
+    this.listQuery2.cid = this.$route.query._id
     this.chapterForm._id = this.$route.query._id
     this.shareUrl =
       process.env.VUE_APP_BASE_API +
@@ -497,6 +513,21 @@ export default {
   mounted() {
     this.initVideo()
     this.initVideo2()
+    this.$ws.open(this.id)
+  },
+  watch: {
+    // 监听实时消息变化
+    realTimeMessage: {
+      handler(val, oldVal) {
+        console.log('val', val)
+        if (val && val.type === 'msg') {
+          this.commentsList.push(val)
+          const scrollHeight = this.$refs.comments.scrollHeight
+          scrollTo(scrollHeight, 20)
+        }
+      },
+      deep: true // 深层次监听
+    }
   },
   methods: {
     // 获取课堂详情
@@ -691,16 +722,35 @@ export default {
       })
     },
 
+    // 滚动加载的逻辑
+    scrollGetCommentsList() {
+      if (this.commentsList.length >= this.total3) {
+        return false
+      }
+      this.listQuery2.currentPage++
+      this.getComments()
+    },
+
     // 获取评论
     getComments() {
-      getComments({ cid: this.id }).then(res => {
-        this.commentsList = res.data.page.list || []
+      getComments(this.listQuery2).then(res => {
+        this.total3 = res.data.page.totalCount
+        res.data.page.list = res.data.page.list || []
+        res.data.page.list.forEach(item => {
+          this.commentsList.push(item)
+        })
       })
     },
 
     // 发送评论
     sendComment() {
-
+      const params = {
+        uname: this.$store.state.user.userSystemInfo.userInfo.nickname,
+        header: this.$store.state.user.userSystemInfo.userInfo.avatarUrl,
+        msg: this.comment
+      }
+      this.$ws.commit(params)
+      this.comment = ''
     }
   }
 }
