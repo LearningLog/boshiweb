@@ -138,7 +138,6 @@ export const asyncRoutes = [
       }
     ]
   },
-
   {
     path: '/enterprise-resource',
     component: Layout,
@@ -155,7 +154,22 @@ export const asyncRoutes = [
       }
     ]
   },
-
+  {
+    path: '/data-screening',
+    component: Layout,
+    redirect: '/data-screening/detail',
+    name: 'data-screening',
+    meta: { title: '数据总览', icon: 'iconpaihangbang' },
+    children: [
+      {
+        path: 'detail',
+        name: 'data-screening-detail',
+        hidden: true,
+        component: () => import('@/views/data-screening/detail'),
+        meta: { title: '总览详情', icon: '', activeMenu: '/data-screening' }
+      }
+    ]
+  },
   {
     path: '/global-config',
     component: Layout,
