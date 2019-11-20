@@ -51,3 +51,12 @@ export function broadcastOperate(data) {
     data
   })
 }
+
+// 获取评论
+export function getComments(data) {
+  return request({
+    url: 'api/cr/discuss/findPageV2',
+    method: 'post',
+    data
+  })
+}

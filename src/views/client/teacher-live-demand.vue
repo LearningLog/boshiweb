@@ -357,7 +357,35 @@
         </div>
       </div>
       <div class="fl comment">
-        comment on
+        <div class="video-wapper">
+          <div class="video-item" id="livePlay1"></div>
+          <div class="video-item" id="livePlay2"></div>
+        </div>
+        <div class="top-text">讨论</div>
+        <div class="comment-wapper-nocomment" v-if="!commentsList.length">
+          <img :src="nocomment" alt="暂无评论">
+        </div>
+        <div class="comment-wapper" v-else>
+          <el-scrollbar wrap-class="scrollbar-wrapper">
+            <ul class="comments-list" v-infinite-scroll="getComments" style="overflow:auto">
+              <li v-for="item in commentsList" :key="item._id" class="infinite-list-item clearfix">
+                <div class="item-top clearfix">
+                  <div class="fl">
+                    <el-avatar class="header" :src="item.header || defaultAvatar"></el-avatar>
+                    <span class="uname">{{ item.uname }}</span>
+                  </div>
+                  <span class="fr c_time">
+                    {{ item.c_time }}
+                  </span>
+                </div>
+                <div class="msg">{{ item.msg }}</div>
+              </li>
+            </ul>
+          </el-scrollbar>
+        </div>
+        <div class="comment-send">
+          <el-input class="comment-input" v-model="comment" clearable @keyup.enter.native="sendComment"></el-input><el-button class="comment-btn" type="primary" @click="sendComment">发送</el-button>
+        </div>
       </div>
     </el-main>
   </el-container>
@@ -366,19 +394,25 @@
 <script>
 import clip from '@/utils/clipboard'
 import { parseTime } from '@/utils/index'
-import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+import Pagination from '@/components/Pagination'
+import nocomment from '@/assets/images/nocomment.png'
+import defaultAvatar from '@/assets/images/default-avatar.png'
+const $ = window.$
 import {
   findDetailInfoById,
   getUserList,
   updateUser,
   updatePartInfo,
-  broadcastOperate
+  broadcastOperate,
+  getComments
 } from '@/api/client/student-live-demand'
 
 export default {
   components: { Pagination },
   data() {
     return {
+      nocomment,
+      defaultAvatar,
       shareVisible: false, // 是否显示分享
       shareUrl: '', // 分享地址
       isActiveSet: 1, // 底部设置按钮高亮
@@ -410,6 +444,8 @@ export default {
         _id: '', // 评论控制
         auth_code: ''
       },
+      commentsList: [],
+      comment: '', // 评论输入的内容
       rules: {
         cname: [
           {
@@ -441,6 +477,11 @@ export default {
       }
     }
   },
+  beforeDestroy() {
+    // 销毁video实例，避免出现节点不存在 但是flash一直在执行,也避免重新进入页面video未重新声明
+    $('#livePlay1').dispose({ id: 'myVideo1' })
+    $('#livePlay2').dispose({ id: 'myVideo2' })
+  },
   created() {
     this.id = this.$route.query._id
     this.listQuery.chapterId = this.$route.query._id
@@ -451,6 +492,11 @@ export default {
       this.id
     this.loginUser = this.$store.state.user.userSystemInfo.userInfo._id
     this.findDetailInfoById()
+    this.getComments()
+  },
+  mounted() {
+    this.initVideo()
+    this.initVideo2()
   },
   methods: {
     // 获取课堂详情
@@ -592,6 +638,69 @@ export default {
         this.$message.success('结束成功！')
         this.findDetailInfoById()
       })
+    },
+
+    // 机位1
+    initVideo() {
+      var that = this
+      $(function() {
+        $('#livePlay1').videoPlayer({
+          id: 'myVideo1', // 创建video id
+          control: true, // 视频支持  音频不支持
+          autoPlay: true,
+          width: '100%', // 视频音频的宽 最小宽度500
+          height: '100%', // 视频的宽,音频设置无效
+          source: that.live_info[0] ? that.live_info[0].cdnUrl : 'noVideo.mp4', // 播放源地址
+          title: '',
+          thumbnailUrl: that.chapter.cover_pic,
+          playType: 'video', // 可选值 视频：video 音频：audio
+          currentTime: function(val) {
+            console.log(val, '当前时间')
+          },
+          shootingFlag: false,
+          screenshotsCallback: function(val) { }
+        })
+      })
+    },
+
+    // 机位2
+    initVideo2() {
+      var that = this
+      $(function() {
+        $('#livePlay2').videoPlayer({
+          id: 'myVideo2', // 创建video id
+          control: true, // 视频支持  音频不支持
+          autoPlay: false,
+          width: '100%', // 视频音频的宽 最小宽度500
+          height: '100%', // 视频的宽,音频设置无效
+          source: that.live_info[1] ? that.live_info[1].cdnUrl : 'noVideo.mp4', // 播放源地址
+          title: '',
+          thumbnailUrl: that.chapter.cover_pic,
+          playType: 'video', // 可选值 视频：video 音频：audio
+          timeFlag: false, // 只有为true时才会触发currentTime函数
+          flvAudio: false,
+          currentTime: function(val) {
+            console.log(val, '当前时间')
+          },
+          shootingFlag: false,
+          shootingCallback: function(val) {
+            console.log(val, '打点')
+          },
+          screenshotsCallback: function(val) { }
+        })
+      })
+    },
+
+    // 获取评论
+    getComments() {
+      getComments({ cid: this.id }).then(res => {
+        this.commentsList = res.data.page.list || []
+      })
+    },
+
+    // 发送评论
+    sendComment() {
+
     }
   }
 }
@@ -635,14 +744,14 @@ $border_color: #243752;
   padding: 0;
 
   > .comment {
-    width: 320px;
+    width: 380px;
     border-left: 5px solid $border_color;
     height: calc(100vh - 70px);
-    padding: 20px;
+    background: rgba(0,0,0,0.4);
   }
 
   > .set {
-    width: calc(100% - 320px);
+    width: calc(100% - 380px);
     height: calc(100vh - 70px);
     padding: 20px;
 
@@ -651,7 +760,7 @@ $border_color: #243752;
       z-index: 9999;
       bottom: 0;
       left: 0%;
-      width: calc(100% - 325px);
+      width: calc(100% - 385px);
       height: 70px;
       line-height: 60px;
       border-top: 1px solid rgba(255, 255, 255, 0.5);
@@ -826,4 +935,92 @@ embed {
 .statistics {
   margin-top: 0;
 }
+
+  .comment {
+    > .video-wapper {
+      width: 100%;
+      height: 120px;
+      border-bottom: 5px solid $border_color;
+
+      > .video-item {
+        width: 49% !important;
+        height: 100% !important;
+        display: inline-block!important;
+
+        > /deep/ .vjs-sublime-skin2 {
+          min-width: 0px;
+        }
+      }
+      .video-item /deep/ #danmu_send_opt, .video-item /deep/ .vjs-screenshot, .video-item /deep/ .vjs-current-time, .video-item /deep/ .vjs-time-control, .video-item /deep/ .vjs-duration {
+        display: none!important;
+      }
+      .video-item /deep/ .vjs-control-bar .vjs-icon-placeholder:before {
+        height: 30px;
+        line-height: 30px;
+      }
+    }
+
+    > .top-text {
+      width: 100%;
+      height: 40px;
+      line-height: 40px;
+      text-align: center;
+      color: #FFFFFF;
+      background-color: $themeColor;
+    }
+
+    > .comment-wapper-nocomment {
+      padding: 20px 20px 0;
+      text-align: center;
+    }
+    > .comment-wapper {
+      padding: 20px 0 0 20px;
+
+      .comments-list {
+        font-size: 12px;
+        padding-right: 20px;
+      }
+
+      .item-top {
+        height: 50px;
+        line-height: 50px;
+      }
+
+      .header {
+        width: 30px;
+        height: 30px;
+        vertical-align: middle;
+      }
+      .c_time {
+        vertical-align: middle;
+      }
+      .msg {
+        padding: 4px 0 10px 34px;
+      }
+    }
+    .comment-wapper /deep/ .el-scrollbar {
+      height: calc(100vh - 300px);
+    }
+  }
+  .comment-send {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    width: 370px;
+    border-bottom: 5px solid $border_color;
+  }
+  .comment-send .comment-input {
+    width: calc(100% - 80px);
+    border-radius: 0;
+
+    > /deep/ .el-input__inner {
+      border-radius: 0;
+      background: rgba(0, 0, 0, 0.4);
+      color: #fff;
+    }
+  }
+  .comment-send .comment-btn {
+    padding: 9px 20px;
+    border-radius: 0;
+  }
 </style>
