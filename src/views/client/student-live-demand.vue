@@ -38,15 +38,15 @@
             <span class="interval" />
             <span class="pointer" @click="appraise">课程评价</span>
             <span class="interval" />
-            <span>{{ chapter.nickname }}</span>
+            <user />
           </div>
         </div>
       </el-header>
       <el-main class="main">
         <div class="fl set">
-          <div class="noLive">
+          <div class="noLive" v-show="lessonStatus.onlive !== 2">
             <div>
-              <img v-if="lessonStatus.onlive !== 2" :src="noLiveImg" :alt="noLiveText">
+              <img :src="noLiveImg" :alt="noLiveText">
               <p>{{ noLiveText }}</p>
             </div>
           </div>
@@ -81,7 +81,7 @@
             </el-scrollbar>
           </div>
           <div class="comment-send">
-            <el-input v-model="comment" class="comment-input" clearable @keyup.enter.native="sendComment" :disabled="lessonStatus.chapterForbid === 2" /><el-button class="comment-btn" type="primary" @click="sendComment" :disabled="lessonStatus.chapterForbid === 2">发送</el-button>
+            <el-input v-model="comment" class="comment-input" clearable @keyup.enter.native="sendComment" :disabled="lessonStatus.chapterForbid === 1" /><el-button class="comment-btn" type="primary" @click="sendComment" :disabled="lessonStatus.chapterForbid === 1">发送</el-button>
           </div>
         </div>
       </el-main>
@@ -128,6 +128,7 @@
 </template>
 
 <script>
+import User from '@/components/User'
 import clip from '@/utils/clipboard'
 import { parseTime } from '@/utils/index'
 import elDragDialog from '@/directive/el-drag-dialog'
@@ -143,6 +144,9 @@ import {
 import { queryStatus, findLabel, addOneAppraise } from '@/api/client/student-live-demand'
 
 export default {
+  components: {
+    User
+  },
   directives: { elDragDialog },
   data() {
     return {
@@ -184,7 +188,7 @@ export default {
       lessonStatus: {
         onlive: '', // 直播是否已开启(未开启:1，直播中:2，已关闭:3)
         forbid: 2, // 用户是否被禁言(禁言:1，发言:2)
-        chapterForbid: 2, // 直播间是否允许评论(是:1，否:2)
+        chapterForbid: 2, // 直播间是否允许评论(允许:1，不允许:2)
         shotOff: 2, // 用户是否被移除直播间(移除:1，加入:2)
         chapterFile: null, // 是否有课件(有:1，无:2)
         chapterFileCreate: null, // 课件是否生成(有:1，无:2)
@@ -244,10 +248,10 @@ export default {
         $('#livePlay1').dispose({ id: 'myVideo1' })
         this.shotOffLoading = true
         this.$ws.close()
-        this.$confirm('您已被课程发起人移出，请联系课程发起人【' + this.chapter.nickname + '】', '提示', {
+        this.$alert(`您已被课程发起人移出，请联系课程发起人【 ${this.chapter.nickname} 】`, '提示', {
           confirmButtonText: '确定',
-          type: 'warning'
-        }).then(() => {})
+          callback: action => {}
+        })
       } else {
         this.shotOffLoading = false
         this.initVideo1()
@@ -261,6 +265,7 @@ export default {
     $('#livePlay2').dispose({ id: 'myVideo2' })
     const comments = this.$refs.comments.wrap
     comments.removeEventListener('scroll', this.handleScroll)
+    clearInterval(this.timer)
   },
   created() {
     this.id = this.$route.query._id
@@ -474,7 +479,9 @@ export default {
 <style lang="scss" scoped>
 	@import "~@/styles/theme.scss";
 	@import "~@/styles/variables.scss";
-	$border_color: #243752;
+  /*$lesson-detail-blue:#1b304a;
+  $border_color: #243752;
+  $deep_color: rgba(0,0,0,0.4);*/
 
 	.container {
 		width: 100%;
@@ -514,7 +521,7 @@ export default {
 			width: 380px;
 			border-left: 5px solid $border_color;
 			height: calc(100vh - 70px);
-			background: rgba(0,0,0,0.4);
+			background: $deep_color;
 		}
 
 		> .set {
@@ -529,6 +536,10 @@ export default {
         display:flex;/*将其定义为弹性容器*/
         align-items: center;/*垂直居中对齐*/
         justify-content: center;/*水平居中对齐*/
+      }
+      .video-wapper {
+        width: 100%;
+        height: 100%;
       }
 		}
 	}
@@ -587,7 +598,7 @@ export default {
 	}
 	.comment-send .comment-input {
 		width: calc(100% - 80px);
-		padding-bottom: 14px;
+		margin-bottom: 14px;
 		border-radius: 0;
 
 		> /deep/ .el-input__inner {

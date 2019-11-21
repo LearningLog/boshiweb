@@ -107,8 +107,8 @@ const actions = {
           if (logo.logo_name) {
             commit('SET_LOGO_NAME', logo.logo_name)
           }
-          if (logo.user_img) {
-            commit('SET_AVATAR', userInfo.user_img)
+          if (userInfo.avatarUrl) {
+            commit('SET_AVATAR', userInfo.avatarUrl)
           }
           commit('SET_NAME', userInfo.nickname)
           commit('SET_USER_SYSTEM_INFO', res.data)

@@ -29,7 +29,7 @@
             </el-popover>
           </div>
           <span class="interval" />
-          <span>{{ chapter.nickname }}</span>
+          <user />
         </div>
       </div>
     </el-header>
@@ -410,6 +410,7 @@
 </template>
 
 <script>
+import User from '@/components/User'
 import clip from '@/utils/clipboard'
 import { parseTime } from '@/utils/index'
 import Pagination from '@/components/Pagination'
@@ -429,7 +430,7 @@ import {
 import { findLessonDetailById } from '@/api/client/teacher-thematic'
 
 export default {
-  components: { Pagination },
+  components: { Pagination, User },
   data() {
     return {
       nocomment,
@@ -1235,7 +1236,7 @@ export default {
 	}
 	.comment-send .comment-input {
 		width: calc(100% - 80px);
-    padding-bottom: 14px;
+    margin-bottom: 14px;
 		border-radius: 0;
 
 		> /deep/ .el-input__inner {

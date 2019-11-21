@@ -2,6 +2,7 @@
 import { getToken } from '@/utils/auth'
 const myWebsocket = process.env.VUE_APP_WebSocket_BASE_API
 import store from '@/store'
+import { MessageBox } from 'element-ui'
 
 class Websocket {
   message = (msg) => {
@@ -19,7 +20,12 @@ class Websocket {
   //  初始化
   init() {
     if (typeof (WebSocket) === 'undefined') {
-      alert('您的浏览器不支持socket')
+      MessageBox.alert('您的浏览器不支持socket！', '提示', {
+        confirmButtonText: '确定',
+        callback: action => {
+
+        }
+      })
     } else {
       this._on('open', this._connectHandler)
         ._on('message', this._messageHandler)
@@ -122,6 +128,7 @@ class Websocket {
   _messageHandler = (event) => { // 接收到的信息
     const meg = JSON.parse(event.data)
     meg && this.message(meg) // 这里是执行的事件，需要传进来
+    console.log('msg', meg.msg)
   }
 
   //  断开
