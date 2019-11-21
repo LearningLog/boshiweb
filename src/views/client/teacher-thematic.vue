@@ -213,7 +213,7 @@
                 <el-table-column
                   class-name="status-col"
                   label="操作"
-                  width="160"
+                  width="180"
                   align="center"
                   fixed="right"
                 >
@@ -229,13 +229,13 @@
                       :disabled="loginUser === scope.row.userId"
                       size="mini"
                       @click="isRemove(scope.row, 1)"
-                    ><i class="iconfont iconshanchu" />移除</el-button>
+                    ><i class="iconfont iconshanchu" />移出</el-button>
                     <el-button
                       v-if="scope.row.forbid === 1"
                       :disabled="loginUser === scope.row.userId"
                       size="mini"
                       @click="isNoWord(scope.row, 2)"
-                    ><i class="iconfont iconfayan" />发言</el-button>
+                    ><i class="iconfont iconfayan" />取消禁言</el-button>
                     <el-button
                       v-else
                       :disabled="loginUser === scope.row.userId"
@@ -673,7 +673,7 @@ export default {
       return parseTime(time)
     },
 
-    // 移除，加入
+    // 移出，加入
     isRemove(row, type) {
       var params = {
         chapterId: this.id,
@@ -681,14 +681,14 @@ export default {
         shotOff: type
       }
       if (type === 1) {
-        this.$confirm('确定要移除【' + row.userName + '】吗？', '移除成员', {
+        this.$confirm('确定要移出【' + row.userName + '】吗？', '移出成员', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         })
           .then(() => {
             updateUser(params).then(response => {
-              this.$message.success('移除成功！')
+              this.$message.success('移出成功！')
               this.getUserList()
             })
           })
@@ -701,7 +701,7 @@ export default {
       }
     },
 
-    // 禁言、发言
+    // 禁言、取消禁言
     isNoWord(row, type) {
       var params = {
         chapterId: this.id,
@@ -723,7 +723,7 @@ export default {
           .catch(() => {})
       } else {
         updateUser(params).then(response => {
-          this.$message.success('设置发言成功！')
+          this.$message.success('取消禁言成功！')
           this.getUserList()
         })
       }
