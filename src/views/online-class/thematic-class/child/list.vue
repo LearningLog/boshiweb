@@ -297,7 +297,7 @@ export default {
 
     // 详情
     detail(row) {
-      this.$router.push({ path: '/online-class/thematic-class/detail', query: { _id: row._id }})
+      this.$router.push({ path: '/client/teacher-thematic', query: { _id: row._id }})
     },
 
     // 评分详情

@@ -368,12 +368,14 @@
           <img :src="nocomment" alt="暂无评论">
         </div>
         <div v-show="commentsList.length" class="comment-wapper">
-          <el-scrollbar id="content" ref="comments" wrap-class="scrollbar-wrapper" @scroll="handleScroll($event)">
+          <el-scrollbar id="content" ref="comments" wrap-class="scrollbar-wrapper">
             <ul class="comments-list">
               <li v-for="(item, index) in commentsList" :key="index" class="infinite-list-item clearfix">
                 <div class="item-top clearfix">
                   <div class="fl">
-                    <el-avatar class="header" :src="item.header || defaultAvatar" />
+                    <el-avatar class="header" :src="item.header || defaultAvatar"  @error="avatarErrorHandler">
+                      <img :src="defaultAvatar"/>
+                    </el-avatar>
                     <span class="uname">{{ item.uname }}</span>
                   </div>
                   <span class="fr c_time">
@@ -408,7 +410,7 @@ import {
   updatePartInfo,
   broadcastOperate,
   getComments
-} from '@/api/client/student-live-demand'
+} from '@/api/client/teacher-live-demand'
 
 export default {
   components: { Pagination },
@@ -429,6 +431,8 @@ export default {
       },
       loginUser: '', // 当前登录人
       live_info: [], // 直播信息
+      videoSource1: 'noVideo.mp4', // 机位1 Source
+      videoSource2: 'noVideo.mp4', // 机位2 Source
       listLoading: false, // 是否开启表格遮罩
       userList: [], // 成员list
       total: 0, // 总条数
@@ -507,6 +511,12 @@ export default {
         }
       },
       deep: true // 深层次监听
+    },
+
+    // 监听 chapter._id 变化, 更新播放器
+    'chapter._id': function(curVal, oldVal) {
+      $('#livePlay1').dispose({ id: 'myVideo1' })
+      this.initVideo1()
     }
   },
   beforeDestroy() {
@@ -544,14 +554,23 @@ export default {
           this.chapter = res.data.chapter
 	        if (this.chapter.type === 2) {
             this.isActiveSet = 3
-	        }
-          this.live_info = res.data.live_info
+	        } else {
+            this.isActiveSet = 1
+          }
+          this.live_info = res.data.live_info || []
 
           this.chapterForm.cname = res.data.chapter.cname
           this.chapterForm.teacher = res.data.chapter.teacher
           this.chapterForm.brief = res.data.chapter.brief
           this.chapterForm.can_discuss = res.data.chapter.can_discuss * 1
           this.chapterForm.auth_code = res.data.chapter.auth_code
+          if (this.chapter.type === 1) {
+            this.videoSource1 = this.live_info[0] ? this.live_info[0].cdnUrl : 'noVideo.mp4'
+            this.videoSource2 = this.live_info[1] ? this.live_info[1].cdnUrl : 'noVideo.mp4'
+          } else {
+            this.videoSource1 = this.chapter.video_url || 'noVideo.mp4'
+            this.videoSource2 = 'noVideo.mp4'
+          }
         }
       )
     },
@@ -691,7 +710,7 @@ export default {
           autoPlay: true,
           width: '100%', // 视频音频的宽 最小宽度500
           height: '100%', // 视频的宽,音频设置无效
-          source: that.live_info[0] ? that.live_info[0].cdnUrl : 'noVideo.mp4', // 播放源地址
+          source: that.videoSource1, // 播放源地址
           title: '',
           thumbnailUrl: that.chapter.cover_pic,
           playType: 'video', // 可选值 视频：video 音频：audio
@@ -714,7 +733,7 @@ export default {
           autoPlay: false,
           width: '100%', // 视频音频的宽 最小宽度500
           height: '100%', // 视频的宽,音频设置无效
-          source: that.live_info[1] ? that.live_info[1].cdnUrl : 'noVideo.mp4', // 播放源地址
+          source: that.videoSource2, // 播放源地址
           title: '',
           thumbnailUrl: that.chapter.cover_pic,
           playType: 'video', // 可选值 视频：video 音频：audio
@@ -732,6 +751,11 @@ export default {
       })
     },
 
+    // 头像加载失败的回调
+    avatarErrorHandler() {
+      return true
+    },
+
     // 获取评论
     getComments() {
       getComments(this.listQuery2).then(res => {
@@ -739,7 +763,6 @@ export default {
         res.data.page.list = res.data.page.list || []
         this.listQuery2.discussId = res.data.page.list[0] ? res.data.page.list[0]._id : ''
         this.commentsList = res.data.page.list.concat(this.commentsList)
-        console.log('length', this.commentsList.length)
         if (this.flag === 0) {
           this.$nextTick(() => {
             const comments = this.$refs.comments.wrap
@@ -1048,11 +1071,11 @@ embed {
       background-color: $themeColor;
     }
 
-    > .comment-wapper-nocomment {
+    .comment-wapper-nocomment {
       padding: 20px 20px 0;
       text-align: center;
     }
-    > .comment-wapper {
+    .comment-wapper {
       padding: 20px 0 0 20px;
 
       .comments-list {

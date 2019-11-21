@@ -74,22 +74,6 @@ export const constantRoutes = [
   },
 
   {
-    path: '/example',
-    component: Layout,
-    redirect: '/example/table',
-    name: 'Example',
-    meta: { title: 'Example', icon: 'iconqiye' },
-    children: [
-      {
-        path: 'hello-world',
-        name: 'Hello-world',
-        component: () => import('@/views/examples/hello-world'),
-        meta: { title: 'Hello World', icon: '' }
-      }
-    ]
-  },
-
-  {
     path: '/404',
     component: () => import('@/views/404'),
     hidden: true
