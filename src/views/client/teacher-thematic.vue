@@ -563,12 +563,12 @@ export default {
       this.shareUrl =
         host +
         '#/client/student-thematic?_id=' +
-        this.id
+        this.thematicId
     } else {
       this.shareUrl =
         process.env.VUE_APP_BASE_API +
         '#/client/student-thematic?_id=' +
-        this.id
+        this.thematicId
     }
     this.loginUser = this.$store.state.user.userSystemInfo.userInfo._id
     this.findLessonDetailById()

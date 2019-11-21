@@ -321,12 +321,12 @@ export default {
       this.shareUrl =
           host +
           '#/client/student-live-demand?_id=' +
-          this.id
+          this.thematicId
     } else {
       this.shareUrl =
           process.env.VUE_APP_BASE_API +
           '#/client/student-live-demand?_id=' +
-          this.id
+          this.thematicId
     }
     this.findLessonDetailById()
   },
