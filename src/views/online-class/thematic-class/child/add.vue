@@ -203,12 +203,12 @@
     </el-dialog>
 
     <AddLessonEvalLabels
-        :visible2.sync="visible2"
-        :current-labels.sync="currentLabels"
-        :select-company-id="form.selectCompanyId"
-        :egroup="form.egroup"
-        @AddLessonEvalLabels="getLabels"
-        @visibleAddLessonEvalLabels="onvisible2"
+      :visible2.sync="visible2"
+      :current-labels.sync="currentLabels"
+      :select-company-id="form.selectCompanyId"
+      :egroup="form.egroup"
+      @AddLessonEvalLabels="getLabels"
+      @visibleAddLessonEvalLabels="onvisible2"
     />
   </div>
 </template>

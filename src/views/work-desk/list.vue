@@ -94,9 +94,10 @@
           <div class="clearfix">
             <div class="fl pointer" @click="preview(scope.row)">
               <el-image
-                  class="thumbnail"
-                  :src="getPic(scope.row) || file_knowledge"
-                  fit="contain"></el-image>
+                class="thumbnail"
+                :src="getPic(scope.row) || file_knowledge"
+                fit="contain"
+              />
             </div>
             <div class="fl pointer fileDetail" @click="detail(scope.row)">
               <p class="fileDetailItem">{{ scope.row.fileName }}</p>

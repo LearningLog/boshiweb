@@ -60,11 +60,11 @@
       <el-table-column label="Logo" min-width="90" align="center">
         <template slot-scope="scope">
           <el-image
-              class="thumbnail"
-              v-if="scope.row.pcLogoFileUrl"
-              :src="scope.row.pcLogoFileUrl"
-              fit="contain">
-          </el-image>
+            v-if="scope.row.pcLogoFileUrl"
+            class="thumbnail"
+            :src="scope.row.pcLogoFileUrl"
+            fit="contain"
+          />
         </template>
       </el-table-column>
       <el-table-column class-name="status-col" label="个性化系统名称" min-width="150" align="center" prop="customSystemName" />

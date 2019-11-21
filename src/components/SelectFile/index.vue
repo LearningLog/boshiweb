@@ -56,7 +56,7 @@
               fit="contain"
             />
             <!--<el-tooltip effect="dark" :content="item.name" placement="top">-->
-              <span class="name">{{ item.name }}</span>
+            <span class="name">{{ item.name }}</span>
             <!--</el-tooltip>-->
           </li>
         </ul>

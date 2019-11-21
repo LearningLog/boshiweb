@@ -225,20 +225,20 @@
     </el-dialog>
 
     <el-dialog
-        v-el-drag-dialog
-        title="选择视频"
-        width="592px"
-        :visible.sync="visibleSelectVideo"
+      v-el-drag-dialog
+      title="选择视频"
+      width="592px"
+      :visible.sync="visibleSelectVideo"
     >
       <div class="clearfix searchFile">
         <div class="fr">
           <el-input
-              v-model="listQuery.fileName"
-              class="global-search"
-              placeholder="请输入文件名称"
-              clearable
-              @keyup.enter.native="getFileList"
-              @clear="getFileList"
+            v-model="listQuery.fileName"
+            class="global-search"
+            placeholder="请输入文件名称"
+            clearable
+            @keyup.enter.native="getFileList"
+            @clear="getFileList"
           >
             <el-button slot="append" icon="el-icon-search" @click="getFileList" />
           </el-input>
@@ -247,17 +247,17 @@
       <el-scrollbar wrap-class="scrollbar-wrapper">
         <ul v-infinite-scroll="getFileList" class="fileList">
           <li
-              v-for="(item, index) in videolist"
-              :key="index"
-              class="itemFile"
+            v-for="(item, index) in videolist"
+            :key="index"
+            class="itemFile"
           >
             <el-radio-group v-model="radio" class="checkbox" @change="checkVideoChange">
               <el-radio :label="item">{{ item.aaa }}</el-radio>
             </el-radio-group>
             <el-image
-                class="imgCover"
-                :src="item.preview_pic || file_knowledge"
-                fit="contain"
+              class="imgCover"
+              :src="item.preview_pic || file_knowledge"
+              fit="contain"
             />
             <el-tooltip effect="dark" :content="item.name" placement="top">
               <span class="name">{{ item.name }}</span>
@@ -276,12 +276,12 @@
       @checkedFile="checkedFile"
     />
     <AddLessonEvalLabels
-        :visible2.sync="visible2"
-        :current-labels.sync="currentLabels"
-        :select-company-id="form.selectCompanyId"
-        :egroup="form.egroup"
-        @AddLessonEvalLabels="getLabels"
-        @visibleAddLessonEvalLabels="onvisible2"
+      :visible2.sync="visible2"
+      :current-labels.sync="currentLabels"
+      :select-company-id="form.selectCompanyId"
+      :egroup="form.egroup"
+      @AddLessonEvalLabels="getLabels"
+      @visibleAddLessonEvalLabels="onvisible2"
     />
   </div>
 </template>

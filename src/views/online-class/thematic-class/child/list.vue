@@ -107,11 +107,11 @@
         <template slot-scope="scope">
           <span class="" @click="rateDetail(scope.row)">
             <el-rate
-                v-if="scope.row.general_level"
-                v-model="scope.row.general_level"
-                disabled
-                show-score
-                text-color="#ff9900"
+              v-if="scope.row.general_level"
+              v-model="scope.row.general_level"
+              disabled
+              show-score
+              text-color="#ff9900"
             />
           </span>
           <span v-if="!scope.row.general_level && scope.row.general_level !== 0">--</span>

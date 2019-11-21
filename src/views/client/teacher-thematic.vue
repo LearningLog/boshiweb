@@ -368,10 +368,10 @@
           <div class="top-text" :class="{ lessonOrcommentActive: lessonOrcommentActive === 2 }" @click="lessonOrcommentActiveChange(2)">讨论</div>
         </div>
         <div class="lessonOrcomment">
-          <div class="catalogues" v-show="lessonOrcommentActive === 1">
+          <div v-show="lessonOrcommentActive === 1" class="catalogues">
             <el-scrollbar ref="catalogues" wrap-class="scrollbar-wrapper">
               <ul class="catalogues-list">
-                <li class="catalogues-item" :class="{ cataloguesItemActive: cataloguesItemActive === index }" v-for="(item, index) in lessonList" :key="item._id" @click="cataloguesItemChange(item, index)">
+                <li v-for="(item, index) in lessonList" :key="item._id" class="catalogues-item" :class="{ cataloguesItemActive: cataloguesItemActive === index }" @click="cataloguesItemChange(item, index)">
                   <span>课时{{ index + 1 }}</span><span class="circle">○</span><span class="cname1">{{ item.cname }}</span>
                 </li>
               </ul>
@@ -386,14 +386,14 @@
                 <li v-for="(item, index) in commentsList" :key="index" class="infinite-list-item">
                   <div class="item-top clearfix">
                     <div class="fl">
-                      <el-avatar class="header" :src="item.header || defaultAvatar"  @error="avatarErrorHandler">
-                        <img :src="defaultAvatar"/>
+                      <el-avatar class="header" :src="item.header || defaultAvatar" @error="avatarErrorHandler">
+                        <img :src="defaultAvatar">
                       </el-avatar>
                       <span class="uname">{{ item.uname }}</span>
                     </div>
                     <span class="fr c_time">
-                    {{ parseTime(item.c_timestamp) }}
-                  </span>
+                      {{ parseTime(item.c_timestamp) }}
+                    </span>
                   </div>
                   <div class="msg">{{ item.msg }}</div>
                 </li>

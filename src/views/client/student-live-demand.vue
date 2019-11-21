@@ -1,8 +1,8 @@
 <template>
   <div
-      v-loading="shotOffLoading"
-      :element-loading-text="'您已被课程发起人移出，请联系课程发起人【' + chapter.nickname + '】'"
-      element-loading-background="rgba(0, 0, 0, 0.8)"
+    v-loading="shotOffLoading"
+    :element-loading-text="'您已被课程发起人移出，请联系课程发起人【' + chapter.nickname + '】'"
+    element-loading-background="rgba(0, 0, 0, 0.8)"
   >
     <el-container class="container">
       <el-header class="header">
@@ -11,30 +11,30 @@
           <div class="fr">
             <div class="pointer share">
               <el-popover
-                  v-model="shareVisible"
-                  placement="bottom"
-                  width="114"
-                  height="120"
+                v-model="shareVisible"
+                placement="bottom"
+                width="114"
+                height="120"
               >
                 <div class="tc">
                   <el-link
-                      type="info"
-                      @click="clipboard($event)"
+                    type="info"
+                    @click="clipboard($event)"
                   >复制分享地址</el-link>
                   <qriously
-                      :value="shareUrl"
-                      :size="80"
-                      element="img"
-                      :background-alpha="1"
+                    :value="shareUrl"
+                    :size="80"
+                    element="img"
+                    :background-alpha="1"
                   />
                 </div>
                 <span
-                    slot="reference"
+                  slot="reference"
                 ><i class="iconfont iconfenxiang" />分享</span>
               </el-popover>
             </div>
             <span class="interval" />
-            <span class="pointer" @click="downloadFile"><i class="iconfont iconwechaticon16"></i>下载课件</span>
+            <span class="pointer" @click="downloadFile"><i class="iconfont iconwechaticon16" />下载课件</span>
             <span class="interval" />
             <span class="pointer" @click="appraise">课程评价</span>
             <span class="interval" />
@@ -44,13 +44,13 @@
       </el-header>
       <el-main class="main">
         <div class="fl set">
-          <div class="noLive" v-show="lessonStatus.onlive !== 2 && chapter.type === 1">
+          <div v-show="lessonStatus.onlive !== 2 && chapter.type === 1" class="noLive">
             <div>
               <img :src="noLiveImg" :alt="noLiveText">
               <p>{{ noLiveText }}</p>
             </div>
           </div>
-          <div class="video-wapper" v-show="lessonStatus.onlive === 2 || chapter.type === 2 || lessonStatus.recordStatus === 1">
+          <div v-show="lessonStatus.onlive === 2 || chapter.type === 2 || lessonStatus.recordStatus === 1" class="video-wapper">
             <div id="livePlay1" class="video-item" />
             <div id="livePlay2" class="video-item" />
           </div>
@@ -72,8 +72,8 @@
                       <span class="uname">{{ item.uname }}</span>
                     </div>
                     <span class="fr c_time">
-                    {{ parseTime(item.c_timestamp) }}
-                  </span>
+                      {{ parseTime(item.c_timestamp) }}
+                    </span>
                   </div>
                   <div class="msg">{{ item.msg }}</div>
                 </li>
@@ -81,41 +81,41 @@
             </el-scrollbar>
           </div>
           <div class="comment-send">
-            <el-input v-model="comment" class="comment-input" clearable @keyup.enter.native="sendComment" :disabled="lessonStatus.chapterForbid === 2" /><el-button class="comment-btn" type="primary" @click="sendComment" :disabled="lessonStatus.chapterForbid === 2">发送</el-button>
+            <el-input v-model="comment" class="comment-input" clearable :disabled="lessonStatus.chapterForbid === 2" @keyup.enter.native="sendComment" /><el-button class="comment-btn" type="primary" :disabled="lessonStatus.chapterForbid === 2" @click="sendComment">发送</el-button>
           </div>
         </div>
       </el-main>
     </el-container>
     <el-dialog
-        v-el-drag-dialog
-        title="学习不易，给个评价吧"
-        :visible.sync="appraiseVisible"
-        width="700px"
+      v-el-drag-dialog
+      title="学习不易，给个评价吧"
+      :visible.sync="appraiseVisible"
+      width="700px"
     >
       <div class="appraiseEdit">
         <el-form ref="appraiseForm" :model="appraiseForm" label-width="120px">
-          <el-checkbox-group class="appraise_label" v-model="appraiseForm.appraise_label">
+          <el-checkbox-group v-model="appraiseForm.appraise_label" class="appraise_label">
             <el-checkbox v-for="item in lableList" :key="item._id" :label="item._id" border>{{ item.label_name }}</el-checkbox>
           </el-checkbox-group>
           <el-form-item label="课程内容">
             <el-rate
-                v-model="appraiseForm.appraise_content_level"
-                :colors="colors">
-            </el-rate>
+              v-model="appraiseForm.appraise_content_level"
+              :colors="colors"
+            />
           </el-form-item>
           <el-form-item label="上课体验">
             <el-rate
-                v-model="appraiseForm.appraise_experience_level"
-                :colors="colors">
-            </el-rate>
+              v-model="appraiseForm.appraise_experience_level"
+              :colors="colors"
+            />
           </el-form-item>
           <el-form-item label="随便说点什么吧">
             <el-input
-                type="textarea"
-                :rows="2"
-                placeholder="请输入内容"
-                v-model="appraiseForm.appraise_text">
-            </el-input>
+              v-model="appraiseForm.appraise_text"
+              type="textarea"
+              :rows="2"
+              placeholder="请输入内容"
+            />
           </el-form-item>
         </el-form>
       </div>

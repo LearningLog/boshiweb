@@ -9,8 +9,8 @@
           type="daterange"
           range-separator="至"
           start-placeholder="开始日期"
-          end-placeholder="结束日期">
-        </el-date-picker>
+          end-placeholder="结束日期"
+        />
       </div>
     </div>
     <!--员工数据面板-->
@@ -77,9 +77,7 @@
       </div>
     </div>
     <!--排行榜面板-->
-    <div class="app-dataScreening-item app-dataScreening-listWrapper">
-
-    </div>
+    <div class="app-dataScreening-item app-dataScreening-listWrapper" />
     <!--数据统计面板-->
     <div class="app-dataScreening-item app-dataScreening-statisticWrapper">
       123
@@ -88,43 +86,42 @@
 
 </template>
 <script>
-  export default {
-    data() {
-      return {
-        pickerOptions: {
-          shortcuts: [{
-            text: '最近一周',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-              picker.$emit('pick', [start, end]);
-            }
-          }, {
-            text: '最近一个月',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-              picker.$emit('pick', [start, end]);
-            }
-          }, {
-            text: '最近三个月',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-              picker.$emit('pick', [start, end]);
-            }
-          }]
-        },
-        value1: '',
-        value2: ''
-      };
+export default {
+  data() {
+    return {
+      pickerOptions: {
+        shortcuts: [{
+          text: '最近一周',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近一个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近三个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+            picker.$emit('pick', [start, end])
+          }
+        }]
+      },
+      value1: '',
+      value2: ''
     }
-  };
+  }
+}
 </script>
-
 
 <style scoped>
   .app-dataScreening-container{
@@ -209,8 +206,6 @@
   .app-dataScreening-staffItem-info-img img{
     width:100%;
   }
-  
-
 
   .app-dataScreening-listWrapper{
     box-shadow: 0px 0px 15px 0px rgba(0,58,112,0.05);
@@ -226,6 +221,5 @@
     min-height: 500px;
     margin-bottom: 0px;
   }
-
 
 </style>

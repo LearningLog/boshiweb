@@ -309,12 +309,12 @@
       @checkedFile="checkedFile"
     />
     <AddLessonEvalLabels
-        :visible2.sync="visible2"
-        :current-labels.sync="currentLabels"
-        :select-company-id="form.selectCompanyId"
-        :egroup="egroup"
-        @AddLessonEvalLabels="getLabels"
-        @visibleAddLessonEvalLabels="onvisible2"
+      :visible2.sync="visible2"
+      :current-labels.sync="currentLabels"
+      :select-company-id="form.selectCompanyId"
+      :egroup="egroup"
+      @AddLessonEvalLabels="getLabels"
+      @visibleAddLessonEvalLabels="onvisible2"
     />
   </div>
 </template>

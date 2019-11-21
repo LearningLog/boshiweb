@@ -4,9 +4,10 @@
       <div class="detailFormContent clearfix">
         <div class="fl pic">
           <el-image
-              class="thumbnailPic"
-              :src="getPic(form) || file_knowledge"
-              fit="contain"></el-image>
+            class="thumbnailPic"
+            :src="getPic(form) || file_knowledge"
+            fit="contain"
+          />
         </div>
         <div class="fl file-info m0a">
           <el-form ref="form" :model="form" class="formDetail" label-width="100px">

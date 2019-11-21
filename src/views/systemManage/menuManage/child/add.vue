@@ -35,22 +35,6 @@ import { addMenu } from '@/api/systemManage-menuManage'
 import { updateMenuRoute } from '@/utils/update-menu-router'
 
 export default {
-  watch: {
-    // 监听表单数据变化
-    form: {
-      handler(val) {
-        if (val) {
-          this.dataIsChange++
-        }
-      },
-      deep: true // 深层次监听
-    }
-  },
-  created() {
-    this.menuType = this.$store.state.menuManage.menuType
-    this.pid = this.$route.query.pid
-    this.pname = this.$route.query.pname
-  },
   data() {
     return {
       menuType: [], // 菜单类型
@@ -89,6 +73,22 @@ export default {
         ]
       }
     }
+  },
+  watch: {
+    // 监听表单数据变化
+    form: {
+      handler(val) {
+        if (val) {
+          this.dataIsChange++
+        }
+      },
+      deep: true // 深层次监听
+    }
+  },
+  created() {
+    this.menuType = this.$store.state.menuManage.menuType
+    this.pid = this.$route.query.pid
+    this.pname = this.$route.query.pname
   },
   methods: {
     // 保存

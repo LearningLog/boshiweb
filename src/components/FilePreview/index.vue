@@ -8,7 +8,7 @@
       height="60vh"
       @close="cancel"
     >
-      <div class="previewImg" :style="previewImg" v-if="fileTypeCode === 3" />
+      <div v-if="fileTypeCode === 3" class="previewImg" :style="previewImg" />
       <div class="vadioPlay">
         <!--<video id="video_1" src="" class="video video-js vjs-big-play-centered" controls preload="auto" v-if="fileTypeCode === 1"></video>-->
         <!--<audio id="audio_1" src="" class="video video-js vjs-big-play-centered" controls preload="auto" v-if="fileTypeCode === 2"></audio>-->

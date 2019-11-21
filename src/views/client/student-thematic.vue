@@ -56,44 +56,44 @@
           </div>
         </div>
         <div class="fl comment">
-	        <div class="lessonOrcommentBtn">
-		        <div class="catalogueTopBtn" :class="{ lessonOrcommentActive: lessonOrcommentActive === 1 }" @click="lessonOrcommentActiveChange(1)">目录</div>
-		        <div class="top-text" :class="{ lessonOrcommentActive: lessonOrcommentActive === 2 }" @click="lessonOrcommentActiveChange(2)">讨论</div>
-	        </div>
-	        <div class="lessonOrcomment">
-		        <div class="catalogues" v-show="lessonOrcommentActive === 1">
-			        <el-scrollbar ref="catalogues" wrap-class="scrollbar-wrapper">
-				        <ul class="catalogues-list">
-					        <li class="catalogues-item" :class="{ cataloguesItemActive: cataloguesItemActive === index }" v-for="(item, index) in lessonList" :key="item._id" @click="cataloguesItemChange(item, index)">
-						        <span>课时{{ index + 1 }}</span><span class="circle">○</span><span class="cname1">{{ item.cname }}</span>
-					        </li>
-				        </ul>
-			        </el-scrollbar>
-		        </div>
-		        <div v-show="!commentsList.length && lessonOrcommentActive === 2" class="comment-wapper-nocomment">
-			        <img :src="nocomment" alt="暂无评论">
-		        </div>
-		        <div v-show="commentsList.length && lessonOrcommentActive === 2" class="comment-wapper">
-			        <el-scrollbar id="content" ref="comments" wrap-class="scrollbar-wrapper">
-				        <ul class="comments-list">
-					        <li v-for="(item, index) in commentsList" :key="index" class="infinite-list-item">
-						        <div class="item-top clearfix">
-							        <div class="fl">
-								        <el-avatar class="header" :src="item.header || defaultAvatar"  @error="avatarErrorHandler">
-									        <img :src="defaultAvatar"/>
-								        </el-avatar>
-								        <span class="uname">{{ item.uname }}</span>
-							        </div>
-							        <span class="fr c_time">
-                    {{ parseTime(item.c_timestamp) }}
-                  </span>
-						        </div>
-						        <div class="msg">{{ item.msg }}</div>
-					        </li>
-				        </ul>
-			        </el-scrollbar>
-		        </div>
-	        </div>
+          <div class="lessonOrcommentBtn">
+            <div class="catalogueTopBtn" :class="{ lessonOrcommentActive: lessonOrcommentActive === 1 }" @click="lessonOrcommentActiveChange(1)">目录</div>
+            <div class="top-text" :class="{ lessonOrcommentActive: lessonOrcommentActive === 2 }" @click="lessonOrcommentActiveChange(2)">讨论</div>
+          </div>
+          <div class="lessonOrcomment">
+            <div v-show="lessonOrcommentActive === 1" class="catalogues">
+              <el-scrollbar ref="catalogues" wrap-class="scrollbar-wrapper">
+                <ul class="catalogues-list">
+                  <li v-for="(item, index) in lessonList" :key="item._id" class="catalogues-item" :class="{ cataloguesItemActive: cataloguesItemActive === index }" @click="cataloguesItemChange(item, index)">
+                    <span>课时{{ index + 1 }}</span><span class="circle">○</span><span class="cname1">{{ item.cname }}</span>
+                  </li>
+                </ul>
+              </el-scrollbar>
+            </div>
+            <div v-show="!commentsList.length && lessonOrcommentActive === 2" class="comment-wapper-nocomment">
+              <img :src="nocomment" alt="暂无评论">
+            </div>
+            <div v-show="commentsList.length && lessonOrcommentActive === 2" class="comment-wapper">
+              <el-scrollbar id="content" ref="comments" wrap-class="scrollbar-wrapper">
+                <ul class="comments-list">
+                  <li v-for="(item, index) in commentsList" :key="index" class="infinite-list-item">
+                    <div class="item-top clearfix">
+                      <div class="fl">
+                        <el-avatar class="header" :src="item.header || defaultAvatar" @error="avatarErrorHandler">
+                          <img :src="defaultAvatar">
+                        </el-avatar>
+                        <span class="uname">{{ item.uname }}</span>
+                      </div>
+                      <span class="fr c_time">
+                        {{ parseTime(item.c_timestamp) }}
+                      </span>
+                    </div>
+                    <div class="msg">{{ item.msg }}</div>
+                  </li>
+                </ul>
+              </el-scrollbar>
+            </div>
+          </div>
           <div class="comment-send">
             <el-input v-model="comment" class="comment-input" clearable :disabled="lessonStatus.chapterForbid === 2" @keyup.enter.native="sendComment" /><el-button class="comment-btn" type="primary" :disabled="lessonStatus.chapterForbid === 2" @click="sendComment">发送</el-button>
           </div>

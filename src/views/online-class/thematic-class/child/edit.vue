@@ -41,32 +41,32 @@
       >
         <el-form-item label="专题名称" prop="lesson_name">
           <el-input
-              v-model="form.lesson_name"
-              placeholder="请输入专题名称"
-              maxlength="50"
-              clearable
+            v-model="form.lesson_name"
+            placeholder="请输入专题名称"
+            maxlength="50"
+            clearable
           />
         </el-form-item>
         <el-form-item label="课程封面" class="logoClass">
           <el-upload
-              ref="coverPic"
-              class="coverPic"
-              name="thumbnailfile"
-              :action="uploadUrl()"
-              :headers="headers"
-              accept=".jpg,.png,.gif,.jepg,.jpeg"
-              drag
-              :data="fileInfo"
-              :limit="2"
-              :file-list="fileList"
-              list-type="picture-card"
-              :auto-upload="false"
-              :on-change="changeUpload"
-              :on-success="handleSuccess"
-              :on-error="handleUploadError"
-              :on-preview="handlePreview"
-              :before-remove="beforeRemove"
-              :on-remove="handleRemove"
+            ref="coverPic"
+            class="coverPic"
+            name="thumbnailfile"
+            :action="uploadUrl()"
+            :headers="headers"
+            accept=".jpg,.png,.gif,.jepg,.jpeg"
+            drag
+            :data="fileInfo"
+            :limit="2"
+            :file-list="fileList"
+            list-type="picture-card"
+            :auto-upload="false"
+            :on-change="changeUpload"
+            :on-success="handleSuccess"
+            :on-error="handleUploadError"
+            :on-preview="handlePreview"
+            :before-remove="beforeRemove"
+            :on-remove="handleRemove"
           >
             <!--<img v-if="deskTopImageUrl" :src="deskTopImageUrl" class="avatar">-->
             <i class="el-icon-plus avatar-uploader-icon" />
@@ -75,13 +75,13 @@
         <el-form-item label="标签" class="addLabel">
           <div v-if="currentLabels.length" class="tag">
             <el-tag
-                v-for="(tag, index) in currentLabels"
-                :key="tag.linc"
-                closable
-                size="medium"
-                :disable-transitions="false"
-                type="success"
-                @close="handleLabelDel(index)"
+              v-for="(tag, index) in currentLabels"
+              :key="tag.linc"
+              closable
+              size="medium"
+              :disable-transitions="false"
+              type="success"
+              @close="handleLabelDel(index)"
             >
               {{ tag.lname }}
             </el-tag>
@@ -90,10 +90,10 @@
         </el-form-item>
         <el-form-item label="专题简介">
           <el-input
-              v-model="form.brief"
-              type="textarea"
-              :rows="2"
-              placeholder="请输入课程简介"
+            v-model="form.brief"
+            type="textarea"
+            :rows="2"
+            placeholder="请输入课程简介"
           />
         </el-form-item>
       </el-form>
@@ -203,12 +203,12 @@
     </el-dialog>
 
     <AddLessonEvalLabels
-        :visible2.sync="visible2"
-        :current-labels.sync="currentLabels"
-        :select-company-id="form.selectCompanyId"
-        :egroup="form.egroup"
-        @AddLessonEvalLabels="getLabels"
-        @visibleAddLessonEvalLabels="onvisible2"
+      :visible2.sync="visible2"
+      :current-labels.sync="currentLabels"
+      :select-company-id="form.selectCompanyId"
+      :egroup="form.egroup"
+      @AddLessonEvalLabels="getLabels"
+      @visibleAddLessonEvalLabels="onvisible2"
     />
   </div>
 </template>

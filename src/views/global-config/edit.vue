@@ -167,13 +167,6 @@ export default {
       }
     }
   },
-  created() {
-    this.form.key = this.$route.query.key
-    this.form.val = this.$route.query.value
-    this.form.type = this.$route.query.type
-    this.form.password = this.pwd
-    this.dataIsChange = -1
-  },
   watch: {
     // 监听对象变化
     form: {
@@ -184,6 +177,13 @@ export default {
       },
       deep: true // 深层次监听
     }
+  },
+  created() {
+    this.form.key = this.$route.query.key
+    this.form.val = this.$route.query.value
+    this.form.type = this.$route.query.type
+    this.form.password = this.pwd
+    this.dataIsChange = -1
   },
   methods: {
     // 提交

@@ -311,7 +311,7 @@
         </div>
         <div class="bottomOperate tc">
           <div
-		        v-if="chapter.type === 1"
+            v-if="chapter.type === 1"
             class="itemOperate pointer"
             :class="{ activeSet: isActiveSet === 1 }"
             @click="active(1)"
@@ -319,7 +319,7 @@
             <i class="iconfont iconxitong" /><span>直播源设置</span>
           </div>
           <div
-						v-if="loginUser === chapter.user_id && chapter.type === 1"
+            v-if="loginUser === chapter.user_id && chapter.type === 1"
             class="itemOperate pointer"
             :class="{ activeSet: isActiveSet === 2 }"
             @click="active(2)"
@@ -373,8 +373,8 @@
               <li v-for="(item, index) in commentsList" :key="index" class="infinite-list-item clearfix">
                 <div class="item-top clearfix">
                   <div class="fl">
-                    <el-avatar class="header" :src="item.header || defaultAvatar"  @error="avatarErrorHandler">
-                      <img :src="defaultAvatar"/>
+                    <el-avatar class="header" :src="item.header || defaultAvatar" @error="avatarErrorHandler">
+                      <img :src="defaultAvatar">
                     </el-avatar>
                     <span class="uname">{{ item.uname }}</span>
                   </div>

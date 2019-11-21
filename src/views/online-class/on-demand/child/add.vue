@@ -49,9 +49,9 @@
         </el-form-item>
         <el-form-item label="点播视频" class="chapterFile" prop="video_name">
           <el-input
-              v-model="form.video_name"
-              disabled
-              placeholder="请选择视频"
+            v-model="form.video_name"
+            disabled
+            placeholder="请选择视频"
           />
           <div class="checkFile" @click="selectVideo">选择</div>
         </el-form-item>
@@ -65,24 +65,24 @@
         </el-form-item>
         <el-form-item label="课程封面" class="logoClass">
           <el-upload
-              ref="coverPic"
-              class="coverPic"
-              name="thumbnailfile"
-              :action="uploadUrl()"
-              :headers="headers"
-              accept=".jpg,.png,.gif,.jepg,.jpeg"
-              drag
-              :data="fileInfo"
-              :limit="2"
-              :file-list="fileList"
-              list-type="picture-card"
-              :auto-upload="false"
-              :on-change="changeUpload"
-              :on-success="handleSuccess"
-              :on-error="handleUploadError"
-              :on-preview="handlePreview"
-              :before-remove="beforeRemove"
-              :on-remove="handleRemove"
+            ref="coverPic"
+            class="coverPic"
+            name="thumbnailfile"
+            :action="uploadUrl()"
+            :headers="headers"
+            accept=".jpg,.png,.gif,.jepg,.jpeg"
+            drag
+            :data="fileInfo"
+            :limit="2"
+            :file-list="fileList"
+            list-type="picture-card"
+            :auto-upload="false"
+            :on-change="changeUpload"
+            :on-success="handleSuccess"
+            :on-error="handleUploadError"
+            :on-preview="handlePreview"
+            :before-remove="beforeRemove"
+            :on-remove="handleRemove"
           >
             <!--<img v-if="deskTopImageUrl" :src="deskTopImageUrl" class="avatar">-->
             <i class="el-icon-plus avatar-uploader-icon" />
@@ -106,10 +106,10 @@
         </el-form-item>
         <el-form-item label="课程简介">
           <el-input
-              v-model="form.brief"
-              type="textarea"
-              :rows="2"
-              placeholder="请输入课程简介"
+            v-model="form.brief"
+            type="textarea"
+            :rows="2"
+            placeholder="请输入课程简介"
           />
         </el-form-item>
         <el-form-item label="评论控制" prop="can_discuss">
@@ -225,20 +225,20 @@
     </el-dialog>
 
     <el-dialog
-        v-el-drag-dialog
-        title="选择视频"
-        width="592px"
-        :visible.sync="visibleSelectVideo"
+      v-el-drag-dialog
+      title="选择视频"
+      width="592px"
+      :visible.sync="visibleSelectVideo"
     >
       <div class="clearfix searchFile">
         <div class="fr">
           <el-input
-              v-model="listQuery.fileName"
-              class="global-search"
-              placeholder="请输入文件名称"
-              clearable
-              @keyup.enter.native="getFileList"
-              @clear="getFileList"
+            v-model="listQuery.fileName"
+            class="global-search"
+            placeholder="请输入文件名称"
+            clearable
+            @keyup.enter.native="getFileList"
+            @clear="getFileList"
           >
             <el-button slot="append" icon="el-icon-search" @click="getFileList" />
           </el-input>
@@ -247,17 +247,17 @@
       <el-scrollbar wrap-class="scrollbar-wrapper">
         <ul v-infinite-scroll="getFileList" class="fileList">
           <li
-              v-for="(item, index) in videolist"
-              :key="index"
-              class="itemFile"
+            v-for="(item, index) in videolist"
+            :key="index"
+            class="itemFile"
           >
             <el-radio-group v-model="radio" class="checkbox" @change="checkVideoChange">
               <el-radio :label="item">{{ item.aaa }}</el-radio>
             </el-radio-group>
             <el-image
-                class="imgCover"
-                :src="item.preview_pic || file_knowledge"
-                fit="contain"
+              class="imgCover"
+              :src="item.preview_pic || file_knowledge"
+              fit="contain"
             />
             <el-tooltip effect="dark" :content="item.name" placement="top">
               <span class="name">{{ item.name }}</span>
@@ -276,12 +276,12 @@
       @checkedFile="checkedFile"
     />
     <AddLessonEvalLabels
-        :visible2.sync="visible2"
-        :current-labels.sync="currentLabels"
-        :select-company-id="form.selectCompanyId"
-        :egroup="form.egroup"
-        @AddLessonEvalLabels="getLabels"
-        @visibleAddLessonEvalLabels="onvisible2"
+      :visible2.sync="visible2"
+      :current-labels.sync="currentLabels"
+      :select-company-id="form.selectCompanyId"
+      :egroup="form.egroup"
+      @AddLessonEvalLabels="getLabels"
+      @visibleAddLessonEvalLabels="onvisible2"
     />
   </div>
 </template>

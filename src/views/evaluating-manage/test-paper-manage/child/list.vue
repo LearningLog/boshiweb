@@ -75,7 +75,7 @@
       <el-button v-show="total>0" type="primary" plain @click="exportPaper"><i class="iconfont icondaochu" />批量导出</el-button>
     </div>
     <PublishExam :select-company-id="selectCompanyId" :publish-dialog="publishDialog" :score-count="scoreCount" @publishExam="publishExam" @visiblePublish="visiblePublish" />
-    <AddSelectGroup :visibleSelectGroup="visibleSelectGroup" @getSelectGroup="getSelectGroup"></AddSelectGroup>
+    <AddSelectGroup :visible-select-group="visibleSelectGroup" @getSelectGroup="getSelectGroup" />
   </div>
 </template>
 

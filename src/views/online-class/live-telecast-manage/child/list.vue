@@ -122,9 +122,9 @@
       <el-table-column class-name="status-col" label="小组" min-width="120" align="center" prop="groupName" show-overflow-tooltip />
       <el-table-column class-name="status-col" label="状态" min-width="64" align="center">
         <template slot-scope="scope">
-          <el-tag type="warning" v-if="scope.row.allow_broadcast === 1">未开始</el-tag>
-          <el-tag type="success" v-else-if="scope.row.allow_broadcast === 2">已开始</el-tag>
-          <el-tag type="danger" v-else>已结束</el-tag>
+          <el-tag v-if="scope.row.allow_broadcast === 1" type="warning">未开始</el-tag>
+          <el-tag v-else-if="scope.row.allow_broadcast === 2" type="success">已开始</el-tag>
+          <el-tag v-else type="danger">已结束</el-tag>
         </template>
       </el-table-column>
       <el-table-column align="center" label="创建人" min-width="90" prop="userNickName" show-overflow-tooltip />

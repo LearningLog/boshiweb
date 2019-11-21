@@ -131,7 +131,7 @@
         <el-button @click="visiblePublish = false">取 消</el-button>
       </div>
     </el-dialog>
-    <AddSelectGroup :visibleSelectGroup="visibleSelectGroup" @getSelectGroup="getSelectGroup"></AddSelectGroup>
+    <AddSelectGroup :visible-select-group="visibleSelectGroup" @getSelectGroup="getSelectGroup" />
   </div>
 </template>
 

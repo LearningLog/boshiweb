@@ -11,7 +11,7 @@
       <el-form label-width="100px">
         <tenants-groups-roles
           :is-render-role="false"
-          :isRenderGroup="isRenderGroup"
+          :is-render-group="isRenderGroup"
           which-group="manageEgroupInfo"
           @tenantsGroupsRolesVal="tenantsGroupsRolesVal"
         />

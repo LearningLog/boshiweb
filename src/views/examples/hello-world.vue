@@ -13,12 +13,11 @@
     <el-button type="primary" @click="showUpload">showUpload</el-button>
     <el-button type="primary" @click="closeUpload">showUpload</el-button>
 
-
-    <FilePreview :isFilePreview="isFilePreview" :fileFormat="fileFormat" :fileTypeCode="fileTypeCode" :fileUrl="fileUrl" :title="title" @closePreview="closePreview"></FilePreview>
-    <el-button type="primary" plain  @click="pic_1">pic_1</el-button>
-    <el-button type="primary" plain  @click="video_1">video_1</el-button>
-    <el-button type="primary" plain  @click="audio_1">audio_1</el-button>
-    <el-button type="primary" plain  @click="pdf_1">pdf_1</el-button>
+    <FilePreview :is-file-preview="isFilePreview" :file-format="fileFormat" :file-type-code="fileTypeCode" :file-url="fileUrl" :title="title" @closePreview="closePreview" />
+    <el-button type="primary" plain @click="pic_1">pic_1</el-button>
+    <el-button type="primary" plain @click="video_1">video_1</el-button>
+    <el-button type="primary" plain @click="audio_1">audio_1</el-button>
+    <el-button type="primary" plain @click="pdf_1">pdf_1</el-button>
 
     <br><br>
     <!--引入组件-->
