@@ -1,404 +1,449 @@
 <template>
-  <el-container class="container">
-    <el-header class="header">
-      <div class="clearfix">
-        <p class="fl cname">{{ chapter.cname }}</p>
-        <div class="fr">
-          <div class="pointer share">
-            <el-popover
-              v-model="shareVisible"
-              placement="bottom"
-              width="114"
-              height="120"
-            >
-              <div class="tc">
-                <el-link
-                  type="info"
-                  @click="clipboard($event)"
-                >复制分享地址</el-link>
-                <qriously
-                  :value="shareUrl"
-                  :size="80"
-                  element="img"
-                  :background-alpha="1"
-                />
-              </div>
-              <span
-                slot="reference"
-              ><i class="iconfont iconfenxiang" />分享</span>
-            </el-popover>
-          </div>
-          <span class="interval" />
-          <span>{{ chapter.nickname }}</span>
-        </div>
-      </div>
-    </el-header>
-    <el-main class="main">
-      <div class="fl set">
-        <div class="topSet">
-          <div v-if="chapter.type === 1" v-show="isActiveSet === 1" class="activeSet1">
-            <p class="tip">小提示：设置完成，点击开启直播按钮即可</p>
-            <div class="selectType">
-              <span
-                class="type1"
-                :class="{ activeSelect: isActiveSelect === 1 }"
-                @click="activeSelect(1)"
-              >使用电脑直播（OBS）</span>
-              <span
-                class="type2"
-                :class="{ activeSelect: isActiveSelect === 2 }"
-                @click="activeSelect(2)"
-              >使用手机直播（视界直播）</span>
-              <span
-                class="type3"
-                :class="{ activeSelect: isActiveSelect === 3 }"
-                @click="activeSelect(3)"
-              >使用其他设备直播</span>
-            </div>
-            <div>
-              <div v-show="isActiveSelect === 1" class="activeSelect1">
-                <p>
-                  支持OBS在电脑桌面演示直播，下载地址见
-                  <a
-                    href="https://obsproject.com/download?spm=a2c4g.11186623.2.10.72d76812ZGLeor"
-                    class="obs"
-                  >OBS官网下载地址</a>
-                </p>
-                <div
-                  v-for="(item, index) in live_info"
-                  :key="item._id"
-                  class="parkingPosition"
-                >
-                  <span class="pos fl">机位{{ index + 1 }}：</span>
-                  <el-form
-                    ref="chapter"
-                    class="chapterForm"
-                    :model="item"
-                    label-width="100px"
-                  >
-                    <el-form-item label="URL：">
-                      <el-input
-                        :value="cutOut(item.publishUrl)"
-                        disabled
-                      /><span
-                        class="copy"
-                        @click="clipboard(cutOut(item.publishUrl), $event)"
-                      >复制地址</span>
-                    </el-form-item>
-                    <el-form-item label="流名称/密钥：">
-                      <el-input :value="item.streamName" disabled /><span
-                        class="copy"
-                        @click="clipboard(item.streamName, $event)"
-                      >复制流名</span>
-                    </el-form-item>
-                  </el-form>
+  <div>
+    <el-container class="container">
+      <el-header class="header">
+        <div class="clearfix">
+          <p class="fl cname">{{ chapter.cname }}</p>
+          <div class="fr">
+            <div class="pointer share">
+              <el-popover
+                  v-model="shareVisible"
+                  placement="bottom"
+                  width="114"
+                  height="120"
+              >
+                <div class="tc">
+                  <el-link
+                      type="info"
+                      @click="clipboard($event)"
+                  >复制分享地址</el-link>
+                  <qriously
+                      :value="shareUrl"
+                      :size="80"
+                      element="img"
+                      :background-alpha="1"
+                  />
                 </div>
+                <span
+                    slot="reference"
+                ><i class="iconfont iconfenxiang" />分享</span>
+              </el-popover>
+            </div>
+            <span class="interval" />
+            <span class="pointer" @click="downloadFile"><i class="iconfont iconwechaticon16"></i>下载课件</span>
+            <span class="interval" />
+            <span class="pointer" @click="appraise">课程评价</span>
+            <span class="interval" />
+            <span>{{ chapter.nickname }}</span>
+          </div>
+        </div>
+      </el-header>
+      <el-main class="main">
+        <div class="fl set">
+          <div class="topSet">
+            <div v-if="chapter.type === 1" v-show="isActiveSet === 1" class="activeSet1">
+              <p class="tip">小提示：设置完成，点击开启直播按钮即可</p>
+              <div class="selectType">
+              <span
+                  class="type1"
+                  :class="{ activeSelect: isActiveSelect === 1 }"
+                  @click="activeSelect(1)"
+              >使用电脑直播（OBS）</span>
+                <span
+                    class="type2"
+                    :class="{ activeSelect: isActiveSelect === 2 }"
+                    @click="activeSelect(2)"
+                >使用手机直播（视界直播）</span>
+                <span
+                    class="type3"
+                    :class="{ activeSelect: isActiveSelect === 3 }"
+                    @click="activeSelect(3)"
+                >使用其他设备直播</span>
               </div>
-              <div v-show="isActiveSelect === 2" class="activeSelect2 clearfix">
-                <div class="fl app">
+              <div>
+                <div v-show="isActiveSelect === 1" class="activeSelect1">
                   <p>
-                    下载并安装视界直播APP，(如两个机位均为手机直播，请使用两部手机下载安装，分别设置)
+                    支持OBS在电脑桌面演示直播，下载地址见
+                    <a
+                        href="https://obsproject.com/download?spm=a2c4g.11186623.2.10.72d76812ZGLeor"
+                        class="obs"
+                    >OBS官网下载地址</a>
                   </p>
-                  <p>打开APP，点击设置，将机位对应的接入码输入至验证框中：</p>
-                  <div class="parkingPosition">
+                  <div
+                      v-for="(item, index) in live_info"
+                      :key="item._id"
+                      class="parkingPosition"
+                  >
+                    <span class="pos fl">机位{{ index + 1 }}：</span>
                     <el-form
-                      ref="chapter"
-                      class="chapterForm"
-                      label-width="130px"
+                        ref="chapter"
+                        class="chapterForm"
+                        :model="item"
+                        label-width="100px"
                     >
-                      <el-form-item
-                        v-for="(item, index) in live_info"
-                        :key="item._id"
-                        :label="'机位' + (index + 1) + '接入码：'"
-                      >
-                        <el-input :value="item.auth_appcode" disabled /><span
+                      <el-form-item label="URL：">
+                        <el-input
+                            :value="cutOut(item.publishUrl)"
+                            disabled
+                        /><span
                           class="copy"
-                          @click="clipboard(item.auth_appcode, $event)"
-                        >复制</span>
+                          @click="clipboard(cutOut(item.publishUrl), $event)"
+                      >复制地址</span>
+                      </el-form-item>
+                      <el-form-item label="流名称/密钥：">
+                        <el-input :value="item.streamName" disabled /><span
+                          class="copy"
+                          @click="clipboard(item.streamName, $event)"
+                      >复制流名</span>
                       </el-form-item>
                     </el-form>
                   </div>
-                  <p>设置完成，点击开启直播按钮即可。</p>
                 </div>
-                <div class="fl qrCode">
-                  <img :src="chapter.QR_CODE_URL" alt="">
+                <div v-show="isActiveSelect === 2" class="activeSelect2 clearfix">
+                  <div class="fl app">
+                    <p>
+                      下载并安装视界直播APP，(如两个机位均为手机直播，请使用两部手机下载安装，分别设置)
+                    </p>
+                    <p>打开APP，点击设置，将机位对应的接入码输入至验证框中：</p>
+                    <div class="parkingPosition">
+                      <el-form
+                          ref="chapter"
+                          class="chapterForm"
+                          label-width="130px"
+                      >
+                        <el-form-item
+                            v-for="(item, index) in live_info"
+                            :key="item._id"
+                            :label="'机位' + (index + 1) + '接入码：'"
+                        >
+                          <el-input :value="item.auth_appcode" disabled /><span
+                            class="copy"
+                            @click="clipboard(item.auth_appcode, $event)"
+                        >复制</span>
+                        </el-form-item>
+                      </el-form>
+                    </div>
+                    <p>设置完成，点击开启直播按钮即可。</p>
+                  </div>
+                  <div class="fl qrCode">
+                    <img :src="chapter.QR_CODE_URL" alt="">
+                  </div>
                 </div>
-              </div>
-              <div v-show="isActiveSelect === 3" class="activeSelect3">
-                <p>直播设备设置请参见其直播设置说明，其中所需推流地址如下：</p>
-                <div
-                  v-for="(item, index) in live_info"
-                  :key="item._id"
-                  class="parkingPosition"
-                >
-                  <span class="pos fl">机位{{ index + 1 }}：</span>
-                  <el-form
-                    ref="chapter"
-                    class="chapterForm"
-                    :model="item"
-                    label-width="100px"
+                <div v-show="isActiveSelect === 3" class="activeSelect3">
+                  <p>直播设备设置请参见其直播设置说明，其中所需推流地址如下：</p>
+                  <div
+                      v-for="(item, index) in live_info"
+                      :key="item._id"
+                      class="parkingPosition"
                   >
-                    <el-form-item label="URL：">
-                      <el-input
-                        :value="cutOut(item.publishUrl)"
-                        disabled
-                      /><span
-                        class="copy"
-                        @click="clipboard(cutOut(item.publishUrl), $event)"
+                    <span class="pos fl">机位{{ index + 1 }}：</span>
+                    <el-form
+                        ref="chapter"
+                        class="chapterForm"
+                        :model="item"
+                        label-width="100px"
+                    >
+                      <el-form-item label="URL：">
+                        <el-input
+                            :value="cutOut(item.publishUrl)"
+                            disabled
+                        /><span
+                          class="copy"
+                          @click="clipboard(cutOut(item.publishUrl), $event)"
                       >复制地址</span>
-                    </el-form-item>
-                    <el-form-item label="流名称/密钥：">
-                      <el-input :value="item.streamName" disabled /><span
-                        class="copy"
-                        @click="clipboard(item.streamName, $event)"
+                      </el-form-item>
+                      <el-form-item label="流名称/密钥：">
+                        <el-input :value="item.streamName" disabled /><span
+                          class="copy"
+                          @click="clipboard(item.streamName, $event)"
                       >复制流名</span>
-                    </el-form-item>
-                  </el-form>
+                      </el-form-item>
+                    </el-form>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div
-            v-if="loginUser === chapter.user_id && chapter.type === 1"
-            v-show="isActiveSet === 2"
-            class="activeSet2"
-          >
-            <p class="statistics">
-              已上线人数/总人数： {{ online }}/{{ total2 }}
-            </p>
-            <el-scrollbar wrap-class="scrollbar-wrapper">
-              <el-table v-loading="listLoading" :data="userList" fit>
-                <el-table-column
-                  align="center"
-                  label="姓名"
-                  min-width="90"
-                  prop="userName"
-                  show-overflow-tooltip
-                />
-                <el-table-column
-                  align="center"
-                  label="小组"
-                  min-width="90"
-                  prop="groupId"
-                  show-overflow-tooltip
-                />
-                <el-table-column
-                  class-name="status-col"
-                  label="转态"
-                  min-width="150"
-                  align="center"
-                  show-overflow-tooltip
-                >
-                  <template slot-scope="scope">
-                    <el-tag
-                      v-if="scope.row.status === 1"
-                      type="success"
-                    >已上线</el-tag>
-                    <el-tag v-else type="danger">未上线</el-tag>
-                  </template>
-                </el-table-column>
-                <el-table-column
-                  align="center"
-                  label="上线时间"
-                  min-width="140"
-                  show-overflow-tooltip
-                >
-                  <template slot-scope="scope">
+            <div
+                v-if="loginUser === chapter.user_id && chapter.type === 1"
+                v-show="isActiveSet === 2"
+                class="activeSet2"
+            >
+              <p class="statistics">
+                已上线人数/总人数： {{ online }}/{{ total2 }}
+              </p>
+              <el-scrollbar wrap-class="scrollbar-wrapper">
+                <el-table v-loading="listLoading" :data="userList" fit>
+                  <el-table-column
+                      align="center"
+                      label="姓名"
+                      min-width="90"
+                      prop="userName"
+                      show-overflow-tooltip
+                  />
+                  <el-table-column
+                      align="center"
+                      label="小组"
+                      min-width="90"
+                      prop="groupId"
+                      show-overflow-tooltip
+                  />
+                  <el-table-column
+                      class-name="status-col"
+                      label="转态"
+                      min-width="150"
+                      align="center"
+                      show-overflow-tooltip
+                  >
+                    <template slot-scope="scope">
+                      <el-tag
+                          v-if="scope.row.status === 1"
+                          type="success"
+                      >已上线</el-tag>
+                      <el-tag v-else type="danger">未上线</el-tag>
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                      align="center"
+                      label="上线时间"
+                      min-width="140"
+                      show-overflow-tooltip
+                  >
+                    <template slot-scope="scope">
                     <span v-if="scope.row.time">{{
                       parseTime(scope.row.time)
                     }}</span>
-                    <span v-else>--</span>
-                  </template>
-                </el-table-column>
-                <el-table-column
-                  class-name="status-col"
-                  label="操作"
-                  width="160"
-                  align="center"
-                  fixed="right"
+                      <span v-else>--</span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                      class-name="status-col"
+                      label="操作"
+                      width="160"
+                      align="center"
+                      fixed="right"
+                  >
+                    <template slot-scope="scope">
+                      <el-button
+                          v-if="scope.row.shotOff === 1"
+                          :disabled="loginUser === scope.row.userId"
+                          size="mini"
+                          @click="isRemove(scope.row, 2)"
+                      ><i class="iconfont iconjia" />加入</el-button>
+                      <el-button
+                          v-else
+                          :disabled="loginUser === scope.row.userId"
+                          size="mini"
+                          @click="isRemove(scope.row, 1)"
+                      ><i class="iconfont iconshanchu" />移除</el-button>
+                      <el-button
+                          v-if="scope.row.forbid === 1"
+                          :disabled="loginUser === scope.row.userId"
+                          size="mini"
+                          @click="isNoWord(scope.row, 2)"
+                      ><i class="iconfont iconfayan" />发言</el-button>
+                      <el-button
+                          v-else
+                          :disabled="loginUser === scope.row.userId"
+                          size="mini"
+                          @click="isNoWord(scope.row, 1)"
+                      ><i class="iconfont iconjinzhifayan" />禁言</el-button>
+                    </template>
+                  </el-table-column>
+                </el-table>
+                <pagination
+                    v-show="total > 0"
+                    :total="total"
+                    :page-sizes="[]"
+                    :page.sync="listQuery.currentPage"
+                    :limit.sync="listQuery.pageSize"
+                    @pagination="getUserList"
+                />
+              </el-scrollbar>
+            </div>
+            <div v-show="isActiveSet === 3" class="activeSet3">
+              <embed :src="chapter.chapter_file" type="application/pdf">
+            </div>
+            <div v-show="isActiveSet === 4" class="activeSet4">
+              <div class="form-edit">
+                <el-form
+                    ref="chapterForm"
+                    class="form"
+                    :model="chapterForm"
+                    :rules="rules"
+                    label-width="100px"
+                    :status-icon="true"
                 >
-                  <template slot-scope="scope">
-                    <el-button
-                      v-if="scope.row.shotOff === 1"
-                      :disabled="loginUser === scope.row.userId"
-                      size="mini"
-                      @click="isRemove(scope.row, 2)"
-                    ><i class="iconfont iconjia" />加入</el-button>
-                    <el-button
-                      v-else
-                      :disabled="loginUser === scope.row.userId"
-                      size="mini"
-                      @click="isRemove(scope.row, 1)"
-                    ><i class="iconfont iconshanchu" />移除</el-button>
-                    <el-button
-                      v-if="scope.row.forbid === 1"
-                      :disabled="loginUser === scope.row.userId"
-                      size="mini"
-                      @click="isNoWord(scope.row, 2)"
-                    ><i class="iconfont iconfayan" />发言</el-button>
-                    <el-button
-                      v-else
-                      :disabled="loginUser === scope.row.userId"
-                      size="mini"
-                      @click="isNoWord(scope.row, 1)"
-                    ><i class="iconfont iconjinzhifayan" />禁言</el-button>
-                  </template>
-                </el-table-column>
-              </el-table>
-              <pagination
-                v-show="total > 0"
-                :total="total"
-                :page-sizes="[]"
-                :page.sync="listQuery.currentPage"
-                :limit.sync="listQuery.pageSize"
-                @pagination="getUserList"
-              />
-            </el-scrollbar>
-          </div>
-          <div v-show="isActiveSet === 3" class="activeSet3">
-            <embed :src="chapter.chapter_file" type="application/pdf">
-          </div>
-          <div v-show="isActiveSet === 4" class="activeSet4">
-            <div class="form-edit">
-              <el-form
-                ref="chapterForm"
-                class="form"
-                :model="chapterForm"
-                :rules="rules"
-                label-width="100px"
-                :status-icon="true"
-              >
-                <el-form-item label="课堂名称" prop="cname">
-                  <el-input
-                    v-model="chapterForm.cname"
-                    placeholder="请输入课堂名称"
-                    maxlength="50"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="主讲老师" prop="teacher">
-                  <el-input
-                    v-model="chapterForm.teacher"
-                    placeholder="请输入主讲老师"
-                    maxlength="10"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="课程简介">
-                  <el-input
-                    v-model="chapterForm.brief"
-                    type="textarea"
-                    :rows="2"
-                    placeholder="请输入课程简介"
-                  />
-                </el-form-item>
-                <el-form-item label="评论控制" prop="can_discuss">
-                  <el-radio-group v-model="chapterForm.can_discuss">
-                    <el-radio :label="1">开启</el-radio>
-                    <el-radio :label="2">关闭</el-radio>
-                  </el-radio-group>
-                </el-form-item>
-              </el-form>
-              <div id="btnGroup">
-                <el-button
-                  v-no-more-click
-                  type="primary"
-                  @click="updatePartInfo('form')"
-                >提交</el-button>
+                  <el-form-item label="课堂名称" prop="cname">
+                    <el-input
+                        v-model="chapterForm.cname"
+                        placeholder="请输入课堂名称"
+                        maxlength="50"
+                        clearable
+                    />
+                  </el-form-item>
+                  <el-form-item label="主讲老师" prop="teacher">
+                    <el-input
+                        v-model="chapterForm.teacher"
+                        placeholder="请输入主讲老师"
+                        maxlength="10"
+                        clearable
+                    />
+                  </el-form-item>
+                  <el-form-item label="课程简介">
+                    <el-input
+                        v-model="chapterForm.brief"
+                        type="textarea"
+                        :rows="2"
+                        placeholder="请输入课程简介"
+                    />
+                  </el-form-item>
+                  <el-form-item label="评论控制" prop="can_discuss">
+                    <el-radio-group v-model="chapterForm.can_discuss">
+                      <el-radio :label="1">开启</el-radio>
+                      <el-radio :label="2">关闭</el-radio>
+                    </el-radio-group>
+                  </el-form-item>
+                </el-form>
+                <div id="btnGroup">
+                  <el-button
+                      v-no-more-click
+                      type="primary"
+                      @click="updatePartInfo('form')"
+                  >提交</el-button>
+                </div>
               </div>
             </div>
           </div>
+          <div class="bottomOperate tc">
+            <div
+                v-if="chapter.type === 1"
+                class="itemOperate pointer"
+                :class="{ activeSet: isActiveSet === 1 }"
+                @click="active(1)"
+            >
+              <i class="iconfont iconxitong" /><span>直播源设置</span>
+            </div>
+            <div
+                v-if="loginUser === chapter.user_id && chapter.type === 1"
+                class="itemOperate pointer"
+                :class="{ activeSet: isActiveSet === 2 }"
+                @click="active(2)"
+            >
+              <i class="iconfont iconxitong" />
+              <span>成员管理</span>
+            </div>
+            <div v-if="chapter.type === 1" class="itemOperate pointer">
+              <el-button
+                  v-if="chapter.allow_broadcast === 1"
+                  class="open"
+                  @click="openLive"
+              >开始直播</el-button>
+              <el-button
+                  v-else-if="chapter.allow_broadcast === 2"
+                  class="end"
+                  @click="endLive"
+              >结束直播</el-button>
+              <el-button v-else disabled>已结束</el-button>
+            </div>
+            <div
+                class="itemOperate pointer"
+                :class="{ activeSet: isActiveSet === 3 }"
+                @click="active(3)"
+            >
+              <i class="iconfont iconxitong" />
+              <span>文档管理</span>
+            </div>
+            <div
+                class="itemOperate pointer"
+                :class="{ activeSet: isActiveSet === 4 }"
+                @click="active(4)"
+            >
+              <i class="iconfont iconxitong" />
+              <span>课程设置</span>
+            </div>
+          </div>
         </div>
-        <div class="bottomOperate tc">
-          <div
-            v-if="chapter.type === 1"
-            class="itemOperate pointer"
-            :class="{ activeSet: isActiveSet === 1 }"
-            @click="active(1)"
-          >
-            <i class="iconfont iconxitong" /><span>直播源设置</span>
+        <div class="fl comment">
+          <div class="video-wapper">
+            <div id="livePlay1" class="video-item" />
+            <div id="livePlay2" class="video-item" />
           </div>
-          <div
-            v-if="loginUser === chapter.user_id && chapter.type === 1"
-            class="itemOperate pointer"
-            :class="{ activeSet: isActiveSet === 2 }"
-            @click="active(2)"
-          >
-            <i class="iconfont iconxitong" />
-            <span>成员管理</span>
+          <div class="top-text">讨论</div>
+          <div v-show="!commentsList.length" class="comment-wapper-nocomment">
+            <img :src="nocomment" alt="暂无评论">
           </div>
-          <div v-if="chapter.type === 1" class="itemOperate pointer">
-            <el-button
-              v-if="chapter.allow_broadcast === 1"
-              class="open"
-              @click="openLive"
-            >开始直播</el-button>
-            <el-button
-              v-else-if="chapter.allow_broadcast === 2"
-              class="end"
-              @click="endLive"
-            >结束直播</el-button>
-            <el-button v-else disabled>已结束</el-button>
-          </div>
-          <div
-            class="itemOperate pointer"
-            :class="{ activeSet: isActiveSet === 3 }"
-            @click="active(3)"
-          >
-            <i class="iconfont iconxitong" />
-            <span>文档管理</span>
-          </div>
-          <div
-            class="itemOperate pointer"
-            :class="{ activeSet: isActiveSet === 4 }"
-            @click="active(4)"
-          >
-            <i class="iconfont iconxitong" />
-            <span>课程设置</span>
-          </div>
-        </div>
-      </div>
-      <div class="fl comment">
-        <div class="video-wapper">
-          <div id="livePlay1" class="video-item" />
-          <div id="livePlay2" class="video-item" />
-        </div>
-        <div class="top-text">讨论</div>
-        <div v-show="!commentsList.length" class="comment-wapper-nocomment">
-          <img :src="nocomment" alt="暂无评论">
-        </div>
-        <div v-show="commentsList.length" class="comment-wapper">
-          <el-scrollbar id="content" ref="comments" wrap-class="scrollbar-wrapper">
-            <ul class="comments-list">
-              <li v-for="(item, index) in commentsList" :key="index" class="infinite-list-item clearfix">
-                <div class="item-top clearfix">
-                  <div class="fl">
-                    <el-avatar class="header" :src="item.header || defaultAvatar" @error="avatarErrorHandler">
-                      <img :src="defaultAvatar">
-                    </el-avatar>
-                    <span class="uname">{{ item.uname }}</span>
-                  </div>
-                  <span class="fr c_time">
+          <div v-show="commentsList.length" class="comment-wapper">
+            <el-scrollbar id="content" ref="comments" wrap-class="scrollbar-wrapper">
+              <ul class="comments-list">
+                <li v-for="(item, index) in commentsList" :key="index" class="infinite-list-item clearfix">
+                  <div class="item-top clearfix">
+                    <div class="fl">
+                      <el-avatar class="header" :src="item.header || defaultAvatar" @error="avatarErrorHandler">
+                        <img :src="defaultAvatar">
+                      </el-avatar>
+                      <span class="uname">{{ item.uname }}</span>
+                    </div>
+                    <span class="fr c_time">
                     {{ parseTime(item.c_timestamp) }}
                   </span>
-                </div>
-                <div class="msg">{{ item.msg }}</div>
-              </li>
-            </ul>
-          </el-scrollbar>
+                  </div>
+                  <div class="msg">{{ item.msg }}</div>
+                </li>
+              </ul>
+            </el-scrollbar>
+          </div>
+          <div class="comment-send">
+            <el-input v-model="comment" class="comment-input" clearable @keyup.enter.native="sendComment" /><el-button class="comment-btn" type="primary" @click="sendComment">发送</el-button>
+          </div>
         </div>
-        <div class="comment-send">
-          <el-input v-model="comment" class="comment-input" clearable @keyup.enter.native="sendComment" /><el-button class="comment-btn" type="primary" @click="sendComment">发送</el-button>
-        </div>
+      </el-main>
+    </el-container>
+    <el-dialog
+        v-el-drag-dialog
+        title="学习不易，给个评价吧"
+        :visible.sync="appraiseVisible"
+        width="700px"
+    >
+      <div class="appraiseEdit">
+        <el-form ref="appraiseForm" :model="appraiseForm" label-width="120px">
+          <el-checkbox-group class="appraise_label" v-model="appraiseForm.appraise_label">
+            <el-checkbox v-for="item in lableList" :key="item._id" :label="item._id" border>{{ item.label_name }}</el-checkbox>
+          </el-checkbox-group>
+          <el-form-item label="课程内容">
+            <el-rate
+                v-model="appraiseForm.appraise_content_level"
+                :colors="colors">
+            </el-rate>
+          </el-form-item>
+          <el-form-item label="上课体验">
+            <el-rate
+                v-model="appraiseForm.appraise_experience_level"
+                :colors="colors">
+            </el-rate>
+          </el-form-item>
+          <el-form-item label="随便说点什么吧">
+            <el-input
+                type="textarea"
+                :rows="2"
+                placeholder="请输入内容"
+                v-model="appraiseForm.appraise_text">
+            </el-input>
+          </el-form-item>
+        </el-form>
       </div>
-    </el-main>
-  </el-container>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="saveAppraise">确定</el-button>
+        <el-button type="primary" plain @click="appraiseVisible = false">狠心拒绝</el-button>
+      </div>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
 import clip from '@/utils/clipboard'
 import { parseTime } from '@/utils/index'
 import Pagination from '@/components/Pagination'
+import elDragDialog from '@/directive/el-drag-dialog'
 import nocomment from '@/assets/images/nocomment.png'
 import defaultAvatar from '@/assets/images/default-avatar.png'
 import { mapGetters } from 'vuex'
@@ -411,10 +456,11 @@ import {
   broadcastOperate,
   getComments
 } from '@/api/client/teacher-live-demand'
-import { queryStatus, addOneAppraise } from '@/api/client/student-live-demand'
+import { queryStatus, findLabel, addOneAppraise } from '@/api/client/student-live-demand'
 
 export default {
   components: { Pagination },
+  directives: { elDragDialog },
   data() {
     return {
       nocomment,
@@ -422,6 +468,17 @@ export default {
       flag: 0, // 第一次进入滚动到底部
       shareVisible: false, // 是否显示分享
       shareUrl: '', // 分享地址
+      appraiseVisible: false, // 是否弹出评价
+      lableList: [], // 评价标签
+      colors: ['#99A9BF', '#F7BA2A', '#FF9900'], // 等同于 { 2: '#99A9BF', 4: { value: '#F7BA2A', excluded: true }, 5: '#FF9900' }
+      appraiseForm: {
+        appraise_label: [], // 评价选择标签
+        appraise_content_level: 5, // 课程内容
+        appraise_experience_level: 5, // 课程体验
+        appraise_text: '', // 课程备注
+        lesson_id: '', // 课程 内容
+        lesson_type: '' // 课程类型（"online"直播课堂 "video"点播课堂， lesson 专题课堂）
+      },
       isActiveSet: 1, // 底部设置按钮高亮
       isActiveSelect: 1, // 直播源设置中 设备选择按钮高亮
       id: '', // 课程id
@@ -600,6 +657,36 @@ export default {
     // 分享复制
     clipboard(event) {
       clip(this.shareUrl, event)
+    },
+
+    // 下载课件
+    downloadFile() {
+      if (this.chapter.chapter_file) {
+        window.open(this.chapter.chapter_file, '_blank')
+      }
+    },
+
+    // 评价， 查询标签
+    appraise() {
+      if (this.chapter.isAppraise) {
+        findLabel().then(res => {
+          this.lableList = res.data
+          this.appraiseVisible = true
+        })
+      } else {
+        this.$message.warning('该课程已经评价过！')
+      }
+    },
+
+    // 评价
+    saveAppraise() {
+      this.appraiseForm.lesson_id = this.id
+      this.appraiseForm.lesson_type = this.chapter.type === 1 ? 'online' : 'video'
+      addOneAppraise(this.appraiseForm).then(res => {
+        this.$message.success('评价成功！')
+        this.appraiseVisible = false
+        this.chapter.isAppraise = false
+      })
     },
 
     // 切换设置
@@ -1154,4 +1241,17 @@ export default {
 		padding: 9px 20px;
 		border-radius: 0;
 	}
+
+  .appraiseEdit /deep/ .el-form {
+    width: 80%;
+    margin: 0 auto;
+
+    /deep/ .el-rate {
+      display: inline-block;
+      vertical-align: middle;
+    }
+    .appraise_label {
+      margin-bottom: 16px;
+    }
+  }
 </style>

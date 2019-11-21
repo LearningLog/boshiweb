@@ -16,6 +16,15 @@ export function queryStatus(data) {
   })
 }
 
+// 获取评价标签
+export function findLabel(data) {
+  return request({
+    url: 'cr/appraise/findLabel',
+    method: 'post',
+    data: '{}'
+  })
+}
+
 // 添加评价
 export function addOneAppraise(data) {
   return request({
