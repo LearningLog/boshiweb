@@ -324,7 +324,7 @@
             :class="{ activeSet: isActiveSet === 2 }"
             @click="active(2)"
           >
-            <i class="iconfont iconxitong" />
+            <i class="iconfont iconchengyuanguanli" />
             <span>成员管理</span>
           </div>
           <div v-if="chapter.type === 1" class="itemOperate pointer">
@@ -345,7 +345,7 @@
             :class="{ activeSet: isActiveSet === 3 }"
             @click="active(3)"
           >
-            <i class="iconfont iconxitong" />
+            <i class="iconfont iconzu" />
             <span>文档管理</span>
           </div>
           <div
@@ -353,7 +353,7 @@
             :class="{ activeSet: isActiveSet === 4 }"
             @click="active(4)"
           >
-            <i class="iconfont iconxitong" />
+            <i class="iconfont iconkecheng" />
             <span>课程设置</span>
           </div>
         </div>
@@ -553,7 +553,6 @@ export default {
   beforeDestroy() {
     // 销毁video实例，避免出现节点不存在 但是flash一直在执行,也避免重新进入页面video未重新声明
     $('#livePlay1').dispose({ id: 'myVideo1' })
-    $('#livePlay2').dispose({ id: 'myVideo2' })
     const comments = this.$refs.comments.wrap
     comments.removeEventListener('scroll', this.handleScroll)
   },

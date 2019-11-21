@@ -44,7 +44,7 @@
       </el-header>
       <el-main class="main">
         <div class="fl set">
-          <div class="noLive" v-show="lessonStatus.onlive !== 2">
+          <div class="noLive" v-show="lessonStatus.onlive !== 2 && chapter.type === 1">
             <div>
               <img :src="noLiveImg" :alt="noLiveText">
               <p>{{ noLiveText }}</p>
@@ -81,7 +81,7 @@
             </el-scrollbar>
           </div>
           <div class="comment-send">
-            <el-input v-model="comment" class="comment-input" clearable @keyup.enter.native="sendComment" :disabled="lessonStatus.chapterForbid === 1" /><el-button class="comment-btn" type="primary" @click="sendComment" :disabled="lessonStatus.chapterForbid === 1">发送</el-button>
+            <el-input v-model="comment" class="comment-input" clearable @keyup.enter.native="sendComment" :disabled="lessonStatus.chapterForbid === 2" /><el-button class="comment-btn" type="primary" @click="sendComment" :disabled="lessonStatus.chapterForbid === 2">发送</el-button>
           </div>
         </div>
       </el-main>
@@ -177,6 +177,7 @@ export default {
       live_info: [], // 直播信息
       videoSource1: 'noVideo.mp4', // 机位1 Source
       videoSource2: 'noVideo.mp4', // 机位2 Source
+      isAutoPlay: false, // 是否自动播放
       total: 0, // 总条数
       listQuery: {
         // 查询条件
@@ -238,6 +239,7 @@ export default {
               break
           }
         } else {
+          $('#livePlay1').dispose({ id: 'myVideo1' })
           this.initVideo1()
         }
       }
@@ -262,7 +264,6 @@ export default {
   beforeDestroy() {
     // 销毁video实例，避免出现节点不存在 但是flash一直在执行,也避免重新进入页面video未重新声明
     $('#livePlay1').dispose({ id: 'myVideo1' })
-    $('#livePlay2').dispose({ id: 'myVideo2' })
     const comments = this.$refs.comments.wrap
     comments.removeEventListener('scroll', this.handleScroll)
     clearInterval(this.timer)
@@ -305,6 +306,10 @@ export default {
           } else {
             this.videoSource1 = this.chapter.video_url || 'noVideo.mp4'
             this.videoSource2 = 'noVideo.mp4'
+          }
+          if (this.chapter.type === 1) {
+            this.isAutoPlay = true
+            $('.vjs-control-bar .vjs-reStart').hide()
           }
           this.queryStatus()
           var that = this
@@ -369,7 +374,7 @@ export default {
         $('#livePlay1').videoPlayer({
           id: 'myVideo1', // 创建video id
           control: true, // 视频支持  音频不支持
-          autoPlay: true,
+          autoPlay: that.isAutoPlay,
           width: '100%', // 视频音频的宽 最小宽度500
           height: '100%', // 视频的宽,音频设置无效
           source: that.videoSource1, // 播放源地址
@@ -540,6 +545,9 @@ export default {
       .video-wapper {
         width: 100%;
         height: 100%;
+      }
+      /deep/ .vjs-control-bar .vjs-screenshot {
+        display: none;
       }
 		}
 	}
