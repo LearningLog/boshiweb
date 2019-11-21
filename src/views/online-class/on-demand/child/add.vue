@@ -472,7 +472,14 @@ export default {
 
     // 确定
     saveFile() {
-      this.form.video_url = this.checkVideoList.fileUrl
+      this.checkVideoList.subFileList = this.checkVideoList.subFileList || []
+      for (var i = 0, len = this.checkVideoList.subFileList.length; i < len; i++) {
+        const item = this.checkVideoList.subFileList[i]
+        if (item.fileUse === 'preview_file') {
+          this.form.video_url = item.fileUrl
+          break
+        }
+      }
       this.form.video_masterId = this.checkVideoList.mainFileId
       this.form.video_name = this.checkVideoList.fileName
       this.visibleSelectVideo = false

@@ -127,6 +127,7 @@ export default {
         this.listQuery.currentPage = 0
         this.list.length = 0
         this.selectFilVisible = true
+        that.getFileList()
         that.timer = setInterval(function() {
           that.getFileList()
         }, 10000)

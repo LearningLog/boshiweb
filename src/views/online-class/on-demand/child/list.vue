@@ -281,7 +281,19 @@ export default {
 
     // 分享
     share(row, event) {
-      clip(row._id, event)
+      const host = location.host
+      if (host.indexOf('localhost:') > -1) {
+        this.shareUrl =
+          host +
+          '#/client/student-live-demand?_id=' +
+          row._id
+      } else {
+        this.shareUrl =
+          process.env.VUE_APP_BASE_API +
+          '#/client/student-live-demand?_id=' +
+          row._id
+      }
+      clip(this.shareUrl, event)
     },
 
     // 详情

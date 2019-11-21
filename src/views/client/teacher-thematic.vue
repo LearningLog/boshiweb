@@ -446,6 +446,7 @@ export default {
       id: '', // 课程id
       chapter: {
         // 标题
+        _id: '',
         cname: '', // 课堂名称
         nickname: '' // 老师名称
       },
@@ -557,10 +558,18 @@ export default {
   },
   created() {
     this.thematicId = this.$route.query._id
-    this.shareUrl =
-        process.env.VUE_APP_BASE_API +
-        '/client/teacher-live-demand?_id=' +
+    const host = location.host
+    if (host.indexOf('localhost:') > -1) {
+      this.shareUrl =
+        host +
+        '#/client/student-thematic?_id=' +
         this.id
+    } else {
+      this.shareUrl =
+        process.env.VUE_APP_BASE_API +
+        '#/client/student-thematic?_id=' +
+        this.id
+    }
     this.loginUser = this.$store.state.user.userSystemInfo.userInfo._id
     this.findLessonDetailById()
   },
@@ -1224,6 +1233,7 @@ export default {
 	}
 	.comment-send .comment-input {
 		width: calc(100% - 80px);
+    padding-bottom: 14px;
 		border-radius: 0;
 
 		> /deep/ .el-input__inner {
