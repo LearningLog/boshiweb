@@ -581,6 +581,10 @@ export default {
         this.listQuery.chapterId = this.id
         this.listQuery2.cid = this.id
         this.chapterForm._id = this.id
+        this.$nextTick(() => {
+          const catalogues = this.$refs.catalogues.wrap
+          catalogues.scrollTop = catalogues.scrollHeight
+        })
       })
     },
 
@@ -727,18 +731,34 @@ export default {
 
     // 开始直播
     openLive() {
-      broadcastOperate({ _id: this.id, broadcast_mark: 'open' }).then(res => {
-        this.$message.success('开启成功！')
-        this.findDetailInfoById()
+      this.$confirm('确定要开始直播吗？', '开始直播', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       })
+        .then(() => {
+          broadcastOperate({ _id: this.id, broadcast_mark: 'open' }).then(res => {
+            this.$message.success('开启成功！')
+            this.findDetailInfoById()
+          })
+        })
+        .catch(() => {})
     },
 
     // 结束直播
     endLive() {
-      broadcastOperate({ _id: this.id, broadcast_mark: 'close' }).then(res => {
-        this.$message.success('结束成功！')
-        this.findDetailInfoById()
+      this.$confirm('确定要结束直播吗？', '结束直播', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       })
+        .then(() => {
+          broadcastOperate({ _id: this.id, broadcast_mark: 'close' }).then(res => {
+            this.$message.success('结束成功！')
+            this.findDetailInfoById()
+          })
+        })
+        .catch(() => {})
     },
 
     // 机位1

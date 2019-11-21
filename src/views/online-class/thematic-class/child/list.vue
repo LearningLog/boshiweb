@@ -1,7 +1,7 @@
 <template>
   <div class="tenant-list-box">
     <div id="topSearch">
-      <el-input v-model="listQuery.cname" placeholder="请输入专题名称" clearable @keyup.enter.native="topSearch">
+      <el-input v-model="listQuery.lesson_name" placeholder="请输入专题名称" clearable @keyup.enter.native="topSearch">
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
       </el-input>
       <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">高级搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
@@ -164,7 +164,7 @@ export default {
       listQuery: { // 查询条件
         currentPage: 1, // 当前页
         pageSize: 10, // 当前页请求条数
-        cname: '', // 课堂名称
+        lesson_name: '', // 课堂名称
         createUser: '', // 创建人
         selectCompanyId: '', // 租户
         egroup: '', // 小组
@@ -241,7 +241,7 @@ export default {
     // 重置
     reset() {
       this.isReset = true
-      this.listQuery.cname = ''
+      this.listQuery.lesson_name = ''
       this.listQuery.createUser = ''
       this.listQuery.labels = ''
       this.labels = null
