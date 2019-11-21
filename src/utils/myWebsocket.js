@@ -1,6 +1,6 @@
 // import qs from 'qs'
 import { getToken } from '@/utils/auth'
-const ws = process.env.VUE_APP_WebSocket_BASE_API
+const myWebsocket = process.env.VUE_APP_WebSocket_BASE_API
 import store from '@/store'
 
 class Websocket {
@@ -13,7 +13,7 @@ class Websocket {
   }
   hbHandler = {}
   constructor(url, autoConnect) {
-    this.url = ws
+    this.url = myWebsocket
   }
 
   //  初始化
@@ -82,7 +82,7 @@ class Websocket {
   }
 
   _wsUrl() { //  这里拼接的，很low
-    return ws + 'api/websocket/' + this.opts.id + '/' + this.getUuid(16, 16)
+    return myWebsocket + 'api/websocket/' + this.opts.id + '/' + this.getUuid(16, 16)
   }
 
   // 生成uuid
@@ -136,6 +136,6 @@ class Websocket {
 }
 export default {
   install(Vue, options) { // 自己个挂的插件
-    Vue.prototype.$ws = new Websocket(ws)
+    Vue.prototype.$ws = new Websocket(myWebsocket)
   }
 }

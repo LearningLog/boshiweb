@@ -21,7 +21,7 @@ import VueQriously from 'vue-qriously'
 
 import '@/icons' // icon
 import '@/permission' // permission control
-import ws from '@/utils/ws'
+import ws from '@/utils/myWebsocket'
 
 /**
  * 本地会启动一个 mock-server 来模拟数据

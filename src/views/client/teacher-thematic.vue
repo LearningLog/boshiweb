@@ -536,6 +536,7 @@ export default {
     // 监听课程id变化
     id: function(curVal, oldVal) {
       this.commentsList.length = 0
+      this.$ws.close()
       this.$ws.open(this.id)
       this.findDetailInfoById()
       this.getComments()
