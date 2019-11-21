@@ -880,6 +880,8 @@ export default {
 
     // 发送评论
     sendComment() {
+      this.comment = this.comment.trim()
+      if (!this.comment) return false
       const params = {
         uname: this.$store.state.user.userSystemInfo.userInfo.nickname,
         header: this.$store.state.user.userSystemInfo.userInfo.avatarUrl,

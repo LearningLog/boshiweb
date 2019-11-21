@@ -10,7 +10,7 @@ import request from '@/utils/request'
 // 查询课程状态及禁言状态
 export function queryStatus(data) {
   return request({
-    url: 'cr/chapter/queryStatus',
+    url: 'api/cr/chapter/queryStatus',
     method: 'post',
     data
   })
