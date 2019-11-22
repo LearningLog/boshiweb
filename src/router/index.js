@@ -150,7 +150,21 @@ export const asyncRoutes = [
         name: 'data-screening-detail',
         hidden: true,
         component: () => import('@/views/data-screening/detail'),
-        meta: { title: '总览详情', icon: '', activeMenu: '/data-screening' }
+        meta: { icon: '', activeMenu: '/data-screening' }
+      },
+      {
+        path: 'study-detail',
+        name: 'data-screening-study-detail',
+        hidden: true,
+        component: () => import('@/views/data-screening/study-detail'),
+        meta: { title: '学习详情', icon: '', activeMenu: '/data-screening' }
+      },
+      {
+        path: 'test-detail',
+        name: 'data-screening-test-detail',
+        hidden: true,
+        component: () => import('@/views/data-screening/test-detail'),
+        meta: { title: '考试详情', icon: '', activeMenu: '/data-screening' }
       }
     ]
   },
