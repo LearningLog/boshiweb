@@ -214,7 +214,6 @@ export default {
     // 获取数据
     getData() {
       fileListManage(this.obj).then(res => {
-          console.log(res)
         this.list1 = res.data.page.list
         this.sourceObj = res.data.filePackageIdWorkDeskFile
         if (res && res.data && res.data.page && res.data.filePackageIdWorkDeskFile && res.data.page.list)
