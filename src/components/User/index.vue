@@ -173,15 +173,14 @@ export default {
         if (valid) {
           this.user._id = this.$store.state.user.userSystemInfo.userInfo._id
           console.log(this.user)
-          return false
-          // updatePassword(this.user).then(res => {
-          //   this.$message.success('修改密码成功！')
-          //   this.modifyPasswordVisible = false
-          //   this.user.password = ''
-          //   this.user.confirmpassword = ''
-          //   this.user.secondconfirmpassword = ''
-          //   this.$refs.modifyPassword.resetFields()
-          // })
+          updatePassword(this.user).then(res => {
+            this.$message.success('修改密码成功！')
+            this.modifyPasswordVisible = false
+            this.user.password = ''
+            this.user.confirmpassword = ''
+            this.user.secondconfirmpassword = ''
+            this.$refs.modifyPassword.resetFields()
+          })
         }
       })
     },
