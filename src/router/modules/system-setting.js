@@ -21,17 +21,13 @@ const systemSetting = {
       path: 'tenant-setting',
       name: 'tenant-setting',
       component: () => import('@/views/system-setting/tenant-setting/index'),
-      redirect: '/system-setting/tenant-setting/list',
-      meta: { title: '个性化设置', icon: '', activeMenu: '/system-setting/tenant-setting' },
-      children: [
-        {
-          path: 'list',
-          name: 'tenant-list',
-          hidden: true,
-          component: () => import('@/views/system-setting/tenant-setting/child/list'),
-          meta: { title: '个性化设置', icon: '', activeMenu: '/system-setting/tenant-setting' }
-        }
-      ]
+      meta: { title: '个性化设置', icon: '', activeMenu: '/system-setting/tenant-setting' }
+    },
+    {
+      path: 'knowledge-classification',
+      name: 'knowledge-classification',
+      component: () => import('@/views/system-setting/knowledge-classification/index'),
+      meta: { title: '知识分类', icon: '', activeMenu: '/system-setting/knowledge-classification' }
     }
   ]
 }
