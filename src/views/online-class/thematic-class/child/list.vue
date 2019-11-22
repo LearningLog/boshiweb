@@ -86,7 +86,7 @@
         width="50"
         fixed
       />
-      <el-table-column align="center" label="课堂封面" min-width="166" show-overflow-tooltip>
+      <el-table-column align="center" label="专题封面" min-width="166" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-image
             class="thumbnail-online-class"
@@ -95,7 +95,7 @@
           />
         </template>
       </el-table-column>
-      <el-table-column align="center" label="课堂名称" min-width="120" show-overflow-tooltip>
+      <el-table-column align="center" label="专题名称" min-width="120" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-link type="primary" @click="detail(scope.row)">{{ scope.row.lesson_name }}</el-link>
         </template>

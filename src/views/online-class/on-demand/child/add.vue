@@ -112,7 +112,7 @@
             placeholder="请输入课程简介"
           />
         </el-form-item>
-        <el-form-item label="评论控制" prop="can_discuss">
+        <el-form-item label="发言控制" prop="can_discuss">
           <el-radio-group v-model="form.can_discuss">
             <el-radio :label="1">开启</el-radio>
             <el-radio :label="2">关闭</el-radio>
@@ -330,7 +330,7 @@ export default {
         // 表单数据
         cname: '', // 课堂名称
         brief: '', // 课程简介
-        can_discuss: 1, // 评论控制
+        can_discuss: 1, // 发言控制
         video_url: '', // 选择的视频文件url
         video_masterId: '', // 选择的视频文件 的主文件, 在文系统件中 id
         video_name: '', // 选择的视频文件 在文件系统名称
@@ -412,7 +412,7 @@ export default {
           { required: true, message: '请选择直播源', trigger: 'change' }
         ],
         can_discuss: [
-          { required: true, message: '请选择评论控制', trigger: 'change' }
+          { required: true, message: '请选择发言控制', trigger: 'change' }
         ]
       }
     }

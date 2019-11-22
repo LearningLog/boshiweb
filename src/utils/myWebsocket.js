@@ -127,8 +127,12 @@ class Websocket {
 
   _messageHandler = (event) => { // 接收到的信息
     const meg = JSON.parse(event.data)
-    meg && this.message(meg) // 这里是执行的事件，需要传进来
-    console.log('msg', meg.msg)
+    if (meg) {
+      console.log('msg', meg.msg)
+      store.dispatch('realTimeMessage/currentMsg', meg)
+    }
+    // meg && this.message(meg) // 这里是执行的事件，需要传进来
+    // console.log('msg', meg.msg)
   }
 
   //  断开

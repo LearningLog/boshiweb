@@ -109,10 +109,10 @@
             <el-radio :label="1">一路视频直播</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="评论控制" prop="can_discuss">
+        <el-form-item label="发言控制" prop="can_discuss">
           <el-radio-group v-model="form.can_discuss">
-            <el-radio :label="1">开启</el-radio>
-            <el-radio :label="2">关闭</el-radio>
+            <el-radio :label="1">允许发言</el-radio>
+            <el-radio :label="2">禁止发言</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="课程封面" class="logoClass">
@@ -349,7 +349,7 @@ export default {
         teacher: '', // 主讲老师
         brief: '', // 课程简介
         live_count: 1, // 直播源
-        can_discuss: 1, // 评论控制
+        can_discuss: 1, // 发言控制
         chapter_file: '', // 课件 文件地址
         chapter_masterId: '', // 课件 主文件id
         chapter_name: '', // 课件 文件名称
@@ -490,7 +490,7 @@ export default {
           { required: true, message: '请选择直播源', trigger: 'change' }
         ],
         can_discuss: [
-          { required: true, message: '请选择评论控制', trigger: 'change' }
+          { required: true, message: '请选择发言控制', trigger: 'change' }
         ]
       }
     }

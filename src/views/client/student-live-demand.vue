@@ -252,6 +252,7 @@ export default {
         this.$ws.close()
         this.$alert(`您已被课程发起人移出，请联系课程发起人【 ${this.chapter.nickname} 】`, '提示', {
           confirmButtonText: '确定',
+          type: 'warning',
           callback: action => {}
         })
       } else {

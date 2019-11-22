@@ -298,6 +298,7 @@ export default {
         this.$ws.close()
         this.$alert(`您已被课程发起人移出，请联系课程发起人【 ${this.chapter.nickname} 】`, '提示', {
           confirmButtonText: '确定',
+          type: 'warning',
           callback: action => {}
         })
       } else {
@@ -305,6 +306,14 @@ export default {
         this.initVideo1()
         this.$ws.open(this.id)
       }
+    },
+
+    lessonOrcommentActive: function(val, old) {
+      this.flag = 0
+      this.$nextTick(() => {
+        const comments = this.$refs.comments.wrap
+        comments.scrollTop = comments.scrollHeight
+      })
     }
   },
   beforeDestroy() {
@@ -493,6 +502,7 @@ export default {
     cataloguesItemChange(item, index) {
       this.id = item._id
       this.listQuery.cid = this.id
+      this.listQuery.discussId = ''
       this.cataloguesItemActive = index
     },
 

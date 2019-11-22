@@ -82,13 +82,13 @@
                         disabled
                       /><span
                         class="copy"
-                        @click="clipboard(cutOut(item.publishUrl), $event)"
+                        @click="copy(cutOut(item.publishUrl), $event)"
                       >复制地址</span>
                     </el-form-item>
                     <el-form-item label="流名称/密钥：">
                       <el-input :value="item.streamName" disabled /><span
                         class="copy"
-                        @click="clipboard(item.streamName, $event)"
+                        @click="copy(item.streamName, $event)"
                       >复制流名</span>
                     </el-form-item>
                   </el-form>
@@ -144,13 +144,13 @@
                         disabled
                       /><span
                         class="copy"
-                        @click="clipboard(cutOut(item.publishUrl), $event)"
+                        @click="copy(cutOut(item.publishUrl), $event)"
                       >复制地址</span>
                     </el-form-item>
                     <el-form-item label="流名称/密钥：">
                       <el-input :value="item.streamName" disabled /><span
                         class="copy"
-                        @click="clipboard(item.streamName, $event)"
+                        @click="copy(item.streamName, $event)"
                       >复制流名</span>
                     </el-form-item>
                   </el-form>
@@ -276,7 +276,7 @@
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="主讲老师" prop="teacher">
+                <el-form-item label="主讲老师" prop="teacher" v-if="chapter.type === 1">
                   <el-input
                     v-model="chapterForm.teacher"
                     placeholder="请输入主讲老师"
@@ -292,10 +292,10 @@
                     placeholder="请输入课程简介"
                   />
                 </el-form-item>
-                <el-form-item label="评论控制" prop="can_discuss">
+                <el-form-item label="发言控制" prop="can_discuss">
                   <el-radio-group v-model="chapterForm.can_discuss">
-                    <el-radio :label="1">开启</el-radio>
-                    <el-radio :label="2">关闭</el-radio>
+                    <el-radio :label="1">允许发言</el-radio>
+                    <el-radio :label="2">禁止发言</el-radio>
                   </el-radio-group>
                 </el-form-item>
               </el-form>
@@ -304,7 +304,7 @@
                   v-no-more-click
                   type="primary"
                   @click="updatePartInfo('form')"
-                >提交</el-button>
+                >修改</el-button>
               </div>
             </div>
           </div>
@@ -541,6 +541,7 @@ export default {
       this.$ws.close()
       this.$ws.open(this.id)
       this.findDetailInfoById()
+      this.listQuery2.discussId = ''
       this.getComments()
     },
 
@@ -548,6 +549,14 @@ export default {
     'chapter._id': function(curVal, oldVal) {
       $('#livePlay1').dispose({ id: 'myVideo1' })
       this.initVideo1()
+    },
+
+    lessonOrcommentActive: function(val, old) {
+      this.flag = 0
+      this.$nextTick(() => {
+        const comments = this.$refs.comments.wrap
+        comments.scrollTop = comments.scrollHeight
+      })
     }
   },
   beforeDestroy() {
@@ -644,6 +653,11 @@ export default {
     // 分享复制
     clipboard(event) {
       clip(this.shareUrl, event)
+    },
+
+    // 复制
+    copy(url, event) {
+      clip(url, event)
     },
 
     // 切换设置
