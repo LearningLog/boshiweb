@@ -88,7 +88,7 @@
         <el-button
           type="primary"
           plain
-          @click="createTreeVisible = false"
+          @click="cancel"
         >取消</el-button>
       </div>
     </el-dialog>
@@ -117,7 +117,7 @@
         <el-button
           type="primary"
           plain
-          @click="editTreeVisible = false"
+          @click="cancel"
         >取消</el-button>
       </div>
     </el-dialog>
@@ -250,7 +250,7 @@ export default {
       this.level = level
       if (level === 2) {
         this.theme.treeId = data.treeId
-        this.theme.parentId = data.parentrRootNodeIdId
+        this.theme.parentId = data.parentId
       }
       this.createTreeVisible = true
     },
@@ -265,7 +265,7 @@ export default {
               this.getCompanyAllTree()
               this.createTreeVisible = false
               this.theme.treeName = ''
-              this.$refs.createTheme.clearValidate()
+              this.$refs.createTheme.resetFields()
             })
           } else {
             createNode(this.theme).then(res => {
@@ -275,7 +275,7 @@ export default {
               this.theme.treeId = ''
               this.theme.parentId = ''
               this.theme.nodeName = ''
-              this.$refs.createTheme.clearValidate()
+              this.$refs.createTheme.resetFields()
             })
           }
         }
@@ -299,7 +299,7 @@ export default {
             this.editTreeVisible = false
             this.theme.nodeId = ''
             this.theme.nodeName = ''
-            this.$refs.editTheme.clearValidate()
+            this.$refs.editTheme.resetFields()
           })
         }
       })
@@ -315,11 +315,27 @@ export default {
       })
         .then(() => {
           deleteNode({ treeId: data.treeId, nodeId: data.id }).then(res => {
+            const parent = node.parent
+            const children = parent.data.children || parent.data
+            const index = children.findIndex(d => d.id === data.id)
+            children.splice(index, 1)
             this.$message.success('删除成功！')
             this.getCompanyAllTree()
           })
         })
         .catch(() => {})
+    },
+
+    cancel() {
+      this.createTreeVisible = false
+      this.editTreeVisible = false
+      this.theme.treeId = ''
+      this.theme.parentId = ''
+      this.theme.nodeId = ''
+      this.theme.treeName = ''
+      this.theme.nodeName = ''
+      this.$refs.createTheme.resetFields()
+      this.$refs.editTheme.resetFields()
     }
   }
 }
