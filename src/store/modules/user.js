@@ -101,15 +101,9 @@ const actions = {
           let { logo, userInfo } = res.data
           logo = logo || {}
           userInfo = userInfo || {}
-          if (logo.platform_url) {
-            commit('SET_LOGO', logo.platform_url)
-          }
-          if (logo.logo_name) {
-            commit('SET_LOGO_NAME', logo.logo_name)
-          }
-          if (userInfo.avatarUrl) {
-            commit('SET_AVATAR', userInfo.avatarUrl)
-          }
+          commit('SET_LOGO', logo.platform_url)
+          commit('SET_LOGO_NAME', logo.logo_name)
+          commit('SET_AVATAR', userInfo.avatarUrl)
           commit('SET_NAME', userInfo.nickname)
           commit('SET_USER_SYSTEM_INFO', res.data)
         })

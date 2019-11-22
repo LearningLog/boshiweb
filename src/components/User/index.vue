@@ -1,7 +1,7 @@
 <template>
   <el-dropdown class="avatar-container" trigger="click">
     <div class="avatar-wrapper">
-      <el-avatar class="user-avatar" :src="avatar || avatar1" @error="avatarErrorHandler">
+      <el-avatar class="" :src="avatar || avatar1" @error="avatarErrorHandler">
         <img :src="avatar1">
       </el-avatar>
       <i :style="customStyle" :hover="customStyle" class="el-icon-caret-bottom" />
