@@ -72,7 +72,7 @@
                   <li class="file-name singleLineOmission">{{ file.name }}</li>
                 </el-tooltip>
                 <li class="progress">
-                  <el-progress :percentage="progress" :color="customColors" />
+                  <el-progress :percentage="progress[index]" :key="index" />
                 </li>
                 <li class="file-size">{{ fileSize(file.size) }}</li>
                 <!--<li class="file-status">上传中...</li>-->
@@ -121,7 +121,7 @@ import { mapGetters } from 'vuex'
 import VueWebuploader from '@/components/VueWebuploader/VueWebuploader.vue'
 import { deskAddFile, knowledgeCreateFile } from '@/api/uploadFile'
 const WebUploader = window.WebUploader
-
+const $ = window.$
 export default {
   name: 'FileUploader',
   components: {
@@ -160,7 +160,7 @@ export default {
         { color: '#1989fa', percentage: 80 },
         { color: '#20c7b3', percentage: 100 }
       ],
-      progress: 0, // 进度
+      progress: [], // 进度
       uploadIndex: 0 // 当前上传的文件下标
     }
   },
@@ -191,6 +191,7 @@ export default {
     fileChange(file) {
       if (!file.size) return
       this.fileList.push(file)
+      this.progress[this.uploadIndex] = 0
       const sourceUid = file.source.uid // 文件上传文件唯一id
       const belongs = {
         data_type: this.belongs.data_type,
@@ -204,9 +205,9 @@ export default {
 
     // 上传进度
     onProgress(file, percent) {
-      this.progress = Math.ceil(percent * 100 * 100) / 100
-      // this.progress[this.uploadIndex] = (Math.ceil(percent * 100 * 100) / 100)
-      // console.log(this.progress)
+      this.progress[this.uploadIndex] = (Math.ceil(percent * 100 * 100) / 100)
+      $('.el-progress-bar__inner').eq(this.uploadIndex).width(this.progress[this.uploadIndex] + '%')
+      $('.el-progress__text').eq(this.uploadIndex).text(this.progress[this.uploadIndex] + '%')
     },
 
     // 上传成功
@@ -219,6 +220,7 @@ export default {
       const fileId = file.path.split('ZmlsZUlk=')[1]
       const sourceUid = file.source.uid // 文件上传文件唯一id
       var currentFile = this.fileQueued.get(sourceUid)
+      console.log('fileId', fileId)
       if (currentFile.data_type === 3) {
         const params = {
           fileFormat: file.ext,
