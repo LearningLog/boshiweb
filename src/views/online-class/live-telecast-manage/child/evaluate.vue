@@ -128,9 +128,9 @@ export default {
       label_evaluate({ lesson_id: this.listQuery.selectCompanyId, lesson_type: this.listQuery.type }).then(res => {
         console.log(res)
         this.generalData = res.data.generalData
-        this.listQuery.currentPage = res.data.appraiseList.currentPage
+        //this.listQuery.currentPage = res.data.appraiseList.currentPage
         this.list = res.data.appraiseList.list
-        this.total = res.data.appraiseList.pageCount
+        //this.total = res.data.appraiseList.pageCount
         for (let i = 0; i < this.list.length; i++) {
           this.list[i].c_timestamp = parseTime(this.list[i].c_timestamp)
           this.list[i].view_time = Math.ceil(this.list[i].view_time / 1000 / 60)
