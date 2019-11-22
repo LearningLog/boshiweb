@@ -1,86 +1,126 @@
 <template>
   <div class="app-container">
-    <p>小提示：最多可创建2个一级主题哦，主题可输入2-8个字符</p>
-    <el-tree
-      class="knowledgeTree"
-      :data="treeList"
-      node-key="id"
-      default-expand-all
-      :expand-on-click-node="false"
-      :props="defaultProps"
-    >
-      <span slot-scope="{ node, data }" class="custom-tree-node">
-	      <span>
-          <svg class="icon" aria-hidden="true">
-            <use :xlink:href="data.children && data.children.length > 0 ? '#iconwenjianjia' : '#iconzu'" />
-          </svg>
-          {{ node.label }}
+    <div class="content">
+      <p>小提示：最多可创建2个一级主题哦，主题可输入2-8个字符</p>
+      <el-tree
+        class="knowledgeTree"
+        :data="treeList"
+        node-key="id"
+        default-expand-all
+        :expand-on-click-node="false"
+        :props="defaultProps"
+      >
+        <span slot-scope="{ node, data }" class="custom-tree-node">
+          <span>
+            <svg class="icon" aria-hidden="true">
+              <use
+                :xlink:href="
+                  (data.children && data.children.length > 0) ||
+                    node.level === 1
+                    ? '#iconwenjianjia'
+                    : '#iconzu'
+                "
+              />
+            </svg>
+            {{ node.label }}
+          </span>
+          <span v-if="node.level === 1">
+            <el-button
+              v-if="node.childNodes && node.childNodes.length < 2"
+              type="text"
+              size="mini"
+              @click="() => createTheme(1)"
+            >
+              <span><i class="iconfont iconjia" /></span>
+            </el-button>
+          </span>
+          <span v-else>
+            <el-button
+              type="text"
+              size="mini"
+              @click="() => createTheme(2, data)"
+            >
+              <span><i class="iconfont iconjia" /></span>
+            </el-button>
+            <el-button type="text" size="mini" @click="() => editTheme(data)">
+              <span><i class="iconfont iconxiugai" /></span>
+            </el-button>
+            <el-button
+              type="text"
+              size="mini"
+              @click="() => deleteNode(node, data)"
+            >
+              <span><i class="iconfont iconshanchu" /></span>
+            </el-button>
+          </span>
         </span>
-        <span v-if="node.level === 1">
-          <el-button type="text" size="mini" @click="() => createTheme(1)" v-if="node.childNodes && node.childNodes.length < 2">
-            <span><i class="iconfont iconjia" /></span>
-          </el-button>
-        </span>
-        <span v-else>
-          <el-button type="text" size="mini" @click="() => createTheme(2, data)">
-            <span><i class="iconfont iconjia" /></span>
-          </el-button>
-          <el-button type="text" size="mini" @click="() => editTheme(data)">
-            <span><i class="iconfont iconxiugai" /></span>
-          </el-button>
-          <el-button type="text" size="mini" @click="() => deleteNode(node, data)">
-            <span><i class="iconfont iconshanchu" /></span>
-          </el-button>
-        </span>
-      </span>
-    </el-tree>
+      </el-tree>
+    </div>
     <el-dialog
       v-el-drag-dialog
       title="创建主题"
       :visible.sync="createTreeVisible"
-      width="350px"
+      width="370px"
     >
-      <el-form ref="createTheme" :model="theme" :rules="rules" label-width="80px">
-        <el-form-item label="主题名称" prop="treeName" v-if="level === 1">
+      <el-form
+        ref="createTheme"
+        :model="theme"
+        :rules="rules"
+        label-width="80px"
+      >
+        <el-form-item v-if="level === 1" label="主题名称" prop="treeName">
           <el-input
             v-model="theme.treeName"
             placeholder="请输入主题"
             clearable
           />
         </el-form-item>
-	      <el-form-item label="主题名称" prop="nodeName" v-else>
-		      <el-input
-				      v-model="theme.nodeName"
-				      placeholder="请输入主题"
-				      clearable
-		      />
-	      </el-form-item>
+        <el-form-item v-else label="主题名称" prop="nodeName">
+          <el-input
+            v-model="theme.nodeName"
+            placeholder="请输入主题"
+            clearable
+          />
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitCreateTheme">确定</el-button>
-        <el-button type="primary" plain @click="createTreeVisible = false">取消</el-button>
+        <el-button
+          type="primary"
+          plain
+          @click="createTreeVisible = false"
+        >取消</el-button>
       </div>
     </el-dialog>
-	  <el-dialog
-			  v-el-drag-dialog
-			  title="修改主题"
-			  :visible.sync="editTreeVisible"
-			  width="350px"
-	  >
-		  <el-form ref="editTheme" :model="theme" :rules="rules2" label-width="80px">
-			  <el-form-item label="主题名称" prop="nodeName">
-				  <el-input
-						  v-model="theme.nodeName"
-						  placeholder="请输入主题"
-						  clearable
-				  />
-			  </el-form-item>
-		  </el-form>
-		  <div slot="footer" class="dialog-footer">
-			  <el-button type="primary" @click="submitEditTheme">确定</el-button>
-			  <el-button type="primary" plain @click="editTreeVisible = false">取消</el-button>
-		  </div>
-	  </el-dialog>
+    <el-dialog
+      v-el-drag-dialog
+      title="修改主题"
+      :visible.sync="editTreeVisible"
+      width="370px"
+    >
+      <el-form
+        ref="editTheme"
+        :model="theme"
+        :rules="rules2"
+        label-width="80px"
+      >
+        <el-form-item label="主题名称" prop="nodeName">
+          <el-input
+            v-model="theme.nodeName"
+            placeholder="请输入主题"
+            clearable
+          />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitEditTheme">确定</el-button>
+        <el-button
+          type="primary"
+          plain
+          @click="editTreeVisible = false"
+        >取消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -102,18 +142,20 @@ export default {
       createTreeVisible: false, // 创建主题弹窗
       editTreeVisible: false, // 创建主题弹窗
       level: null, // 创建的主题级别 1，一级主题；2，子级主题
-	    // 知识树列表
-      treeList: [{
-        title: '知识分类',
-	      id: '0',
-        children: []
-      }],
+      // 知识树列表
+      treeList: [
+        {
+          title: '知识分类',
+          id: '0',
+          children: []
+        }
+      ],
       defaultProps: {
         children: 'children',
         label: 'title',
         id: 'id'
       },
-	    // 编辑的主题
+      // 编辑的主题
       theme: {
         treeId: '', // 树id
         parentId: '', // 父节点id
@@ -190,9 +232,11 @@ export default {
       getCompanyAllTree().then(res => {
         res.data.treeList = res.data.treeList || []
         var arr = JSON.parse(JSON.stringify(res.data.treeList))
-        arr[0].node.parentrRootNodeIdId = arr[0].rootNodeId
-        arr[0].node.parentId = arr[0].id
-        this.treeList[0].children.push(arr[0].node)
+        if (arr[0]) {
+          arr[0].node.parentrRootNodeIdId = arr[0].rootNodeId
+          arr[0].node.parentId = arr[0].id
+          this.treeList[0].children.push(arr[0].node)
+        }
         if (arr[1]) {
           arr[1].node.parentrRootNodeIdId = arr[1].rootNodeId
           arr[1].node.parentId = arr[1].id
@@ -201,19 +245,19 @@ export default {
       })
     },
 
-	  // 弹出创建
+    // 弹出创建
     createTheme(level, data) {
       this.level = level
-	    if (level === 2) {
+      if (level === 2) {
         this.theme.treeId = data.treeId
         this.theme.parentId = data.parentrRootNodeIdId
       }
       this.createTreeVisible = true
     },
 
-	  // 保存创建
+    // 保存创建
     submitCreateTheme() {
-      this.$refs.createTheme.validate((valid) => {
+      this.$refs.createTheme.validate(valid => {
         if (valid) {
           if (this.level === 1) {
             createTree({ treeName: this.theme.treeName }).then(res => {
@@ -245,9 +289,9 @@ export default {
       this.editTreeVisible = true
     },
 
-	  // 保存修改
+    // 保存修改
     submitEditTheme() {
-      this.$refs.editTheme.validate((valid) => {
+      this.$refs.editTheme.validate(valid => {
         if (valid) {
           updateNodeName(this.theme).then(res => {
             this.$message.success('修改主题成功！')
@@ -261,27 +305,29 @@ export default {
       })
     },
 
-	  // 删除节点
+    // 删除节点
     deleteNode(node, data) {
       console.log(node)
       this.$confirm('确定要删除【' + data.title + '】吗？', '删除主题', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {
-        deleteNode({ treeId: data.treeId, nodeId: data.id }).then(res => {
-          this.$message.success('删除成功！')
-          this.getCompanyAllTree()
+      })
+        .then(() => {
+          deleteNode({ treeId: data.treeId, nodeId: data.id }).then(res => {
+            this.$message.success('删除成功！')
+            this.getCompanyAllTree()
+          })
         })
-      }).catch(() => {})
+        .catch(() => {})
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.knowledgeTree {
-  width: 400px;
+.content {
+  width: 424px;
   margin: 0 auto;
 }
 .custom-tree-node {
