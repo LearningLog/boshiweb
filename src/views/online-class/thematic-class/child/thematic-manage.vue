@@ -61,10 +61,7 @@
           />
         </template>
       </el-table-column>
-      <el-table-column align="center" label="课堂名称" min-width="120" show-overflow-tooltip>
-        <template slot-scope="scope">
-          <el-link type="primary" @click="detail(scope.row)">{{ scope.row.cname }}</el-link>
-        </template>
+      <el-table-column align="center" label="课堂名称" min-width="120" show-overflow-tooltip prop="cname">
       </el-table-column>
       <el-table-column label="课堂类型" min-width="80" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
@@ -182,7 +179,11 @@ export default {
 
     // 专题详情
     lessonDetail() {
-
+      const { href } = this.$router.resolve({
+        path: '/client/teacher-thematic',
+        query: { _id: this.listQuery.lesson_id }
+      })
+      window.open(href, '_blank')
     },
 
     // 修改

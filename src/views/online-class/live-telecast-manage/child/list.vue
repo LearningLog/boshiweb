@@ -310,7 +310,11 @@ export default {
 
     // 详情
     detail(row) {
-      this.$router.push({ path: '/client/teacher-live-demand', query: { _id: row._id }})
+      const { href } = this.$router.resolve({
+        path: '/client/teacher-live-demand',
+        query: { _id: row._id }
+      })
+      window.open(href, '_blank')
     },
 
     // 评分详情
