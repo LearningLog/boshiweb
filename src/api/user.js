@@ -74,3 +74,12 @@ export function getUserByGroupIds(data) {
     data
   })
 }
+
+// 用户修改密码
+export function updatePassword(data) {
+  return request({
+    url: 'system/user/updatePassword',
+    method: 'post',
+    data
+  })
+}
