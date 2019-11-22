@@ -3,7 +3,7 @@
  */
 //转换音频时长显示
 (function($){
-	$.transTime = function transTime(time) {
+    $.transTime = function transTime(time) {
         var duration = parseInt(time);
         var hour = parseInt(duration/60/60);
         var minute = parseInt((duration%3600)/60);
@@ -36,10 +36,10 @@ var audioPlayCallBack;//音频回调方法
 var spyVideoPlayerShootingFlag;
 $(function () {
     // 避免视频重复初始化bug：Player "myVideo" is already initialised. Options will not be applied.
-    // 销毁video实例，避免出现节点不存在 但是flash一直在执行,也避免重新进入页面video未重新声明
-    $.fn.dispose = function(option){
-      videojs(option.id).dispose()
-    }
+      // 销毁video实例，避免出现节点不存在 但是flash一直在执行,也避免重新进入页面video未重新声明
+      $.fn.dispose = function(option){
+        videojs(option.id).dispose()
+      }
     /*
      * 初始化*/
     $.fn.videoPlayer = function(option){
@@ -123,7 +123,13 @@ $(function () {
                 setting.fullscreenToggle = false;
             }
             var type =  $.fn.videoSourceFn(setting);
-            var html = '<video crossOrigin="Anonymous"  id="'+setting.id+'" style="object-fit:contain" class="video-js vjs-sublime-skin2 vjs-big-play-centered"' +
+            // var html = '<video crossOrigin="Anonymous"  id="'+setting.id+'" style="object-fit:contain" class="video-js vjs-sublime-skin2 vjs-big-play-centered"' +
+            //     ' poster="'+setting.thumbnailUrl+'"  width="'+setting.width+'"  height="'+setting.height+'"' +
+            //     'controls preload="none" poster="">' +
+            //     '<source src="'+setting.source+'" '+type.typeName+'="'+type.types+'"/>' +
+            //     '</video>';
+            // crossOrigin="Anonymous" 去掉这个属性 加上有时会报跨域问题
+                var html = '<video id="'+setting.id+'" style="object-fit:contain" class="video-js vjs-sublime-skin2 vjs-big-play-centered"' +
                 ' poster="'+setting.thumbnailUrl+'"  width="'+setting.width+'"  height="'+setting.height+'"' +
                 'controls preload="none" poster="">' +
                 '<source src="'+setting.source+'" '+type.typeName+'="'+type.types+'"/>' +
@@ -280,7 +286,7 @@ $(function () {
                 string.push('<i></i>')
                 string.push('<div class="vjs-shoot-dot-html" data-time="'+targetTime+'" data-target-time="'+shootTime+'">');
                 string.push('<span class="shootOper"><!--<img class="editShoot" title="编辑" src="images/shootEditIcon.png">-->')
-                string.push('<img class="delShoot" title="删除" src="public/videoPlay/images/shootDelIcon.png"></span>')
+                string.push('<img class="delShoot" title="删除" src="images/shootDelIcon.png"></span>')
                 string.push('<img src="'+setting.vjsShootImgSrc+'">')
                 string.push( '<div>'+shootInputVal+'</div>');
                 string.push( '<p class="vjs-shoottime">'+shootTime+'</p>');
@@ -508,6 +514,7 @@ $(function () {
                 $("#"+obj.id).find(".vjs-play-control").attr("title","");
             });
             player.on('play',function(){
+                
                 var $this = this;
                 if(setting.source.indexOf("rtmp")>=0){
                     $("#"+obj.id).find(".vjs-loading-spinner").hide();
@@ -906,7 +913,7 @@ $(function () {
                 videojs(id).dispose()
             }
             //重连m3u8
-            function videojsReconnect(id,timeSec){
+            function videojsReconnect(id,timeSec,timeOutId){
                 //推流判断
                 var oldTime = 0;
                 var timeout = false; //启动及关闭按钮
@@ -921,9 +928,6 @@ $(function () {
                     var checkStop = videoPlayCallBack.videojsPause(id);
                     if(time == oldTime){
                         if(checkstatus==0){
-                            //$("#livePlay").css("opacity","0");
-                            //$(".videoPlayWrap .videoPlayBg").css("opacity","1");
-                            //videoPlayCallBack.loadSrc(id);
                             videojs(id).src($("#"+id).find("video source").attr("src"));
                             videojs(id).load();
                             checkStop = videoPlayCallBack.videojsPause(id);
@@ -955,10 +959,14 @@ $(function () {
 
                         oldTime = time;
                     }
-
-                    setTimeout(function(){
+                    var timeoutId = setTimeout(function(){
                         timeFn()
                     },timeSec*1000); //time是指本身,延时递归调用自己,100为间隔调用时间,单位毫秒
+                    if (id == 'myVideo1') { // 知识库订制
+                        videoTimeOutId1 = timeoutId
+                    } else if (id == 'myVideo2') {
+                        videoTimeOutId2 = timeoutId
+                    }
                 }
             }
 
@@ -1027,7 +1035,7 @@ $(function () {
                             arrObj.push('<div class="vjs-shoot-dot-html" data-target-time="'+obj[i].targetTime+'">');
                             if(spyVideoPlayerShootingFlag.shootingFlag){
                                 arrObj.push('<span class="shootOper"><!--<img class="editShoot" title="编辑" src="images/shootEditIcon.png">-->')
-                                arrObj.push('<img class="delShoot" title="删除" src="public/videoPlay/images/shootDelIcon.png"></span>')
+                                arrObj.push('<img class="delShoot" title="删除" src="images/shootDelIcon.png"></span>')
                             }
                             if(obj[i].vjsShootImgSrc){
                                 arrObj.push('<img src="'+obj[i].vjsShootImgSrc+'">')
@@ -1241,7 +1249,7 @@ $(function () {
             var curTime = $.transTime(curTimes);
             $("#"+obj.id).find(".curT").html(curTime);
             setTimeout(function () {
-            	$("#"+obj.id).find(".barLine").width(0);
+                $("#"+obj.id).find(".barLine").width(0);
             },50)
             $("#"+obj.id).find('.icon-switch span').removeClass('icon-pause').addClass('icon-play')
         })
@@ -1286,7 +1294,7 @@ $(function () {
             audio.pause();
             $("#"+obj.id).find('.icon-switch span').removeClass('icon-pause').addClass('icon-play')
             var x = e.pageX;
-           // $("#"+obj.id).find(".barLine").width(x-left);
+            // $("#"+obj.id).find(".barLine").width(x-left);
             var times = parseInt(((x-left)/proBarWid)*audio.duration);
             var time = $.transTime(times);
             $("#"+obj.id).find(".curT").html(time);
@@ -1338,9 +1346,9 @@ $(function () {
                     curLength = proBarWid;
                 }
                 setTimeout(function () {
-                	$("#"+obj.id).find(".barLine").width(curLength);
+                    $("#"+obj.id).find(".barLine").width(curLength);
                 },50)
-                
+
                 var times = parseInt(((curLength)/proBarWid)*audio.duration);
                 var time = $.transTime(times);
                 $("#"+obj.id).find(".curT").html(time);
@@ -1361,18 +1369,18 @@ $(function () {
                         $("#"+obj.id).find('.icon-switch span').addClass('icon-play').removeClass('icon-pause');
                     }
                 }else{
-                	if(stats){
+                    if(stats){
                         audio.play();
                         $("#"+obj.id).find('.icon-switch span').removeClass('icon-play').addClass('icon-pause');
                     }
                 }
-                
+
                 setTimeout(function () {
-                	$("#"+obj.id).find(".barLine").width(curLength)
+                    $("#"+obj.id).find(".barLine").width(curLength)
                 },50)
-                
+
                 audio.currentTime = ((x-left)/proBarWid)*audio.duration;
-                
+
             })
         }
         //音量改变
@@ -1401,18 +1409,17 @@ $(function () {
                 audio.volume =0;
                 $("#"+obj.id).find(".volumeLine").width(0)
             }else{
-            	if(v!=0){
-            		$(this).removeClass("volumeDivStop");
+                if(v!=0){
+                    $(this).removeClass("volumeDivStop");
                     audio.volume =v;
                     $("#"+obj.id).find(".volumeLine").width(w)
-            	}else{
-            		$(this).removeClass("volumeDivStop").addClass("volumeDivS")
-            		v = 0.1;
-            		w=5;
-            		audio.volume =v;
-            		$("#"+obj.id).find(".volumeLine").width(w)
-            	}
-                
+                }else{
+                    $(this).removeClass("volumeDivStop").addClass("volumeDivS")
+                    v = 0.1;
+                    w=5;
+                    audio.volume =v;
+                    $("#"+obj.id).find(".volumeLine").width(w)
+                }
             }
         })
 

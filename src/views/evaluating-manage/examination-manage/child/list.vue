@@ -9,7 +9,7 @@
         <el-row v-show="popoverVisible">
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
-              <tenants-groups-roles :is-render-role="false" :is-reset="isReset" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" />
+              <tenants-groups-roles :is-render-role="false" :is-reset="isReset" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" @resetVal="resetVal" />
               <el-form-item label="考试状态">
                 <el-select
                   v-model="listQuery.examStatus"
@@ -61,19 +61,19 @@
         width="50"
         fixed
       />
-      <el-table-column align="center" label="考试名称" min-width="70" prop="exam_name" />
-      <el-table-column align="center" label="小组" min-width="40" prop="groupName" />
-      <el-table-column align="center" label="题目数" min-width="30" prop="topic_count" />
-      <el-table-column align="center" label="总分数" min-width="30" prop="score_count" />
-      <el-table-column align="center" label="及格分数" min-width="30" prop="passscore" />
-      <el-table-column align="center" label="开始时间" min-width="40" prop="begin_time" />
-      <el-table-column align="center" label="结束时间" min-width="40" prop="end_time" />
-      <el-table-column align="center" label="考试状态" min-width="40" prop="examstatus" />
+      <el-table-column align="center" label="考试名称" min-width="70" show-overflow-tooltip prop="exam_name" />
+      <el-table-column align="center" label="小组" min-width="40" show-overflow-tooltip prop="groupName" />
+      <el-table-column align="center" label="题目数" min-width="30" show-overflow-tooltip prop="topic_count" />
+      <el-table-column align="center" label="总分数" min-width="30" show-overflow-tooltip prop="score_count" />
+      <el-table-column align="center" label="及格分数" min-width="30" show-overflow-tooltip prop="passscore" />
+      <el-table-column align="center" label="开始时间" min-width="40" show-overflow-tooltip prop="begin_time" />
+      <el-table-column align="center" label="结束时间" min-width="40" show-overflow-tooltip prop="end_time" />
+      <el-table-column align="center" label="考试状态" min-width="40" show-overflow-tooltip prop="examstatus" />
 
       <el-table-column class-name="status-col" label="操作" width="250" align="center" fixed="right">
         <template slot-scope="scope">
-          <el-button size="mini" @click="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
-          <el-button size="mini" @click="edit(scope.row)"><i class="iconfont iconxiugai" />考试统计</el-button>
+          <el-button size="mini" :disabled="scope.row.exam_status !== 1" @click="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
+          <el-button size="mini" :disabled="scope.row.exam_status === 1" @click="detail(scope.row)"><i class="iconfont iconchakan" />考试统计</el-button>
           <el-button size="mini" @click="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
         </template>
       </el-table-column>
@@ -82,20 +82,26 @@
     <div id="bottomOperation">
       <el-button v-show="total>0" type="danger" plain @click="batchDel"><i class="iconfont iconshanchu" />批量删除</el-button>
     </div>
+    <AddSelectGroup :visible-select-group="visibleSelectGroup" @getSelectGroup="getSelectGroup" />
+    <PublishExam :select-company-id="selectCompanyId" :publish-dialog="publishDialog" :score-count="scoreCount" :exam="exam" @publishExam="publishExam" @visiblePublish="visiblePublish" />
   </div>
 </template>
 
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
+import AddSelectGroup from '@/components/AddSelectGroup'
+import PublishExam from '@/components/PublishExam'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
-import { getExaminationList,delExam } from '@/api/evolutionManage-examination'
+import { getExaminationList, delExam, examDetail, examUpdate } from '@/api/evolutionManage-examination'
 export default {
-  components: { Pagination, TenantsGroupsRoles },
+  components: { Pagination, TenantsGroupsRoles, PublishExam, AddSelectGroup },
   directives: { elDragDialog },
   data() {
     return {
       isReset: false, // 是否重置三组联动数据
+      publishDialog: false, // 发布考试弹窗
+      visibleSelectGroup: false, // 是否弹出选择租户、小组
       total: 0, // 总条数
       listQuery: { // 查询条件
         currentPage: 1, // 当前页
@@ -112,14 +118,17 @@ export default {
       list: [], // 表格数据
       listLoading: true, // 是否开启表格遮罩
       popoverVisible: false, // 是否开启高级搜索
-      checkedDelList: [] // 选择删除的list
+      checkedDelList: [], // 选择删除的list
+      exam: {}, // 考试详情
+      selectCompanyId: '', // 编辑的当前行selectCompanyId
+      scoreCount: 0, // 编辑的当前行考试总分scoreCount
+      companyId: '', // 新增选择的租户
+      egroup: '' // 新增选择的小组
     }
   },
 
   created() {
     this.get_list()
-    // this.get_topic_label_list()
-    // this.get_topic_skill_list()
   },
   methods: {
     // 获取初始化数据
@@ -133,6 +142,7 @@ export default {
         this.total = response.data.page.totalCount
       })
     },
+
     // 搜索
     topSearch() {
       this.time_range = this.time_range || []
@@ -140,6 +150,7 @@ export default {
       this.listQuery.endTime = this.time_range[1]
       this.get_list()
     },
+
     // 重置
     reset() {
       this.isReset = true
@@ -152,26 +163,39 @@ export default {
       this.listQuery.endTime = ''
       this.get_list()
     },
+
     // 监听三组数据变化
     tenantsGroupsRolesVal(val) {
       this.listQuery.selectCompanyId = val.companyIds
       this.listQuery.egroup = val.egroupId
       this.listQuery.roleId = val.roleId
-      this.group = val.group
+    },
+    // 重置监听三组数据变化
+    resetVal(val) {
+      this.isReset = false
     },
 
     // 选中数据
     handleSelectionChange(row) {
       this.checkedDelList = row
     },
+
     // 新增
     add() {
-      if (!this.listQuery.egroup) {
-        this.$message.warning('请先选择分组信息再尝试添加试题！')
-        return false
-      }
-      // this.$router.push({ path: '/evaluating-manage/question-bank-manage/add', query: { egroup: this.listQuery.egroup, selectCompanyId: this.group.groupId }})
+      this.visibleSelectGroup = true
     },
+
+    // 监听选择小组返回数据
+    getSelectGroup(val) {
+      this.companyId = val.selectCompanyId
+      this.egroup = val.egroup
+      this.visibleSelectGroup = false
+      if (this.egroup) {
+        this.$router.push({ path: '/evaluating-manage/examination-manage/add', query: { selectCompanyId: this.companyId, egroup: this.egroup }})
+      }
+    },
+
+    // 单个删除
     del(row) {
       this.$confirm('确定要删除【' + row.exam_name + '】吗？', '删除考试', {
         confirmButtonText: '确定',
@@ -187,6 +211,8 @@ export default {
         })
       }).catch(() => {})
     },
+
+    // 批量删除
     batchDel() {
       if (!this.checkedDelList.length) {
         this.$message.warning('请选择考试！')
@@ -210,24 +236,56 @@ export default {
           this.get_list()
         })
       }).catch(() => {})
-    }
-    /*
+    },
+
     // 详情
     detail(row) {
-      this.$router.push({ path: '/evaluating-manage/question-bank-manage/detail', query: { _id: row._id }})
+      this.$router.push({ path: '/evaluating-manage/examination-manage/detail', query: { _id: row._id }})
     },
-    // 单个删除
-   */
-    // 批量删除
-  /*  ,
+
     // 编辑
     edit(row) {
-      this.$router.push({ path: '/evaluating-manage/question-bank-manage/edit', query: { _id: row._id }})
-    }*/
+      examDetail({ _id: row._id }).then(res => {
+        debugger
+        this.selectCompanyId = res.data.exam.groupId
+        this.scoreCount = res.data.exam.score_count
+        this.exam = res.data.exam
+        this.publishDialog = true
+      })
+    },
+
+    // 监听修改弹窗关闭
+    visiblePublish(val) {
+      this.publishDialog = val.visible
+    },
+
+    // 监听发布考试
+    publishExam(val) {
+      const parpams = {
+        _id: val._id,
+        exam_name: val.exam_name,
+        begin_time: val.begin_time,
+        end_time: val.end_time,
+        passscore: val.passscore,
+        target_user: val.target_user,
+        egroup: val.egroup[0],
+        type: val.type
+      }
+      examUpdate(parpams).then(response => {
+        this.publishDialog = false
+        this.$message.success('发布考试成功！')
+        this.get_list()
+      })
+    }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-
+  .selectCompany /deep/ .tenantsGroupsRoles {
+    width: 100% !important;
+  }
+  .selectCompany /deep/ .tenantsGroupsRoles .el-form-item {
+    width: 100% !important;
+  }
 </style>

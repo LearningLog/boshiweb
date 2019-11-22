@@ -342,7 +342,7 @@ vue-element-admin 配套了系列教程文章，如何从零构建后一个完�
 - 目前所有列都居中显示
 - 列宽合理美观，操作列图标统一合理
 - 操作列  一个按钮，设置 `width="100"`; 两个按钮，设置 `width="160"`; 三个按钮，设置 `width="230"`
-- 时间列一般为 `min-width="130"`
+- 时间列一般为 `min-width="140"`
 - 列宽尽量合理设置，不要过大产生滚动条
 - 枚举字段 用 `<el-tag></el-tag>` 展示， 肯定类用 `type="success"`，否定类用 `type="danger"` 
 - 以下为样板：
@@ -497,8 +497,9 @@ export default {
 - 获取所有角色 `this.$store.state.user.allRoles`
 - 获取所有小组 `this.$store.state.user.allEgroup`
 - 获取应用信息 `this.$store.state.user.applicationInfo`
+- 用户权限信息 `this.$store.state.user.userPermission`
 - 是否为系统管理员 `this.$store.state.user.isSystemManage`
-- 分页序号 `<span>{{ scope.$index + (listQuery.currentPage - 1) * listQuery.pageSize + 1}} </span>`
+- 分页序号 `<span>{{ scope.$index + (listQuery.currentPage - 1) * listQuery.pageSize + 1 }} </span>`
 
 ## Browsers support
 

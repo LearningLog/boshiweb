@@ -65,3 +65,12 @@ export function getUserApplicationInfo() {
     data: {}
   })
 }
+
+// 根据小组获取小组成员（用户）
+export function getUserByGroupIds(data) {
+  return request({
+    url: '/evaluation/automatic/userList',
+    method: 'post',
+    data
+  })
+}

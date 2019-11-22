@@ -201,50 +201,6 @@ const systemManage = {
           meta: { title: '资讯类别列表', icon: '', activeMenu: '/systemManage/newsCategory' }
         }
       ]
-    },
-    {
-      path: 'roleManage',
-      component: () => import('@/views/systemManage/roleManage/index'),
-      redirect: '/systemManage/roleManage/list',
-      name: 'roleManage',
-      meta: { title: '角色管理', icon: '', activeMenu: '/systemManage/roleManage' },
-      children: [
-        {
-          path: 'add',
-          component: () => import('@/views/systemManage/roleManage/child/add.vue'),
-          name: 'roleAdd',
-          hidden: true,
-          meta: { title: '新增角色', icon: '', activeMenu: '/systemManage/roleManage' }
-        },
-        {
-          path: 'edit',
-          name: 'roleEdit',
-          hidden: true,
-          component: () => import('@/views/systemManage/roleManage/child/edit'),
-          meta: { title: '修改角色', icon: '', activeMenu: '/systemManage/roleManage' }
-        },
-        {
-          path: 'detail',
-          name: 'roleDetail',
-          hidden: true,
-          component: () => import('@/views/systemManage/roleManage/child/detail'),
-          meta: { title: '角色详情', icon: '', activeMenu: '/systemManage/roleManage' }
-        },
-        {
-          path: 'authorize',
-          name: 'roleAuthorize',
-          hidden: true,
-          component: () => import('@/views/systemManage/roleManage/child/authorize'),
-          meta: { title: '角色授权', icon: '', activeMenu: '/systemManage/roleManage' }
-        },
-        {
-          path: 'list',
-          name: 'roleList',
-          hidden: true,
-          component: () => import('@/views/systemManage/roleManage/child/list.vue'),
-          meta: { title: '角色管理列表', icon: '', activeMenu: '/systemManage/roleManage' }
-        }
-      ]
     }
   ]
 }

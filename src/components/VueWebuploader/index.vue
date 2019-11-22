@@ -1,82 +1,197 @@
 <!--文件分片断点续传UI组件-->
 <template>
-  <div class="page">
-    <div id="filePicker">选择文件</div>
-
-    <div class="file-panel">
-      <h2>文件列表</h2>
-      <div class="file-list">
-        <ul v-for="file in fileList" :key="file.id" class="file-item" :class="`file-${file.id}`">
-          <li class="file-type" :icon="fileCategory(file.ext)" />
-          <li class="file-name">{{ file.name }}</li>
-          <li class="file-size">{{ fileSize(file.size) }}</li>
-          <li class="file-status">上传中...</li>
-          <li class="file-operate">
-            <a title="开始" @click="resume(file)"><i class="iconfont iconkaishi" /></a>
-            <a title="暂停" @click="stop(file)"><i class="iconfont iconzanting1" /></a>
-            <a title="移除" @click="remove(file)"><i class="iconfont iconquxiao1" /></a>
-          </li>
-          <li class="progress" />
-        </ul>
-        <div v-if="!fileList.length" class="no-file"><i class="iconfont icon-empty-file" /> 暂无待上传文件</div>
+  <transition :name="transitionName">
+    <div id="mainFileUpload" :style="visibility">
+      <div id="header" class="clearfix">
+        <p class="fl title">上传资料</p>
+        <div class="fr icons">
+          <span
+            v-if="!isMinimality"
+            @click="minimality"
+          ><i
+            class="minimality iconfont iconiconfontmove"
+          /></span>
+          <span
+            v-if="isMinimality"
+            @click="open"
+          ><i
+            class="spread iconfont iconhao"
+          /></span>
+          <span @click="close"><i class="close iconfont iconguanbi" /></span>
+        </div>
       </div>
+      <div class="content">
+        <div id="filePicker">
+          <div class="drag-upload">
+            <i class="iconfont iconziyuan" />
+            <p>可拖拽文件至此直接上传</p>
+          </div>
+        </div>
+        <div id="file-panel">
+          <div id="file-list">
+            <el-scrollbar wrap-class="scrollbar-wrapper">
+              <ul
+                v-for="(file, index) in fileList"
+                :key="file.id"
+                class="file-item"
+                :class="`file-${file.id}`"
+              >
+                <li class="file-type" :icon="fileCategory(file.ext)">
+                  <i
+                    v-if="fileCategory(file.ext) === 'image'"
+                    class="iconfont icontupian1"
+                  />
+                  <i
+                    v-else-if="fileCategory(file.ext) === 'video'"
+                    class="iconfont iconshipinwenjian"
+                  />
+                  <i
+                    v-else-if="fileCategory(file.ext) === 'audio'"
+                    class="iconfont iconyinpinwenjian"
+                  />
+                  <i
+                    v-else-if="fileCategory(file.ext) === 'text'"
+                    class="iconfont icondoc"
+                  />
+                  <i
+                    v-else-if="fileCategory(file.ext) === 'pdf'"
+                    class="iconfont iconpdf"
+                  />
+                  <i
+                    v-else-if="fileCategory(file.ext) === 'compressed'"
+                    class="iconfont iconyasuobao"
+                  />
+                  <i v-else class="iconfont iconzu" />
+                </li>
+                <el-tooltip
+                  class="file-name-tip"
+                  effect="dark"
+                  :content="file.name"
+                  placement="top-start"
+                >
+                  <li class="file-name singleLineOmission">{{ file.name }}</li>
+                </el-tooltip>
+                <li class="progress">
+                  <el-progress :percentage="progress[index]" :key="index" />
+                </li>
+                <li class="file-size">{{ fileSize(file.size) }}</li>
+                <!--<li class="file-status">上传中...</li>-->
+                <li class="file-operate">
+                  <!--<a title="开始" @click="resume(file)"><i class="iconfont iconkaishi" /></a>-->
+                  <!--<a title="暂停" @click="stop(file)"><i class="iconfont iconzanting1" /></a>-->
+                  <span
+                    class="pointer file-remove"
+                    title="移除"
+                    @click="remove(file)"
+                  ><i
+                    class=" iconfont iconquxiao1"
+                  /></span>
+                </li>
+              </ul>
+              <div v-if="!fileList.length" class="no-file">
+                <i class="iconfont icon-empty-file" /> 暂无待上传文件
+              </div>
+            </el-scrollbar>
+          </div>
+        </div>
+      </div>
+      <div class="clearfix btnGroup">
+        <div id="btnGroup" class="fr">
+          <el-button type="primary" @click="clear()">清空上传</el-button>
+        </div>
+      </div>
+      <vue-webuploader
+        ref="uploader"
+        upload-button="#filePicker"
+        upload-dnd-button="#filePicker"
+        multiple
+        :form-data="formData"
+        :url="url"
+        @fileChange="fileChange"
+        @progress="onProgress"
+        @success="onSuccess"
+      />
     </div>
-
-    <vue-webuploader
-      ref="uploader"
-      upload-button="#filePicker"
-      multiple
-      :form-data="formData"
-      :url="url"
-      @fileChange="fileChange"
-      @progress="onProgress"
-      @success="onSuccess"
-    />
-  </div>
+  </transition>
 </template>
 
 <script>
+import store from '@/store'
+import { mapGetters } from 'vuex'
 import VueWebuploader from '@/components/VueWebuploader/VueWebuploader.vue'
 import { deskAddFile, knowledgeCreateFile } from '@/api/uploadFile'
+const WebUploader = window.WebUploader
 const $ = window.$
-
 export default {
   name: 'FileUploader',
   components: {
     VueWebuploader
   },
   props: {
-    // 上传最大数量 默认为100个
-    belongs: {
+    customStyle: {
       type: Object,
-      default: null
+      default: function() {
+        return {
+          right: '50px',
+          bottom: '0px'
+        }
+      }
+    },
+    transitionName: {
+      type: String,
+      default: 'fade'
     }
   },
   data() {
     return {
-      fileList: [],
-      url: this.$store.state.user.applicationInfo.uploadUrl,
+      fileList: [], // 上传列表
+      url: this.$store.state.user.applicationInfo.uploadUrl, // 租户上传路径
       formData: {
+        // 参数
         userId: this.$store.state.user.applicationInfo.userId,
         companyId: this.$store.state.user.applicationInfo.companyId,
         appCode: this.$store.state.user.applicationInfo.appCode
       },
-      fileQueued: new Map()
+      fileQueued: new Map(), // 上传队列
+      customColors: [
+        { color: '#f56c6c', percentage: 20 },
+        { color: '#e6a23c', percentage: 40 },
+        { color: '#5cb87a', percentage: 60 },
+        { color: '#1989fa', percentage: 80 },
+        { color: '#20c7b3', percentage: 100 }
+      ],
+      progress: [], // 进度
+      uploadIndex: 0 // 当前上传的文件下标
     }
   },
   computed: {
     uploader() {
       return this.$refs.uploader
-    }
+    },
+    ...mapGetters(['visibility', 'isMinimality', 'belongs'])
   },
   watch: {},
   mounted() {},
   created() {},
   methods: {
+    // 关闭
+    close() {
+      store.dispatch('fileUpload/isVisibility', 2)
+    },
+    // 最小化
+    minimality() {
+      store.dispatch('fileUpload/isVisibility', 3)
+    },
+    // 展开
+    open() {
+      store.dispatch('fileUpload/isVisibility', 1)
+    },
+
+    // 上传变化
     fileChange(file) {
       if (!file.size) return
       this.fileList.push(file)
-      console.log(file)
+      this.progress[this.uploadIndex] = 0
       const sourceUid = file.source.uid // 文件上传文件唯一id
       const belongs = {
         data_type: this.belongs.data_type,
@@ -90,19 +205,23 @@ export default {
 
     // 上传进度
     onProgress(file, percent) {
-      $(`.file-${file.id} .progress`).css('width', percent * 100 + '%')
-      $(`.file-${file.id} .file-status`).html((percent * 100).toFixed(2) + '%')
+      this.progress[this.uploadIndex] = (Math.ceil(percent * 100 * 100) / 100)
+      $('.el-progress-bar__inner').eq(this.uploadIndex).width(this.progress[this.uploadIndex] + '%')
+      $('.el-progress__text').eq(this.uploadIndex).text(this.progress[this.uploadIndex] + '%')
     },
 
     // 上传成功
     onSuccess(file, response) {
+      this.uploadIndex++
       console.log('上传成功', file)
       console.log(this.belongs)
       console.log('file.path', file.path)
       file.path = file.path || ''
       const fileId = file.path.split('ZmlsZUlk=')[1]
       const sourceUid = file.source.uid // 文件上传文件唯一id
-      if (this.belongs.data_type === 3) {
+      var currentFile = this.fileQueued.get(sourceUid)
+      console.log('fileId', fileId)
+      if (currentFile.data_type === 3) {
         const params = {
           fileFormat: file.ext,
           fileName: file.name,
@@ -112,10 +231,10 @@ export default {
         }
         deskAddFile(params).then(res => {
           console.log(res)
-          this.$message.success('工作台文件上传成功')
+          this.$message.success('上传成功！')
         })
       } else {
-        const currentFile = this.fileQueued.get(sourceUid)
+        // const currentFile = this.fileQueued.get(sourceUid)
         const params = {
           format: file.ext,
           name: file.name,
@@ -129,11 +248,7 @@ export default {
         }
         knowledgeCreateFile(params).then(res => {
           console.log(res)
-          if (currentFile.data_type === 1) {
-            this.$message.success('企业知识库文件上传成功')
-          } else {
-            this.$message.success('小组知识库文件上传成功')
-          }
+          this.$message.success('上传成功')
         })
       }
     },
@@ -149,14 +264,47 @@ export default {
 
     // 移除
     remove(file) {
-      // 取消并中断文件上传
-      this.uploader.cancelFile(file)
-      // 在队列中移除文件
-      this.uploader.removeFile(file, true)
+      this.$confirm('确定要删除上传【' + file.name + '】任务吗？', '删除任务', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          // 取消并中断文件上传
+          this.uploader.cancelFile(file)
+          // 在队列中移除文件
+          this.uploader.removeFile(file, true)
 
-      // 在ui上移除
-      const index = this.fileList.findIndex(ele => ele.id === file.id)
-      this.fileList.splice(index, 1)
+          // 在ui上移除
+          const index = this.fileList.findIndex(ele => ele.id === file.id)
+          this.fileList.splice(index, 1)
+        })
+        .catch(() => {})
+    },
+
+    // 清空
+    clear() {
+      var that = this
+      if (this.fileList.length) {
+        this.$confirm('确定要清空上传任务吗？', '清空上传', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+          .then(() => {
+            for (
+              var index = 0, len = that.fileList.length;
+              index < len;
+              index++
+            ) {
+              var file = that.fileList[index]
+              that.uploader.cancelFile(file)
+              that.uploader.removeFile(file, true)
+              that.fileList.splice(index--, 1)
+            }
+          })
+          .catch(() => {})
+      }
     },
 
     // 文件大小
@@ -171,10 +319,26 @@ export default {
       const typeMap = {
         image: ['gif', 'jpg', 'jpeg', 'png', 'bmp', 'webp'],
         video: ['mp4', 'm3u8', 'rmvb', 'avi', 'swf', '3gp', 'mkv', 'flv'],
-        text: ['doc', 'txt', 'docx', 'pages', 'epub', 'pdf', 'numbers', 'csv', 'xls', 'xlsx', 'keynote', 'ppt', 'pptx']
+        audio: ['mp3', 'wma', 'rm', 'wav', 'midi', 'ape', 'flac'],
+        text: [
+          'doc',
+          'txt',
+          'docx',
+          'pages',
+          'epub',
+          'numbers',
+          'csv',
+          'xls',
+          'xlsx',
+          'keynote',
+          'ppt',
+          'pptx'
+        ],
+        compressed: ['zip', 'rar'],
+        pdf: ['pdf']
       }
 
-      Object.keys(typeMap).forEach((_type) => {
+      Object.keys(typeMap).forEach(_type => {
         const extensions = typeMap[_type]
         if (extensions.indexOf(ext) > -1) {
           type = _type
@@ -183,104 +347,162 @@ export default {
 
       return type
     }
-
   }
 }
 </script>
 
 <style lang="scss" scoped>
+@import "~@/styles/theme.scss";
 
-  $h-row: 50px;
+#mainFileUpload {
+  visibility: hidden;
+  width: 38%;
+  height: 60vh;
+  position: fixed;
+  bottom: -522px;
+  right: 20px;
+  z-index: 100;
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+  background: #ffffff;
+  overflow: hidden;
+  transition: bottom 1s;
 
-  .file-panel {
-    width: 840px;
-    margin-top: 10px;
-    box-shadow: 0 2px 12px 1px rgba(0, 0, 0, 0.1);
+  > #header {
+    height: 40px;
+    line-height: 40px;
+    padding: 0 20px;
+    background-color: $themeColor;
 
-    > h2 {
-      height: 40px;
-      line-height: 40px;
-      padding: 0 10px;
-      border-radius: 4px 4px 0 0;
-      border-bottom: 1px solid #ccc;
-      background-color: #fff;
+    > .title {
+      color: #ffffff;
+      margin: 0;
+      font-size: 14px;
     }
 
-    .file-list {
-      position: relative;
-      height: 360px;
-      overflow-y: auto;
-      background-color: rgb(250, 250, 250);
+    > .fr.icons span {
+      width: 14px;
+      height: 14px;
+      background-color: #ffffff;
+      color: $themeColor;
+      cursor: pointer;
     }
 
-    .file-item {
-      position: relative;
-      height: $h-row;
-      line-height: $h-row;
-      padding: 0 10px;
-      border-bottom: 1px solid #ccc;
-      background-color: #fff;
-      z-index: 1;
-
-      > li {
-        display: inline-block;
-      }
-    }
-    .file-type {
-      width: 24px;
-      height: 24px;
-      vertical-align: -5px;
-    }
-    .file-name {
-      width: 40%;
-      margin-left: 10px;
-    }
-    .file-size {
-      width: 20%;
-    }
-    .file-status {
-      width: 20%;
-    }
-    .file-operate {
-      width: 10%;
-
-      > a {
-        padding: 10px 4px;
-        cursor: pointer;
-        color: #666;
-
-        &:hover {
-          color: #ff4081;
-        }
-      }
-    }
-
-    /*.file-type[icon=text] {*/
-    /*background: url(../../assets/images/icon/text-icon.png);*/
-    /*}*/
-    /*.file-type[icon=video] {*/
-    /*background: url(../../assets/images/icon/video-icon.png);*/
-    /*}*/
-    /*.file-type[icon=image] {*/
-    /*background: url(../../assets/images/icon/image-icon.png);*/
-    /*}*/
-
-    .progress {
-      position: absolute;
-      top: 0;
-      left: 0;
-      height: $h-row - 1;
-      width: 0;
-      background-color: #E2EDFE;
-      z-index: -1;
-    }
-
-    .no-file {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 16px;
+    > .fr.icons span i {
+      font-size: 14px;
     }
   }
+
+  > .content {
+    padding: 1.5vh 20px;
+
+    > #filePicker {
+      width: 100%;
+      height: 15vh;
+      background-color: #fafafa;
+      border-radius: 5px;
+    }
+  }
+
+  .drag-upload {
+    width: 200px;
+    margin: 0 auto;
+    margin-top: 18px;
+    color: #bbbbbb;
+
+    > .iconfont {
+      font-size: 50px;
+    }
+  }
+
+  #file-panel {
+    margin-top: 1.5vh;
+  }
+
+  #file-panel .el-scrollbar {
+    height: 29vh;
+  }
+
+  #file-list {
+    position: relative;
+    overflow-y: auto;
+  }
+
+  .file-item {
+    position: relative;
+    height: 30px;
+    line-height: 30px;
+    padding: 0 10px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ccc;
+    background-color: #fff;
+    z-index: 1;
+    color: #575757;
+
+    > li {
+      display: inline-block;
+    }
+
+    > .file-type {
+      width: 24px;
+      height: 30px;
+
+      > i {
+        display: table-cell;
+      }
+    }
+    > .file-name {
+      width: 18%;
+    }
+    > .progress {
+      width: 70%;
+
+      > /deep/ .el-progress {
+        width: 100%;
+        height: 30px;
+        line-height: 30px;
+        display: table;
+      }
+    }
+
+    > .file-size {
+      width: 80px;
+      position: absolute;
+      left: 0px;
+      right: 0px;
+      bottom: 0px;
+      top: 0px;
+      margin: 0 auto;
+      font-size: 14px;
+      text-align: center;
+    }
+  }
+
+  .file-remove {
+    display: table-cell;
+  }
+
+  .no-file {
+    text-align: center;
+    color: #575757;
+    font-size: 14px;
+  }
+}
+.btnGroup {
+  margin-right: 20px;
+}
+
+.file-item .progress /deep/ .el-progress-bar {
+  width: 95%;
+}
+
+#filePicker /deep/ .webuploader-pick {
+  width: 100% !important;
+  height: 100% !important;
+  background-color: #fafafa !important;
+}
+
+#filePicker /deep/ .webuploader-pick-hover {
+  background-color: #fafafa !important;
+}
 </style>

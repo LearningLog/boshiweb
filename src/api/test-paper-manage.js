@@ -82,9 +82,9 @@ export function evaluationPaperList(data) {
 }
 
 // 新增试卷
-export function addTopic(data) {
+export function addTestPaper(data) {
   return request({
-    url: '/evaluation/topic/add',
+    url: '/evaluation/examinationpaper/add',
     method: 'post',
     data
   })
@@ -107,17 +107,17 @@ export function importTopics(data) {
   })
 }
 // 试卷详情
-export function topicDetil(data) {
+export function paperDetail(data) {
   return request({
-    url: '/evaluation/topic/findByIdV2',
+    url: '/evaluation/examinationpaper/one',
     method: 'post',
     data
   })
 }
 // 修改试卷
-export function topicEdit(data) {
+export function testPaperUpdata(data) {
   return request({
-    url: '/evaluation/topic/update',
+    url: 'evaluation/examinationpaper/update',
     method: 'post',
     data
   })

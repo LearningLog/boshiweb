@@ -1,1117 +1,1013 @@
 <template>
-  <div id="addTopicVue">
-    <div class="fr submit">
-      <p>（小提示：保存的试题记得保存至题库哦）</p>
-      <el-button v-no-more-click class="addTopic" type="primary" @click="addTopics"><i class="addIcon iconfont iconhao" />保存至题库</el-button>
-    </div>
-
-    <el-tabs v-model="addType" :before-leave="beforeLeaveTabs1" class="addType" @tab-click="handleTabsClick1">
-      <el-tab-pane class="hand" label="手动添加" name="hand">
-        <div class="fl edit">
-          <el-tabs v-model="topic_type" class="topicType" type="card" :before-leave="beforeLeaveTabs2" @tab-click="handleTabsClick2">
-            <el-tab-pane label="单选题" name="1">
-              <div class="edit-hand-topic1">
-                <el-form ref="form" label-width="100px">
-                  <el-form-item class="required content" label="题目内容">
-                    <el-input v-model="topic1.topic_content" class="topicName" placeholder="请输入题目" clearable />
-                    <div v-show="topic1.topic_resource" class="img-group">
-                      <div class="imgCover" :style="{backgroundImage:'url(' + topic1.topic_resource + ')'}"> <i class="close iconfont iconfalse-circle" @click="delTopicImg" /></div>
-                    </div>
-                    <div class="selectPic" @click="topicImg">添加图片</div>
-                  </el-form-item>
-                  <el-form-item class="required" label="题目选项">
-                    <el-table
-                      class="topicOption"
-                      :data="topic1.topic_option"
-                      border
-                      style="width: 100%"
-                      max-height="291"
-                    >
-                      <el-table-column
-                        prop="option_content"
-                        align="center"
-                        label="选项内容"
-                      >
-                        <template slot-scope="scope">
-                          <el-input v-model="scope.row.option_content" size="small" class="option_content" placeholder="请输入选项内容，字数不超过100个字" maxlength="100" />
-                        </template>
-                      </el-table-column>
-                      <el-table-column
-                        prop="option_img"
-                        label="图片"
-                        align="center"
-                        width="60"
-                      >
-                        <template slot-scope="scope">
-                          <el-upload
-                            ref="upload"
-                            class="avatar-uploader"
-                            :action="uploadUrl()"
-                            :headers="headers"
-                            accept=".jpg,.png,.gif,.jepg,.jpeg"
-                            :show-file-list="false"
-                            :on-success="handleImgSuccess"
-                            :before-upload="beforeImgUpload"
-                          >
-                            <img v-if="scope.row.option_img" :src="scope.row.option_img" class="avatar">
-                            <i v-else class="el-icon-plus avatar-uploader-icon" @click="optionConcentIndex(scope.$index)" />
-                          </el-upload>
-                          <i v-if="scope.row.option_img" class="closeOptionImg iconfont iconfalse-circle" @click="delOptionImg(scope.row)" />
-                        </template>
-                      </el-table-column>
-                      <el-table-column
-                        prop="correct_option"
-                        label="正确选项"
-                        align="center"
-                        width="90"
-                      >
-                        <template slot-scope="scope">
-                          <el-radio v-model="radio1" class="radio" :label="scope.row.option_id_time_stamp" @change="isTrueChange(scope.$index, scope.row.option_id_time_stamp)" />
-                        </template>
-                      </el-table-column>
-                      <el-table-column
-                        prop="addOrdelOption"
-                        label="操作"
-                        align="center"
-                        width="90"
-                      >
-                        <template slot-scope="scope">
-                          <i class="pointer el-icon-plus" @click="addOption" />
-                          <i class="pointer el-icon-minus" @click="delTheOption(scope.$index)" />
-                        </template>
-                      </el-table-column>
-                    </el-table>
-                  </el-form-item>
-                  <el-form-item label="题目解析">
-                    <el-input v-model="topic1.topic_resolve" size="small" type="textarea" :autosize="{ minRows: 1, maxRows: 4}" />
-                  </el-form-item>
-                  <el-form-item class="required" label="题目分值">
-                    <el-input-number v-model="topic1.topic_score" class="topic_score" controls-position="right" :min="1" />
-                  </el-form-item>
-                  <el-form-item class="required" label="题目难度">
-                    <el-radio-group v-model="topic1.topic_level" class="topic_level">
-                      <el-radio-button label="1">简单</el-radio-button>
-                      <el-radio-button label="2">普通</el-radio-button>
-                      <el-radio-button label="3">困难</el-radio-button>
-                    </el-radio-group>
-                  </el-form-item>
-                  <el-form-item label="添加标签" class="addLabel">
-                    <div v-if="currentLabels.length" class="tag">
-                      <el-tag
-                        v-for="(tag, index) in currentLabels"
-                        :key="tag.linc"
-                        closable
-                        size="medium"
-                        :disable-transitions="false"
-                        type="success"
-                        @close="handleLabelDel(index)"
-                      >
-                        {{ tag.lname }}
-                      </el-tag>
-                    </div>
-                    <i class="el-icon-circle-plus-outline" @click="addLabels" />
-                  </el-form-item>
-                  <el-form-item label="题目考核技能" class="addSkill">
-                    <div v-if="currentSkills.length" class="tag">
-                      <el-tag
-                        v-for="(tag, index) in currentSkills"
-                        :key="tag.increase_id"
-                        closable
-                        size="medium"
-                        :disable-transitions="false"
-                        type="success"
-                        @close="handleSkillDel(index)"
-                      >
-                        {{ tag.skill_name }}
-                      </el-tag>
-                    </div>
-                    <i class="el-icon-circle-plus-outline" @click="addSkills" />
-                  </el-form-item>
-                  <el-checkbox v-model="saveSet" class="saveSet">保存设置（分值、难度、标签、技能）</el-checkbox>
-                </el-form>
-                <el-button v-no-more-click class="saveTopic" type="primary" @click="saveTopic">添加题目</el-button>
+  <div id="addExamination">
+    <el-steps
+      :active="activeStep"
+      finish-status="success"
+      simple
+      style="margin-top: 20px"
+    >
+      <el-step title="第一步：试题智能组合" />
+      <el-step title="第二步：自动发布设置" />
+    </el-steps>
+    <div>
+      <div class="content clearfix">
+        <div v-show="activeStep === 1" class="fl edit">
+          <el-form ref="exam" :model="exam" label-width="100px">
+            <el-form-item label="选择标签" class="addLabel">
+              <div v-if="currentLabels.length" class="tag">
+                <el-tag
+                  v-for="(tag, index) in currentLabels"
+                  :key="tag.linc"
+                  closable
+                  size="medium"
+                  :disable-transitions="false"
+                  type="success"
+                  @close="handleLabelDel(index)"
+                >
+                  {{ tag.lname }}
+                </el-tag>
               </div>
-            </el-tab-pane>
-            <el-tab-pane label="多选题" name="2">
-              <div class="edit-hand-topic2">
-                <el-form ref="form" label-width="100px">
-                  <el-form-item class="required content" label="题目内容">
-                    <el-input v-model="topic2.topic_content" class="topicName" placeholder="请输入题目" clearable />
-                    <div v-show="topic2.topic_resource" class="img-group">
-                      <div class="imgCover" :style="{backgroundImage:'url(' + topic2.topic_resource + ')'}"> <i class="close iconfont iconfalse-circle" @click="delTopicImg" /></div>
-                    </div>
-                    <div class="selectPic" @click="topicImg">添加图片</div>
-                  </el-form-item>
-                  <el-form-item class="required" label="题目选项">
-                    <el-table
-                      class="topicOption"
-                      :data="topic2.topic_option"
-                      border
-                      style="width: 100%"
-                      max-height="291"
-                    >
-                      <el-table-column
-                        prop="option_content"
-                        align="center"
-                        label="选项内容"
-                      >
-                        <template slot-scope="scope">
-                          <el-input v-model="scope.row.option_content" size="small" class="option_content" placeholder="请输入选项内容，字数不超过100个字" maxlength="100" />
-                        </template>
-                      </el-table-column>
-                      <el-table-column
-                        prop="option_img"
-                        label="图片"
-                        align="center"
-                        width="60"
-                      >
-                        <template slot-scope="scope">
-                          <el-upload
-                            ref="upload"
-                            class="avatar-uploader"
-                            :action="uploadUrl()"
-                            :headers="headers"
-                            accept=".jpg,.png,.gif,.jepg,.jpeg"
-                            :show-file-list="false"
-                            :on-success="handleImgSuccess"
-                            :before-upload="beforeImgUpload"
-                          >
-                            <img v-if="scope.row.option_img" :src="scope.row.option_img" class="avatar">
-                            <i v-else class="el-icon-plus avatar-uploader-icon" @click="optionConcentIndex(scope.$index)" />
-                          </el-upload>
-                          <i v-if="scope.row.option_img" class="closeOptionImg iconfont iconfalse-circle" @click="delOptionImg(scope.row)" />
-                        </template>
-                      </el-table-column>
-                      <el-table-column
-                        prop="correct_option"
-                        label="正确选项"
-                        align="center"
-                        width="90"
-                      >
-                        <template slot-scope="scope">
-                          <el-checkbox v-model="scope.row.check" @change="chcekboxChange(scope.row)" />
-                        </template>
-                      </el-table-column>
-                      <el-table-column
-                        prop="addOrdelOption"
-                        label="操作"
-                        align="center"
-                        width="90"
-                      >
-                        <template slot-scope="scope">
-                          <i class="pointer el-icon-plus" @click="addOption" />
-                          <i class="pointer el-icon-minus" @click="delTheOption(scope.$index)" />
-                        </template>
-                      </el-table-column>
-                    </el-table>
-                  </el-form-item>
-                  <el-form-item label="题目解析">
-                    <el-input v-model="topic2.topic_resolve" size="small" type="textarea" :autosize="{ minRows: 1, maxRows: 4}" />
-                  </el-form-item>
-                  <el-form-item class="required" label="题目分值">
-                    <el-input-number v-model="topic2.topic_score" class="topic_score" controls-position="right" :min="1" />
-                  </el-form-item>
-                  <el-form-item class="required" label="题目难度">
-                    <el-radio-group v-model="topic2.topic_level" class="topic_level">
-                      <el-radio-button label="1">简单</el-radio-button>
-                      <el-radio-button label="2">普通</el-radio-button>
-                      <el-radio-button label="3">困难</el-radio-button>
-                    </el-radio-group>
-                  </el-form-item>
-                  <el-form-item label="添加标签" class="addLabel">
-                    <div v-if="currentLabels.length" class="tag">
-                      <el-tag
-                        v-for="(tag, index) in currentLabels"
-                        :key="tag.linc"
-                        closable
-                        size="medium"
-                        :disable-transitions="false"
-                        type="success"
-                        @close="handleLabelDel(index)"
-                      >
-                        {{ tag.lname }}
-                      </el-tag>
-                    </div>
-                    <i class="el-icon-circle-plus-outline" @click="addLabels" />
-                  </el-form-item>
-                  <el-form-item label="题目考核技能" class="addSkill">
-                    <div v-if="currentSkills.length" class="tag">
-                      <el-tag
-                        v-for="(tag, index) in currentSkills"
-                        :key="tag.increase_id"
-                        closable
-                        size="medium"
-                        :disable-transitions="false"
-                        type="success"
-                        @close="handleSkillDel(index)"
-                      >
-                        {{ tag.skill_name }}
-                      </el-tag>
-                    </div>
-                    <i class="el-icon-circle-plus-outline" @click="addSkills" />
-                  </el-form-item>
-                  <el-checkbox v-model="saveSet" class="saveSet">保存设置（分值、难度、标签、技能）</el-checkbox>
-                </el-form>
-                <el-button v-no-more-click class="saveTopic" type="primary" @click="saveTopic">添加题目</el-button>
+              <i class="el-icon-circle-plus-outline" @click="addLabels" />
+            </el-form-item>
+            <el-form-item label="选择技能" class="addSkill">
+              <div v-if="currentSkills.length" class="tag">
+                <el-tag
+                  v-for="(tag, index) in currentSkills"
+                  :key="tag.increase_id"
+                  closable
+                  size="medium"
+                  :disable-transitions="false"
+                  type="success"
+                  @close="handleSkillDel(index)"
+                >
+                  {{ tag.skill_name }}
+                </el-tag>
               </div>
-            </el-tab-pane>
-            <el-tab-pane label="判断题" name="3">
-              <div class="edit-hand-topic3">
-                <el-form ref="form" label-width="100px">
-                  <el-form-item class="required content" label="题目内容">
-                    <el-input v-model="topic3.topic_content" class="topicName" placeholder="请输入题目" clearable />
-                    <div v-show="topic3.topic_resource" class="img-group">
-                      <div class="imgCover" :style="{backgroundImage:'url(' + topic3.topic_resource + ')'}"> <i class="close iconfont iconfalse-circle" @click="delTopicImg" /></div>
-                    </div>
-                    <div class="selectPic" @click="topicImg">添加图片</div>
-                  </el-form-item>
-                  <el-form-item class="required" label="题目选项">
-                    <el-table
-                      class="topicOption"
-                      :data="topic3.topic_option"
-                      border
-                      style="width: 100%"
-                      max-height="291"
-                    >
-                      <el-table-column
-                        prop="option_content"
-                        align="center"
-                        label="选项内容"
-                      />
-                      <el-table-column
-                        prop="correct_option"
-                        label="正确选项"
-                        align="center"
-                        width="90"
-                      >
-                        <template slot-scope="scope">
-                          <el-radio v-model="radio2" :label="scope.row.option_id_time_stamp" @change="isTrueChange(scope.$index)" />
-                        </template>
-                      </el-table-column>
-                    </el-table>
-                  </el-form-item>
-                  <el-form-item label="题目解析">
-                    <el-input v-model="topic3.topic_resolve" size="small" type="textarea" :autosize="{ minRows: 1, maxRows: 4}" />
-                  </el-form-item>
-                  <el-form-item class="required" label="题目分值">
-                    <el-input-number v-model="topic3.topic_score" class="topic_score" controls-position="right" :min="1" />
-                  </el-form-item>
-                  <el-form-item class="required" label="题目难度">
-                    <el-radio-group v-model="topic3.topic_level" class="topic_level">
-                      <el-radio-button label="1">简单</el-radio-button>
-                      <el-radio-button label="2">普通</el-radio-button>
-                      <el-radio-button label="3">困难</el-radio-button>
-                    </el-radio-group>
-                  </el-form-item>
-                  <el-form-item label="添加标签" class="addLabel">
-                    <div v-if="currentLabels.length" class="tag">
-                      <el-tag
-                        v-for="(tag, index) in currentLabels"
-                        :key="tag.linc"
-                        closable
-                        size="medium"
-                        :disable-transitions="false"
-                        type="success"
-                        @close="handleLabelDel(index)"
-                      >
-                        {{ tag.lname }}
-                      </el-tag>
-                    </div>
-                    <i class="el-icon-circle-plus-outline" @click="addLabels" />
-                  </el-form-item>
-                  <el-form-item label="题目考核技能" class="addSkill">
-                    <div v-if="currentSkills.length" class="tag">
-                      <el-tag
-                        v-for="(tag, index) in currentSkills"
-                        :key="tag.increase_id"
-                        closable
-                        size="medium"
-                        :disable-transitions="false"
-                        type="success"
-                        @close="handleSkillDel(index)"
-                      >
-                        {{ tag.skill_name }}
-                      </el-tag>
-                    </div>
-                    <i class="el-icon-circle-plus-outline" @click="addSkills" />
-                  </el-form-item>
-                  <el-checkbox v-model="saveSet" class="saveSet">保存设置（分值、难度、标签、技能）</el-checkbox>
-                </el-form>
-                <el-button v-no-more-click class="saveTopic" type="primary" @click="saveTopic">添加题目</el-button>
+              <i class="el-icon-circle-plus-outline" @click="addSkills" />
+            </el-form-item>
+            <el-form-item label="选题类型" prop="select_type">
+              <el-radio-group
+                v-model="exam.select_type"
+                @change="changeTopicType"
+              >
+                <el-radio :label="1">随机抽取</el-radio>
+                <el-radio :label="2">根据题型随机抽取</el-radio>
+                <el-radio :label="3">根据题型、难度随机抽取</el-radio>
+              </el-radio-group>
+              <div v-if="exam.select_type === 1" class="selectType">
+                <div>
+                  <span>总题数
+                    <span
+                      class="topicsNum"
+                    >（{{ topicsNumDetail.totalNumber }}题可用）</span></span>
+                  <span>抽取&nbsp;&nbsp;<el-input-number
+                    v-model="exam.total_number[0]"
+                    controls-position="right"
+                    :min="0"
+                    :max="topicsNumDetail.totalNumber"
+                    @change="handleChange"
+                  />&nbsp;&nbsp;试题，每题&nbsp;&nbsp;<el-input-number
+                    v-model="exam.total_number[1]"
+                    controls-position="right"
+                    :min="0"
+                    @change="handleChange"
+                  />&nbsp;&nbsp;分</span>
+                </div>
               </div>
-            </el-tab-pane>
-          </el-tabs>
-        </div>
-        <div class="fr preview">
-          <h3>预览区</h3>
-          <p class="tip" />
-          <div class="topics-preview">
-            <el-scrollbar wrap-class="scrollbar-wrapper">
-              <div v-for="(item, index) in topics" :key="item.id" class="topics-item">
-                <p class="topic-type">
-                  <span>{{ index+1 + '、' }}{{ item.topicTypeTitle }}</span><el-tooltip class="item" effect="dark" :content="item.labelStr" placement="top"><span v-if="item.labelStr"><span class="single-line">【{{ item.labelStr }}</span><span>】</span></span></el-tooltip><el-tooltip class="item" effect="dark" :content="item.skillStr" placement="top"><span v-if="item.skillStr"><span class="single-line">【{{ item.skillStr }}</span><span>】</span></span></el-tooltip>
-                </p>
-                <p>
-                  {{ item.topic_content }}
-                  <img v-if="item.topic_resource" class="previewImg" :src="item.topic_resource" alt="">
-                </p>
-                <ul class="topic-options">
-                  <div class="handle">
-                    <el-button size="small" type="primary" @click="topicEdit(index, item.id)">编辑</el-button>
-                    <el-button size="small" type="primary" @click="delTopic(index)">删除</el-button>
+              <div v-if="exam.select_type === 2" class="selectType">
+                <div class="topicType">
+                  <span>单选题
+                    <span
+                      class="topicsNum"
+                    >（{{ topicsNumDetail.singleSelect }}题可用）</span></span>
+                  <span>抽取&nbsp;&nbsp;<el-input-number
+                    v-model="exam.single_select[0]"
+                    controls-position="right"
+                    :min="0"
+                    :max="topicsNumDetail.singleSelect"
+                    @change="handleChange"
+                  />&nbsp;&nbsp;试题，每题&nbsp;&nbsp;<el-input-number
+                    v-model="exam.single_select[1]"
+                    controls-position="right"
+                    :min="0"
+                    @change="handleChange"
+                  />&nbsp;&nbsp;分</span>
+                </div>
+                <div class="topicType">
+                  <span>多选题
+                    <span
+                      class="topicsNum"
+                    >（{{ topicsNumDetail.multiSelect }}题可用）</span></span>
+                  <span>抽取&nbsp;&nbsp;<el-input-number
+                    v-model="exam.multi_select[0]"
+                    controls-position="right"
+                    :min="0"
+                    :max="topicsNumDetail.multiSelect"
+                    @change="handleChange"
+                  />&nbsp;&nbsp;试题，每题&nbsp;&nbsp;<el-input-number
+                    v-model="exam.multi_select[1]"
+                    controls-position="right"
+                    :min="0"
+                    @change="handleChange"
+                  />&nbsp;&nbsp;分</span>
+                </div>
+                <div class="topicType">
+                  <span>判断题
+                    <span
+                      class="topicsNum"
+                    >（{{ topicsNumDetail.judgeSelect }}题可用）</span></span>
+                  <span>抽取&nbsp;&nbsp;<el-input-number
+                    v-model="exam.judge_select[0]"
+                    controls-position="right"
+                    :min="0"
+                    :max="topicsNumDetail.judgeSelect"
+                    @change="handleChange"
+                  />&nbsp;&nbsp;试题，每题&nbsp;&nbsp;<el-input-number
+                    v-model="exam.judge_select[1]"
+                    controls-position="right"
+                    :min="0"
+                    @change="handleChange"
+                  />&nbsp;&nbsp;分</span>
+                </div>
+              </div>
+              <div v-if="exam.select_type === 3" class="">
+                <div class="selectType selectType2">
+                  <div class="">
+                    单选题
+                    <span
+                      class="topicsNum"
+                    >（{{ topicsNumDetail.singleSelect }}题可用）</span>
                   </div>
-                  <li v-for="(item2, index2) in item.topic_option" :key="item2.option_id" class="topic-item">
-                    <el-checkbox :checked="item2.correct_option===1?true:false" :title="item2.option_content" class="single-line3" disabled>{{ getOptionOrderByIndex(index2) }}{{ item2.option_content }}</el-checkbox>
-                  </li>
-                </ul>
-                <p class="topic_resolve">解析：{{ item.topic_resolve }}</p>
+                  <div class="topicType2">
+                    <span>简单&nbsp;&nbsp;<el-input-number
+                      v-model="exam.single_and_easy[0]"
+                      controls-position="right"
+                      :min="0"
+                      :max="topicsNumDetail.singleAndEasy"
+                      @change="handleChange"
+                    /><span
+                      class="topicsNum"
+                    >（{{ topicsNumDetail.singleAndEasy }}题可用）</span>每题&nbsp;&nbsp;<el-input-number
+                      v-model="exam.single_and_easy[1]"
+                      controls-position="right"
+                      :min="0"
+                      @change="handleChange"
+                    />&nbsp;&nbsp;分</span>
+                  </div>
+                  <div class="topicType2">
+                    <span>普通&nbsp;&nbsp;<el-input-number
+                      v-model="exam.single_and_normal[0]"
+                      controls-position="right"
+                      :min="0"
+                      :max="topicsNumDetail.singleAndNormal"
+                      @change="handleChange"
+                    /><span
+                      class="topicsNum"
+                    >（{{ topicsNumDetail.singleAndNormal }}题可用）</span>每题&nbsp;&nbsp;<el-input-number
+                      v-model="exam.single_and_normal[1]"
+                      controls-position="right"
+                      :min="0"
+                      @change="handleChange"
+                    />&nbsp;&nbsp;分</span>
+                  </div>
+                  <div class="topicType2">
+                    <span>困难&nbsp;&nbsp;<el-input-number
+                      v-model="exam.single_and_hard[0]"
+                      controls-position="right"
+                      :min="0"
+                      :max="topicsNumDetail.singleAndHard"
+                      @change="handleChange"
+                    /><span
+                      class="topicsNum"
+                    >（{{ topicsNumDetail.singleAndHard }}题可用）</span>每题&nbsp;&nbsp;<el-input-number
+                      v-model="exam.single_and_hard[1]"
+                      controls-position="right"
+                      :min="0"
+                      @change="handleChange"
+                    />&nbsp;&nbsp;分</span>
+                  </div>
+                </div>
+                <div class="selectType selectType2">
+                  <div class="">
+                    多选题
+                    <span
+                      class="topicsNum"
+                    >（{{ topicsNumDetail.multiSelect }}题可用）</span>
+                  </div>
+                  <div class="topicType2">
+                    <span>简单&nbsp;&nbsp;<el-input-number
+                      v-model="exam.multi_and_easy[0]"
+                      controls-position="right"
+                      :min="0"
+                      :max="topicsNumDetail.multiAndEasy"
+                      @change="handleChange"
+                    /><span
+                      class="topicsNum"
+                    >（{{ topicsNumDetail.multiAndEasy }}题可用）</span>每题&nbsp;&nbsp;<el-input-number
+                      v-model="exam.multi_and_easy[1]"
+                      controls-position="right"
+                      :min="0"
+                      @change="handleChange"
+                    />&nbsp;&nbsp;分</span>
+                  </div>
+                  <div class="topicType2">
+                    <span>普通&nbsp;&nbsp;<el-input-number
+                      v-model="exam.multi_and_normal[0]"
+                      controls-position="right"
+                      :min="0"
+                      :max="topicsNumDetail.multiAndNormal"
+                      @change="handleChange"
+                    /><span
+                      class="topicsNum"
+                    >（{{ topicsNumDetail.multiAndNormal }}题可用）</span>每题&nbsp;&nbsp;<el-input-number
+                      v-model="exam.multi_and_normal[1]"
+                      controls-position="right"
+                      :min="0"
+                      @change="handleChange"
+                    />&nbsp;&nbsp;分</span>
+                  </div>
+                  <div class="topicType2">
+                    <span>困难&nbsp;&nbsp;<el-input-number
+                      v-model="exam.multi_and_hard[0]"
+                      controls-position="right"
+                      :min="0"
+                      :max="topicsNumDetail.multiAndHard"
+                      @change="handleChange"
+                    /><span
+                      class="topicsNum"
+                    >（{{ topicsNumDetail.multiAndHard }}题可用）</span>每题&nbsp;&nbsp;<el-input-number
+                      v-model="exam.multi_and_hard[1]"
+                      controls-position="right"
+                      :min="0"
+                      @change="handleChange"
+                    />&nbsp;&nbsp;分</span>
+                  </div>
+                </div>
+                <div class="selectType selectType2">
+                  <div class="">
+                    判断题
+                    <span
+                      class="topicsNum"
+                    >（{{ topicsNumDetail.judgeSelect }}题可用）</span>
+                  </div>
+                  <div class="topicType2">
+                    <span>简单&nbsp;&nbsp;<el-input-number
+                      v-model="exam.judge_and_easy[0]"
+                      controls-position="right"
+                      :min="0"
+                      :max="topicsNumDetail.judgeAndEasy"
+                      @change="handleChange"
+                    /><span
+                      class="topicsNum"
+                    >（{{ topicsNumDetail.judgeAndEasy }}题可用）</span>每题&nbsp;&nbsp;<el-input-number
+                      v-model="exam.judge_and_easy[1]"
+                      controls-position="right"
+                      :min="0"
+                      @change="handleChange"
+                    />&nbsp;&nbsp;分</span>
+                  </div>
+                  <div class="topicType2">
+                    <span>普通&nbsp;&nbsp;<el-input-number
+                      v-model="exam.judge_and_normal[0]"
+                      controls-position="right"
+                      :min="0"
+                      :max="topicsNumDetail.judgeAndNormal"
+                      @change="handleChange"
+                    /><span
+                      class="topicsNum"
+                    >（{{ topicsNumDetail.judgeAndNormal }}题可用）</span>每题&nbsp;&nbsp;<el-input-number
+                      v-model="exam.judge_and_normal[1]"
+                      controls-position="right"
+                      :min="0"
+                      @change="handleChange"
+                    />&nbsp;&nbsp;分</span>
+                  </div>
+                  <div class="topicType2">
+                    <span>困难&nbsp;&nbsp;<el-input-number
+                      v-model="exam.judge_and_hard[0]"
+                      controls-position="right"
+                      :min="0"
+                      :max="topicsNumDetail.judgeAndHard"
+                      @change="handleChange"
+                    /><span
+                      class="topicsNum"
+                    >（{{ topicsNumDetail.judgeAndHard }}题可用）</span>每题&nbsp;&nbsp;<el-input-number
+                      v-model="exam.judge_and_hard[1]"
+                      controls-position="right"
+                      :min="0"
+                      @change="handleChange"
+                    />&nbsp;&nbsp;分</span>
+                  </div>
+                </div>
               </div>
-            </el-scrollbar>
-          </div>
+            </el-form-item>
+          </el-form>
+          <add-labels
+            :visible2.sync="visible2"
+            :egroup="exam.egroup"
+            :select-company-id="exam.selectCompanyId"
+            :current-labels.sync="currentLabels"
+            @addLabels="getLabels"
+            @visible2="onvisible2"
+          />
+          <add-skills
+            :visible3.sync="visible3"
+            :select-company-id="exam.selectCompanyId"
+            :current-skills.sync="currentSkills"
+            @addSkills="getSkills"
+            @visible3="onvisible3"
+          />
         </div>
-      </el-tab-pane>
-      <el-tab-pane class="excel" label="Excel添加" name="excel">
-        <div v-show="!topics.length" class="topicFile">
-          <el-button size="small" class="" type="primary" icon="el-icon-download" @click="downTemplete">下载Excel模板</el-button>
-          <el-upload
-            ref="uploadExcel"
-            class="excel-uploader"
-            :action="uploadUrl()"
-            :headers="headers"
-            accept=".xls,.xlsx"
-            :show-file-list="false"
-            :on-success="handleExcelSuccess"
-            :before-upload="beforeExcelUpload"
+        <div v-show="activeStep === 2" class="fl edit publishSet">
+          <el-form
+            ref="exam2"
+            class="form"
+            :model="exam"
+            :rules="rules"
+            label-width="100px"
           >
-            <el-button size="small" class="uploadExcel" type="primary" icon="el-icon-upload">上传试题文件</el-button>
-          </el-upload>
+            <el-form-item label="考试名称" prop="revolution_name">
+              <el-input
+                v-model="exam.revolution_name"
+                placeholder="请输入考试名称"
+                maxlength="64"
+                clearable
+              />
+            </el-form-item>
+            <el-form-item class="required timeRange" label="考试时间">
+              <el-radio-group v-model="exam.revolution_type">
+                <el-radio
+                  class="singleExam"
+                  :label="4"
+                >单次考试<span
+                  class="typeTip"
+                >（设定考试时间段，到期后考试结束）</span><br>
+                  <el-date-picker
+                    v-if="exam.revolution_type === 4"
+                    ref="daterange"
+                    v-model="time_range"
+                    class="daterange"
+                    type="datetimerange"
+                    range-separator="至"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                    value-format="yyyy-MM-dd HH:mm:ss"
+                    :default-time="['00:00:00', '23:59:59']"
+                  />
+                </el-radio>
+                <el-radio
+                  :label="2"
+                >定时考试<span
+                  class="typeTip"
+                >（设定考试周期，周期循环考试，有效期仅限当年）</span></el-radio>
+              </el-radio-group>
+              <div v-if="exam.revolution_type !== 4" class="periodExam">
+                <div class="revolutionType">
+                  <span class="text">每隔</span>
+                  <el-input-number
+                    ref="revolution"
+                    v-model="exam.revolution"
+                    controls-position="right"
+                    :min="1"
+                    :max="max_revolution"
+                  />
+                  <el-select
+                    v-model="revolutionType"
+                    placeholder="请选择"
+                    @change="changeRevolutionType2"
+                  >
+                    <el-option label="周" :value="2" />
+                    <el-option label="月" :value="3" />
+                  </el-select>
+                </div>
+                <div class="cycle">
+                  <el-select v-model="exam.beginday_cycle" placeholder="请选择">
+                    <el-option
+                      v-for="item in beginday_cycle"
+                      :key="item.id"
+                      :label="item.label"
+                      :value="item.id"
+                    />
+                  </el-select>
+                  <el-time-picker
+                    v-model="exam.begintime_cycle"
+                    :clearable="false"
+                    placeholder="开始时间"
+                    value-format="HH:mm:ss"
+                  />
+                  <p class="text">至</p>
+                  <el-select v-model="exam.endday_cycle" placeholder="请选择">
+                    <el-option
+                      v-for="item in endday_cycle"
+                      :key="item.id"
+                      :disabled="item.id < exam.beginday_cycle"
+                      :label="item.label"
+                      :value="item.id"
+                    />
+                  </el-select>
+                  <el-time-picker
+                    v-model="exam.endtime_cycle"
+                    :clearable="false"
+                    placeholder="开始时间"
+                    value-format="HH:mm:ss"
+                  />
+                </div>
+              </div>
+            </el-form-item>
+            <el-form-item label="及格分数" prop="pass_score">
+              <el-input
+                v-model="exam.pass_score"
+                placeholder="请输入及格分数"
+                clearable
+                @keyup.native="intNum(exam.pass_score)"
+              />
+            </el-form-item>
+            <el-form-item label="考试人员" prop="memer">
+              <el-input v-show="false" v-model="exam.memer" />
+              <Examiners
+                :select-company-id="exam.selectCompanyId"
+                @examiners="getExaminers"
+              />
+            </el-form-item>
+            <el-form-item label="考试类型">
+              <el-checkbox v-model="exam.topic_unrest">试题乱序</el-checkbox>
+            </el-form-item>
+          </el-form>
         </div>
-        <div v-show="topics.length">
-          <div class="fl edit">
-            <el-tabs v-model="topic_type" class="topicType" type="card" :before-leave="beforeLeaveTabs2" @tab-click="handleTabsClick2">
-              <el-tab-pane label="单选题" name="1">
-                <div class="edit-excel-topic1">
-                  <el-form ref="form" label-width="100px">
-                    <el-form-item class="required content" label="题目内容">
-                      <el-input v-model="topic1.topic_content" class="topicName" placeholder="请输入题目" clearable />
-                      <div v-show="topic1.topic_resource" class="img-group">
-                        <div class="imgCover" :style="{backgroundImage:'url(' + topic1.topic_resource + ')'}"> <i class="close iconfont iconfalse-circle" @click="delTopicImg" /></div>
-                      </div>
-                      <div class="selectPic" @click="topicImg">添加图片</div>
-                    </el-form-item>
-                    <el-form-item class="required" label="题目选项">
-                      <el-table
-                        class="topicOption"
-                        :data="topic1.topic_option"
-                        border
-                        style="width: 100%"
-                        max-height="291"
-                      >
-                        <el-table-column
-                          prop="option_content"
-                          align="center"
-                          label="选项内容"
-                        >
-                          <template slot-scope="scope">
-                            <el-input v-model="scope.row.option_content" size="small" class="option_content" placeholder="请输入选项内容，字数不超过100个字" maxlength="100" />
-                          </template>
-                        </el-table-column>
-                        <el-table-column
-                          prop="option_img"
-                          label="图片"
-                          align="center"
-                          width="60"
-                        >
-                          <template slot-scope="scope">
-                            <el-upload
-                              ref="upload"
-                              class="avatar-uploader"
-                              :action="uploadUrl()"
-                              :headers="headers"
-                              accept=".jpg,.png,.gif,.jepg,.jpeg"
-                              :show-file-list="false"
-                              :on-success="handleImgSuccess"
-                              :before-upload="beforeImgUpload"
-                            >
-                              <img v-if="scope.row.option_img" :src="scope.row.option_img" class="avatar">
-                              <i v-else class="el-icon-plus avatar-uploader-icon" @click="optionConcentIndex(scope.$index)" />
-                            </el-upload>
-                            <i v-if="scope.row.option_img" class="closeOptionImg iconfont iconfalse-circle" @click="delOptionImg(scope.row)" />
-                          </template>
-                        </el-table-column>
-                        <el-table-column
-                          prop="correct_option"
-                          label="正确选项"
-                          align="center"
-                          width="90"
-                        >
-                          <template slot-scope="scope">
-                            <el-radio v-model="radio1" class="radio" :label="scope.row.option_id_time_stamp" @change="isTrueChange(scope.$index, scope.row.option_id_time_stamp)" />
-                          </template>
-                        </el-table-column>
-                        <el-table-column
-                          prop="addOrdelOption"
-                          label="操作"
-                          align="center"
-                          width="90"
-                        >
-                          <template slot-scope="scope">
-                            <i class="pointer el-icon-plus" @click="addOption" />
-                            <i class="pointer el-icon-minus" @click="delTheOption(scope.$index)" />
-                          </template>
-                        </el-table-column>
-                      </el-table>
-                    </el-form-item>
-                    <el-form-item label="题目解析">
-                      <el-input v-model="topic1.topic_resolve" size="small" type="textarea" :autosize="{ minRows: 1, maxRows: 4}" />
-                    </el-form-item>
-                    <el-form-item class="required" label="题目分值">
-                      <el-input-number v-model="topic1.topic_score" class="topic_score" controls-position="right" :min="1" />
-                    </el-form-item>
-                    <el-form-item class="required" label="题目难度">
-                      <el-radio-group v-model="topic1.topic_level" class="topic_level">
-                        <el-radio-button label="1">简单</el-radio-button>
-                        <el-radio-button label="2">普通</el-radio-button>
-                        <el-radio-button label="3">困难</el-radio-button>
-                      </el-radio-group>
-                    </el-form-item>
-                    <el-form-item label="添加标签" class="addLabel">
-                      <div v-if="currentLabels.length" class="tag">
-                        <el-tag
-                          v-for="(tag, index) in currentLabels"
-                          :key="tag.linc"
-                          closable
-                          size="medium"
-                          :disable-transitions="false"
-                          type="success"
-                          @close="handleLabelDel(index)"
-                        >
-                          {{ tag.lname }}
-                        </el-tag>
-                      </div>
-                      <i class="el-icon-circle-plus-outline" @click="addLabels" />
-                    </el-form-item>
-                    <el-form-item label="题目考核技能" class="addSkill">
-                      <div v-if="currentSkills.length" class="tag">
-                        <el-tag
-                          v-for="(tag, index) in currentSkills"
-                          :key="tag.increase_id"
-                          closable
-                          size="medium"
-                          :disable-transitions="false"
-                          type="success"
-                          @close="handleSkillDel(index)"
-                        >
-                          {{ tag.skill_name }}
-                        </el-tag>
-                      </div>
-                      <i class="el-icon-circle-plus-outline" @click="addSkills" />
-                    </el-form-item>
-                    <el-checkbox v-model="saveSet" class="saveSet">保存设置（分值、难度、标签、技能）</el-checkbox>
-                  </el-form>
-                  <el-button v-no-more-click class="saveTopic" type="primary" @click="saveTopic">添加题目</el-button>
-                </div>
-              </el-tab-pane>
-              <el-tab-pane label="多选题" name="2">
-                <div class="edit-excel-topic2">
-                  <el-form ref="form" label-width="100px">
-                    <el-form-item class="required content" label="题目内容">
-                      <el-input v-model="topic2.topic_content" class="topicName" placeholder="请输入题目" clearable />
-                      <div v-show="topic2.topic_resource" class="img-group">
-                        <div class="imgCover" :style="{backgroundImage:'url(' + topic2.topic_resource + ')'}"> <i class="close iconfont iconfalse-circle" @click="delTopicImg" /></div>
-                      </div>
-                      <div class="selectPic" @click="topicImg">添加图片</div>
-                    </el-form-item>
-                    <el-form-item class="required" label="题目选项">
-                      <el-table
-                        class="topicOption"
-                        :data="topic2.topic_option"
-                        border
-                        style="width: 100%"
-                        max-height="291"
-                      >
-                        <el-table-column
-                          prop="option_content"
-                          align="center"
-                          label="选项内容"
-                        >
-                          <template slot-scope="scope">
-                            <el-input v-model="scope.row.option_content" size="small" class="option_content" placeholder="请输入选项内容，字数不超过100个字" maxlength="100" />
-                          </template>
-                        </el-table-column>
-                        <el-table-column
-                          prop="option_img"
-                          label="图片"
-                          align="center"
-                          width="60"
-                        >
-                          <template slot-scope="scope">
-                            <el-upload
-                              ref="upload"
-                              class="avatar-uploader"
-                              :action="uploadUrl()"
-                              :headers="headers"
-                              accept=".jpg,.png,.gif,.jepg,.jpeg"
-                              :show-file-list="false"
-                              :on-success="handleImgSuccess"
-                              :before-upload="beforeImgUpload"
-                            >
-                              <img v-if="scope.row.option_img" :src="scope.row.option_img" class="avatar">
-                              <i v-else class="el-icon-plus avatar-uploader-icon" @click="optionConcentIndex(scope.$index)" />
-                            </el-upload>
-                            <i v-if="scope.row.option_img" class="closeOptionImg iconfont iconfalse-circle" @click="delOptionImg(scope.row)" />
-                          </template>
-                        </el-table-column>
-                        <el-table-column
-                          prop="correct_option"
-                          label="正确选项"
-                          align="center"
-                          width="90"
-                        >
-                          <template slot-scope="scope">
-                            <el-checkbox v-model="scope.row.check" @change="chcekboxChange(scope.row)" />
-                          </template>
-                        </el-table-column>
-                        <el-table-column
-                          prop="addOrdelOption"
-                          label="操作"
-                          align="center"
-                          width="90"
-                        >
-                          <template slot-scope="scope">
-                            <i class="pointer el-icon-plus" @click="addOption" />
-                            <i class="pointer el-icon-minus" @click="delTheOption(scope.$index)" />
-                          </template>
-                        </el-table-column>
-                      </el-table>
-                    </el-form-item>
-                    <el-form-item label="题目解析">
-                      <el-input v-model="topic2.topic_resolve" size="small" type="textarea" :autosize="{ minRows: 1, maxRows: 4}" />
-                    </el-form-item>
-                    <el-form-item class="required" label="题目分值">
-                      <el-input-number v-model="topic2.topic_score" class="topic_score" controls-position="right" :min="1" />
-                    </el-form-item>
-                    <el-form-item class="required" label="题目难度">
-                      <el-radio-group v-model="topic2.topic_level" class="topic_level">
-                        <el-radio-button label="1">简单</el-radio-button>
-                        <el-radio-button label="2">普通</el-radio-button>
-                        <el-radio-button label="3">困难</el-radio-button>
-                      </el-radio-group>
-                    </el-form-item>
-                    <el-form-item label="添加标签" class="addLabel">
-                      <div v-if="currentLabels.length" class="tag">
-                        <el-tag
-                          v-for="(tag, index) in currentLabels"
-                          :key="tag.linc"
-                          closable
-                          size="medium"
-                          :disable-transitions="false"
-                          type="success"
-                          @close="handleLabelDel(index)"
-                        >
-                          {{ tag.lname }}
-                        </el-tag>
-                      </div>
-                      <i class="el-icon-circle-plus-outline" @click="addLabels" />
-                    </el-form-item>
-                    <el-form-item label="题目考核技能" class="addSkill">
-                      <div v-if="currentSkills.length" class="tag">
-                        <el-tag
-                          v-for="(tag, index) in currentSkills"
-                          :key="tag.increase_id"
-                          closable
-                          size="medium"
-                          :disable-transitions="false"
-                          type="success"
-                          @close="handleSkillDel(index)"
-                        >
-                          {{ tag.skill_name }}
-                        </el-tag>
-                      </div>
-                      <i class="el-icon-circle-plus-outline" @click="addSkills" />
-                    </el-form-item>
-                    <el-checkbox v-model="saveSet" class="saveSet">保存设置（分值、难度、标签、技能）</el-checkbox>
-                  </el-form>
-                  <el-button v-no-more-click class="saveTopic" type="primary" @click="saveTopic">添加题目</el-button>
-                </div>
-              </el-tab-pane>
-              <el-tab-pane label="判断题" name="3">
-                <div class="edit-excel-topic3">
-                  <el-form ref="form" label-width="100px">
-                    <el-form-item class="required content" label="题目内容">
-                      <el-input v-model="topic3.topic_content" class="topicName" placeholder="请输入题目" clearable />
-                      <div v-show="topic3.topic_resource" class="img-group">
-                        <div class="imgCover" :style="{backgroundImage:'url(' + topic3.topic_resource + ')'}"> <i class="close iconfont iconfalse-circle" @click="delTopicImg" /></div>
-                      </div>
-                      <div class="selectPic" @click="topicImg">添加图片</div>
-                    </el-form-item>
-                    <el-form-item class="required" label="题目选项">
-                      <el-table
-                        class="topicOption"
-                        :data="topic3.topic_option"
-                        border
-                        style="width: 100%"
-                        max-height="291"
-                      >
-                        <el-table-column
-                          prop="option_content"
-                          align="center"
-                          label="选项内容"
-                        />
-                        <el-table-column
-                          prop="correct_option"
-                          label="正确选项"
-                          align="center"
-                          width="90"
-                        >
-                          <template slot-scope="scope">
-                            <el-radio v-model="radio2" :label="scope.row.option_id_time_stamp" @change="isTrueChange(scope.$index)" />
-                          </template>
-                        </el-table-column>
-                      </el-table>
-                    </el-form-item>
-                    <el-form-item label="题目解析">
-                      <el-input v-model="topic3.topic_resolve" size="small" type="textarea" :autosize="{ minRows: 1, maxRows: 4}" />
-                    </el-form-item>
-                    <el-form-item class="required" label="题目分值">
-                      <el-input-number v-model="topic3.topic_score" class="topic_score" controls-position="right" :min="1" />
-                    </el-form-item>
-                    <el-form-item class="required" label="题目难度">
-                      <el-radio-group v-model="topic3.topic_level" class="topic_level">
-                        <el-radio-button label="1">简单</el-radio-button>
-                        <el-radio-button label="2">普通</el-radio-button>
-                        <el-radio-button label="3">困难</el-radio-button>
-                      </el-radio-group>
-                    </el-form-item>
-                    <el-form-item label="添加标签" class="addLabel">
-                      <div v-if="currentLabels.length" class="tag">
-                        <el-tag
-                          v-for="(tag, index) in currentLabels"
-                          :key="tag.linc"
-                          closable
-                          size="medium"
-                          :disable-transitions="false"
-                          type="success"
-                          @close="handleLabelDel(index)"
-                        >
-                          {{ tag.lname }}
-                        </el-tag>
-                      </div>
-                      <i class="el-icon-circle-plus-outline" @click="addLabels" />
-                    </el-form-item>
-                    <el-form-item label="题目考核技能" class="addSkill">
-                      <div v-if="currentSkills.length" class="tag">
-                        <el-tag
-                          v-for="(tag, index) in currentSkills"
-                          :key="tag.increase_id"
-                          closable
-                          size="medium"
-                          :disable-transitions="false"
-                          type="success"
-                          @close="handleSkillDel(index)"
-                        >
-                          {{ tag.skill_name }}
-                        </el-tag>
-                      </div>
-                      <i class="el-icon-circle-plus-outline" @click="addSkills" />
-                    </el-form-item>
-                    <el-checkbox v-model="saveSet" class="saveSet">保存设置（分值、难度、标签、技能）</el-checkbox>
-                  </el-form>
-                  <el-button v-no-more-click class="saveTopic" type="primary" @click="saveTopic">添加题目</el-button>
-                </div>
-              </el-tab-pane>
-            </el-tabs>
+        <div class="fr count">
+          <div class="total">
+            <span>总题数{{ totalTopics[0] }}题</span>
+            <span>总分值{{ totalTopics[1] }}分</span>
           </div>
-          <div class="fr preview ">
-            <h3>预览区</h3>
-            <p class="tip" />
-            <div class="topics-preview">
-              <el-scrollbar wrap-class="scrollbar-wrapper">
-                <div v-for="(item, index) in topics" :key="item.id" class="topics-item">
-                  <p class="topic-type">
-                    <span>{{ index+1 + '、' }}{{ item.topicTypeTitle }}</span><el-tooltip class="item" effect="dark" :content="item.labelStr" placement="top"><span v-if="item.labelStr"><span class="single-line">【{{ item.labelStr }}</span><span>】</span></span></el-tooltip><el-tooltip class="item" effect="dark" :content="item.skillStr" placement="top"><span v-if="item.skillStr"><span class="single-line">【{{ item.skillStr }}</span><span>】</span></span></el-tooltip>
-                  </p>
-                  <p v-if="item.topic_content" class="topic-title">
-                    {{ item.topic_content }}
-                    <img v-if="item.topic_resource" class="previewImg" :src="item.topic_resource" alt="">
-                  </p>
-                  <p v-else class="topic-title" @click="topicEdit(index, item.id)" />
-                  <ul class="topic-options">
-                    <div class="handle">
-                      <el-button size="small" type="primary" @click="topicEdit(index, item.id)">编辑</el-button>
-                      <el-button size="small" type="primary" @click="delTopic(index)">删除</el-button>
-                    </div>
-                    <li v-for="(item2, index2) in item.topic_option" :key="item2.option_id" class="topic-item">
-                      <el-checkbox v-if="item2.option_content" v-model="item2.correct_option==1?true:false" :class="(!item.have_correctoption?'error-option':'')" read-only>{{ getOptionOrderByIndex(index2) }}{{ item2.option_content }}</el-checkbox>
-                      <el-checkbox v-else v-model="item2.correct_option==1?true:false" class="error-option" read-only>{{ getOptionOrderByIndex(index2) }}</el-checkbox>
-                    </li>
-                  </ul>
-                  <p class="topic_resolve">解析：{{ item.topic_resolve }}</p>
-                  <p v-if="(item.error_list && item.error_list.length)" class="error-option"><span>错误原因：</span>{{ item.error_list.join('。') }}</p>
-                </div>
-              </el-scrollbar>
-            </div>
+          <div class="single">
+            <span>单选题{{ single_select[0] }}题</span>
+            <span>分值{{ single_select[1] }}分</span>
+          </div>
+          <div class="multi">
+            <span>多选题{{ multi_select[0] }}题</span>
+            <span>分值{{ multi_select[1] }}分</span>
+          </div>
+          <div class="judge">
+            <span>判断题{{ judge_select[0] }}题</span>
+            <span>分值{{ judge_select[1] }}分</span>
+          </div>
+
+          <div id="btnGroup">
+            <el-button
+              type="primary"
+              plain
+              @click="cancel()"
+            ><i class="addIcon iconfont iconcancel" />取消</el-button>
+            <el-button
+              v-if="activeStep !== 1"
+              type="primary"
+              @click="forwardStep"
+            ><i class="addIcon iconfont iconshangyibu" />上一步</el-button>
+            <el-button
+              v-if="activeStep !== 2"
+              type="primary"
+              @click="nextStep"
+            ><i class="addIcon iconfont iconxiayibu" />下一步</el-button>
+            <el-button
+              v-if="activeStep === 2"
+              v-no-more-click
+              type="primary"
+              @click="save('exam2')"
+            ><i class="addIcon iconfont iconbaocun" />保存</el-button>
+            <el-button
+              v-if="activeStep === 2"
+              v-no-more-click
+              type="primary"
+              @click="publish('exam2')"
+            ><i class="addIcon iconfont iconfabu1" />保存并发布</el-button>
           </div>
         </div>
-      </el-tab-pane>
-    </el-tabs>
-    <select-file :visible.sync="visible" :file-type-list="['pic']" @checkedFile="checkedFile" @visible="onvisible" />
-    <add-labels :visible2.sync="visible2" :egroup="egroup" :select-company-id="selectCompanyId" :current-labels.sync="currentLabels" @addLabels="getLabels" @visible2="onvisible2" />
-    <add-skills :visible3.sync="visible3" :select-company-id="selectCompanyId" :current-skills.sync="currentSkills" @addSkills="getSkills" @visible3="onvisible3" />
+      </div>
+    </div>
   </div>
 </template>
-
 <script>
-import SelectFile from '@/components/SelectFile'
+import { getTopicCount } from '@/api/test-paper-manage'
+import { submit, saveThenPublish } from '@/api/evolutionManage-automatic'
 import AddLabels from '@/components/AddEvalLabels'
 import AddSkills from '@/components/AddEvalSkills'
-import { getToken } from '@/utils/auth'
-import { importTopics, addTopic } from '@/api/question-bank-manage'
+import Examiners from '@/components/Examiners'
+import { validIntNum } from '@/utils/validate'
 const $ = window.$
 
 export default {
   components: {
-    SelectFile,
     AddLabels,
-    AddSkills
+    AddSkills,
+    Examiners
   },
   data() {
+    // 校验考试人员
+    var validTargetUser = (rule, value, callback) => {
+      if (!this.exam.time_range.length) {
+        callback(new Error('请选择考试时间'))
+      } else {
+        callback()
+      }
+    }
+    // 校验及格分数
+    var validPassscore = (rule, value, callback) => {
+      if (!this.exam.pass_score) {
+        callback(new Error('请输入及格分数'))
+      } else if (this.exam.pass_score * 1 > this.totalTopics[1]) {
+        callback(
+          new Error(
+            '及格分数不能超过总分数（总分数:' + this.totalTopics[1] + '）'
+          )
+        )
+      } else {
+        callback()
+      }
+    }
     return {
+      dataIsChange: -1, // 计数器，据此判断表单是否已编辑
+      noLeaveprompt: false, // 表单提交后，设置为true，据此判断提交不再弹出离开提示
+      activeStep: 1, // 当前激活步骤
+      exam: {
+        selectCompanyId: '', // 租户
+        egroup: '', // 小组
+        topic_count: 0, // 总题数
+        score_count: 0, // 总分数
+        revolution_name: '', // 考试名称
+        revolution_type: 4, // 周期类型 4 单次考试；2 按周循环；3按月循环
+        revolution: 0, // 周期类型 4 单次考试；2 按周循环；3按月循环
+        beginday_cycle: 4, // 发布开始日期
+        begintime_cycle: '00:00:00', // 发布开始时间
+        endday_cycle: 4, // 发布结束天
+        endtime_cycle: '23:59:59', // 发布结束时间
+        start_time: '', // 开始时间
+        end_time: '', // 结束时间
+        pass_score: '', // 及格分数
+        target_user: '', // 考试人员
+        topic_unrest: 0, // 是否题号乱序
+        memer: '', // 校验用的，无实际意义
+        label_id: [], // 试题标签
+        skill_id: [], // 试题技能
+        select_type: 1, // 选题类型1随机选 2根据题型 3根据题型难度
+        total_number: [0, 0], // 随机抽选试题数量和分数
+        single_select: [0, 0], // 题型 单选
+        multi_select: [0, 0], // 题型 多选
+        judge_select: [0, 0], // 题型 判断
+        single_and_easy: [0, 0], // 简单单选题数
+        single_and_normal: [0, 0], // 一般单选题数
+        single_and_hard: [0, 0], // 困难单选题数
+        multi_and_easy: [0, 0], // 简单多选题数
+        multi_and_normal: [0, 0], // 一般多选题数
+        multi_and_hard: [0, 0], // 困难多选题数
+        judge_and_easy: [0, 0], // 简单判断题
+        judge_and_normal: [0, 0], // 一般判断题数
+        judge_and_hard: [0, 0] // 困难判断题数
+      },
+      revolutionType: 2,
+      time_range: [], // 考试时间
+      max_revolution: 52, // 最大周期 按周 52周；按月 12个月
+      beginday_cycle: [
+        {
+          id: 1,
+          label: '周一'
+        },
+        {
+          id: 2,
+          label: '周二'
+        },
+        {
+          id: 3,
+          label: '周三'
+        },
+        {
+          id: 4,
+          label: '周四'
+        },
+        {
+          id: 5,
+          label: '周五'
+        }
+      ],
+      endday_cycle: [
+        {
+          id: 1,
+          label: '周一'
+        },
+        {
+          id: 2,
+          label: '周二'
+        },
+        {
+          id: 3,
+          label: '周三'
+        },
+        {
+          id: 4,
+          label: '周四'
+        },
+        {
+          id: 5,
+          label: '周五'
+        }
+      ],
+      beginday_cycle1: [
+        {
+          id: 1,
+          label: '周一'
+        },
+        {
+          id: 2,
+          label: '周二'
+        },
+        {
+          id: 3,
+          label: '周三'
+        },
+        {
+          id: 4,
+          label: '周四'
+        },
+        {
+          id: 5,
+          label: '周五'
+        }
+      ],
+      beginday_cycle2: [
+        {
+          id: 1,
+          label: '1号'
+        },
+        {
+          id: 2,
+          label: '2号'
+        },
+        {
+          id: 3,
+          label: '3号'
+        },
+        {
+          id: 4,
+          label: '4号'
+        },
+        {
+          id: 5,
+          label: '5号'
+        },
+        {
+          id: 6,
+          label: '6号'
+        },
+        {
+          id: 7,
+          label: '7号'
+        },
+        {
+          id: 8,
+          label: '8号'
+        },
+        {
+          id: 9,
+          label: '9号'
+        },
+        {
+          id: 10,
+          label: '10号'
+        },
+        {
+          id: 11,
+          label: '11号'
+        },
+        {
+          id: 12,
+          label: '12号'
+        },
+        {
+          id: 13,
+          label: '13号'
+        },
+        {
+          id: 14,
+          label: '14号'
+        },
+        {
+          id: 15,
+          label: '15号'
+        },
+        {
+          id: 16,
+          label: '16号'
+        },
+        {
+          id: 17,
+          label: '17号'
+        },
+        {
+          id: 18,
+          label: '18号'
+        },
+        {
+          id: 19,
+          label: '19号'
+        },
+        {
+          id: 20,
+          label: '20号'
+        },
+        {
+          id: 21,
+          label: '21号'
+        },
+        {
+          id: 22,
+          label: '22号'
+        },
+        {
+          id: 23,
+          label: '23号'
+        },
+        {
+          id: 24,
+          label: '24号'
+        },
+        {
+          id: 25,
+          label: '25号'
+        },
+        {
+          id: 26,
+          label: '26号'
+        },
+        {
+          id: 27,
+          label: '27号'
+        },
+        {
+          id: 28,
+          label: '28号'
+        },
+        {
+          id: 29,
+          label: '29号'
+        },
+        {
+          id: 30,
+          label: '30号'
+        },
+        {
+          id: 31,
+          label: '31号'
+        }
+      ],
+      endday_cycle1: [
+        {
+          id: 1,
+          label: '周一'
+        },
+        {
+          id: 2,
+          label: '周二'
+        },
+        {
+          id: 3,
+          label: '周三'
+        },
+        {
+          id: 4,
+          label: '周四'
+        },
+        {
+          id: 5,
+          label: '周五'
+        }
+      ],
+      endday_cycle2: [
+        {
+          id: 1,
+          label: '1号'
+        },
+        {
+          id: 2,
+          label: '2号'
+        },
+        {
+          id: 3,
+          label: '3号'
+        },
+        {
+          id: 4,
+          label: '4号'
+        },
+        {
+          id: 5,
+          label: '5号'
+        },
+        {
+          id: 6,
+          label: '6号'
+        },
+        {
+          id: 7,
+          label: '7号'
+        },
+        {
+          id: 8,
+          label: '8号'
+        },
+        {
+          id: 9,
+          label: '9号'
+        },
+        {
+          id: 10,
+          label: '10号'
+        },
+        {
+          id: 11,
+          label: '11号'
+        },
+        {
+          id: 12,
+          label: '12号'
+        },
+        {
+          id: 13,
+          label: '13号'
+        },
+        {
+          id: 14,
+          label: '14号'
+        },
+        {
+          id: 15,
+          label: '15号'
+        },
+        {
+          id: 16,
+          label: '16号'
+        },
+        {
+          id: 17,
+          label: '17号'
+        },
+        {
+          id: 18,
+          label: '18号'
+        },
+        {
+          id: 19,
+          label: '19号'
+        },
+        {
+          id: 20,
+          label: '20号'
+        },
+        {
+          id: 21,
+          label: '21号'
+        },
+        {
+          id: 22,
+          label: '22号'
+        },
+        {
+          id: 23,
+          label: '23号'
+        },
+        {
+          id: 24,
+          label: '24号'
+        },
+        {
+          id: 25,
+          label: '25号'
+        },
+        {
+          id: 26,
+          label: '26号'
+        },
+        {
+          id: 27,
+          label: '27号'
+        },
+        {
+          id: 28,
+          label: '28号'
+        },
+        {
+          id: 29,
+          label: '29号'
+        },
+        {
+          id: 30,
+          label: '30号'
+        },
+        {
+          id: 31,
+          label: '31号'
+        }
+      ],
       selectCompanyId: '', // 租户
       egroup: '', // 小组
-      headers: {
-        Authorization: getToken() // 图片上传 header
-      },
-      dataIsChange: 0, // 计数器，据此判断表单是否已编辑
-      noLeaveprompt: false, // 表单提交后，设置为true，据此判断提交不再弹出离开提示
-      canLeave: false, // 是否可以离开
-      visible: false, // 弹出选择文件
-      visible2: false, // 弹出选择标签
-      visible3: false, // 弹出选择技能
-      addType: 'hand', // 默认手动添加
-      topic_type: '1', // 默认单选题
-      uploadOptionIndex: null, // 上传图片的选项index
       currentLabels: [], // 当前要回显的标签
       currentSkills: [], // 当前要回显的技能
-      topics: [], // 添加的所有试题
-      topics1: [], // 手动添加的所有试题
-      topics2: [], // Excel添加的所有试题
-      topic1: { // 单选题
-        topic_type: '', // 题目类型 1单选，2多选，3判断
-        topic_content: '', // 题目
-        topic_level: 1, // 难度
-        topic_label: '', // 标签
-        topic_skill: '', // 技能
-        currentLabels: [], // 标签obj
-        currentSkills: [], // 技能obj
-        topic_resolve: '', // 试题解析
-        topic_score: 1, // 分值
-        topic_option: [ // 题目选项
+      visible2: false, // 弹出选择标签
+      visible3: false, // 弹出选择技能
+      topicsNumDetail: {}, // 可选题数详情
+      totalTopics: [0, 0], // 总题数/总分数
+      single_select: [0, 0], // 总的单选
+      multi_select: [0, 0], // 总的多选
+      judge_select: [0, 0], // 总的判断
+      rules: {
+        revolution_name: [
           {
-            option_content: '',
-            option_img: '',
-            correct_option: 2, // 1正确答案 2错误
-            option_id: this.guid(),
-            option_id_time_stamp: new Date().getTime()
-          }, {
-            option_content: '',
-            option_img: '',
-            correct_option: 2,
-            option_id: this.guid(),
-            option_id_time_stamp: new Date().getTime() + 1
-          }
-        ], // 题目选项
-        topic_resource: '', // 选择的图片
-        topic_resource_id: '' // 主文件id
-      }, // 单题数据
-      topic2: { // 多选题
-        topic_type: '', // 题目类型 1单选，2多选，3判断
-        topic_content: '', // 题目
-        topic_level: 1, // 难度
-        topic_label: '', // 标签
-        topic_skill: '', // 技能
-        currentLabels: [], // 标签obj
-        currentSkills: [], // 技能obj
-        topic_resolve: '', // 试题解析
-        topic_score: 1, // 分值
-        topic_option: [ // 题目选项
+            required: true,
+            message: '请输入考试名称（长度在 2 到 30 个字符）',
+            trigger: 'blur'
+          },
           {
-            option_content: '',
-            option_img: '',
-            correct_option: 2, // 1正确答案 2错误
-            check: false,
-            option_id: this.guid(),
-            option_id_time_stamp: new Date().getTime() + 2
-          }, {
-            option_content: '',
-            option_img: '',
-            correct_option: 2,
-            check: false,
-            option_id: this.guid(),
-            option_id_time_stamp: new Date().getTime() + 3
-          }
-        ], // 题目选项
-        topic_resource: '', // 选择的图片
-        topic_resource_id: '' // 主文件id
-      }, // 单题数据
-      topic3: { // 判断题
-        topic_type: '', // 题目类型 1单选，2多选，3判断
-        topic_content: '', // 题目
-        topic_level: 1, // 难度
-        topic_label: '', // 标签
-        topic_skill: '', // 技能
-        currentLabels: [], // 标签obj
-        currentSkills: [], // 技能obj
-        topic_resolve: '', // 试题解析
-        topic_score: 1, // 分值
-        topic_option: [ // 题目选项
+            required: true,
+            message: '请输入考试名称（长度在 2 到 30 个字符）',
+            trigger: 'change'
+          },
           {
-            option_content: '正确',
-            option_img: '',
-            correct_option: 2, // 1正确答案 2错误
-            option_id: this.guid(),
-            option_id_time_stamp: new Date().getTime() + 4
-          }, {
-            option_content: '错误',
-            option_img: '',
-            correct_option: 2,
-            option_id: this.guid(),
-            option_id_time_stamp: new Date().getTime() + 5
+            min: 2,
+            max: 30,
+            message: '长度在 2 到 30 个字符',
+            trigger: 'blur'
+          },
+          {
+            min: 2,
+            max: 30,
+            message: '长度在 2 到 30 个字符',
+            trigger: 'change'
           }
-        ], // 题目选项
-        topic_resource: '', // 选择的图片
-        topic_resource_id: '' // 主文件id
-      }, // 单题数据
-      saveSet: '', // 保存设置
-      radio1: '', // 单选题目选项
-      radio2: '', // 判断题目选项
-      check2: '', // 多选题目选项
-      templeteExcelUrl: '' // excel下载模板
+        ],
+        time_range: [
+          { required: true, message: '请选择考试时间', trigger: 'blur' },
+          { required: true, message: '请选择考试时间', trigger: 'change' }
+        ],
+        memer: [
+          { required: true, message: '请选择考试人员', trigger: 'change' }
+        ],
+        pass_score: [
+          { required: true, validator: validPassscore, trigger: 'blur' },
+          { required: true, validator: validPassscore, trigger: 'change' }
+        ],
+        target_user: [
+          { required: true, validator: validTargetUser, trigger: 'blur' },
+          { required: true, validator: validTargetUser, trigger: 'change' }
+        ]
+      }
     }
   },
-  computed: {
-    // 计算属性的 getter
-    topic0: function() {
-      return 'topic' + this.topic_type
-    },
-
-    topic_class: function() {
-      return this.addType + '-topic' + this.topic_type
-    }
-  },
+  computed: {},
   watch: {
-    // 监听表单数据变化
-    topic1: {
+    exam: {
       handler(val) {
-        if (val && !this.canLeave) {
+        if (val) {
           this.dataIsChange++
         }
       },
       deep: true // 深层次监听
-    },
-    topic2: {
-      handler(val) {
-        if (val && !this.canLeave) {
-          this.dataIsChange++
-        }
-      },
-      deep: true // 深层次监听
-    },
-    topic3: {
-      handler(val) {
-        if (val && !this.canLeave) {
-          this.dataIsChange++
-        }
-      },
-      deep: true // 深层次监听
-    },
-    topics: {
-      handler(val) {
-        if (val && !this.canLeave) {
-          this.dataIsChange++
-        }
-      },
-      deep: true // 深层次监听
-    },
-    saveSet(val, val2) {
-      this.dataIsChange++
     }
   },
   created() {
-    this.egroup = this.$route.query.egroup
-    this.selectCompanyId = this.$route.query.selectCompanyId
+    this.exam.selectCompanyId = this.$route.query.selectCompanyId
+    this.exam.egroup = this.$route.query.egroup * 1
+    this.getTopicCount()
   },
   methods: {
-    // 用于生成uuid
-    S4: function() {
-      return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1)
-    },
-    guid: function() {
-      return (this.S4() + this.S4() + '-' + this.S4() + '-' + this.S4() + '-' + this.S4() + '-' + this.S4() + this.S4() + this.S4())
-    },
-
-    // 切换手动添加与Excel导入离开前的逻辑
-    beforeLeaveTabs1(item) {
-      if (this.dataIsChange || this.topics.length) {
-        var p = new Promise((resolve, reject) => {
-          this.$confirm('您还有正在编辑尚未保存的内容哦，确定要离开吗？', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-            this.canLeave = true
-            this.dataIsChange = 0
-            this.topics = []
-            // 清空所有topic数据
-            this.clearAllTopic()
-            resolve()
-          }).catch(err => {
-            // 你可以在这儿做些操作
-            reject(err)
-          })
-        })
-        return p
+    // 上一步
+    forwardStep() {
+      if (this.activeStep !== 1) {
+        --this.activeStep
       }
     },
-    // 切换题型
-    beforeLeaveTabs2(item) {
 
-    },
-    // 切换手动添加与Excel导入
-    handleTabsClick1: function() {
-
-    },
-    // 切换题型
-    handleTabsClick2: function() {
-
-    },
-    // 题干添加图片
-    topicImg() {
-      this.visible = true
-    },
-    // 监听选择文件组件返回数据
-    checkedFile(val) {
-      this[this.topic0].topic_resource = val.fileUrl
-      this[this.topic0].topic_resource_id = val.mainFileId
-    },
-    // 监听选择文件组件返回数据
-    onvisible(val) {
-      this.visible = val.visible
-    },
-
-    // 删除题干图片
-    delTopicImg() {
-      this.$confirm('确定删除该图片吗？', '删除图片', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this[this.topic0].topic_resource = ''
-        this[this.topic0].topic_resource_id = ''
-        this.$message.success('删除成功！')
-      }).catch(() => {
-
-      })
-    },
-
-    // 上传路径
-    uploadUrl() {
-      return process.env.VUE_APP_BASE_API + 'system/file/upload/'
-    },
-
-    // 获取上传图片选项index
-    optionConcentIndex(index) {
-      this.uploadOptionIndex = index
-    },
-
-    // 上传选项图片之前
-    beforeImgUpload(file) {
-      const suffixs = ['.png', '.jpg', '.gif', '.jepg', '.jpeg']
-      const i = file.name.lastIndexOf('.')
-      const suffix = file.name.slice(i)
-      if (suffixs.indexOf(suffix) === -1) {
-        this.$message.error('文件格式错误！')
-        this.$refs.upload.clearFiles()
+    // 下一步
+    nextStep() {
+      if (!this.totalTopics[0]) {
+        this.$message.warning('请选择题目数！')
         return false
       }
-      const isLt5M = file.size / 1024 / 1024 < 5
-      if (!isLt5M) {
-        this.$message.error('上传文件大小不能超过 5MB！')
-        this.$refs.upload.clearFiles()
+      if (!this.totalTopics[1]) {
+        this.$message.warning('请输入试题分值！')
         return false
       }
-      return true
-    },
-
-    // 成功上传选项图片
-    handleImgSuccess(res, file) {
-      this[this.topic0].topic_option[this.uploadOptionIndex].option_img = res.data.saveHttpPath
-    },
-
-    // 删除选项图片
-    delOptionImg(row) {
-      this.$confirm('确定删除该图片吗？', '删除图片', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        row.option_img = ''
-        this.$message.success('删除成功！')
-      }).catch(() => {
-
-      })
-    },
-
-    // 题目选项单选
-    isTrueChange(index, option_id_time_stamp) {
-      this[this.topic0].topic_option.forEach(item => {
-        item.correct_option = 2
-      })
-      this.radio1 = option_id_time_stamp
-      this[this.topic0].topic_option[index].correct_option = 1
-      this[this.topic0].topic_option[index].check = true
-      console.log(this[this.topic0].topic_option)
-    },
-
-    // 题目选项多选
-    chcekboxChange(item) {
-      if (item.check) {
-        item.correct_option = 1
-      } else {
-        item.correct_option = 2
+      if (this.activeStep === 1) {
+        ++this.activeStep
       }
     },
 
-    // 添加题目选项
-    addOption: function() {
-      if (this[this.topic0].topic_option.length === 20) {
-        this.$message.warning('选项不可以超过20条！')
-        return false
+    // 获取可用题数
+    getTopicCount() {
+      const params = {
+        egroup: this.exam.egroup,
+        topic_label: this.exam.label_id,
+        topic_skill: this.exam.skill_id
       }
-      this[this.topic0].topic_option.push({
-        option_content: '',
-        option_img: '',
-        correct_option: 2,
-        option_id: this.guid(),
-        option_id_time_stamp: new Date().getTime()
-      })
-    },
-
-    // 删除当前题目选项
-    delTheOption: function(index) {
-      if (this[this.topic0].topic_option.length === 2) {
-        this.$message.warning('选项不得少于两项！')
-        return false
-      }
-      this.$confirm('确定删除该选项？', '删除选项', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this[this.topic0].topic_option.splice(index, 1)
-        this.$message.success('删除成功！')
-      }).catch(() => {
-
+      getTopicCount(params).then(res => {
+        this.topicsNumDetail = res.data
       })
     },
 
@@ -1119,555 +1015,309 @@ export default {
     addLabels() {
       this.visible2 = true
     },
+
     // 监听选择标签组件返回数据
     getLabels(val) {
       this.currentLabels = val
-      this[this.topic0].currentLabels = val
+      this.exam.label_id = []
+      this.currentLabels.forEach(item => {
+        this.exam.label_id.push(item.linc)
+      })
+      this.getTopicCount()
     },
+
     // 监听选择标签组件返回数据
     onvisible2(val) {
       this.visible2 = val.visible
     },
+
     // 删除标签
     handleLabelDel(index) {
       this.currentLabels.splice(index, 1)
+      this.exam.label_id = []
+      this.currentLabels.forEach(item => {
+        this.exam.label_id.push(item.linc)
+      })
+      this.getTopicCount()
     },
 
     // 添加技能
     addSkills() {
       this.visible3 = true
     },
+
     // 监听选择技能组件返回数据
     getSkills(val) {
       this.currentSkills = val
-      this[this.topic0].currentSkills = val
+      this.exam.skill_id = []
+      this.currentSkills.forEach(item => {
+        this.exam.skill_id.push(item.increase_id)
+      })
+      this.getTopicCount()
     },
+
     // 监听选择技能组件返回数据
     onvisible3(val) {
       this.visible3 = val.visible
     },
+
     // 删除技能
     handleSkillDel(index) {
       this.currentSkills.splice(index, 1)
+      this.exam.skill_id = []
+      this.currentSkills.forEach(item => {
+        this.exam.skill_id.push(item.increase_id)
+      })
+      this.getTopicCount()
     },
 
-    // 根据选项在数组中位置获取选项序号
-    getOptionOrderByIndex(index) {
-      // 选项序号
-      var option_order = ['A. ', 'B. ', 'C. ', 'D. ', 'E. ', 'F. ', 'G. ', 'H. ', 'I. ', 'J. ', 'K. ', 'L. ', 'M. ', 'N. ', 'O. ', 'P. ', 'Q. ', 'R. ', 'S. ', 'T. ', 'U. ', 'V. ', 'W. ', 'X. ', 'Y. ', 'Z. ']
-      index = parseInt(index)
-      if (index < 0 || index > (option_order.length - 1)) {
-        return 'Z. '
-      }
-      return option_order[index]
+    // 更改题型
+    changeTopicType(val) {
+      // 重置
+      // ======================================================
+      this.exam.total_number = [0, 0]
+
+      // ======================================================
+      this.exam.single_select = [0, 0]
+
+      this.exam.multi_select = [0, 0]
+
+      this.exam.judge_select = [0, 0]
+
+      // ======================================================
+      this.exam.single_and_easy = [0, 0]
+
+      this.exam.single_and_normal = [0, 0]
+
+      this.exam.single_and_hard = [0, 0]
+
+      this.exam.multi_and_easy = [0, 0]
+
+      this.exam.multi_and_normal = [0, 0]
+
+      this.exam.multi_and_hard = [0, 0]
+
+      this.exam.judge_and_easy = [0, 0]
+
+      this.exam.judge_and_normal = [0, 0]
+
+      this.exam.judge_and_hard = [0, 0]
+
+      // ================================================
+      this.totalTopics = [0, 0]
+      this.single_select = [0, 0]
+      this.multi_select = [0, 0]
+      this.judge_select = [0, 0]
     },
 
-    // 添加试题
-    saveTopic() {
-      // 如果没有id并且当前是excel添加不可以通过
-      if (!this[this.topic0].id && this.addType === 'excel') {
-        this.$message.warning('Excel添加的数据只能修改，不支持新增！')
-        return false
-      }
-      // 校验题目
-      if (!this[this.topic0].topic_content) {
-        this.$message.warning('请输入题目！')
-        $('.edit-' + this.topic_class + ' .topicName input').focus()
-        return false
-      }
+    // 题数、分值变化
+    handleChange(val) {
+      switch (this.exam.select_type) {
+        case 1:
+          this.totalTopics[0] = this.exam.total_number[0]
+          this.totalTopics[1] =
+            this.exam.total_number[0] * this.exam.total_number[1]
+          break
+        case 2:
+          this.totalTopics[0] =
+            this.exam.single_select[0] +
+            this.exam.multi_select[0] +
+            this.exam.judge_select[0]
+          this.totalTopics[1] =
+            this.exam.single_select[0] * this.exam.single_select[1] +
+            this.exam.multi_select[0] * this.exam.multi_select[1] +
+            this.exam.judge_select[0] * this.exam.judge_select[1]
 
-      // 校验题目
-      var correct_option_arr = [] // 答案数组
-      for (var i = 0, len = this[this.topic0].topic_option.length; i < len; i++) {
-        var item = this[this.topic0].topic_option[i]
-        if (!item.option_content) {
-          this.$message.warning('请输入选项内容！')
-          $('.edit-' + this.topic_class + ' .topicOption .option_content').eq(i).find('.el-input__inner').focus()
+          this.single_select[0] = this.exam.single_select[0]
+          this.single_select[1] =
+            this.exam.single_select[0] * this.exam.single_select[1]
+
+          this.multi_select[0] = this.exam.multi_select[0]
+          this.multi_select[1] =
+            this.exam.multi_select[0] * this.exam.multi_select[1]
+
+          this.judge_select[0] = this.exam.judge_select[0]
+          this.judge_select[1] =
+            this.exam.judge_select[0] * this.exam.judge_select[1]
+          break
+        case 3:
+          this.totalTopics[0] =
+            this.exam.single_and_easy[0] +
+            this.exam.single_and_normal[0] +
+            this.exam.single_and_hard[0] +
+            this.exam.multi_and_easy[0] +
+            this.exam.multi_and_normal[0] +
+            this.exam.multi_and_hard[0] +
+            this.exam.judge_and_easy[0] +
+            this.exam.judge_and_normal[0] +
+            this.exam.judge_and_hard[0]
+
+          this.totalTopics[1] =
+            this.exam.single_and_easy[0] * this.exam.single_and_easy[1] +
+            this.exam.single_and_normal[0] * this.exam.single_and_normal[1] +
+            this.exam.single_and_hard[0] * this.exam.single_and_hard[1] +
+            this.exam.multi_and_easy[0] * this.exam.multi_and_easy[1] +
+            this.exam.multi_and_normal[0] * this.exam.multi_and_normal[1] +
+            this.exam.multi_and_hard[0] * this.exam.multi_and_hard[1] +
+            this.exam.judge_and_easy[0] * this.exam.judge_and_easy[1] +
+            this.exam.judge_and_normal[0] * this.exam.judge_and_normal[1] +
+            this.exam.judge_and_hard[0] * this.exam.judge_and_hard[1]
+
+          this.single_select[0] =
+            this.exam.single_and_easy[0] +
+            this.exam.single_and_normal[0] +
+            this.exam.single_and_hard[0]
+          this.single_select[1] =
+            this.exam.single_and_easy[0] * this.exam.single_and_easy[1] +
+            this.exam.single_and_normal[0] * this.exam.single_and_normal[1] +
+            this.exam.single_and_hard[0] * this.exam.single_and_hard[1]
+
+          this.judge_select[0] =
+            this.exam.judge_and_easy[0] +
+            this.exam.judge_and_normal[0] +
+            this.exam.judge_and_hard[0]
+          this.judge_select[1] =
+            this.exam.judge_and_easy[0] * this.exam.judge_and_easy[1] +
+            this.exam.judge_and_normal[0] * this.exam.judge_and_normal[1] +
+            this.exam.judge_and_hard[0] * this.exam.judge_and_hard[1]
+          break
+        default:
+          this.totalTopics[0] = this.exam.total_number[0]
+          this.totalTopics[1] =
+            this.exam.total_number[0] * this.exam.total_number[1]
+          break
+      }
+    },
+
+    // 监听选择人员
+    getExaminers(val) {
+      this.target_user = val
+      var flag = true
+      for (var key in val) {
+        if (!val[key][0]) {
+          flag = false
+        }
+      }
+      if (flag) {
+        this.exam.memer = '111'
+      } else {
+        this.exam.memer = ''
+      }
+    },
+
+    // 选择按周和按月
+    changeRevolutionType2(val) {
+      if (val === 2) {
+        this.max_revolution = 52
+        this.exam.beginday_cycle = 4
+        this.exam.endday_cycle = 4
+        this.beginday_cycle.length = 0
+        this.endday_cycle.length = 0
+        $.merge(this.beginday_cycle, this.beginday_cycle1)
+        $.merge(this.endday_cycle, this.endday_cycle1)
+      } else if (val === 3) {
+        this.max_revolution = 12
+        this.exam.beginday_cycle = 14
+        this.exam.endday_cycle = 14
+        this.beginday_cycle.length = 0
+        this.endday_cycle.length = 0
+        $.merge(this.beginday_cycle, this.beginday_cycle2)
+        $.merge(this.endday_cycle, this.endday_cycle2)
+      }
+    },
+
+    // 取消
+    cancel() {
+      this.$router.push({
+        path: '/evaluating-manage/automatic-release-manage/list'
+      })
+    },
+
+    // 保存
+    save(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          if (this.valid()) {
+            submit(this.exam).then(res => {
+              this.noLeaveprompt = true
+              this.$message.success('保存成功！')
+              this.$router.push({
+                path: '/evaluating-manage/automatic-release-manage/list'
+              })
+            })
+          }
+        }
+      })
+    },
+
+    // 保存并发布
+    publish(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          if (this.valid()) {
+            saveThenPublish(this.exam).then(res => {
+              this.noLeaveprompt = true
+              this.$message.success('保存并发布成功！')
+              this.$router.push({
+                path: '/evaluating-manage/automatic-release-manage/list'
+              })
+            })
+          }
+        }
+      })
+    },
+
+    // 校验
+    valid() {
+      if (this.exam.revolution_type === 4) {
+        if (!this.time_range.length) {
+          this.$message.warning('请选择考试时间！')
+          this.$refs.daterange.focus()
+          return false
+        } else {
+          this.exam.start_time = this.time_range[0]
+          this.exam.end_time = this.time_range[1]
+        }
+      } else {
+        if (!this.exam.revolution) {
+          this.$message.warning('请填写循环周期！')
+          this.$refs.revolution.focus()
           return false
         }
-        correct_option_arr.push(item.correct_option)
       }
-
-      if (correct_option_arr.indexOf(1) === -1) {
-        this.$message.warning('请选择正确选项')
-        return false
+      if (this.exam.revolution_type !== 4) {
+        this.exam.revolution_type = this.revolutionType
       }
-
-      // 校验分数
-      if (!this[this.topic0].topic_score) {
-        this.$message.warning('请输入分值')
-        $('.edit-' + this.topic_class + ' .topic_score input').focus()
-        return false
-      }
-
-      // 校验难度
-      if (!this[this.topic0].topic_level) {
-        this.$message.warning('请选择难度')
-        return false
-      }
-
-      var str1 = []
-      var topic_label = []
-      this.currentLabels.forEach(item => {
-        str1.push(item.lname)
-        topic_label.push(item.linc)
-      })
-      var str2 = []
-      var topic_skill = []
-      this.currentSkills.forEach(item => {
-        str2.push(item.skill_name)
-        topic_skill.push(item.increase_id)
-      })
-      // 获取标签
-      this[this.topic0].topic_label = topic_label.join()
-      // 获取技能
-      this[this.topic0].topic_skill = topic_skill.join()
-
-      // 获取题目类型
-      this[this.topic0].topic_type = this.topic_type
-
-      // 获取预览区题型中的文本===begin===
-      var topicType = ''
-      switch (this[this.topic0].topic_type) {
-        case '1':
-          topicType += '单选题'
-          break
-        case '2':
-          topicType += '多选题'
-          break
-        case '3':
-          topicType += '判断题'
-          break
-      }
-
-      topicType += '【' + this[this.topic0].topic_score + '分】'
-
-      switch (this[this.topic0].topic_level + '') {
-        case '1':
-          topicType += '【难度：简单】'
-          break
-        case '2':
-          topicType += '【难度：普通】'
-          break
-        case '3':
-          topicType += '【难度：困难】'
-      }
-
-      this[this.topic0].labelStr = str1.length ? '标签：' + str1 : ''
-      this[this.topic0].skillStr = str2.length ? '技能：' + str2 : ''
-      this[this.topic0].topicTypeTitle = topicType
-
-      // 将Excel添加的数据中的错误标识字段清除
-      if (this.addType === 'excel') {
-        if (this[this.topic0].error_list) {
-          delete this[this.topic0].error_list
-        }
-        this[this.topic0].have_correctoption = true
-      }
-
-      // 通过是否已有id判断是新增的还是编辑的===begin===
-      if (this[this.topic0].id) {
-        var topic_ = $.extend(true, {}, this[this.topic0])
-        // 通过id找到对应的数据，替换掉
-        this.topics.forEach((item, index) => {
-          if (item.id === this[this.topic0].id) {
-            if (item.error_list) {
-              // 将Excel添加的数据中的错误标识字段清除
-              delete item.error_list
-              this[this.topic0].have_correctoption = true
-            }
-            // 不能直接赋值，vue数据不会驱动视图变化，要改变对象内部的值，原因: {}!=={}
-            item.topic_option.length = 0 // 清空数组但不改变指针
-            $.extend(true, item, topic_)
-          }
-        })
+      if (this.exam.topic_unrest) {
+        this.exam.topic_unrest = 1
       } else {
-        this[this.topic0].id = this.guid() // 设置题id
-        this.topics.push($.extend(true, {}, this[this.topic0]))
+        this.exam.topic_unrest = 0
       }
-      // ===begin===
-
-      // 保存设置
-      if (this.saveSet) {
-        this.topic1.topic_level = this[this.topic0].topic_level * 1
-        this.topic1.topic_score = this[this.topic0].topic_score * 1
-        this.topic1.currentLabels = this[this.topic0].currentLabels
-        this.topic1.currentSkills = this[this.topic0].currentSkills
-
-        this.topic2.topic_level = this[this.topic0].topic_level * 1
-        this.topic2.topic_score = this[this.topic0].topic_score * 1
-        this.topic2.currentLabels = this[this.topic0].currentLabels
-        this.topic2.currentSkills = this[this.topic0].currentSkills
-
-        this.topic3.topic_level = this[this.topic0].topic_level * 1
-        this.topic3.topic_score = this[this.topic0].topic_score * 1
-        this.topic3.currentLabels = this[this.topic0].currentLabels
-        this.topic3.currentSkills = this[this.topic0].currentSkills
-      } else {
-        this[this.topic0].topic_level = 1
-        this[this.topic0].topic_score = 1
-        this[this.topic0].currentLabels = []
-        this[this.topic0].currentSkills = []
-        this.currentLabels = []
-        this.currentSkills = []
-      }
-      // 保存试题后清空表单===begin====
-      this[this.topic0].topic_type = ''
-      this[this.topic0].topic_content = ''
-      this[this.topic0].topic_label = ''
-      this[this.topic0].topic_skill = ''
-      this[this.topic0].topic_resolve = ''
-      this[this.topic0].topic_resource = ''
-      this[this.topic0].topic_resource_id = ''
-      this[this.topic0].check = ''
-      this[this.topic0].id = ''
-      if (this.topic0 === 'topic1' || this.topic0 === 'topic2') {
-        this[this.topic0].topic_option = [ // 题目选项
-          {
-            option_content: '',
-            option_img: '',
-            correct_option: 2, // 1正确答案 2错误
-            check: false,
-            option_id: this.guid(),
-            option_id_time_stamp: new Date().getTime()
-          }, {
-            option_content: '',
-            option_img: '',
-            correct_option: 2,
-            check: false,
-            option_id: this.guid(),
-            option_id_time_stamp: new Date().getTime() + 1
-          }
-        ]
-        this.radio1 = ''
-      } else {
-        this[this.topic0].topic_option = [ // 题目选项
-          {
-            option_content: '正确',
-            option_img: '',
-            correct_option: 2, // 1正确答案 2错误
-            option_id: this.guid(),
-            option_id_time_stamp: new Date().getTime() + 2
-          }, {
-            option_content: '错误',
-            option_img: '',
-            correct_option: 2,
-            option_id: this.guid(),
-            option_id_time_stamp: new Date().getTime() + 3
-          }
-        ]
-        this.radio2 = ''
-      }
-    },
-
-    // 编辑试题
-    topicEdit(index) {
-      var topic = this.topics[index]
-      this.topic_type = topic.topic_type + ''
-      this.currentLabels = topic.currentLabels || topic.labels
-      this.currentSkills = topic.currentSkills || topic.skills
-      switch (this.topic_type) {
-        case '1':
-          this.topic1 = $.extend(true, {}, topic)
-          this.topic1.topic_option.forEach((item, index) => {
-            if (item.correct_option === 1) {
-              this.radio1 = item.option_id_time_stamp
-            }
-          })
-          break
-        case '2':
-          this.topic2 = $.extend(true, {}, topic)
-          break
-        case '3':
-          this.topic3 = $.extend(true, {}, topic)
-          this.topic3.topic_option.forEach((item, index) => {
-            if (item.correct_option === 1) {
-              this.radio2 = item.option_id_time_stamp
-            }
-          })
-          break
-      }
-    },
-
-    // 删除试题
-    delTopic(index) {
-      this.$confirm('确定删除该试题吗？', '删除试题', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.topics.splice(index, 1)
-        this.$message.success('删除成功！')
-      }).catch(() => {
-
-      })
-    },
-
-    // 下载试题模板
-    downTemplete() {
-      var url = this.$store.state.user.applicationInfo.EXAM_TOPIC_IMPORT_TEMPLATE_URL
-      if (url) {
-        this.templeteExcelUrl = url
-        var $eleForm = $("<form method='get'></form>")
-
-        $eleForm.attr('action', this.templeteExcelUrl)
-
-        $(document.body).append($eleForm)
-
-        // 提交表单，实现下载
-        $eleForm.submit()
-      } else {
-        this.$message.error('批量导入模板暂不能使用，请使用手动增加试题！')
-      }
-    },
-
-    // 上传excel之前
-    beforeExcelUpload(file) {
-      const suffixs = ['.xls', '.xlsx']
-      const i = file.name.lastIndexOf('.')
-      const suffix = file.name.slice(i)
-      if (suffixs.indexOf(suffix) === -1) {
-        this.$message.error('文件格式错误！')
-        this.$refs.uploadExcel.clearFiles()
-        return false
-      }
-      const isLt5M = file.size / 1024 / 1024 < 5
-      if (!isLt5M) {
-        this.$message.error('上传文件大小不能超过 5MB！')
-        this.$refs.uploadExcel.clearFiles()
-        return false
-      }
+      this.exam.target_user = this.target_user
       return true
     },
 
-    // excel上传成功
-    handleExcelSuccess(res, file) {
-      const json = {
-        url: res.data.saveHttpPath,
-        fileId: res.data.id
-      }
-      importTopics(json).then(res => {
-        this.excelTopicUploadCallback(res)
-      })
-    },
-
-    // 试题上传后的回调
-    excelTopicUploadCallback(res) {
-      var that = this
-      if (res && res.code === 0) {
-        this.$message.success('试题上传成功！')
-        const data = res.data
-        var arr = []
-        arr = data.judgeList.concat(data.multiList).concat(data.singleList)
-
-        arr.forEach((item, index1) => {
-          item.id = that.guid()
-          item.topicType = item.topic_type + ''
-          item.topic_resource = ''
-          item.topic_resource_id = ''
-
-          // 获取预览区题型中的文本===begin===
-          let topicType = ''
-          switch (item.topicType) {
-            case '1':
-              topicType += '单选题'
-              break
-            case '2':
-              topicType += '多选题'
-              break
-            case '3':
-              topicType += '判断题'
-              break
-          }
-          topicType += '【' + item.topic_score + '分】'
-
-          var str1 = []
-          item.labels.forEach(item => {
-            str1.push(item.lname)
-          })
-          var str2 = []
-          item.skills.forEach(item => {
-            str2.push(item.skill_name)
-          })
-
-          item.topic_level = item.topic_level + ''
-          switch (item.topic_level) {
-            case '1':
-              topicType += '【难度：简单】'
-              break
-            case '2':
-              topicType += '【难度：一般】'
-              break
-            case '3':
-              topicType += '【难度：困难】'
-              break
-          }
-          item.labelStr = str1.length ? '标签：' + str1 : ''
-          item.skillStr = str2.length ? '技能：' + str2 : ''
-          item.topicTypeTitle = topicType
-          // 获取预览区题型中的文本===end===
-
-          // 生成option_id
-          item.topic_option.forEach((item4, index4) => {
-            item4.option_id = this.guid()
-            item4.option_id_time_stamp = new Date().getTime() + item.topic_type + index4
-            // 根据correct_option设置check
-            if (item4.correct_option === 1) {
-              item4.check = true
-            } else {
-              item4.check = false
-              item4.correct_option = 2
-            }
-          })
-          item.topic_skill = item.topic_skill.length ? item.topic_skill.join(',') : ''
-          item.topic_label = item.topic_label.length ? item.topic_label.join(',') : ''
-        })
-        this.topics = arr
-      } else {
-        this.$message.error('试题上传失败！')
-      }
-    },
-
-    // 清空所有topic数据
-    clearAllTopic(topic_type) {
-      this.topic1 = { // 单选题
-        topic_type: '', // 题目类型 1单选，2多选，3判断
-        topic_content: '', // 题目
-        topic_level: 1, // 难度
-        topic_label: '', // 标签
-        topic_skill: '', // 技能
-        currentLabels: [], // 标签obj
-        currentSkills: [], // 技能obj
-        topic_resolve: '', // 试题解析
-        topic_score: 1, // 分值
-        topic_option: [ // 题目选项
-          {
-            option_content: '',
-            option_img: '',
-            correct_option: 2, // 1正确答案 2错误
-            option_id: this.guid()
-          }, {
-            option_content: '',
-            option_img: '',
-            correct_option: 2,
-            option_id: this.guid()
-          }
-        ], // 题目选项
-        topic_resource: '', // 选择的图片
-        topic_resource_id: '', // 主文件id
-        check: '',
-        id: ''
-      }
-      this.topic2 = { // 多选题
-        topic_type: '', // 题目类型 1单选，2多选，3判断
-        topic_content: '', // 题目
-        topic_level: 1, // 难度
-        topic_label: '', // 标签
-        topic_skill: '', // 技能
-        currentLabels: [], // 标签obj
-        currentSkills: [], // 技能obj
-        topic_resolve: '', // 试题解析
-        topic_score: 1, // 分值
-        topic_option: [ // 题目选项
-          {
-            option_content: '',
-            option_img: '',
-            correct_option: 2, // 1正确答案 2错误
-            option_id: this.guid()
-          }, {
-            option_content: '',
-            option_img: '',
-            correct_option: 2,
-            option_id: this.guid()
-          }
-        ], // 题目选项
-        topic_resource: '', // 选择的图片
-        topic_resource_id: '', // 主文件id
-        check: '',
-        id: ''
-      }
-      this.topic3 = { // 判断题
-        topic_type: '', // 题目类型 1单选，2多选，3判断
-        topic_content: '', // 题目
-        topic_level: 1, // 难度
-        topic_label: '', // 标签
-        topic_skill: '', // 技能
-        currentLabels: [], // 标签obj
-        currentSkills: [], // 技能obj
-        topic_resolve: '', // 试题解析
-        topic_score: 1, // 分值
-        topic_option: [ // 题目选项
-          {
-            option_content: '正确',
-            option_img: '',
-            correct_option: 2, // 1正确答案 2错误
-            option_id: this.guid()
-          }, {
-            option_content: '错误',
-            option_img: '',
-            correct_option: 2,
-            option_id: this.guid()
-          }
-        ], // 题目选项
-        topic_resource: '', // 选择的图片
-        topic_resource_id: '', // 主文件id
-        id: ''
-      }
-      this.radio1 = ''
-      this.radio2 = ''
-      this.topic_type = '1'
-      this.currentLabels = []
-      this.currentSkills = []
-    },
-
-    // 保存至题库
-    addTopics() {
-      var topics2 = []
-      $.merge(topics2, this.topics)
-
-      if (topics2.length === 0) {
-        this.$message.warning('请添加试题！')
-        return false
-      }
-
-      if (this.addType === 'excel') {
-        for (var i = 0, len = topics2.length; i < len; i++) {
-          var item = topics2[i]
-          delete item.labelStr
-          delete item.skillStr
-          delete item.topicTypeTitle
-          if (!item.have_correctoption || (item.error_list && item.error_list.length > 0)) {
-            this.$message.warning('您第' + (i + 1) + '题数据不完善，请完善后再提交！')
-            return false
-          }
-        }
-      }
-
-      const params = {
-        selectCompanyId: this.selectCompanyId,
-        egroup: this.egroup,
-        topics: topics2
-      }
-
-      addTopic(params).then(res => {
-        this.noLeaveprompt = true
-        this.$message.success('保存试题成功！')
-        this.$router.push({ path: '/evaluating-manage/question-bank-manage/list' })
-      })
+    // 校验最大用户数为正整数
+    intNum(val) {
+      this.exam.pass_score = validIntNum(val)
     }
   },
   beforeRouteLeave(to, from, next) {
-    if (this.dataIsChange && !this.noLeaveprompt) { // 判断表单数据是否变化，以及提交后不进行此保存提示
-      setTimeout(() => { // 此处必须要加延迟执行，主要解决浏览器前进后退带来的闪现
+    if (this.dataIsChange && !this.noLeaveprompt) {
+      // 判断表单数据是否变化，以及提交后不进行此保存提示
+      setTimeout(() => {
+        // 此处必须要加延迟执行，主要解决浏览器前进后退带来的闪现
         this.$confirm('您的数据尚未保存，是否离开？', '离开页面', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
-        }).then(() => {
-          next()
-        }).catch(() => {
-          next(false)
         })
+          .then(() => {
+            next()
+          })
+          .catch(() => {
+            next(false)
+          })
       }, 200)
     } else {
       next()
@@ -1677,233 +1327,106 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  @import "~@/styles/theme.scss";
-  #addTopicVue .submit{
-    margin: 10px;
-    position: absolute;
-    right: 0;
-    top: 0;
-    z-index: 99;
-
-    > /deep/ p, .addTopic {
-      display: inline-block;
-    }
-    > /deep/ p {
-      font-size: 14px;
-    }
-  }
-  /deep/ .addType>.el-tabs__header .el-tabs__item {
-    font-size: 16px!important;
-    font-weight: 700!important;
-  }
-  /deep/ .addType .el-tabs__nav-wrap:after {
-    height: 0!important;
-  }
-  /deep/ .addType>.el-tabs__header>.el-tabs__nav-wrap>.el-tabs__nav-scroll>.el-tabs__nav {
-    width: 180px;
-    margin: 0 auto;
-    float: none;
-  }
-  #addTopicVue .edit {
-    width: 60%;
-  }
-  #addTopicVue .preview {
-    width: calc(40% - 10px);
-    border-left: 8px solid #e2e6ed;
-    height: 100%;
-    min-height: 500px;
-    padding: 0 10px;
-    box-sizing: border-box;
-  }
-  .topicType /deep/ .el-tabs__item.is-top.is-active {
-    border-radius: 3px;
-    padding-bottom: 38px;
-    box-shadow: inset 0 0px 2px 2px $themeColor;
-  }
-  .topicName {
-    width: calc(100% - 160px);
-  }
-  .saveTopic {
-    margin: 0 auto;
-    margin-top: 20px;
-    text-align: center;
-    margin-left: calc(50% - 49px);
-  }
-  .img-group {
-    display: inline-block;
-  }
-  .selectPic {
-    display: inline-block;
-    width: 80px;
-    height: 32px;
-    line-height: 32px;
-    cursor: pointer;
-    text-align: center;
-    margin-left: 6px;
-    border-radius: 3px;
-    color: #FFFFFF;
-    background-color: $themeColor;
-    border-color: $themeColor;
-  }
-  .selectPic:hover {
-    opacity: 0.8;
-  }
-  .imgCover {
-    position: relative;
-    display: inline-block;
-    background-size: cover;
-    vertical-align: middle;
-    width: 40PX;
-    height: 30px;
-  }
-  .close {
-    position: absolute;
-    top: -17px;
-    right: -8px;
-    cursor: pointer;
-  }
-  .content {
-    line-height: 40px;
-    height: 40px;
-
-    > /deep/ .el-form-item__label, /deep/ .el-form-item__content {
-      height: 40px;
-      line-height: 40px;
-    }
-  }
-  .avatar {
-    width: 40px;
-    vertical-align: middle;
-  }
-  .closeOptionImg {
-    position: absolute;
-    top: 0;
-    right: -1px;
-    cursor: pointer;
-  }
-  i {
-    cursor: pointer;
-  }
-  .tag {
-    display: inline-block;
-  }
-  /deep/ .el-tag {
-    margin-right: 10px;
-  }
-  /deep/ .el-tag .el-icon-close {
-    vertical-align: middle;
-    margin: 0;
-  }
-  /deep/ .el-tag .el-icon-close::before {
-    margin: 0;
-  }
-  .saveSet {
-    margin-left: 34px;
-  }
-  .preview h3 {
-    margin-top: 4px;
-  }
-  #addTopicVue .preview .tip {
-    margin-top: 0;
-    padding-bottom: 10px;
-    margin-bottom: 0;
-    border-bottom: 1px solid #e4e7ed;
-  }
-  #addTopicVue .topics-preview {
-    overflow: auto;
-  }
-  .preview h3 {
-    font-style: normal;
-    font-weight: 500;
-    font-size: 24px;
-    color: #333;
-    margin-bottom: 0;
-  }
-  .topics-item {
-    padding: 10px;
-    border-bottom: 1px solid #e4e7ed;
-  }
-  .topic-type {
-    font-weight: 700;
-    font-size: 14px;
-    height: 30px;
-  }
-  .single-line {
-    display: inline-block;
-    overflow: hidden;
-    text-overflow:ellipsis;
-    white-space:nowrap;
-    max-width:17%;
-    vertical-align: middle;
-  }
-  .previewImg {
-    display: inline-block;
-    width: 50px;
-    height: 30px;
-  }
-  .topic-options {
-    position: relative;
-  }
-  .topic-options .topic-item {
-    border: 1px solid $themeColor;
-    width: 60%;
-    padding: 4px;
-    margin-bottom: 4px;
-    font-size: 14px;
-  }
-  .topic-options .topic-item label {
-    margin-bottom: 0;
-  }
-  .topic-options .topic-item {
-    border: 1px solid $themeColor;
-    width: 60%;
-    padding: 4px;
-    margin-bottom: 4px;
-  }
-  .topic-options .topic-item label {
-    margin-bottom: 0;
-  }
-  .topic-item .el-checkbox__label {
-    display: inline-block;
-    overflow: hidden;
-    text-overflow:ellipsis;
-    white-space:nowrap;
-    max-width:94%;
-    box-sizing: border-box;
-    vertical-align: middle;
-  }
-  .topics-item p {
-    margin: 0;
-  }
-  .topic_resolve {
-    font-size: 14px;
-  }
-  .handle {
-    position: absolute;
-    top: 0;
-    right: 0;
-  }
-  .topicOption /deep/ .el-radio__label {
-    display: none;
-  }
-  .excel-uploader {
-    display: inline-block;
-  }
-  .error-option {
-    color: red;
-  }
-  .error-desc {
-    word-break: break-all;
-    word-wrap: break-word;
-    font-size: 14px;
-  }
-  .error-option .el-checkbox__label {
-    color: red!important;
-  }
-  .preview /deep/ .el-scrollbar {
-    height: calc(100vh - 260px);
-  }
-  .addIcon {
-    font-size: 14px;
-  }
+@import "~@/styles/theme.scss";
+.content {
+  padding-top: 20px;
+}
+.edit {
+  width: calc(100% - 350px);
+}
+.count {
+  width: 340px;
+  height: calc(100vh - 140px);
+  border-left: 8px solid #e2e6ed;
+}
+.selectType {
+  padding: 20px;
+  border: 1px solid #ededed;
+  border-radius: 2px;
+}
+.topicsNum {
+  display: inline-block;
+  width: 120px;
+  color: #cccccc;
+}
+.edit .selectType {
+  width: 660px;
+}
+.topicType {
+  margin-bottom: 20px;
+}
+.topicType:last-child {
+  margin-bottom: 0;
+}
+.topicType2 {
+  margin-bottom: 20px;
+}
+.topicType2:last-child {
+  margin-bottom: 0;
+}
+.num {
+  color: #cccccc;
+}
+.edit .selectType2 {
+  width: 540px;
+  margin-bottom: 10px;
+}
+.selectType2:last-child {
+  margin-bottom: 0;
+}
+.count {
+  text-align: center;
+}
+.count .total {
+  margin-bottom: 20px;
+}
+.count span {
+  margin-right: 20px;
+}
+.count .single,
+.count .multi,
+.count .judge {
+  margin-bottom: 20px;
+  color: #999;
+}
+.tag {
+  display: inline;
+}
+.tag /deep/ .el-tag {
+  margin-right: 10px;
+}
+.publishSet .form {
+  width: 700px;
+  margin: 0 auto;
+}
+.typeTip {
+  color: #cccccc;
+}
+.timeRange /deep/ .el-radio-group {
+  margin-top: 9px;
+}
+.timeRange /deep/ .el-radio-group .el-radio {
+  display: block;
+}
+.singleExam {
+  margin-bottom: 18px;
+}
+.daterange {
+  margin-top: 18px;
+}
+#btnGroup /deep/ .el-button {
+  width: 80%;
+  margin-bottom: 10px;
+}
+.periodExam,
+.revolutionType,
+.cycle {
+  margin-top: 18px;
+}
+.cycle {
+  margin-left: 165px;
+}
+.timeRange .text {
+  color: #606266;
+}
 </style>

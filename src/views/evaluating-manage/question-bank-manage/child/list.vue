@@ -9,7 +9,7 @@
         <el-row v-show="popoverVisible">
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
-              <tenants-groups-roles :is-render-role="false" :isReset="isReset" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" />
+              <tenants-groups-roles :is-render-role="false" :is-reset="isReset" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" @resetVal="resetVal" />
               <!--<el-form-item label="试题标签">-->
               <!--<el-select-->
               <!--v-model="listQuery.topic_label"-->
@@ -91,7 +91,7 @@
         width="50"
         fixed
       />
-      <el-table-column align="center" label="题型" min-width="40">
+      <el-table-column align="center" show-overflow-tooltip label="题型" min-width="40">
         <template slot-scope="scope">
           <span>{{ switchTopicTypeToName(scope.row.topic_type) }}</span>
         </template>
@@ -117,7 +117,7 @@
           <span>{{ scope.row.skillName || '' }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="创建时间" min-width="130" prop="c_time" show-overflow-tooltip />
+      <el-table-column align="center" label="创建时间" min-width="140" prop="c_time" show-overflow-tooltip />
       <el-table-column align="center" label="引用次数" min-width="80" prop="quote_count" show-overflow-tooltip />
       <el-table-column class-name="status-col" label="操作" width="160" align="center" fixed="right">
         <template slot-scope="scope">
@@ -130,32 +130,25 @@
     <div id="bottomOperation">
       <el-button v-show="total>0" type="danger" plain @click="batchDel"><i class="iconfont iconshanchu" />批量删除</el-button>
     </div>
-    <el-dialog v-el-drag-dialog class="selectCompany" width="400px" title="选择小组" :visible.sync="isVisibleSystemManage">
-      <el-form ref="form" :model="listQuery" label-width="100px">
-        <tenants-groups-roles :is-render-role="false" whichGroup="manageEgroupInfo" @tenantsGroupsRolesVal="tenantsGroupsRolesVal2" />
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="selectCompany">确定</el-button>
-        <el-button @click="isVisibleSystemManage = false">取 消</el-button>
-      </div>
-    </el-dialog>
+    <AddSelectGroup :visible-select-group="visibleSelectGroup" @getSelectGroup="getSelectGroup" />
   </div>
 </template>
 
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
+import AddSelectGroup from '@/components/AddSelectGroup'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import { evaluationTopicList, delTopic } from '@/api/question-bank-manage'
 import { skillAllList } from '@/api/userCenter-skillManage'
 import { labelAllList } from '@/api/evaluatingManage-labelManage'
 export default {
-  components: { Pagination, TenantsGroupsRoles },
+  components: { Pagination, TenantsGroupsRoles, AddSelectGroup },
   directives: { elDragDialog },
   data() {
     return {
       isReset: false, // 是否重置三组联动数据
-      isVisibleSystemManage: false, // 是否弹出选择租户、小组
+      visibleSelectGroup: false, // 是否弹出选择租户、小组
       total: 0, // 总条数
       listQuery: { // 查询条件
         currentPage: 1, // 当前页
@@ -171,7 +164,7 @@ export default {
       },
       topic_label: [], // 试题标签
       topic_skill: [], // 试题技能
-      topicType: [{ _id: 1, topicName: '简单' }, { _id: 2, topicName: '普通' }, { _id: 3, topicName: '困难' }],
+      topicType: [{ _id: 1, topicName: '单选' }, { _id: 2, topicName: '多选' }, { _id: 3, topicName: '判断' }],
       time_range: [], // 创建时间
       list: [], // 表格数据
       listLoading: true, // 是否开启表格遮罩
@@ -206,18 +199,21 @@ export default {
         this.total = response.data.page.totalCount
       })
     },
+
     // 获取标签list 暂时无用
     get_topic_label_list() {
       labelAllList({}).then(res => {
         this.topic_label = res.data
       })
     },
+
     // 获取技能list 暂时无用
     get_topic_skill_list() {
       skillAllList({}).then(res => {
         this.topic_skill = res.data
       })
     },
+
     // 搜索
     topSearch() {
       this.time_range = this.time_range || []
@@ -225,6 +221,7 @@ export default {
       this.listQuery.endTime = this.time_range[1]
       this.get_list()
     },
+
     // 重置
     reset() {
       this.isReset = true
@@ -239,6 +236,7 @@ export default {
       this.listQuery.endTime = ''
       this.get_list()
     },
+
     // 监听三组数据变化
     tenantsGroupsRolesVal(val) {
       this.listQuery.selectCompanyId = val.companyIds
@@ -246,10 +244,10 @@ export default {
       this.listQuery.roleId = val.roleId
       this.group = val.group
     },
-    // 新增监听三组数据变化
-    tenantsGroupsRolesVal2(val) {
-      this.companyId = val.companyIds
-      this.egroup = val.egroupId
+
+    // 重置监听三组数据变化
+    resetVal(val) {
+      this.isReset = false
     },
 
     // 题型转换为name
@@ -263,6 +261,7 @@ export default {
           return '判断'
       }
     },
+
     // 难度转换为name
     switchTopicLevelToName(topic_level) {
       switch (topic_level) {
@@ -279,26 +278,27 @@ export default {
     handleSelectionChange(row) {
       this.checkedDelList = row
     },
+
     // 新增
     add() {
-      this.isVisibleSystemManage = true
+      this.visibleSelectGroup = true
     },
-    // 新增选择租户、小组
-    selectCompany() {
-      if (!this.companyId && this.$store.state.user.isSystemManage) {
-        this.$message.warning('请先选择租户！')
-        return false
-      } else if (!this.egroup) {
-        this.$message.warning('请先选择小组！')
-        return false
+
+    // 监听选择小组返回数据
+    getSelectGroup(val) {
+      this.companyId = val.selectCompanyId
+      this.egroup = val.egroup
+      this.visibleSelectGroup = false
+      if (this.egroup) {
+        this.$router.push({ path: '/evaluating-manage/question-bank-manage/add', query: { selectCompanyId: this.companyId, egroup: this.egroup }})
       }
-      this.isVisibleSystemManage = false
-      this.$router.push({ path: '/evaluating-manage/question-bank-manage/add', query: { selectCompanyId: this.companyId, egroup: this.egroup }})
     },
+
     // 详情
     detail(row) {
       this.$router.push({ path: '/evaluating-manage/question-bank-manage/detail', query: { _id: row._id }})
     },
+
     // 单个删除
     del(row) {
       this.$confirm('确定要删除【' + row.topic_content + '】吗？', '删除试题', {
@@ -315,6 +315,7 @@ export default {
         })
       }).catch(() => {})
     },
+
     // 批量删除
     batchDel() {
       if (!this.checkedDelList.length) {
@@ -340,6 +341,7 @@ export default {
         })
       }).catch(() => {})
     },
+
     // 编辑
     edit(row) {
       this.$router.push({ path: '/evaluating-manage/question-bank-manage/edit', query: { _id: row._id }})
@@ -349,10 +351,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .selectCompany /deep/ .tenantsGroupsRoles {
-    width: 100% !important;
-  }
-  .selectCompany /deep/ .tenantsGroupsRoles .el-form-item {
-    width: 100% !important;
-  }
+
 </style>

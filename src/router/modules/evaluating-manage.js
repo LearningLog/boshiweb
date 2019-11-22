@@ -83,9 +83,9 @@ const evaluatingManage = {
           meta: { title: '智能添加', icon: '', activeMenu: '/evaluating-manage/test-paper-manage' }
         },
         {
-          path: 'question-bank-add',
+          path: 'paper-question-bank-add',
           component: () => import('@/views/evaluating-manage/test-paper-manage/child/question-bank-add.vue'),
-          name: 'question-bank-add',
+          name: 'paper-question-bank-add',
           hidden: true,
           meta: { title: '题库中添加', icon: '', activeMenu: '/evaluating-manage/test-paper-manage' }
         },
@@ -124,7 +124,7 @@ const evaluatingManage = {
           name: 'examination-detail',
           hidden: true,
           component: () => import('@/views/evaluating-manage/examination-manage/child/detail'),
-          meta: { title: '考试详情', icon: '', activeMenu: '/evaluating-manage/examination-manage' }
+          meta: { title: '考试统计', icon: '', activeMenu: '/evaluating-manage/examination-manage' }
         },
         {
           path: 'add',
@@ -134,11 +134,18 @@ const evaluatingManage = {
           meta: { title: '新增考试', icon: '', activeMenu: '/evaluating-manage/examination-manage' }
         },
         {
-          path: 'edit',
-          name: 'examination-edit',
+          path: 'select-exam-paper',
+          component: () => import('@/views/evaluating-manage/examination-manage/child/select-exam-paper.vue'),
+          name: 'select-exam-paper',
           hidden: true,
-          component: () => import('@/views/evaluating-manage/examination-manage/child/edit'),
-          meta: { title: '修改考试', icon: '', activeMenu: '/evaluating-manage/examination-manage' }
+          meta: { title: '选择试卷', icon: '', activeMenu: '/evaluating-manage/examination-manage' }
+        },
+        {
+          path: 'question-bank-add',
+          component: () => import('@/views/evaluating-manage/examination-manage/child/question-bank-add.vue'),
+          name: 'exam-question-bank-add',
+          hidden: true,
+          meta: { title: '题库中添加', icon: '', activeMenu: '/evaluating-manage/examination-manage' }
         }
       ]
     },
@@ -169,6 +176,20 @@ const evaluatingManage = {
           hidden: true,
           component: () => import('@/views/evaluating-manage/automatic-release-manage/child/edit'),
           meta: { title: '修改考试', icon: '', activeMenu: '/evaluating-manage/automatic-release-manage' }
+        },
+        {
+          path: 'detail',
+          name: 'automatic-release-detail',
+          hidden: true,
+          component: () => import('@/views/evaluating-manage/automatic-release-manage/child/detail'),
+          meta: { title: '已发布考试', icon: '', activeMenu: '/evaluating-manage/automatic-release-manage' }
+        },
+        {
+          path: 'statistics',
+          name: 'automatic-release-statistics',
+          hidden: true,
+          component: () => import('@/views/evaluating-manage/automatic-release-manage/child/statistics'),
+          meta: { title: '考试统计', icon: '', activeMenu: '/evaluating-manage/automatic-release-manage' }
         }
       ]
     },

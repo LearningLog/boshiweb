@@ -21,6 +21,7 @@ import VueQriously from 'vue-qriously'
 
 import '@/icons' // icon
 import '@/permission' // permission control
+import ws from '@/utils/myWebsocket'
 
 /**
  * 本地会启动一个 mock-server 来模拟数据
@@ -35,6 +36,11 @@ import '@/permission' // permission control
 // if (process.env.NODE_ENV === 'production') {
 //   mockXHR()
 // }
+
+// 加载 Websocket 插件
+// 我们在该插件中为 Vue 原型对象扩展了一个成员 $ws
+// 然后我们就可以在任何组件通过使用 this.$ws 来发起请求了
+Vue.use(ws)
 
 Vue.use(VueQriously)
 

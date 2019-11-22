@@ -128,13 +128,13 @@
   width: 20px;
   height: 20px;
   text-align: center!important;
-  margin-top: 2px!important;
+  //margin-top: 2px!important;
   box-sizing: border-box;
   border-radius: 50% !important;
 }
 .el-icon-close:before {
   display: inline-block;
-  margin-top: 2px;
+  //margin-top: 2px;
 }
 .el-icon-close:hover {
   background-color: #f5f7fa;
@@ -156,4 +156,8 @@
 }
 .el-checkbox__input.is-disabled.is-checked .el-checkbox__inner::after {
   border-color: #FFFFFF;
+}
+.el-button .iconfont {
+  margin-right: 2px;
+  font-size: 14px;
 }

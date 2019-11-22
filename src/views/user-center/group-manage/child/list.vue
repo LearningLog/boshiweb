@@ -74,9 +74,13 @@
         </template>
       </el-table-column>
       <el-table-column label="描述" min-width="100" align="center" show-overflow-tooltip prop="desc" />
-      <el-table-column align="center" label="创建时间" min-width="130" show-overflow-tooltip prop="createtime" />
+      <el-table-column align="center" label="创建时间" min-width="140" show-overflow-tooltip prop="createtime" />
       <el-table-column align="center" label="所属企业" min-width="140" show-overflow-tooltip prop="customname" />
-      <el-table-column align="center" label="管理员" min-width="140" show-overflow-tooltip prop="customname" />
+      <el-table-column align="center" label="管理员" show-overflow-tooltip min-width="240">
+        <template slot-scope="scope">
+          {{ parseMinc(scope.row.mincNameList) }}
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="来源" min-width="140" show-overflow-tooltip prop="dataTypeName" />
       <el-table-column align="center" label="成员人数" min-width="140" show-overflow-tooltip prop="usercount" />
       <el-table-column class-name="status-col" label="操作" width="250" align="center" fixed="right" show-overflow-tooltip>
@@ -134,7 +138,7 @@ export default {
         startTime: '', // 开始时间
         endTime: '', // 结束时间
 
-        selectCompanyId: '' // 所属租户
+        selectCompanyId: this.$store.state.user.userSystemInfo.userInfo.groupId // 所属租户
       },
       time_range: [],
       delCheckedList: [], // 选中的数据
@@ -154,6 +158,10 @@ export default {
     this.getAlluserList()
   },
   methods: {
+    // 格式化负责人
+    parseMinc(data) {
+      return data.join('、')
+    },
     // 获取所有用户
     getAlluserList() {
       const data = {
@@ -185,7 +193,7 @@ export default {
       this.listQuery.startTime = ''
       this.listQuery.endTime = ''
       this.time_range = []
-      this.listQuery.selectCompanyId = ''
+      this.listQuery.selectCompanyId = this.$store.state.user.userSystemInfo.userInfo.groupId
       this.get_list()
     },
     // 获取分组列表
@@ -266,14 +274,10 @@ export default {
     getTranstorInformation(row) {
       this.setInformationId = row._id
       egroupskill({ _id: row._id }).then(response => {
-        console.log(response)
         this.noList = response.data.noList.concat(response.data.hasList)
-        console.log(this.noList)
         this.hasList = []
         response.data.hasList.forEach((item, index) => {
           this.hasList.push(item.increase_id)
-          debugger
-          console.log(this.hasList)
         })
       })
       this.transforBoxVisible = true

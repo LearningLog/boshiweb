@@ -13,6 +13,7 @@ import userCenter from './modules/user-center'
 import evaluatingManage from './modules/evaluating-manage'
 import systemSetting from './modules/system-setting'
 import onlineClass from './modules/online-class'
+import client from './modules/client'
 /**
  * 注意: 菜单项sub-menu 仅在 route children.length >= 1 时显示
  * 详情请看此地址: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
@@ -73,28 +74,6 @@ export const constantRoutes = [
   },
 
   {
-    path: '/example',
-    component: Layout,
-    redirect: '/example/hello-world',
-    name: 'Example',
-    meta: { title: 'Example', icon: 'iconqiye' },
-    children: [
-      {
-        path: 'fileUpload',
-        name: 'fileUpload',
-        component: () => import('@/views/examples/fileUpload'),
-        meta: { title: 'fileUpload', icon: '' }
-      },
-      {
-        path: 'hello-world',
-        name: 'Hello-world',
-        component: () => import('@/views/examples/hello-world'),
-        meta: { title: 'Hello World', icon: '' }
-      }
-    ]
-  },
-
-  {
     path: '/404',
     component: () => import('@/views/404'),
     hidden: true
@@ -111,6 +90,8 @@ export const asyncRoutes = [
   evaluatingManage,
   systemSetting,
   onlineClass,
+  client,
+
   {
     path: '/enterpriseData',
     component: Layout,
@@ -141,7 +122,52 @@ export const asyncRoutes = [
       }
     ]
   },
-
+  {
+    path: '/enterprise-resource',
+    component: Layout,
+    redirect: '/enterprise-resource/detail',
+    name: 'enterprise-resource',
+    meta: { title: '企业资源', icon: 'iconqiyeguanli' },
+    children: [
+      {
+        path: 'detail',
+        name: 'enterprise-resource-detail',
+        hidden: true,
+        component: () => import('@/views/enterprise-resource/detail'),
+        meta: { title: '资源详情', icon: '', activeMenu: '/enterprise-resource' }
+      }
+    ]
+  },
+  {
+    path: '/data-screening',
+    component: Layout,
+    redirect: '/data-screening/detail',
+    name: 'data-screening',
+    meta: { title: '数据总览', icon: 'iconpaihangbang' },
+    children: [
+      {
+        path: 'detail',
+        name: 'data-screening-detail',
+        hidden: true,
+        component: () => import('@/views/data-screening/detail'),
+        meta: { icon: '', activeMenu: '/data-screening' }
+      },
+      {
+        path: 'study-detail',
+        name: 'data-screening-study-detail',
+        hidden: true,
+        component: () => import('@/views/data-screening/study-detail'),
+        meta: { title: '学习详情', icon: '', activeMenu: '/data-screening' }
+      },
+      {
+        path: 'test-detail',
+        name: 'data-screening-test-detail',
+        hidden: true,
+        component: () => import('@/views/data-screening/test-detail'),
+        meta: { title: '考试详情', icon: '', activeMenu: '/data-screening' }
+      }
+    ]
+  },
   {
     path: '/global-config',
     component: Layout,
@@ -188,11 +214,11 @@ export const asyncRoutes = [
         meta: { title: '工作台列表', icon: '', activeMenu: '/work-desk' }
       },
       {
-        path: 'details',
-        name: 'work-desk-details',
+        path: 'detail',
+        name: 'work-desk-detail',
         hidden: true,
-        component: () => import('@/views/work-desk/details'),
-        meta: { title: '工作详情', icon: '', activeMenu: '/work-desk' }
+        component: () => import('@/views/work-desk/detail'),
+        meta: { title: '详情', icon: '', activeMenu: '/work-desk' }
       }
     ]
   },

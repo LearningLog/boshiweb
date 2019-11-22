@@ -70,7 +70,7 @@
       </el-table-column>
       <el-table-column label="技能描述" min-width="100" align="center" show-overflow-tooltip prop="skill_desc" />
       <el-table-column align="center" label="所属租户" min-width="140" show-overflow-tooltip prop="customname" />
-      <el-table-column align="center" label="创建时间" min-width="130" show-overflow-tooltip prop="createtime" />
+      <el-table-column align="center" label="创建时间" min-width="140" show-overflow-tooltip prop="createtime" />
       <el-table-column class-name="status-col" label="操作" width="160" align="center" fixed="right" show-overflow-tooltip>
         <template slot-scope="scope">
           <div>
@@ -210,11 +210,12 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        const _ids = []
+        const ids = []
         this.delCheckedList.forEach(item => {
-          _ids.push(item._id)
+          debugger
+          ids.push(item._id)
         })
-        deleteMulti({ _ids: _ids }).then(response => {
+        deleteMulti({ ids: ids }).then(response => {
           this.$message.success('批量删除成功！')
           if ((this.list.length - this.delCheckedList.length) === 0) { // 如果当前页数据已删完，则去往上一页
             this.listQuery.currentPage -= 1

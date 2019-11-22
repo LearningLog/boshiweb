@@ -6,29 +6,22 @@
     </transition>
     <!--</el-scrollbar>-->
     <el-tooltip placement="top" content="返回顶部">
-      <back-to-top :custom-style="myBackToTopStyle" :visibility-height="mainContentHeight" :back-position="0" transition-name="fade" />
+      <back-to-top :visibility-height="mainContentHeight" :back-position="0" transition-name="fade" />
     </el-tooltip>
+    <file-uploader />
   </section>
 </template>
 
 <script>
 import BackToTop from '@/components/BackToTop'
+import FileUploader from '@/components/VueWebuploader'
 
 export default {
   name: 'AppMain',
-  components: { BackToTop },
+  components: { BackToTop, FileUploader },
   data() {
     return {
-      mainContentHeight: 400,
-      myBackToTopStyle: {
-        right: '50px',
-        bottom: '50px',
-        width: '40px',
-        height: '40px',
-        'border-radius': '4px',
-        'line-height': '45px', // 请保持与高度一致以垂直居中 Please keep consistent with height to center vertically
-        background: '#e7eaf1'// 按钮的背景颜色 The background color of the button
-      }
+      mainContentHeight: 400
     }
   },
   computed: {
@@ -44,12 +37,14 @@ export default {
 </script>
 
 <style scoped>
+
 .app-main {
   /*50 = navbar  */
   min-height: calc(100vh - 50px);
   width: 100%;
   position: relative;
   overflow: hidden;
+  /*background-color: #f5f7fa;*/
 }
 .app-main .el-scrollbar {
   height: calc(100vh - 50px);

@@ -4,7 +4,8 @@
       v-el-drag-dialog
       class="publishDialog"
       title="发布考试"
-      :visible.sync="publishDialog"
+      :visible.sync="visible"
+      @close="cancel('paparForm')"
     >
       <el-form
         ref="paparForm"
@@ -42,6 +43,7 @@
           <el-input v-show="false" v-model="paparForm.memer" />
           <Examiners
             :select-company-id="selectCompanyId"
+            :selected-options="selectedOptions"
             @examiners="getExaminers"
           />
         </el-form-item>
@@ -58,6 +60,7 @@
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import Examiners from '@/components/Examiners'
 import { validIntNum } from '@/utils/validate'
+const $ = window.$
 
 export default {
   name: 'PublishExam',
@@ -78,6 +81,10 @@ export default {
     publishDialog: {
       type: Boolean,
       default: false
+    },
+    exam: {
+      type: Object,
+      default: null
     }
   },
   data() {
@@ -102,9 +109,10 @@ export default {
       }
     }
     return {
+      visible: false,
       paparForm: {
         exampaper_id: '', // 试卷Id
-        exam_name: '', // 试卷名称
+        exam_name: '', // 考试名称
         time_range: [], // 考试时间
         begin_time: '', // 开始时间
         end_time: '', // 结束时间
@@ -115,28 +123,29 @@ export default {
         memer: '' // 校验用的，无实际意义
       },
       targetUser: [], // 未处理的考试人员
+      selectedOptions: [], // 回显的级联菜单值
       rules: {
         exam_name: [
           {
             required: true,
-            message: '请输入试卷名称（长度在 1 到 64 个字符）',
+            message: '请输入考试名称（长度在 2 到 30 个字符）',
             trigger: 'blur'
           },
           {
             required: true,
-            message: '请输入试卷名称（长度在 1 到 64 个字符）',
+            message: '请输入考试名称（长度在 2 到 30 个字符）',
             trigger: 'change'
           },
           {
-            min: 1,
-            max: 64,
-            message: '长度在 1 到 64 个字符',
+            min: 2,
+            max: 30,
+            message: '长度在 2 到 30 个字符',
             trigger: 'blur'
           },
           {
-            min: 1,
-            max: 64,
-            message: '长度在 1 到 64 个字符',
+            min: 2,
+            max: 30,
+            message: '长度在 2 到 30 个字符',
             trigger: 'change'
           }
         ],
@@ -158,21 +167,53 @@ export default {
       }
     }
   },
-  created() {},
+  watch: {
+    publishDialog: function(val, val2) {
+      if (val) {
+        this.visible = true
+      }
+    },
+    exam: function(val, val2) {
+      if (val) {
+        this.paparForm.time_range[0] = val.begin_time
+        this.paparForm.time_range[1] = val.end_time
+        this.selectedOptions = []
+        $.extend(true, this.paparForm, val)
+        for (const key in val.target_user) {
+          const item = val.target_user[key]
+          item.forEach(value => {
+            this.selectedOptions.push([key, value])
+          })
+        }
+        if (this.selectedOptions.length && this.selectedOptions[0].length >= 2) {
+          this.paparForm.memer = '111'
+        } else {
+          this.paparForm.memer = ''
+        }
+      }
+    }
+  },
   methods: {
     // 监听选择人员
     getExaminers(val) {
       this.targetUser = val
-      if (val.length && val[0].length >= 2) {
-        this.paparForm.memer = '111'
+      var flag = true
+      for (var key in val) {
+        if (!val[key][0]) {
+          flag = false
+        }
+      }
+      if (flag) {
+        this.exam.memer = '111'
       } else {
-        this.paparForm.memer = ''
+        this.exam.memer = ''
       }
     },
     // 取消
     cancel(formName) {
-      this.publishDialog = false
+      this.visible = false
       this.$refs[formName].resetFields()
+      this.$emit('visiblePublish', { visible: false })
     },
     // 发布考试
     publish(formName) {
@@ -181,16 +222,7 @@ export default {
           this.paparForm.begin_time = this.paparForm.time_range[0]
           this.paparForm.end_time = this.paparForm.time_range[1]
           delete this.paparForm.time_range
-
-          var obj = {}
-          this.targetUser.forEach(item => {
-            if (!obj[item[0]]) {
-              obj[item[0]] = [item[1]]
-            } else {
-              obj[item[0]].push(item[1])
-            }
-          })
-          this.paparForm.targetUser = obj
+          this.paparForm.targetUser = this.targetUser
           this.$emit('publishExam', this.paparForm)
         }
       })

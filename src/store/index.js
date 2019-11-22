@@ -4,9 +4,12 @@ import getters from './getters'
 import app from './modules/app'
 import permission from './modules/permission'
 import settings from './modules/settings'
+import user from './modules/user'
 import menuManage from './modules/menu-manage'
 import testPaper from './modules/test-paper'
-import user from './modules/user'
+import examinationManage from './modules/examination-manage'
+import fileUpload from './modules/file-upload'
+import realTimeMessage from './modules/real-time-message'
 
 Vue.use(Vuex)
 
@@ -17,7 +20,10 @@ const store = new Vuex.Store({
     settings,
     user,
     menuManage,
-    testPaper
+    testPaper,
+    examinationManage,
+    fileUpload,
+    realTimeMessage
   },
   getters
 })

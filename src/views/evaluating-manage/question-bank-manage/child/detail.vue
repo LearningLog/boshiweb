@@ -1,7 +1,7 @@
 <template>
   <div class="form-edit">
     <div class="form">
-      <div v-for="(item, index) in topics" :key="item.id" class="topics-item">
+      <div v-for="item in topics" :key="item.id" class="topics-item">
         <p class="topic-type">
           <span>{{ item.topicTypeTitle }}</span><el-tooltip class="item" effect="dark" :content="item.labelStr" placement="top"><span v-if="item.labelStr"><span class="single-line">【{{ item.labelStr }}</span><span>】</span></span></el-tooltip><el-tooltip class="item" effect="dark" :content="item.skillStr" placement="top"><span v-if="item.skillStr"><span class="single-line">【{{ item.skillStr }}</span><span>】</span></span></el-tooltip>
         </p>

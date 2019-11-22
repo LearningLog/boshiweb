@@ -1,10 +1,15 @@
 <template>
   <el-dropdown class="avatar-container" trigger="click">
     <div class="avatar-wrapper">
-      <img :src="avatar ? avatar : avatar1 " class="user-avatar">
-      <i :style="customStyle" class="el-icon-caret-bottom" />
+      <el-avatar class="user-avatar" :src="avatar || avatar1" @error="avatarErrorHandler">
+        <img :src="avatar1">
+      </el-avatar>
+      <i :style="customStyle" :hover="customStyle" class="el-icon-caret-bottom" />
     </div>
     <el-dropdown-menu slot="dropdown" class="user-dropdown">
+      <el-dropdown-item>
+        {{ this.$store.state.user.userSystemInfo.userInfo.nickname }}
+      </el-dropdown-item>
       <router-link to="/">
         <el-dropdown-item>
           Home
@@ -46,6 +51,11 @@ export default {
     async logout() {
       await this.$store.dispatch('user/logout')
       this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+    },
+
+    // 头像加载失败的回调
+    avatarErrorHandler() {
+      return true
     }
   }
 }
@@ -56,6 +66,8 @@ export default {
 		margin-right: 30px;
     padding: 0 8px;
     transition: background 0.5s;
+    display: inline-block;
+    vertical-align: middle;
 
 		.avatar-wrapper {
 			margin-top: 5px;
@@ -78,7 +90,7 @@ export default {
 			}
 		}
     &:hover {
-      background-color: #f9f9f9;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
       cursor: pointer;
     }
 	}

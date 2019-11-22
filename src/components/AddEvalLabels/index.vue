@@ -119,8 +119,8 @@ export default {
       default: ''
     },
     egroup: {
-      type: [Number, String],
-      default: ''
+      type: [Number, String, Array],
+      default: null
     }
   },
   data() {
@@ -134,7 +134,7 @@ export default {
         endtTime: '', // 结束时间
         content: '', // 标签名称
         selectCompanyId: this.selectCompanyId, // 所属租户
-        egroup: this.egroup * 1 // 所属小组
+        egroup: this.egroup // 所属小组
       },
       group_list: [], // 所属小组list
       custom_list: [], // 所属租户list

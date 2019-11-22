@@ -9,7 +9,7 @@
         <el-row v-show="popoverVisible">
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
-              <tenants-groups-roles :is-render-role="false" :is-reset="isReset" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" />
+              <tenants-groups-roles :is-render-role="false" :is-reset="isReset" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" @resetVal="resetVal" />
               <el-form-item label="状态">
                 <el-select
                   v-model="listQuery.autoStatus"
@@ -76,27 +76,33 @@
         width="50"
         fixed
       />
-      <el-table-column align="center" label="考试名称" min-width="70" prop="revolution_name" />
-      <el-table-column align="center" label="周期类型" min-width="40" prop="revolutionTypeDesc" />
-      <el-table-column align="center" label="周期" min-width="30" prop="revolution" >
+      <el-table-column align="center" label="考试名称" min-width="100" show-overflow-tooltip prop="revolution_name" />
+      <el-table-column align="center" label="周期类型" min-width="90" show-overflow-tooltip prop="revolutionTypeDesc" />
+      <el-table-column align="center" label="周期" min-width="60" show-overflow-tooltip prop="revolution">
         <template slot-scope="scope">
-          <el-link type="primary">{{ scope.row.revolution === 0?'--': scope.row.revolution}}</el-link>
+          <span>{{ scope.row.revolution === 0?'--': scope.row.revolution }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="已发布场次" min-width="30" prop="total_count">
+      <el-table-column align="center" label="已发布场次" min-width="100" show-overflow-tooltip prop="total_count">
         <template slot-scope="scope">
-          <el-link type="primary" @click="operateDetail(scope.row)">{{ scope.row.total_count }}</el-link>
+          <el-link type="primary" @click="publicationsDetail(scope.row)">{{ scope.row.total_count }}</el-link>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="考核小组" min-width="30" prop="groupName" />
-      <el-table-column align="center" label="状态" min-width="40" prop="autoStatusDesc" />
-      <el-table-column align="center" label="创建人" min-width="40" prop="userNickName" />
-      <el-table-column align="center" label="创建时间" min-width="40" prop="c_time" />
-
-      <el-table-column class-name="status-col" label="操作" width="250" align="center" fixed="right">
+      <el-table-column align="center" label="考核小组" min-width="90" show-overflow-tooltip prop="groupName" />
+      <el-table-column align="center" label="状态" min-width="60" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <el-tag v-if="scope.row.auto_status === 1" type="warning">{{ scope.row.autoStatusDesc }}</el-tag>
+          <el-tag v-if="scope.row.auto_status === 2" type="success">{{ scope.row.autoStatusDesc }}</el-tag>
+          <el-tag v-if="scope.row.auto_status === 3" type="danger">{{ scope.row.autoStatusDesc }}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="创建人" min-width="80" show-overflow-tooltip prop="userNickName" />
+      <el-table-column align="center" label="创建时间" min-width="140" show-overflow-tooltip prop="c_time" />
+      <el-table-column class-name="status-col" label="操作" width="230" align="center" fixed="right">
         <template slot-scope="scope">
           <el-button size="mini" @click="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
-          <el-button size="mini" @click="publishOrStop(scope.row)"><i class="iconfont iconxiugai" /><span v-if="scope.row.auto_status == 2">暂停</span><span v-else>发布</span></el-button>
+          <el-button v-if="scope.row.auto_status == 2" size="mini" @click="stop(scope.row)"><i class="iconfont iconzanting1" />暂停</el-button>
+          <el-button v-else size="mini" @click="publish(scope.row)"><i class="iconfont iconfabu1" />发布</el-button>
           <el-button size="mini" @click="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
         </template>
       </el-table-column>
@@ -105,22 +111,47 @@
     <div id="bottomOperation">
       <el-button v-show="total>0" type="danger" plain @click="batchDel"><i class="iconfont iconshanchu" />批量删除</el-button>
     </div>
+    <el-dialog v-el-drag-dialog class="publish" width="500px" title="发布任务" :visible.sync="visiblePublish">
+      <el-form :model="publishForm" label-width="120px">
+        <el-form-item label="活动名称：">
+          <span>{{ publishForm.revolution_name }}</span>
+        </el-form-item>
+        <el-form-item label="考试开始时间：">
+          <span>{{ publishForm.start_time }}</span>
+        </el-form-item>
+        <el-form-item label="考试结束时间：">
+          <span>{{ publishForm.end_time }}</span>
+        </el-form-item>
+        <el-form-item label="及格分数：">
+          <span>{{ publishForm.pass_score }}分</span>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="sure">确定</el-button>
+        <el-button @click="visiblePublish = false">取 消</el-button>
+      </div>
+    </el-dialog>
+    <AddSelectGroup :visible-select-group="visibleSelectGroup" @getSelectGroup="getSelectGroup" />
   </div>
 </template>
 
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
+import AddSelectGroup from '@/components/AddSelectGroup'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
-import { getAutomaticList, delAuto } from '@/api/evolutionManage-automatic'
+import { getAutomaticList, delAuto, publish, stop } from '@/api/evolutionManage-automatic'
 export default {
-  components: { Pagination, TenantsGroupsRoles },
+  components: { Pagination, TenantsGroupsRoles, AddSelectGroup },
   directives: { elDragDialog },
   data() {
     return {
+      visiblePublish: false, // 发布弹窗
+      visibleSelectGroup: false, // 是否弹出选择租户、小组
       isReset: false, // 是否重置三组联动数据
       total: 0, // 总条数
       listQuery: { // 查询条件
+        sort: { _id: -1 }, // 排序
         currentPage: 1, // 当前页
         pageSize: 10, // 当前页请求条数
         content: '', // 自动发布考试任务名称
@@ -137,14 +168,21 @@ export default {
       list: [], // 表格数据
       listLoading: true, // 是否开启表格遮罩
       popoverVisible: false, // 是否开启高级搜索
-      checkedDelList: [] // 选择删除的list
+      checkedDelList: [], // 选择的list
+      publishForm: { // 发布弹窗表单
+        revolution_name: '', // 考试名称
+        pass_score: '', // 及格分数
+        start_time: '', // 开始时间
+        end_time: '' // 结束时间
+      },
+      publishId: '', // 要发布的Id
+      selectCompanyId: '', // 新增选择的租户
+      egroup: '' // 新增选择的小组
     }
   },
 
   created() {
     this.get_list()
-    // this.get_topic_label_list()
-    // this.get_topic_skill_list()
   },
   methods: {
     // 获取初始化数据
@@ -158,6 +196,7 @@ export default {
         this.total = response.data.page.totalCount
       })
     },
+
     // 搜索
     topSearch() {
       this.time_range = this.time_range || []
@@ -165,6 +204,7 @@ export default {
       this.listQuery.endTime = this.time_range[1]
       this.get_list()
     },
+
     // 重置
     reset() {
       this.isReset = true
@@ -178,6 +218,7 @@ export default {
       this.listQuery.endTime = ''
       this.get_list()
     },
+
     // 监听三组数据变化
     tenantsGroupsRolesVal(val) {
       this.listQuery.selectCompanyId = val.companyIds
@@ -185,19 +226,32 @@ export default {
       this.listQuery.roleId = val.roleId
       this.group = val.group
     },
+    // 重置监听三组数据变化
+    resetVal(val) {
+      this.isReset = false
+    },
 
     // 选中数据
     handleSelectionChange(row) {
       this.checkedDelList = row
     },
+
     // 新增
     add() {
-      if (!this.listQuery.egroup) {
-        this.$message.warning('请先选择分组信息再尝试添加试题！')
-        return false
-      }
-      // this.$router.push({ path: '/evaluating-manage/question-bank-manage/add', query: { egroup: this.listQuery.egroup, selectCompanyId: this.group.groupId }})
+      this.visibleSelectGroup = true
     },
+
+    // 监听选择小组返回数据
+    getSelectGroup(val) {
+      this.companyId = val.selectCompanyId
+      this.egroup = val.egroup
+      this.visibleSelectGroup = false
+      if (this.egroup) {
+        this.$router.push({ path: '/evaluating-manage/automatic-release-manage/add', query: { selectCompanyId: this.companyId, egroup: this.egroup }})
+      }
+    },
+
+    // 删除
     del(row) {
       this.$confirm('删除任务不会删除已经发布的考试，确定要删除【' + row.revolution_name + '】吗？', '删除任务', {
         confirmButtonText: '确定',
@@ -213,6 +267,8 @@ export default {
         })
       }).catch(() => {})
     },
+
+    // 批量删除
     batchDel() {
       if (!this.checkedDelList.length) {
         this.$message.warning('请选择自动发布任务！')
@@ -236,24 +292,60 @@ export default {
           this.get_list()
         })
       }).catch(() => {})
+    },
+
+    // 发布
+    publish(row) {
+      this.publishForm.revolution_name = row.revolution_name
+      this.publishForm.pass_score = row.pass_score
+      this.publishForm.start_time = row.start_time
+      this.publishForm.end_time = row.end_time
+      this.publishId = row._id
+      this.visiblePublish = true
+    },
+
+    // 确定发布
+    sure() {
+      publish({ _id: this.publishId }).then(res => {
+        this.visiblePublish = false
+        this.publishId = ''
+        this.$message.success('发布成功！')
+        this.get_list()
+      })
+    },
+
+    // 暂停
+    stop(row) {
+      this.$confirm('自动发布考试任务暂停，不影响已发布的考试，请确认是否暂停？', '暂停任务', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        stop({ _id: row._id }).then(response => {
+          this.$message.success('暂停成功！')
+          this.get_list()
+        })
+      }).catch(() => {})
+    },
+
+    // 编辑
+    edit(row) {
+      this.$router.push({ path: '/evaluating-manage/automatic-release-manage/edit', query: { _id: row._id }})
+    },
+
+    // 详情
+    publicationsDetail(row) {
+      this.$router.push({ path: '/evaluating-manage/automatic-release-manage/detail', query: { _id: row._id }})
     }
-    /*
-      // 详情
-      detail(row) {
-        this.$router.push({ path: '/evaluating-manage/question-bank-manage/detail', query: { _id: row._id }})
-      },
-      // 单个删除
-     */
-    // 批量删除
-    /*  ,
-        // 编辑
-        edit(row) {
-          this.$router.push({ path: '/evaluating-manage/question-bank-manage/edit', query: { _id: row._id }})
-        }*/
   }
 }
 </script>
 
 <style lang="scss" scoped>
-
+  .selectCompany /deep/ .tenantsGroupsRoles {
+    width: 100% !important;
+  }
+  .selectCompany /deep/ .tenantsGroupsRoles .el-form-item {
+    width: 100% !important;
+  }
 </style>

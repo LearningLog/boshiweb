@@ -16,7 +16,6 @@
       >
         <el-menu-item index="/">首页</el-menu-item>
         <el-menu-item index="2">我的学习</el-menu-item>
-        <el-menu-item index="/systemManage">系统管理</el-menu-item>
         <el-menu-item index="/backstageManage">后台管理</el-menu-item>
       </el-menu>
     </div>
@@ -36,9 +35,6 @@
 import { mapGetters } from 'vuex'
 import User from '@/components/User'
 import HelpCenter from '@/components/HelpCenter'
-import router from '@/router'
-import { resetRouter } from '@/router'
-import store from '@/store'
 import logo1 from '@/assets/images/logo.png'
 
 export default {
@@ -72,19 +68,8 @@ export default {
       switch (key) {
         case '/':
           break
-        case '/systemManage':
-          // 生成菜单前先初始化router
-          resetRouter()
-          router.addRoutes(this.$store.state.permission.systemRoutes)
-          await store.dispatch('permission/set_permission_routes', 1)
-          this.$router.push({ path: store.state.permission.systemHomePath })
-          break
         case '/backstageManage':
-          // 生成菜单前先初始化router
-          resetRouter()
-          router.addRoutes(this.$store.state.permission.backstageRoutes)
-          await store.dispatch('permission/set_permission_routes', 2)
-          this.$router.push({ path: store.state.permission.backstageHomePath })
+          this.$router.push({ path: this.$store.getters.homePath })
           break
       }
     }

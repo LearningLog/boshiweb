@@ -112,8 +112,8 @@
 <script>
 import { getCustomManageList, getAllRole } from '@/api/systemManage-roleManage'
 import { getAllEmployeeGroup } from '@/api/userCenter-groupManage'
-import { createUser, getUserById } from '@/api/userCenter-userManage'
-import { validUserName, validPhone, validPassword } from '@/utils/validate'
+import { updateUser, getUserById } from '@/api/userCenter-userManage'
+import { validPhone, validPassword } from '@/utils/validate'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 
 export default {
@@ -222,7 +222,7 @@ export default {
     getUserById() {
       getUserById({ _id: this.id }).then(res => {
         this.form = res.data.user
-        this.roleIdList = []
+        this.roleIdList.length = 0
         res.data.user.roleList.forEach(item => {
           this.roleIdList.push(item._id)
         })
@@ -231,6 +231,7 @@ export default {
           this.form.falseRole = '11111'
         }
         this.egroups = this.form.groupList
+        this.einc.length = 0
         res.data.user.groupList.forEach(item => {
           this.einc.push(item.inc)
           if (item.manage) {
@@ -263,8 +264,8 @@ export default {
           delete this.form.falseRole
           delete this.form.noList
           delete this.form.noList2
-          createUser(this.form).then(response => {
-            this.$message.success('添加用户成功！')
+          updateUser(this.form).then(response => {
+            this.$message.success('修改用户成功！')
             this.noLeaveprompt = true
             this.$router.push({
               path: '/user-center/user-manage/detail',
@@ -281,12 +282,15 @@ export default {
     // 获取全部角色
     getAllRoles() {
       getAllRole({ _id: this.id }).then(response => {
-        this.form.noList = response.data.allRoleList
+        this.form.noList = response.data.allRoleList.concat(response.data.existRoleList)
+        // response.data.existRoleList.forEach(item => {
+        //   this.roleIdList.push(item._id)
+        // })
         this.setRolesDialogVisible = true
       })
     },
     handleTransferChange(value, direction, movedKeys) {
-      this.roleIdList = value
+      // this.roleIdList = value
     },
     handleTransferChange2(value, direction, movedKeys) {
       this.form.einc = value
@@ -312,7 +316,10 @@ export default {
     // 获取所有小组
     getEgroups() {
       getAllEmployeeGroup({ _id: this.id }).then(response => {
-        this.form.noList2 = response.data.allEmployeeGroupList
+        this.form.noList2 = response.data.allEmployeeGroupList.concat(response.data.existEmployeeGroupList)
+        // response.data.existEmployeeGroupList.forEach(item => {
+        //   this.einc.push(item._id)
+        // })
         this.setEgroupsDialogVisible = true
       })
     },

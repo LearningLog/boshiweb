@@ -23,6 +23,14 @@ export function createUser(data) {
     data
   })
 }
+// 修改用户
+export function updateUser(data) {
+  return request({
+    url: '/system/userV2/updateUser',
+    method: 'post',
+    data
+  })
+}
 
 // 删除用户
 export function deleteUser(data) {
@@ -73,6 +81,15 @@ export function batchAssignRole(data) {
 export function batchGroupsManage(data) {
   return request({
     url: '/system/user/saveEmployeeGroup',
+    method: 'post',
+    data
+  })
+}
+
+// 获取管理小组和人员
+export function getEgroupAndUserinfo(data) {
+  return request({
+    url: '/system/userV2/getEgroupAndUserinfo',
     method: 'post',
     data
   })

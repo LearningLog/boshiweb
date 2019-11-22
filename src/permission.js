@@ -36,25 +36,14 @@ router.beforeEach(async(to, from, next) => {
           await store.dispatch('user/getAllRoles')
           await store.dispatch('user/getAllEgroup')
           await store.dispatch('user/getUserApplicationInfo')
-          const { systemRoutes, backstageRoutes, allButtonPermission } = await store.dispatch('user/getInfo')
+          const { responseRoutes, allButtonPermission } = await store.dispatch('user/getInfo')
           // 设置全部按钮权限
           await store.dispatch('permission/setAllBtnMermission', allButtonPermission)
 
           // generate accessible routes map based on responseRoutes
-          // const accessRoutes = await store.dispatch('permission/generateRoutes', { systemRoutes, backstageRoutes })
-          await store.dispatch('permission/generateRoutes', { systemRoutes, backstageRoutes, fullPath: to.fullPath })
-
+          const accessRoutes = await store.dispatch('permission/generateRoutes', responseRoutes)
           // 动态添加可访问路由
-          // router.addRoutes(accessRoutes)
-
-          // 刷新浏览器是判断当前url所在的系统位置是 系统管理 还是 后台管理
-          if (store.state.permission.currentSystem === 'systemManage') {
-            // 如果是系统管理，则加入系统管理的路由
-            router.addRoutes(store.state.permission.systemRoutes)
-          } else if (store.state.permission.currentSystem === 'backstageManage') {
-            // 如果是后台管理，则加入后台管理的路由
-            router.addRoutes(store.state.permission.backstageRoutes)
-          }
+          router.addRoutes(accessRoutes)
 
           /**
            * 这里还有一个小hack的地方，就是router.addRoutes之后的next()可能会失效，因为可能next()的时候路由并没有完全add完成，好在查阅文档发现

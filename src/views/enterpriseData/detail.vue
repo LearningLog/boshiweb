@@ -40,11 +40,9 @@ export default {
       storageSpaceChart: {}
     }
   },
-  mounted() {
-    this.getInitData()
-  },
   created() {
     this.id = this.$route.query._id
+    this.getInitData()
   },
   methods: {
     // 获取初始数据

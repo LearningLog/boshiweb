@@ -9,7 +9,7 @@
         <el-row v-show="popoverVisible">
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
-              <tenants-groups-roles :is-render-role="false" :is-reset="isReset" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" />
+              <tenants-groups-roles :is-render-role="false" :is-reset="isReset" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" @resetVal="resetVal" />
               <el-form-item label="创建时间">
                 <el-date-picker
                   v-model="time_range"
@@ -59,7 +59,7 @@
       <el-table-column align="center" label="小组" min-width="120" prop="groupName" show-overflow-tooltip />
       <el-table-column align="center" label="题目数" min-width="50" show-overflow-tooltip prop="topic_count" />
       <el-table-column align="center" label="总分数" min-width="50" show-overflow-tooltip prop="score_count" />
-      <el-table-column align="center" label="创建时间" min-width="130" prop="c_time" show-overflow-tooltip />
+      <el-table-column align="center" label="创建时间" min-width="140" prop="c_time" show-overflow-tooltip />
       <el-table-column align="center" label="引用次数" min-width="50" prop="usedcount" show-overflow-tooltip />
       <el-table-column class-name="status-col" label="操作" width="250" align="center" fixed="right">
         <template slot-scope="scope">
@@ -74,22 +74,15 @@
       <el-button v-show="total>0" type="danger" plain @click="batchDel"><i class="iconfont iconshanchu" />批量删除</el-button>
       <el-button v-show="total>0" type="primary" plain @click="exportPaper"><i class="iconfont icondaochu" />批量导出</el-button>
     </div>
-    <PublishExam :selectCompanyId="selectCompanyId" :publishDialog="publishDialog" :scoreCount="scoreCount" @publishExam="publishExam"></PublishExam>
-    <el-dialog v-el-drag-dialog class="selectCompany" width="400px" title="选择小组" :visible.sync="isVisibleSystemManage">
-      <el-form ref="form" :model="listQuery" label-width="100px">
-        <tenants-groups-roles :is-render-role="false" whichGroup="manageEgroupInfo" @tenantsGroupsRolesVal="tenantsGroupsRolesVal2" />
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="selectCompany">确定</el-button>
-        <el-button @click="isVisibleSystemManage = false">取 消</el-button>
-      </div>
-    </el-dialog>
+    <PublishExam :select-company-id="selectCompanyId" :publish-dialog="publishDialog" :score-count="scoreCount" @publishExam="publishExam" @visiblePublish="visiblePublish" />
+    <AddSelectGroup :visible-select-group="visibleSelectGroup" @getSelectGroup="getSelectGroup" />
   </div>
 </template>
 
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
+import AddSelectGroup from '@/components/AddSelectGroup'
 import PublishExam from '@/components/PublishExam'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import { evaluationPaperList, delPaper, generateExportPaper, exportPaperOne, exportPaperMore, publish } from '@/api/test-paper-manage'
@@ -97,13 +90,13 @@ import { skillAllList } from '@/api/userCenter-skillManage'
 import { labelAllList } from '@/api/evaluatingManage-labelManage'
 
 export default {
-  components: { Pagination, TenantsGroupsRoles, PublishExam },
+  components: { Pagination, TenantsGroupsRoles, PublishExam, AddSelectGroup },
   directives: { elDragDialog },
   data() {
     return {
       isReset: false, // 是否重置三组联动数据
       publishDialog: false, // 发布考试弹窗
-      isVisibleSystemManage: false, // 是否弹出选择租户、小组
+      visibleSelectGroup: false, // 是否弹出选择租户、小组
       total: 0, // 总条数
       listQuery: { // 查询条件
         currentPage: 1, // 当前页
@@ -190,34 +183,32 @@ export default {
       this.listQuery.selectCompanyId = val.companyIds
       this.listQuery.egroup = val.egroupId
       this.listQuery.roleId = val.roleId
-      this.group = val.group
     },
-    // 新增监听三组数据变化
-    tenantsGroupsRolesVal2(val) {
-      this.companyId = val.companyIds
-      this.egroup = val.egroupId
+    // 重置监听三组数据变化
+    resetVal(val) {
+      this.isReset = false
     },
 
     // 选中数据
     handleSelectionChange(row) {
       this.checkedDelList = row
     },
+
     // 新增
     add() {
-      this.isVisibleSystemManage = true
+      this.visibleSelectGroup = true
     },
-    // 新增选择租户、小组
-    selectCompany() {
-      if (!this.companyId && this.$store.state.user.isSystemManage) {
-        this.$message.warning('请先选择租户！')
-        return false
-      } else if (!this.egroup) {
-        this.$message.warning('请先选择小组！')
-        return false
+
+    // 监听选择小组返回数据
+    getSelectGroup(val) {
+      this.companyId = val.selectCompanyId
+      this.egroup = val.egroup
+      this.visibleSelectGroup = false
+      if (this.egroup) {
+        this.$router.push({ path: '/evaluating-manage/test-paper-manage/add', query: { selectCompanyId: this.companyId, egroup: this.egroup }})
       }
-      this.isVisibleSystemManage = false
-      this.$router.push({ path: '/evaluating-manage/test-paper-manage/add', query: { selectCompanyId: this.companyId, egroup: this.egroup }})
     },
+
     // 详情
     detail(row) {
       this.$router.push({ path: '/evaluating-manage/test-paper-manage/detail', query: { _id: row._id }})
@@ -229,12 +220,18 @@ export default {
       this.scoreCount = row.score_count
       this.publishDialog = true
     },
+
+    // 监听修改弹窗关闭
+    visiblePublish(val) {
+      this.publishDialog = val.visible
+    },
+
     // 监听发布考试
     publishExam(val) {
       val.exampaper_id = this.exampaper_id
       publish(val).then(response => {
         this.publishDialog = false
-        this.$message.success('发布试卷成功！')
+        this.$message.success('发布考试成功！')
         this.get_list()
       })
     },
@@ -335,7 +332,7 @@ export default {
     },
     // 编辑
     edit(row) {
-      this.$router.push({ path: '/evaluating-manage/test-paper-manage/edit', query: { _id: row._id }})
+      this.$router.push({ path: '/evaluating-manage/test-paper-manage/edit', query: { _id: row._id, selectCompanyId: row.groupId, egroup: row.egroup[0] }})
     }
   }
 }

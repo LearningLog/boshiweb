@@ -47,7 +47,7 @@
         </template>
       </el-table-column>
       <el-table-column label="技能描述" min-width="100" align="center" show-overflow-tooltip prop="skill_desc" />
-      <el-table-column align="center" label="创建时间" min-width="130" show-overflow-tooltip prop="createtime" />
+      <el-table-column align="center" label="创建时间" min-width="140" show-overflow-tooltip prop="createtime" />
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="get_list" />
   </div>

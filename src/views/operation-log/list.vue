@@ -9,7 +9,7 @@
         <el-row v-show="popoverVisible">
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
-              <tenants-groups-roles :is-render-role="false" :isReset="isReset" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" />
+              <tenants-groups-roles :is-render-role="false" :is-reset="isReset" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" @resetVal="resetVal" />
               <el-form-item label="模块名称">
                 <el-select v-model="listQuery.egroup" placeholder="请选择模块" clearable filterable>
                   <el-option
@@ -42,7 +42,7 @@
       <el-table-column class-name="status-col" label="操作模块" min-width="60" align="center" show-overflow-tooltip prop="moduleName" />
       <el-table-column align="center" label="操作人" min-width="70" show-overflow-tooltip prop="userNickName" />
       <el-table-column align="center" label="小组" min-width="100" show-overflow-tooltip prop="groupNameDesc" />
-      <el-table-column align="center" label="操作时间" min-width="130" show-overflow-tooltip prop="createTime" />
+      <el-table-column align="center" label="操作时间" min-width="140" show-overflow-tooltip prop="createTime" />
       <el-table-column align="center" label="发送人数" min-width="50" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-link type="primary" @click="operateDetail(scope.row)">{{ scope.row.successCount + scope.row.errorCount }}</el-link>
@@ -173,6 +173,10 @@ export default {
     tenantsGroupsRolesVal(val) {
       this.listQuery.selectGroupId = val.companyIds
       this.listQuery.egroup = val.egroupId
+    },
+    // 监听三组数据变化
+    resetVal() {
+      this.isReset = false
     },
     closeDetail() {
       this.listQuery2.smsStatus = ''

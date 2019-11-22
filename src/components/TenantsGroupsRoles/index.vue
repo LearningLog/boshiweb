@@ -1,6 +1,6 @@
 <template>
   <div class="tenantsGroupsRoles" :style="{ width: widths }">
-    <el-form-item v-if="isSystemManage" label="所属租户" :style="{ width: itemWidth }">
+    <el-form-item v-if="isSystemManage" label="租户" :style="{ width: itemWidth }">
       <el-select
         v-model="companyIds"
         placeholder="请选择租户"
@@ -89,14 +89,6 @@ export default {
       groupList: [] // 小组
     }
   },
-  watch: {
-    isReset: function(curVal, oldVal) {
-      // 重置
-      this.companyIds = ''
-      this.groupId = ''
-      this.roleId = ''
-    }
-  },
   computed: {
     widths: function() {
       var num = 0
@@ -136,6 +128,17 @@ export default {
           return '49.7%'
         case 3:
           return '33%'
+      }
+    }
+  },
+  watch: {
+    isReset: function(curVal, oldVal) {
+      // 重置
+      if (curVal) {
+        this.companyIds = ''
+        this.groupId = ''
+        this.roleId = ''
+        this.$emit('resetVal')
       }
     }
   },

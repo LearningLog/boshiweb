@@ -59,7 +59,12 @@
       </el-table-column>
       <el-table-column label="Logo" min-width="90" align="center">
         <template slot-scope="scope">
-          <img v-if="scope.row.pcLogoFileUrl" class="logoImg" :src="scope.row.pcLogoFileUrl" alt="">
+          <el-image
+            v-if="scope.row.pcLogoFileUrl"
+            class="thumbnail"
+            :src="scope.row.pcLogoFileUrl"
+            fit="contain"
+          />
         </template>
       </el-table-column>
       <el-table-column class-name="status-col" label="个性化系统名称" min-width="150" align="center" prop="customSystemName" />
@@ -287,6 +292,6 @@ export default {
     vertical-align: middle;
   }
   .el-table /deep/ .el-table__body tr {
-    height: 90px!important;
+    height: 116px!important;
   }
 </style>

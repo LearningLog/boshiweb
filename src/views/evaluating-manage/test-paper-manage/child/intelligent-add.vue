@@ -332,7 +332,11 @@
       </div>
 
       <div id="btnGroup">
-        <el-button v-no-more-click type="primary" @click="saveIntelligence()">保存</el-button>
+        <el-button
+          v-no-more-click
+          type="primary"
+          @click="saveIntelligence()"
+        >保存</el-button>
         <el-button type="primary" plain @click="cancel()">取消</el-button>
       </div>
     </div>
@@ -351,6 +355,7 @@ export default {
   },
   data() {
     return {
+      id: '', // 试卷ID
       selectCompanyId: '', // 租户
       egroup: '', // 小组
       dataIsChange: -1, // 计数器，据此判断表单是否已编辑
@@ -399,9 +404,13 @@ export default {
     }
   },
   created() {
+    this.id = this.$route.query._id
     this.selectCompanyId = this.$route.query.selectCompanyId
     this.egroup = this.$route.query.egroup
     this.getTopicCount()
+    this.$store.state.testPaper.topics.forEach(row => {
+      this.intelligenceForm.ids.push(row._id)
+    })
   },
   methods: {
     // 获取可用题数
@@ -410,7 +419,7 @@ export default {
         egroup: this.egroup,
         topic_label: this.intelligenceForm.topic_label,
         topic_skill: this.intelligenceForm.topic_skill,
-        ids: []
+        ids: this.intelligenceForm.ids
       }
       getTopicCount(params).then(res => {
         this.topicsNumDetail = res.data
@@ -509,7 +518,7 @@ export default {
       this.judge_select = [0, 0]
     },
 
-	  // 题数、分值变化
+    // 题数、分值变化
     handleChange(val) {
       switch (this.intelligenceForm.select_type) {
         case 1:
@@ -624,14 +633,35 @@ export default {
       this.intelligenceForm.egroup = this.egroup
       intelligence(this.intelligenceForm).then(res => {
         this.noLeaveprompt = true
-        store.dispatch('testPaper/temporaryStorageTopics', res.data)
-        this.$router.push({ path: '/evaluating-manage/test-paper-manage/add', query: { selectCompanyId: this.selectCompanyId, egroup: this.egroup }})
+        const topics = this.$store.state.testPaper.topics.concat(res.data)
+        store.dispatch('testPaper/temporaryStorageTopics', topics)
+        if (this.id) {
+          this.$router.push({
+            path: '/evaluating-manage/test-paper-manage/edit',
+            query: { _id: this.id, selectCompanyId: this.selectCompanyId, egroup: this.egroup, isedit: 1 }
+          })
+        } else {
+          this.$router.push({
+            path: '/evaluating-manage/test-paper-manage/add',
+            query: { selectCompanyId: this.selectCompanyId, egroup: this.egroup }
+          })
+        }
       })
     },
 
     // 取消
     cancel() {
-      this.$router.push({ path: '/evaluating-manage/test-paper-manage/add', query: { selectCompanyId: this.selectCompanyId, egroup: this.egroup }})
+      if (this.id) {
+        this.$router.push({
+          path: '/evaluating-manage/test-paper-manage/edit',
+          query: { _id: this.id, selectCompanyId: this.selectCompanyId, egroup: this.egroup, isedit: 1 }
+        })
+      } else {
+        this.$router.push({
+          path: '/evaluating-manage/test-paper-manage/add',
+          query: { selectCompanyId: this.selectCompanyId, egroup: this.egroup }
+        })
+      }
     }
   },
   beforeRouteLeave(to, from, next) {
@@ -645,6 +675,9 @@ export default {
           type: 'warning'
         })
           .then(() => {
+            store.dispatch('testPaper/temporaryStorageTestPaper', {})
+            store.dispatch('testPaper/temporaryStorageTopics', [])
+            store.dispatch('testPaper/temporaryStoragePaperLabels', [])
             next()
           })
           .catch(() => {
@@ -702,17 +735,25 @@ export default {
 .selectType2:last-child {
   margin-bottom: 0;
 }
-	.count {
-		text-align: center;
-	}
-	.count .total {
-		margin-bottom: 20px;
-	}
-.count span {
-	margin-right: 20px;
+.count {
+  text-align: center;
 }
-.count .single, .count .multi, .count .judge {
-	margin-bottom: 20px;
-	color: #999;
+.count .total {
+  margin-bottom: 20px;
+}
+.count span {
+  margin-right: 20px;
+}
+.count .single,
+.count .multi,
+.count .judge {
+  margin-bottom: 20px;
+  color: #999;
+}
+.tag {
+  display: inline;
+}
+.tag /deep/ .el-tag {
+  margin-right: 10px;
 }
 </style>

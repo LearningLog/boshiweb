@@ -4574,7 +4574,9 @@ var sumDurations = function sumDurations(playlist, startIndex, endIndex) {
   }
 
   for (var i = startIndex; i < endIndex; i++) {
-    durations += playlist.segments[i].duration;
+    if (playlist.segments[i]) {
+      durations += playlist.segments[i].duration;
+    }
   }
 
   return durations;
@@ -19915,7 +19917,11 @@ var makeWrappedSourceBuffer = function makeWrappedSourceBuffer(mediaSource, mime
   var _loop = function (key) {
     if (typeof sourceBuffer[key] === 'function') {
       wrapper[key] = function () {
-        return sourceBuffer[key].apply(sourceBuffer, arguments);
+        try {
+          return sourceBuffer[key].apply(sourceBuffer, arguments);
+        } catch(e){
+          console.log(e, 'e')
+        }
       };
     } else if (typeof wrapper[key] === 'undefined') {
       Object.defineProperty(wrapper, key, {

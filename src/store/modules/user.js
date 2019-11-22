@@ -13,11 +13,8 @@ const { logo_name } = defaultSettings
  */
 export function clearCookie() {
   Cookies.remove('homePath')
-  Cookies.remove('systemHomePath')
-  Cookies.remove('backstageHomePath')
   Cookies.remove('allButtonPermission')
   Cookies.remove('currentButtonPermission')
-  // Cookies.remove('currentSystem')
 }
 
 const state = {
@@ -30,6 +27,7 @@ const state = {
   allRoles: [], // 所有角色
   allEgroup: [], // 所有小组
   applicationInfo: {}, // 应用信息
+  userPermission: {}, // 用户权限
   isSystemManage: false
 }
 
@@ -62,6 +60,7 @@ const mutations = {
     state.applicationInfo = applicationInfo
   },
   IS_SYSTEN_MANAGE: (state, userPermission) => {
+    state.userPermission = userPermission
     if (userPermission.manageType === 1) {
       state.isSystemManage = true
     } else {
@@ -108,16 +107,15 @@ const actions = {
           if (logo.logo_name) {
             commit('SET_LOGO_NAME', logo.logo_name)
           }
-          if (logo.user_img) {
-            commit('SET_AVATAR', userInfo.user_img)
+          if (userInfo.avatarUrl) {
+            commit('SET_AVATAR', userInfo.avatarUrl)
           }
           commit('SET_NAME', userInfo.nickname)
           commit('SET_USER_SYSTEM_INFO', res.data)
         })
         const routes = {}
         response.data = response.data || {}
-        routes.systemRoutes = response.data.systemMenus || []
-        routes.backstageRoutes = response.data.tenementMenus || []
+        routes.responseRoutes = response.data.tenementMenus.concat(response.data.systemMenus)
         commit('IS_SYSTEN_MANAGE', response.data.userPermission)
         routes.allButtonPermission = {
           allPermissionCode: response.data.allPermissionCode,

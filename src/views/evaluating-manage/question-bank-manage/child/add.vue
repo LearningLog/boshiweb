@@ -2,7 +2,7 @@
   <div id="addTopicVue">
     <div class="fr submit">
       <p>（小提示：保存的试题记得保存至题库哦）</p>
-      <el-button v-no-more-click class="addTopic" type="primary" @click="addTopics"><i class="addIcon iconfont iconhao" />保存至题库</el-button>
+      <el-button v-no-more-click class="addTopic" type="primary" @click="addTopics"><i class="addIcon iconfont iconbaocun" />保存至题库</el-button>
     </div>
 
     <el-tabs v-model="addType" :before-leave="beforeLeaveTabs1" class="addType" @tab-click="handleTabsClick1">
@@ -13,7 +13,7 @@
               <div class="edit-hand-topic1">
                 <el-form ref="form" label-width="100px">
                   <el-form-item class="required content" label="题目内容">
-                    <el-input v-model="topic1.topic_content" class="topicName" placeholder="请输入题目" clearable />
+                    <el-input v-model="topic1.topic_content" class="topicName" placeholder="请输入题目" maxlength="200" clearable />
                     <div v-show="topic1.topic_resource" class="img-group">
                       <div class="imgCover" :style="{backgroundImage:'url(' + topic1.topic_resource + ')'}"> <i class="close iconfont iconfalse-circle" @click="delTopicImg" /></div>
                     </div>
@@ -136,7 +136,7 @@
               <div class="edit-hand-topic2">
                 <el-form ref="form" label-width="100px">
                   <el-form-item class="required content" label="题目内容">
-                    <el-input v-model="topic2.topic_content" class="topicName" placeholder="请输入题目" clearable />
+                    <el-input v-model="topic2.topic_content" class="topicName" placeholder="请输入题目" maxlength="200" clearable />
                     <div v-show="topic2.topic_resource" class="img-group">
                       <div class="imgCover" :style="{backgroundImage:'url(' + topic2.topic_resource + ')'}"> <i class="close iconfont iconfalse-circle" @click="delTopicImg" /></div>
                     </div>
@@ -259,7 +259,7 @@
               <div class="edit-hand-topic3">
                 <el-form ref="form" label-width="100px">
                   <el-form-item class="required content" label="题目内容">
-                    <el-input v-model="topic3.topic_content" class="topicName" placeholder="请输入题目" clearable />
+                    <el-input v-model="topic3.topic_content" class="topicName" placeholder="请输入题目" maxlength="200" clearable />
                     <div v-show="topic3.topic_resource" class="img-group">
                       <div class="imgCover" :style="{backgroundImage:'url(' + topic3.topic_resource + ')'}"> <i class="close iconfont iconfalse-circle" @click="delTopicImg" /></div>
                     </div>
@@ -393,7 +393,7 @@
                 <div class="edit-excel-topic1">
                   <el-form ref="form" label-width="100px">
                     <el-form-item class="required content" label="题目内容">
-                      <el-input v-model="topic1.topic_content" class="topicName" placeholder="请输入题目" clearable />
+                      <el-input v-model="topic1.topic_content" class="topicName" placeholder="请输入题目" maxlength="200" clearable />
                       <div v-show="topic1.topic_resource" class="img-group">
                         <div class="imgCover" :style="{backgroundImage:'url(' + topic1.topic_resource + ')'}"> <i class="close iconfont iconfalse-circle" @click="delTopicImg" /></div>
                       </div>
@@ -516,7 +516,7 @@
                 <div class="edit-excel-topic2">
                   <el-form ref="form" label-width="100px">
                     <el-form-item class="required content" label="题目内容">
-                      <el-input v-model="topic2.topic_content" class="topicName" placeholder="请输入题目" clearable />
+                      <el-input v-model="topic2.topic_content" class="topicName" placeholder="请输入题目" maxlength="200" clearable />
                       <div v-show="topic2.topic_resource" class="img-group">
                         <div class="imgCover" :style="{backgroundImage:'url(' + topic2.topic_resource + ')'}"> <i class="close iconfont iconfalse-circle" @click="delTopicImg" /></div>
                       </div>
@@ -639,7 +639,7 @@
                 <div class="edit-excel-topic3">
                   <el-form ref="form" label-width="100px">
                     <el-form-item class="required content" label="题目内容">
-                      <el-input v-model="topic3.topic_content" class="topicName" placeholder="请输入题目" clearable />
+                      <el-input v-model="topic3.topic_content" class="topicName" placeholder="请输入题目" maxlength="200" clearable />
                       <div v-show="topic3.topic_resource" class="img-group">
                         <div class="imgCover" :style="{backgroundImage:'url(' + topic3.topic_resource + ')'}"> <i class="close iconfont iconfalse-circle" @click="delTopicImg" /></div>
                       </div>
@@ -755,7 +755,7 @@
         </div>
       </el-tab-pane>
     </el-tabs>
-    <select-file :visible.sync="visible" :file-type-list="['pic']" @checkedFile="checkedFile" @visible="onvisible" />
+    <select-file :visible.sync="visible" :file-type-list="['pic']" @checkedFile="checkedFile" />
     <add-labels :visible2.sync="visible2" :egroup="egroup" :select-company-id="selectCompanyId" :current-labels.sync="currentLabels" @addLabels="getLabels" @visible2="onvisible2" />
     <add-skills :visible3.sync="visible3" :select-company-id="selectCompanyId" :current-skills.sync="currentSkills" @addSkills="getSkills" @visible3="onvisible3" />
   </div>
@@ -994,10 +994,7 @@ export default {
     checkedFile(val) {
       this[this.topic0].topic_resource = val.fileUrl
       this[this.topic0].topic_resource_id = val.mainFileId
-    },
-    // 监听选择文件组件返回数据
-    onvisible(val) {
-      this.visible = val.visible
+      this.visible = false
     },
 
     // 删除题干图片
@@ -1705,7 +1702,7 @@ export default {
   #addTopicVue .preview {
     width: calc(40% - 10px);
     border-left: 8px solid #e2e6ed;
-    height: calc(100vh - 200px);
+    height: calc(100vh - 212px);
     padding: 0 10px;
     box-sizing: border-box;
   }

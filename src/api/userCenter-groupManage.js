@@ -68,7 +68,7 @@ export function getUserEgroupInfo(data) {
 // 新增分组
 export function addItem(data) {
   return request({
-    url: '/system/employeeGroup/addEmployeeGroup',
+    url: '/system/employeeGroupV2/addEmployeeGroup',
     method: 'post',
     data
   })

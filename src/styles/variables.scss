@@ -3,7 +3,7 @@
 // base color
 $blue:#324157;
 $light-blue:#3A71A8;
-$red:#C03639;
+$red:#F96146;
 $pink: #E65D6E;
 $green: #30B08F;
 $tiffany: #4AB7BD;
@@ -25,6 +25,13 @@ $subMenuHover:#001528;
 $sideBarWidth: 210px;
 $fontColor: #333;
 $actColor: $themeColor;
+
+// 课堂详情
+$lesson-detail-blue:#1b304a;
+$border_color: #243752;
+$deep_color: rgba(0,0,0,0.4);
+
+
 // the :export directive is the magic sauce for webpack
 // https://www.bluematador.com/blog/how-to-share-variables-between-js-and-sass
 :export {

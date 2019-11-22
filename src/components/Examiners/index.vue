@@ -3,7 +3,7 @@
     <div>
       <span class="group">选择小组</span><span class="member">选择人员</span>
     </div>
-    <el-cascader-panel v-model="checkeList" :options="list2" :props="props" @change="handleChange" />
+    <el-cascader-panel v-model="selectedOptions2" :options="list2" :props="props" @change="handleChange" />
   </div>
 </template>
 
@@ -17,14 +17,25 @@ export default {
     selectCompanyId: {
       type: String,
       default: ''
+    },
+    selectedOptions: {
+      type: Array,
+      default() {
+        return []
+      }
+    },
+    targetUser: {
+      type: Object,
+      default() {
+        return {}
+      }
     }
   },
   data() {
     return {
-      radio: null,
       list: [],
       list2: [],
-      checkeList: [],
+      selectedOptions2: [],
       props: {
         multiple: true,
         value: 'id',
@@ -33,11 +44,28 @@ export default {
       }
     }
   },
+  watch: {
+    selectedOptions: function(val, val2) {
+      if (val) {
+        this.selectedOptions2 = val
+      }
+    },
+    targetUser: function(val, val2) {
+      if (val) {
+        for (const key in val) {
+          const item = val[key]
+          item.forEach(value => {
+            this.selectedOptions.push([key, value])
+          })
+        }
+      }
+    }
+  },
   created() {
     this.get_list()
   },
   methods: {
-    // 获取标签列表
+    // 获取小组和人员列表
     get_list() {
       getExamUserInfo({ selectCompanyId: this.selectCompanyId }).then(
         response => {
@@ -47,7 +75,7 @@ export default {
             item.id = item.inc
             if (item.userinfo) {
               item.userinfo.forEach(item2 => {
-                item2.name = item2.username
+                item2.name = item2.nickname
                 item2.id = item2._id
               })
             }
@@ -60,8 +88,15 @@ export default {
       )
     },
     handleChange(val) {
-      this.$emit('examiners', val)
-      console.log(val)
+      var obj = {}
+      val.forEach(item => {
+        if (!obj[item[0]]) {
+          obj[item[0]] = [item[1]]
+        } else {
+          obj[item[0]].push(item[1])
+        }
+      })
+      this.$emit('examiners', obj)
     }
   }
 }
@@ -69,7 +104,10 @@ export default {
 
 <style scoped>
 /deep/ .el-cascader-menu:last-child {
-  border-right: solid 1px #dfe4ed;
+  border-right: solid 0px #dfe4ed;
+}
+/deep/ .el-cascader-menu {
+  width: 50%;
 }
 .examiners .el-cascader-panel {
   width: 379px;

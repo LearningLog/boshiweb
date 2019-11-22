@@ -312,6 +312,7 @@ export default {
       this.uploader.removeFile(file, bool)
     },
 
+    // 获取上传文件类型
     getAccept(accept) {
       switch (accept) {
         case 'text':
@@ -354,7 +355,6 @@ export default {
     cursor: pointer;
     background: #00b7ee;
     padding: 10px 15px;
-    color: #fff;
     text-align: center;
     border-radius: 3px;
     overflow: hidden;
