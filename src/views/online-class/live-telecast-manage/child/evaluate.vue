@@ -85,7 +85,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <pagination v-show="total>0" :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="get_list" />
+      <pagination v-show="total>0" :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="getLablesList" />
     </div>
   </div>
 </template>
@@ -105,6 +105,7 @@ export default {
         cname: '', // 课程名称
         selectCompanyId: '',
         currentPage: 1, // 当前页
+        pageSize: 1, //
         type: ''
       },
       generalData: {}, // 总体评价和时长
@@ -128,9 +129,10 @@ export default {
       label_evaluate({ lesson_id: this.listQuery.selectCompanyId, lesson_type: this.listQuery.type }).then(res => {
         console.log(res)
         this.generalData = res.data.generalData
-        //this.listQuery.currentPage = res.data.appraiseList.currentPage
+        this.listQuery.currentPage = res.data.appraiseList.currentPage
+        this.listQuery.pageSize = res.data.appraiseList.pageSize
         this.list = res.data.appraiseList.list
-        //this.total = res.data.appraiseList.pageCount
+        this.total = res.data.appraiseList.totalCount
         for (let i = 0; i < this.list.length; i++) {
           this.list[i].c_timestamp = parseTime(this.list[i].c_timestamp)
           this.list[i].view_time = Math.ceil(this.list[i].view_time / 1000 / 60)
