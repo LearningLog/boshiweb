@@ -104,4 +104,20 @@ export function setRoleAuthority(data) {
     data
   })
 }
+// 角色默认列表
+export function setDefaultRole(data) {
+  return request({
+    url: '/system/roleV2/getDefaultRole',
+    method: 'post',
+    data
+  })
+}
+// 设置默认角色
+export function updateDefaul(data) {
+  return request({
+    url: '/system/roleV2/updateDefaultRole',
+    method: 'post',
+    data
+  })
+}
 

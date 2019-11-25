@@ -70,11 +70,13 @@
       <el-table-column class-name="status-col" label="操作" width="230" align="center" fixed="right" show-overflow-tooltip>
         <template slot-scope="scope">
           <div v-if="scope.row.auth">
+            <el-button size="mini" @click="go_default_fn(scope.row)"><i class="iconfont icon-pass" />设置默认</el-button>
             <el-button size="mini" @click="go_edit_fn(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
             <el-button size="mini" @click="delete_fn(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
             <el-button size="mini" @click="authorize_fn(scope.row)"><i class="iconfont iconshouquan" />授权</el-button>
           </div>
           <div v-else>
+            <el-button size="mini" :disabled="true"><i class="iconfont icon-pass" />设置默认</el-button>
             <el-button size="mini" :disabled="true"><i class="iconfont iconxiugai" />修改</el-button>
             <el-button size="mini" :disabled="true"><i class="iconfont iconshanchu" />删除</el-button>
             <el-button size="mini" :disabled="true"><i class="iconfont iconshouquan" />授权</el-button>
@@ -205,6 +207,10 @@ export default {
     // 授权
     authorize_fn(row) {
       this.$router.push({ path: '/user-center/role-manage/authorize', query: { id: row._id }})
+    },
+    // 设置默认
+    go_default_fn(row) {
+      this.$router.push({ path: '/user-center/role-manage/set-default', query: { id: row._id }})
     }
   }
 }
