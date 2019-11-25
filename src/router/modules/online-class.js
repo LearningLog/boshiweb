@@ -150,6 +150,18 @@ const onlineClass = {
             icon: '',
             activeMenu: '/online-class/on-demand'
           }
+        },
+        {
+          path: 'evaluate',
+          name: 'on-demand-evaluate',
+          hidden: true,
+          component: () =>
+                  import('@/views/online-class/on-demand/child/evaluate'),
+          meta: {
+            title: '课堂评论',
+            icon: '',
+            activeMenu: '/online-class/on-demand'
+          }
         }
       ]
     },
@@ -221,6 +233,18 @@ const onlineClass = {
             import('@/views/online-class/thematic-class/child/detail'),
           meta: {
             title: '专题详情',
+            icon: '',
+            activeMenu: '/online-class/thematic-class'
+          }
+        },
+        {
+          path: 'evaluate',
+          name: 'thematic-class-evaluate',
+          hidden: true,
+          component: () =>
+                  import('@/views/online-class/thematic-class/child/evaluate'),
+          meta: {
+            title: '专题评论',
             icon: '',
             activeMenu: '/online-class/thematic-class'
           }

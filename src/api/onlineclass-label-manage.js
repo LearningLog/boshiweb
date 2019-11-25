@@ -63,3 +63,11 @@ export function label_evaluate(data) {
     data
   })
 }
+// 删除评价
+export function delete_evaluate(data) {
+  return request({
+    url: '/cr/appraise/deleteAppraiseByIds',
+    method: 'post',
+    data
+  })
+}
