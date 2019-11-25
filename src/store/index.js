@@ -10,6 +10,7 @@ import testPaper from './modules/test-paper'
 import examinationManage from './modules/examination-manage'
 import fileUpload from './modules/file-upload'
 import realTimeMessage from './modules/real-time-message'
+import door from './modules/door'
 
 Vue.use(Vuex)
 
@@ -23,7 +24,8 @@ const store = new Vuex.Store({
     testPaper,
     examinationManage,
     fileUpload,
-    realTimeMessage
+    realTimeMessage,
+    door
   },
   getters
 })

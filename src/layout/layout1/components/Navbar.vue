@@ -21,8 +21,8 @@
     </div>
     <div class="right-menu">
       <div class="search">
-        <el-input v-model="searchVal" class="global-search" placeholder="请输入内容">
-          <el-button slot="append" icon="el-icon-search" />
+        <el-input v-model="keyword" class="global-search" placeholder="请输入关键词" clearable @clear="search" @keyup.enter.native="search">
+          <el-button slot="append" icon="el-icon-search" @click="search" />
         </el-input>
       </div>
       <help-center />
@@ -36,7 +36,7 @@ import { mapGetters } from 'vuex'
 import User from '@/components/User'
 import HelpCenter from '@/components/HelpCenter'
 import logo1 from '@/assets/images/logo.png'
-
+import store from '@/store'
 export default {
   components: {
     User,
@@ -59,7 +59,7 @@ export default {
       customStyle: {
         color: '#ffffff'
       },
-      searchVal: '',
+      keyword: '',
       logo1
     }
   },
@@ -72,6 +72,11 @@ export default {
           this.$router.push({ path: this.$store.getters.homePath })
           break
       }
+    },
+
+    // 搜索文件
+    search() {
+      store.dispatch('door/setKeyword', this.keyword)
     }
   }
 }
