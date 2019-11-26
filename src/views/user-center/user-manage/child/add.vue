@@ -51,7 +51,7 @@
       <el-form-item label="用户状态" prop="userStatus">
         <el-radio-group v-model="form.userStatus">
           <el-radio :label="1">生效</el-radio>
-          <el-radio :label="0">失效</el-radio>
+          <el-radio :label="2">失效</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="邮箱" prop="email">

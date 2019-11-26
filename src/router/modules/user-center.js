@@ -173,6 +173,13 @@ const userCenter = {
           hidden: true,
           component: () => import('@/views/user-center/role-manage/child/authorize'),
           meta: { title: '角色授权', icon: '', activeMenu: '/user-center/role-manage' }
+        },
+        {
+          path: 'set-default',
+          name: 'roleAuthorize',
+          hidden: true,
+          component: () => import('@/views/user-center/role-manage/child/set-default'),
+          meta: { title: '设置默认', icon: '', activeMenu: '/user-center/role-manage' }
         }
       ]
     }
