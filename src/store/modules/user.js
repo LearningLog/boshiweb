@@ -1,7 +1,6 @@
 import { login, logout, getInfo, getMenuList, getAllRoles, getAllEgroup, getUserApplicationInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
-import Cookies from 'js-cookie'
 import store from '../index'
 const qs = require('querystring')
 
@@ -11,10 +10,8 @@ const { logo_name } = defaultSettings
 /**
  * 退出登录，清除cookie
  */
-export function clearCookie() {
-  Cookies.remove('homePath')
-  Cookies.remove('allButtonPermission')
-  Cookies.remove('currentButtonPermission')
+export function clear() {
+  sessionStorage.clear()
 }
 
 const state = {
@@ -25,7 +22,7 @@ const state = {
   logo_name: logo_name,
   userSystemInfo: {}, // 当前用户和系统信息
   allRoles: [], // 所有角色
-  allEgroup: [], // 所有小组
+  allEgroup: {}, // 所有小组
   applicationInfo: {}, // 应用信息
   userPermission: {}, // 用户权限
   isSystemManage: false
@@ -131,7 +128,7 @@ const actions = {
         store.dispatch('permission/clearPermissionRoutes')
         removeToken()
         resetRouter()
-        clearCookie()
+        clear()
         resolve()
       }).catch(error => {
         reject(error)
@@ -158,7 +155,7 @@ const actions = {
   // 获取所有小组
   getAllEgroup({ commit }) {
     getAllEgroup().then(res => {
-      commit('SET_ALL_EGROUP', res.data.manageEgroupInfo)
+      commit('SET_ALL_EGROUP', res.data)
     })
   },
 
