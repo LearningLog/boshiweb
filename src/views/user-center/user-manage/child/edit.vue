@@ -45,7 +45,7 @@
       <el-form-item label="用户状态" prop="userStatus">
         <el-radio-group v-model="form.userStatus">
           <el-radio :label="1">生效</el-radio>
-          <el-radio :label="0">失效</el-radio>
+          <el-radio :label="2">失效</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="邮箱" prop="email">
@@ -250,6 +250,7 @@ export default {
     // 提交
     save(formName) {
       this.$refs[formName].validate(valid => {
+
         if (valid) {
           switch (this.setUpPwd) {
             case 0:
@@ -264,6 +265,8 @@ export default {
           delete this.form.falseRole
           delete this.form.noList
           delete this.form.noList2
+          delete this.form.roleList
+          delete this.form.groupList
           updateUser(this.form).then(response => {
             this.$message.success('修改用户成功！')
             this.noLeaveprompt = true

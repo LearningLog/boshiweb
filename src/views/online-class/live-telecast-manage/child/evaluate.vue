@@ -46,7 +46,7 @@
         :data="list"
         style="width: 100%"
       >
-        <el-table-column align="center" label="名称" min-width="150" show-overflow-tooltip>
+        <el-table-column align="center" label="用户" min-width="150" show-overflow-tooltip>
           <template slot-scope="scope">
             <el-avatar class="user-avatar" :src="avatar || avatar1" @error="avatarErrorHandler">
               <img :src="avatar1">
@@ -54,7 +54,7 @@
             <el-link type="primary">{{ scope.row.nick_name }}</el-link>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="评价" min-width="400" show-overflow-tooltip>
+        <el-table-column align="center" label="评论" min-width="400" show-overflow-tooltip>
           <template slot-scope="scope">
             <div>
               <el-link type="primary">{{ scope.row.appraise_text }}</el-link>
@@ -62,13 +62,13 @@
 
             <div>
               <el-link type="primary">观看时间 : {{ scope.row.view_time }}分钟</el-link>
-              <el-button size="mini">标签1</el-button>
-              <el-button size="mini">标签2</el-button>
+              <span v-for="item in scope.row.label_name" class="tip_lable">{{ item.label_name }}</span>
+              <!--<el-button size="mini">标签2</el-button>-->
             </div>
 
           </template>
         </el-table-column>
-        <el-table-column align="center" label="星星" min-width="200" show-overflow-tooltip>
+        <el-table-column align="center" label="评价" min-width="200" show-overflow-tooltip>
           <template slot-scope="scope">
             <div class="star-box1">
               <el-rate
@@ -93,10 +93,12 @@
 <script>
 import { mapGetters } from 'vuex'
 import avatar1 from '@/assets/images/avatar.png'
+import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { parseTime } from '@/utils/index'
-import { label_evaluate } from '@/api/onlineclass-label-manage'
+import { label_evaluate, delete_evaluate } from '@/api/onlineclass-label-manage'
 export default {
   name: 'Evaluate',
+  components: { Pagination },
   data() {
     return {
       avatar1,
@@ -109,7 +111,7 @@ export default {
         type: ''
       },
       generalData: {}, // 总体评价和时长
-      list: ''// 评价列表
+      list: []// 评价列表
     }
   },
   computed: {
@@ -127,18 +129,38 @@ export default {
     // 获取标签list
     getLablesList() {
       label_evaluate({ lesson_id: this.listQuery.selectCompanyId, lesson_type: this.listQuery.type }).then(res => {
-        console.log(res)
+        // console.log(res)
         this.generalData = res.data.generalData
         this.listQuery.currentPage = res.data.appraiseList.currentPage
         this.listQuery.pageSize = res.data.appraiseList.pageSize
         this.list = res.data.appraiseList.list
         this.total = res.data.appraiseList.totalCount
-        for (let i = 0; i < this.list.length; i++) {
-          this.list[i].c_timestamp = parseTime(this.list[i].c_timestamp)
-          this.list[i].view_time = Math.ceil(this.list[i].view_time / 1000 / 60)
+        if (res.data.appraiseList.list) {
+          for (let i = 0; i < this.list.length; i++) {
+            this.list[i].c_timestamp = parseTime(this.list[i].c_timestamp)
+            this.list[i].view_time = Math.ceil(this.list[i].view_time / 1000 / 60)
+          }
         }
         this.generalData.video_time = Math.ceil(res.data.generalData.video_time / 1000 / 60)
       })
+    },
+    // 删除评论
+    del(row) {
+      const ids = []
+      ids.push(row._id)
+      this.$confirm('确定要删除【' + row.nick_name + '】吗？', '删除课程', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        delete_evaluate({ ids: ids, lesson_id: row.lesson_id, lesson_type: row.lesson_type }).then(response => {
+          this.$message.success('删除成功！')
+          if ((this.list.length - 1) === 0) { // 如果当前页数据已删完，则去往上一页
+            this.listQuery.currentPage -= 1
+          }
+          this.getLablesList()
+        })
+      }).catch(() => {})
     },
     // 转换上线时间
     parseTime(time) {
@@ -188,5 +210,12 @@ export default {
 .star-box1{
   display: flex;
   justify-content: space-around;
+}
+.tip_lable{
+  font-size: 12px;
+  color: #999;
+  padding: 2px;
+  background: rgba(32, 199, 178, .2);
+  margin-right: 5px;
 }
 </style>
