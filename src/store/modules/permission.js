@@ -1,5 +1,4 @@
 import { asyncRoutes, constantRoutes } from '@/router'
-import Cookies from 'js-cookie'
 
 /**
  * 根据后端返回的路由表对比前端路由表，返回对应路由表
@@ -72,9 +71,10 @@ const state = {
   routes: [], // 当前完整路由
   addRoutes: [], // 当前权限路由
   homePath: '', // 后台首页
-  allPermissionCode: Cookies.get('allPermissionCode') ? JSON.parse(Cookies.get('allPermissionCode')) : '', // 系统设置的所有权限code
-  userPermission: Cookies.get('userPermission') ? JSON.parse(Cookies.get('userPermission')) : '', // 当前用户的身份权限信息
-  userPermissionDetailList: Cookies.get('userPermissionDetailList') ? JSON.parse(Cookies.get('userPermissionDetailList')) : '' // 当前用户所拥有的所有权限
+  allPermissionCode: sessionStorage.getItem('allPermissionCode') ? JSON.parse(sessionStorage.getItem('allPermissionCode')) : '', // 系统设置的所有权限code
+  allPermissionCodeSet: sessionStorage.getItem('allPermissionCodeSet') ? JSON.parse(sessionStorage.getItem('allPermissionCodeSet')) : '', // 系统设置的所有权限code Set
+  userPermission: sessionStorage.getItem('userPermission') ? JSON.parse(sessionStorage.getItem('userPermission')) : '', // 当前用户的身份权限信息
+  userPermissionDetai: sessionStorage.getItem('userPermissionDetai') ? JSON.parse(sessionStorage.getItem('userPermissionDetai')) : '' // 当前用户所拥有的所有权限
 }
 
 const mutations = {
@@ -101,19 +101,24 @@ const mutations = {
   // 系统设置的所有按钮code
   SET_ALL_PERMISSION_CODE: (state, allPermissionCode) => {
     state.allPermissionCode = allPermissionCode
-    Cookies.set('allPermissionCode', JSON.stringify(allPermissionCode))
+    state.allPermissionCodeSet = new Set(allPermissionCode)
+    sessionStorage.setItem('allPermissionCode', JSON.stringify(allPermissionCode))
   },
 
   // 当前用户的身份权限信息
   SET_USER_PERMISSION_INFO: (state, userPermission) => {
-    state.allPermissionCode = userPermission
-    Cookies.set('userPermission', JSON.stringify(userPermission))
+    state.userPermission = userPermission
+    sessionStorage.setItem('userPermission', JSON.stringify(userPermission))
   },
 
   // 当前用户所拥有的所有权限
   SET_USER_HAS_PERMISSION_LIST: (state, userPermissionDetailList) => {
-    state.allPermissionCode = userPermissionDetailList
-    Cookies.set('userPermissionDetailList', JSON.stringify(userPermissionDetailList))
+    var userPermissionDetai = {}
+    userPermissionDetailList.forEach(item => {
+      userPermissionDetai[item.permissioncode] = item
+    })
+    state.userPermissionDetai = userPermissionDetai
+    sessionStorage.setItem('userPermissionDetai', JSON.stringify(userPermissionDetai))
   }
 }
 

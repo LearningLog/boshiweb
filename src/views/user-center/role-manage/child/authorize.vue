@@ -141,10 +141,8 @@ export default {
     },
     // 保存
     save() {
-      const menuTree = this.$refs.menuTree.getCheckedNodes()
+      const menuTree = this.$refs.menuTree.getCheckedNodes(false, true)
       this.getMenuidsAndPermissionids(menuTree)
-      console.log('menuids', this.menuids)
-      console.log('permissionids', this.permissionids)
       const param = {
         _id: this.id,
         manageType: this.manageType,

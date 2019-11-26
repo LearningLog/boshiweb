@@ -142,6 +142,7 @@ import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import { evaluationTopicList, delTopic } from '@/api/question-bank-manage'
 import { skillAllList } from '@/api/userCenter-skillManage'
 import { labelAllList } from '@/api/evaluatingManage-labelManage'
+import { isCurrentEgroupManager, hasThisBtnPermission } from '@/utils/permission'
 export default {
   components: { Pagination, TenantsGroupsRoles, AddSelectGroup },
   directives: { elDragDialog },
@@ -183,11 +184,16 @@ export default {
     }
   },
   created() {
+    console.log(this.$store.state.user.allEgroup)
     this.get_list()
     // this.get_topic_label_list()
     // this.get_topic_skill_list()
+    this.hasThisBtnPermission('topic-multioperate')
   },
   methods: {
+    hasThisBtnPermission(code, egroup) {
+      return hasThisBtnPermission(code, isCurrentEgroupManager(egroup))
+    },
     // 获取初始化数据
     get_list() {
       this.listLoading = true

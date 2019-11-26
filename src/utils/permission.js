@@ -23,9 +23,10 @@ export function isCurrentEgroupManager(egroup) {
   } else {
     egroup = []
   }
-  const allEgroup = store.state.user.allEgroup || []
+  const manageEgroupInfo = store.state.user.manageEgroupInfo || []
   for (var i = 0; i < egroup.length; i++) {
-    if (allEgroup.findIndex(value => { return (value.inc + '') === egroup[i] }) > -1) {
+    var has = manageEgroupInfo[egroup[i]]
+    if (has) {
       return true
     }
   }
@@ -40,15 +41,23 @@ export function isCurrentEgroupManager(egroup) {
  */
 export function hasThisBtnPermission(permissionCode, isCurrentEgroupManager) {
   const userPermission = store.state.permission.userPermission
-  const allPermissionCode = store.state.permission.allPermissionCode
-  const userPermissionDetailList = store.state.permission.userPermissionDetailList
+  const allPermissionCodeSet = store.state.permission.allPermissionCodeSet
+  const userPermissionDetai = store.state.permission.userPermissionDetai
   if (userPermission.isAdmin || isCurrentEgroupManager) { // 判断数据库是否设置了当前权限code，如果没有设置则表示当前按钮没有设置特定权限
     return true
   } else {
-    if ((allPermissionCode.indexOf(permissionCode) > -1)) {
-      const index = userPermissionDetailList.findIndex(value => { return (value.manageType + '') === userPermission.manageType })
-      if (index > -1 && permissionCode === userPermissionDetailList[index].permissioncode) {
-        return true
+    if (allPermissionCodeSet.has(permissionCode)) { // 查看数据库是否设置了该按钮权限，没有设置则代表该按钮不需要控制
+      var hasCodePermission = permissionCode in userPermissionDetai ? userPermissionDetai[permissionCode] : null // 查看当前登录人是否拥有该按钮权限
+      if (hasCodePermission) {
+        if (hasCodePermission.permissionmanage === 3) { // 查看该按钮是否需要权限
+          return true
+        } else {
+          if (userPermission.manageType <= hasCodePermission.permissionmanage) {
+            return true
+          } else {
+            return false
+          }
+        }
       } else {
         return false
       }
