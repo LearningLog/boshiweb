@@ -149,7 +149,7 @@ export default {
             })
             this.count = countArr.sort((a, b) => {
               return b - a
-            })[0]
+            })[0] + 1
             this.exam = exam
             this.topic = JSON.parse(
               JSON.stringify(exam.answer_info[this.count])
