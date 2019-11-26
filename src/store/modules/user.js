@@ -1,4 +1,4 @@
-import { login, logout, getInfo, getMenuList, getAllRoles, getAllEgroup, getUserApplicationInfo } from '@/api/user'
+import { login, logout, getInfo, getMenuList, getAllRolesNoPage, getAllEgroup, getUserApplicationInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
 import store from '../index'
@@ -23,6 +23,7 @@ const state = {
   userSystemInfo: {}, // 当前用户和系统信息
   allRoles: [], // 所有角色
   allEgroup: {}, // 所有小组
+  manageEgroupInfo: {}, // 管理的小组
   applicationInfo: {}, // 应用信息
   userPermission: {}, // 用户权限
   isSystemManage: false
@@ -47,11 +48,17 @@ const mutations = {
   SET_USER_SYSTEM_INFO: (state, userSystemInfo) => {
     state.userSystemInfo = userSystemInfo
   },
-  SET_ALL_ROLES: (state, allEgroup) => {
-    state.allRoles = allEgroup
+  SET_ALL_ROLES: (state, allRoles) => {
+    state.allRoles = allRoles
   },
   SET_ALL_EGROUP: (state, allEgroup) => {
     state.allEgroup = allEgroup
+    var manageEgroupInfo = {}
+    allEgroup.manageEgroupInfo = allEgroup.manageEgroupInfo || []
+    allEgroup.manageEgroupInfo.forEach(item => {
+      manageEgroupInfo[item.inc] = item
+    })
+    state.manageEgroupInfo = manageEgroupInfo
   },
   APPLICATION_INFO: (state, applicationInfo) => {
     state.applicationInfo = applicationInfo
@@ -147,8 +154,8 @@ const actions = {
 
   // 获取所有角色
   getAllRoles({ commit }) {
-    getAllRoles().then(res => {
-      commit('SET_ALL_ROLES', res.data.manageEgroupInfo)
+    getAllRolesNoPage().then(res => {
+      commit('SET_ALL_ROLES', res.data)
     })
   },
 
