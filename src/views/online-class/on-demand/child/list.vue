@@ -104,7 +104,7 @@
       <!--<el-table-column class-name="status-col" label="开始时间" min-width="140" align="center" prop="s_time" />-->
       <el-table-column class-name="status-col" label="课程评价" min-width="150" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
-          <span class="" @click="rateDetail(scope.row)">
+          <span class="starboxs" @click="rateDetail(scope.row)">
             <el-rate
               v-if="scope.row.general_level"
               v-model="scope.row.general_level"
@@ -308,11 +308,7 @@ export default {
     // 评分详情
     rateDetail(row) {
       if (row.general_level) {
-        const { href } = this.$router.resolve({
-          path: '/online-class/on-demand/evaluate',
-          query: { cname: row.cname, _id: row._id, type: this.listQuery.type }
-        })
-        window.open(href, '_blank')
+        this.$router.push({ path: '/online-class/on-demand/evaluate', query: { cname: row.cname, _id: row._id, type: this.listQuery.type }})
       }
     },
 
@@ -381,5 +377,7 @@ export default {
   .el-table /deep/ .el-table__body tr {
     height: 90px!important;
   }
-
+  .starboxs /deep/ .el-rate__icon {
+    cursor: pointer!important;
+  }
 </style>

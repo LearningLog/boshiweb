@@ -1,97 +1,101 @@
 <template>
   <div class="tenant-list-box">
-    <div class="obj-box">
-      <div class="obj-name">
-        <p><span>课程名称：</span><span>{{ listQuery.cname }}</span></p>
-        <p><span>总时长：</span><span>{{ generalData.video_time }}分钟</span></p>
-      </div>
-      <div class="star-box">
-        <div class="star-box1">
-          <span>整体评价</span>
-          <el-rate
-            v-model="generalData.general_level"
-            disabled
-            show-score
-            text-color="#ff9900"
-            score-template="{value}"
-          />
-        </div>
-        <div class="star-box2">
-          <div class="star-box2-1">
-            <span>课程内容</span>
+    <el-form
+      class="form"
+      :model="form"
+      label-width="120px"
+    >
+      <el-row>
+        <el-col :span="6">
+          <el-form-item label="课程名称：">
+            <span>{{ form.cname }}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6" :offset="2">
+          <el-form-item label="整体评价：">
             <el-rate
-              v-model="generalData.content_level"
+              v-model="form.generalData.general_level"
               disabled
               show-score
               text-color="#ff9900"
               score-template="{value}"
             />
-          </div>
-          <div class="star-box2-2">
-            <span>上课体验</span>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="6">
+          <el-form-item label="总时长：">
+            <span>{{ form.generalData.video_time }}分钟</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6" :offset="2">
+          <el-form-item label="课程内容：">
             <el-rate
-              v-model="generalData.experience_level"
+              v-model="form.generalData.content_level"
               disabled
               show-score
               text-color="#ff9900"
               score-template="{value}"
             />
-          </div>
-        </div>
-        <div />
-      </div>
-    </div>
+          </el-form-item>
+          <el-form-item label="课程内容：">
+            <el-rate
+              v-model="form.generalData.experience_level"
+              disabled
+              show-score
+              text-color="#ff9900"
+              score-template="{value}"
+            />
+          </el-form-item>
+        </el-col>
+      </el-row>
+    </el-form>
     <div class="evaluate-list">
-      <el-table
-        :data="list"
-        style="width: 100%"
-      >
-        <el-table-column align="center" label="用户" min-width="150" show-overflow-tooltip>
-          <template slot-scope="scope">
-            <el-avatar class="user-avatar" :src="avatar || avatar1" @error="avatarErrorHandler">
-              <img :src="avatar1">
-            </el-avatar>
-            <el-link type="primary">{{ scope.row.nick_name }}</el-link>
-          </template>
-        </el-table-column>
-        <el-table-column align="center" label="评论" min-width="400" show-overflow-tooltip>
-          <template slot-scope="scope">
-            <div>
-              <el-link type="primary">{{ scope.row.appraise_text }}</el-link>
-            </div>
-
-            <div>
-              <el-link type="primary">观看时间 : {{ scope.row.view_time }}分钟</el-link>
-              <span v-for="item in scope.row.label_name" class="tip_lable">{{ item.label_name }}</span>
-              <!--<el-button size="mini">标签2</el-button>-->
-            </div>
-
-          </template>
-        </el-table-column>
-        <el-table-column align="center" label="评价" min-width="200" show-overflow-tooltip>
-          <template slot-scope="scope">
-            <div class="star-box1">
+      <div class="listbox">
+        <div class="listone" v-for="item in list">
+          <el-row style="cursor:default">
+            <el-col :span="4">
+              <el-avatar class="user-avatar" :src="item.headPic || avatar1" @error="avatarErrorHandler">
+                <img :src="avatar1">
+              </el-avatar>
+            </el-col>
+            <el-col :span="9" :offset="1">
+              <el-link type="primary" class="saytalk">{{ item.appraise_text }}</el-link>
+            </el-col>
+            <el-col :span="4" :offset="2" class="star-box">
               <el-rate
-                v-if="scope.row.general_level"
-                v-model="scope.row.general_level"
+                v-if="item.general_level"
+                v-model="item.general_level"
                 disabled
                 show-score
                 text-color="#ff9900"
               />
-              <el-button size="mini" @click="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
-            </div>
-
-            <el-link value-format="yyyy-MM-dd" type="primary">{{ scope.row.c_timestamp }}</el-link>
-          </template>
-        </el-table-column>
-      </el-table>
+            </el-col>
+            <el-col :span="2">
+              <el-button size="mini" @click="del(item)"><i class="iconfont iconshanchu" />删除</el-button>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="4" class="usersname">
+              <el-link type="primary">{{ item.nick_name }}</el-link>
+            </el-col>
+            <el-col :span="9" :offset="1">
+              <el-link type="primary">观看时间 : {{ item.view_time }}分钟</el-link>
+              <el-tag  v-for="items in item.label_name" class="tip_lable" type="success">{{ items.label_name }}</el-tag>
+            </el-col>
+            <el-col :span="8" :offset="2">
+              <el-link value-format="yyyy-MM-dd" type="primary">{{ item.c_timestamp }}</el-link>
+            </el-col>
+          </el-row>
+        </div>
+      </div>
       <pagination v-show="total>0" :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="getLablesList" />
     </div>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 import avatar1 from '@/assets/images/avatar.png'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { parseTime } from '@/utils/index'
@@ -103,26 +107,24 @@ export default {
     return {
       avatar1,
       total: 0, // 总条数
-      listQuery: {
+      form: {
         cname: '', // 课程名称
+        generalData: {} // 总体评价和时长
+      },
+      listQuery: {
         selectCompanyId: '',
         currentPage: 1, // 当前页
         pageSize: 1, //
         type: ''
       },
-      generalData: {}, // 总体评价和时长
+
       list: []// 评价列表
     }
-  },
-  computed: {
-    ...mapGetters([
-      'avatar'
-    ])
   },
   created() {
     this.listQuery.selectCompanyId = this.$route.query._id
     this.listQuery.type = this.$route.query.type
-    this.listQuery.cname = this.$route.query.cname
+    this.form.cname = this.$route.query.cname
     this.getLablesList()
   },
   methods: {
@@ -130,7 +132,7 @@ export default {
     getLablesList() {
       label_evaluate({ lesson_id: this.listQuery.selectCompanyId, lesson_type: this.listQuery.type }).then(res => {
         // console.log(res)
-        this.generalData = res.data.generalData
+        this.form.generalData = res.data.generalData
         this.listQuery.currentPage = res.data.appraiseList.currentPage
         this.listQuery.pageSize = res.data.appraiseList.pageSize
         this.list = res.data.appraiseList.list
@@ -141,7 +143,7 @@ export default {
             this.list[i].view_time = Math.ceil(this.list[i].view_time / 1000 / 60)
           }
         }
-        this.generalData.video_time = Math.ceil(res.data.generalData.video_time / 1000 / 60)
+        this.form.generalData.video_time = Math.ceil(res.data.generalData.video_time / 1000 / 60)
       })
     },
     // 删除评论
@@ -175,25 +177,16 @@ export default {
 </script>
 
 <style scoped>
-.obj-name{
-	display: flex;
+.el-rate {
+  height: 20px;
+  line-height: 2;
 }
 .obj-name>p{
 	margin-right:100px;
 }
-.star-box{
-	display: flex;
-}
-.star-box>div{
-	height: 60px;
-	font-size: 18px;
-	margin-right: 50px;
-}
-.star-box1{
-	line-height: 60px;
-	align-items: center;
-	display: flex;
-	font-size:18px;
+
+.star-box .el-rate{
+  line-height: 3;
 }
 .star-box2>div{
 	height:30px;
@@ -207,15 +200,29 @@ export default {
   display: block;
   margin:0 auto;
 }
-.star-box1{
-  display: flex;
-  justify-content: space-around;
+.listone{
+  border-bottom:1px solid #e8e8e8;
+  line-height: 60px;
+  margin-top:20px;
+}
+.usersname{
+  text-align: center;
+}
+.el-link.el-link--primary:after{
+  display: none;
+}
+.el-link.el-link--primary {
+  color: #666;
+}
+.saytalk{
+  line-height: 20px;
+}
+a, a:focus, a:hover {
+ cursor: default;
+ color: inherit;
+ text-decoration: none;
 }
 .tip_lable{
-  font-size: 12px;
-  color: #999;
-  padding: 2px;
-  background: rgba(32, 199, 178, .2);
   margin-right: 5px;
 }
 </style>
