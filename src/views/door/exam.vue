@@ -25,6 +25,7 @@
               >
                 <el-checkbox
                   v-model="item2.check"
+                  @click.native="currentOption(item2, index2)"
                   @change="handleChangeAnswer"
                 >{{ getOptionOrderByIndex(index2)
                 }}{{ item2.option_content }}</el-checkbox>
@@ -75,7 +76,7 @@
                 class="item-topic"
               >
                 <el-checkbox
-                  :checked="item2.check"
+                  v-model="item2.check"
                   disabled
                 >{{ getOptionOrderByIndex(index2)
                 }}{{ item2.option_content }}</el-checkbox>
@@ -107,6 +108,8 @@ export default {
       count: 1, // 当前题号
       exam_id: null, // 考试id
       topic: {}, // 当前编辑的试题
+      topicOption: {}, // 当前编辑的试题选项
+      topicOptionIndex: 0, // 当前编辑的试题选项index
       startTime: 0, // 开始时间
       endTime: 0, // 开始时间
       checkedList: []
@@ -123,7 +126,7 @@ export default {
       getOneExam({ _id: this.id }).then(res => {
         var exam = res.data.exam
         exam.answer_info = exam.answer_info || []
-	      this.exam_id = res.data.exam.exam_id
+        this.exam_id = res.data.exam.exam_id
         if (exam.haveTempTopic) {
           findTempAnswer({ exam_id: res.data.exam.exam_id }).then(response => {
             var option_ids = []
@@ -138,6 +141,7 @@ export default {
                 item2.topic_option.forEach(item3 => {
                   if (item === item3.option_id) {
                     item3.check = true
+                    item3.is_selected = 'y'
                     countArr.push(index2)
                   }
                 })
@@ -145,9 +149,11 @@ export default {
             })
             this.count = countArr.sort((a, b) => {
               return b - a
-            })[0]
+            })[0] + 1
             this.exam = exam
-            this.topic = JSON.parse(JSON.stringify(exam.answer_info[this.count]))
+            this.topic = JSON.parse(
+              JSON.stringify(exam.answer_info[this.count])
+            )
             this.startTime = new Date().getTime()
           })
         } else {
@@ -176,22 +182,53 @@ export default {
       return getOptionOrderByIndex(index)
     },
 
-	  // 选择
-    handleChangeAnswer(val) {
-      console.log('val', val)
-      console.log(this.topic)
-      switch (this.topic.topic_type) {
-        case 1:
-
-          break
-        case 2:
-          break
-        case 3:
-          break
-      }
+    // 点击的选项
+    currentOption(topicOption, index) {
+      this.topicOption = topicOption
+      this.topicOptionIndex = index
     },
 
-	  // 保存临时答题数据
+    // 选择
+    handleChangeAnswer(val) {
+      switch (this.topic.topic_type) {
+        case 1:
+          if (val) {
+            this.topic.topic_option.forEach(item => {
+              item.check = false
+              item.is_selected = 'n'
+            })
+            this.topicOption.check = true
+            this.topicOption.is_selected = 'y'
+          } else {
+            this.topicOption.check = false
+            this.topicOption.is_selected = 'n'
+          }
+          break
+        case 2:
+          if (val) {
+            this.topicOption.is_selected = 'y'
+          } else {
+            this.topicOption.is_selected = 'n'
+          }
+          break
+        case 3:
+          if (val) {
+            this.topic.topic_option.forEach(item => {
+              item.check = false
+              item.is_selected = 'n'
+            })
+            this.topicOption.check = true
+            this.topicOption.is_selected = 'y'
+          } else {
+            this.topicOption.check = false
+            this.topicOption.is_selected = 'n'
+          }
+          break
+      }
+      console.log(this.topic.topic_option)
+    },
+
+    // 保存临时答题数据
     saveTempAnswer() {
       var select_option = []
       var option_ids = []
@@ -207,18 +244,27 @@ export default {
         select_option: select_option,
         option_ids: option_ids
       }
-      saveTempAnswer(params).then(res => {
-
-      })
+      saveTempAnswer(params)
     },
 
-	  // 校验
-	  valid() {
+    // 校验
+    valid() {
       var hasSelected = this.topic.topic_option.find(function(item) {
-	      return item.check
+        return item.check
       })
-		  return hasSelected
-	  },
+      for (var i = 0, len = this.exam.answer_info[this.count].topic_option.length; i < len; i++) {
+        var item = this.exam.answer_info[this.count].topic_option[i]
+        for (var j = 0, len2 = this.topic.topic_option.length; j < len2; j++) {
+          var item2 = this.topic.topic_option[j]
+          if (item.option_id === item2.option_id) {
+            item.check = item2.check
+            item.is_selected = item2.is_selected
+            break
+          }
+        }
+      }
+      return hasSelected
+    },
 
     // 上一题
     prev() {
@@ -227,7 +273,7 @@ export default {
           this.saveTempAnswer()
         }
         this.count--
-        this.topic = this.exam.answer_info[this.count]
+        this.topic = JSON.parse(JSON.stringify(this.exam.answer_info[this.count]))
       }
     },
 
@@ -240,7 +286,7 @@ export default {
         }
         this.saveTempAnswer()
         this.count++
-        this.topic = this.exam.answer_info[this.count]
+        this.topic = JSON.parse(JSON.stringify(this.exam.answer_info[this.count]))
       }
     },
 
@@ -291,9 +337,9 @@ export default {
       border-bottom: 1px solid #e8e8e8;
     }
 
-	  .btnGroup {
-		  text-align: center;
-	  }
+    .btnGroup {
+      text-align: center;
+    }
   }
 
   .edit,

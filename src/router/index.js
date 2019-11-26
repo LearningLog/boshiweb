@@ -11,6 +11,7 @@ import Layout from '@/layout/layout2'
 import door from './modules/door'
 import systemManage from './modules/systemManage'
 import userCenter from './modules/user-center'
+import knowledgeBase from './modules/knowledge-base'
 import evaluatingManage from './modules/evaluating-manage'
 import systemSetting from './modules/system-setting'
 import onlineClass from './modules/online-class'
@@ -77,6 +78,7 @@ export const asyncRoutes = [
   /** when your routing map is too long, you can split it into small modules **/
   systemManage,
   userCenter,
+  knowledgeBase,
   evaluatingManage,
   systemSetting,
   onlineClass,

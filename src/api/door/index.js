@@ -16,6 +16,15 @@ export function knowledgeSearch(data) {
   })
 }
 
+// 获取租户所有树并按每层节点名聚合
+export function getCompanyAllTreeFloorByName(data) {
+  return request({
+    url: '/classifyTree/getCompanyAllTreeFloorByName',
+    method: 'post',
+    data
+  })
+}
+
 // 获取考试
 export function getExams(data) {
   return request({

@@ -67,6 +67,7 @@ export default {
     async handleSelect(key, keyPath) {
       switch (key) {
         case '/':
+          this.$router.push({ path: '/' })
           break
         case '/backstageManage':
           this.$router.push({ path: this.$store.getters.homePath })
