@@ -4,10 +4,11 @@ import Router from 'vue-router'
 Vue.use(Router)
 
 /* Layout */
-import Layout1 from '@/layout/layout1'
+// import Layout1 from '@/layout/layout1'
 import Layout from '@/layout/layout2'
 
 /* Router Modules */
+import door from './modules/door'
 import systemManage from './modules/systemManage'
 import userCenter from './modules/user-center'
 import evaluatingManage from './modules/evaluating-manage'
@@ -60,18 +61,7 @@ export const constantRoutes = [
     hidden: true
   },
 
-  {
-    path: '/',
-    component: Layout1,
-    hidden: true,
-    redirect: '/',
-    children: [{
-      path: '/',
-      name: '主页',
-      component: () => import('@/views/door/index'),
-      meta: { title: '主页' }
-    }]
-  },
+  door,
 
   {
     path: '/404',
