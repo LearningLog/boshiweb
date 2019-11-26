@@ -173,3 +173,27 @@ export function getOptionOrderByIndex(index) {
   }
   return option_order[index]
 }
+
+// 根据当前页面补全地址，当传入参数以/开头时只补全协议和域名，否则根据当前访问页面补全地址
+export function createFullUrl(subPath) {
+  var prePath = location.protocol + '//' + location.host
+  var curPath = location.pathname
+
+  if (subPath.startsWith('/')) {
+    return prePath + subPath
+  } else if (subPath.startsWith('#')) {
+    return prePath + curPath + subPath
+  }
+
+  var midPath = '/'
+  if (curPath !== '' && curPath !== '/') {
+    if (!curPath.endsWith('/')) {
+      curPath = curPath.substring(0, curPath.lastIndexOf('/'))
+      midPath = curPath
+    } else {
+      midPath = curPath
+    }
+  }
+
+  return prePath + midPath + '/' + subPath
+}

@@ -276,7 +276,7 @@
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="主讲老师" prop="teacher" v-if="chapter.type === 1">
+                <el-form-item v-if="chapter.type === 1" label="主讲老师" prop="teacher">
                   <el-input
                     v-model="chapterForm.teacher"
                     placeholder="请输入主讲老师"
@@ -397,6 +397,7 @@
 
 <script>
 import User from '@/components/User'
+import { createFullUrl } from '@/utils/index'
 import clip from '@/utils/clipboard'
 import { parseTime } from '@/utils/index'
 import Pagination from '@/components/Pagination'
@@ -532,18 +533,20 @@ export default {
     this.listQuery.chapterId = this.$route.query._id
     this.listQuery2.cid = this.$route.query._id
     this.chapterForm._id = this.$route.query._id
-    const host = location.host
-    if (host.indexOf('localhost:') > -1) {
-      this.shareUrl =
-        host +
-        '#/client/student-live-demand?_id=' +
-        this.id
-    } else {
-      this.shareUrl =
-        process.env.VUE_APP_BASE_API +
-        '#/client/student-live-demand?_id=' +
-        this.id
-    }
+    // const host = location.host
+    // if (host.indexOf('localhost:') > -1) {
+    //   this.shareUrl =
+    //     host +
+    //     '#/client/student-live-demand?_id=' +
+    //     this.id
+    // } else {
+    //   this.shareUrl =
+    //     process.env.VUE_APP_BASE_API +
+    //     '#/client/student-live-demand?_id=' +
+    //     this.id
+    // }
+    const subPath = '#/client/student-live-demand?_id=' + this.id
+    this.shareUrl = createFullUrl(subPath)
     this.loginUser = this.$store.state.user.userSystemInfo.userInfo._id
     this.findDetailInfoById()
     this.getComments()

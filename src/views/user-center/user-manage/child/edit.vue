@@ -238,6 +238,7 @@ export default {
             this.chargemanList.push(item.inc)
           }
         })
+        this.dataIsChange = -1
       })
     },
     // 获取所属企业list
@@ -250,7 +251,6 @@ export default {
     // 提交
     save(formName) {
       this.$refs[formName].validate(valid => {
-
         if (valid) {
           switch (this.setUpPwd) {
             case 0:
