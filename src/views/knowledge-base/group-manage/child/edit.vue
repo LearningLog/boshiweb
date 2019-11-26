@@ -108,27 +108,14 @@ export default {
   },
   created() {
     this.id = this.$route.query.id
+    this.getInitData()
     this.getCustomManageList()
     this.getAlluserList()
     this.getAllskill()
-    this.getInitData()
   },
   methods: {
 
     companyidChange() {
-      this.form.groupManageUser = []
-      this.form.groupUser = []
-      this.form.skillinfo = []
-
-      //      {
-      //   groupName: '', // 分组名称
-      //   desc: '', // 分组描述
-      //   selectCompanyId: this.$store.state.user.userSystemInfo.userInfo.groupId, // 选择的租户
-      //   groupManageUser: [], // 分组负责人
-      //   groupUser: [], // 分组成员
-      //   skillinfo: []// 分组技能
-      // },
-
       this.getAlluserList()
     },
     // 获取所有技能
@@ -159,18 +146,7 @@ export default {
     // 获取初始数据
     getInitData() {
       getItem({ _id: this.id }).then(response => {
-        const formData = response.data.employeeGroup
-
-        this.form.selectCompanyId = formData.groupId
-        this.form.groupName = formData.groupName
-        this.form.desc = formData.desc
-        this.form.groupManageUser = formData.mincNameList.map((v, k, arr) => {
-          return v._id
-        })
-        this.form.groupUser = formData.incNameList.map((v, k, arr) => {
-          return v._id
-        })
-        this.form.skillinfo = formData.skillinfo
+        this.form = response.data.employeeGroup
         this.dataIsChange = -1
       })
     },
@@ -185,7 +161,7 @@ export default {
           data.groupManageUser = this.form.groupManageUser
           data.groupUser = this.form.groupUser
           data.skillinfo = this.form.skillinfo
-          data._id = this.id
+          data._id = this.form._id
           modifyItem(data).then(response => {
             this.$message.success('修改分组成功！')
             this.noLeaveprompt = true
