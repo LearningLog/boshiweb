@@ -82,7 +82,7 @@
     <div class="pathNav">
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item v-if="pathNavData.length > 0" @click.native="goback()">返回上一级</el-breadcrumb-item>
-        <el-breadcrumb-item @click.native="pathNavClick('all')">{{ navselctedCompany }}</el-breadcrumb-item>
+        <el-breadcrumb-item @click.native="pathNavClick('all')">{{ navselctedCompanyName }}</el-breadcrumb-item>
         <el-breadcrumb-item v-for="(item,index) in pathNavData" :key="index" @click.native="pathNavClick(item,index)">{{ item.name }}</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -222,7 +222,7 @@ export default {
       isReset: true, // 租户组件重置
       listLoading: false,
       custom_list: [], // 所属租户下拉列表
-      navselctedCompany: '全部',
+      navselctedCompanyName: '全部',
       listQuery: {
         classifyNodeIds: [], // 分类节点id数组列表，二维数组
         classifyTreeIds: [], // 分类节点树id数组列表
@@ -319,11 +319,8 @@ export default {
 
   },
   created() {
-    this.path = this.$route.query.path
-    this.listQuery.selectCompanyId = this.$route.query.selectCompanyId
     this.getCustomManageList()// 租户
     this.enterFloderByQueryPath()
-    // this.getDirList()// 列表
     this.getCompanyAllTree()// 知识分类树
   },
   methods: {
@@ -376,6 +373,7 @@ export default {
         }
       } else {
         this.pathNavData = []
+        this.pathQueryString = ''
         this.listQuery.parentId = ''
       }
       this.getDirList()
@@ -417,6 +415,17 @@ export default {
           _id: ''
         }
         this.custom_list = [allSelect, ...res.data]
+        if (this.$route.query.selectCompanyId) {
+
+          // 只执行一次，为租户下拉还有文件夹到航的全部那里赋值
+          const selctedCompany = this.custom_list.filter((v, k, arr) => {
+            if (v._id === this.$route.query.selectCompanyId) {
+              return v
+            }
+          })
+          this.navselctedCompanyName = selctedCompany[0].customname
+          this.listQuery.selectCompanyId = this.$route.query.selectCompanyId
+        }
       })
     },
     companyChange(val) {
@@ -425,7 +434,7 @@ export default {
           return v
         }
       })
-      this.navselctedCompany = selctedCompany[0].customname
+      this.navselctedCompanyName = selctedCompany[0].customname
       this.pathQueryString = ''
       this.pathNavData = []
       this.$router.push({ path: '/knowledge-base/company-base/list', query: { path: this.pathQueryString, selectCompanyId: this.listQuery.selectCompanyId }})
