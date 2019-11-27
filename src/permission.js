@@ -3,11 +3,7 @@ import store from './store'
 import { Message } from 'element-ui'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
-<<<<<<< HEAD
-import { getToken } from '@/utils/auth' // get token from cookie
-=======
 import { getToken } from '@/utils/auth' // get token from localStorage
->>>>>>> 2afc71c771473be3a468877704086cf05c888afa
 import getPageTitle from '@/utils/get-page-title'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration

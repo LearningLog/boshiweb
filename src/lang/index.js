@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueI18n from 'vue-i18n'
-import Cookies from 'js-cookie'
+// import Cookies from 'js-cookie'
 import elementEnLocale from 'element-ui/lib/locale/lang/en' // element-ui lang
 import elementZhLocale from 'element-ui/lib/locale/lang/zh-CN'// element-ui lang
 import enLocale from './en'
@@ -19,11 +19,7 @@ const messages = {
   }
 }
 export function getLanguage() {
-<<<<<<< HEAD
-  const chooseLanguage = Cookies.get('language')
-=======
   const chooseLanguage = localStorage.getItem('language')
->>>>>>> 2afc71c771473be3a468877704086cf05c888afa
   if (chooseLanguage) return chooseLanguage
 
   // if has not choose language
