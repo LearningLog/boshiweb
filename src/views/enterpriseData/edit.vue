@@ -14,8 +14,8 @@
         <el-form-item label="短信总量（条）" prop="totalSms">
           <el-input v-model="form.totalSms" placeholder="请输入短信总量" maxlength="5" clearable @keyup.native="intNum(form.totalSms, 'totalSms')" />
         </el-form-item>
-        <el-form-item label="存储总量（G）" prop="totalStorageSpace">
-          <el-input v-model="form.totalStorageSpace" placeholder="请输入存储总量" maxlength="7" clearable @keyup.native="intNum(form.totalStorageSpace, 'totalStorageSpace')" @blur="blurNum(form.totalStorageSpace)" />
+        <el-form-item label="存储总量（G）" prop="totalStorageSpace2">
+          <el-input v-model="form.totalStorageSpace2" placeholder="请输入存储总量" maxlength="7" clearable @keyup.native="intNum(form.totalStorageSpace2, 'totalStorageSpace2')" @blur="blurNum(form.totalStorageSpace2)" />
         </el-form-item>
         <el-form-item label="有效期" prop="effectTime">
           <el-date-picker
@@ -38,6 +38,7 @@
 
 <script>
 import { onKeyValid, validIntNum, validNum } from '@/utils/validate'
+import { getFileShowSizeToG, getFileShowSizeToBT } from '@/utils/index'
 import { getCustomResourceDetail, editCustomResource } from '@/api/enterprise-data'
 
 export default {
@@ -50,7 +51,7 @@ export default {
         callback()
       }
     }
-    const validTotalStorageSpace = (rule, value, callback) => {
+    const validtotalStorageSpace2 = (rule, value, callback) => {
       if (!value && value !== 0) {
         callback(new Error('请输入存储总量，最多9,999G'))
       } else if (value > 9999) {
@@ -69,6 +70,7 @@ export default {
         totalUserCount: '', // 员工规模
         totalSms: '', // 短信总量
         totalStorageSpace: '', // 存储总量
+        totalStorageSpace2: '', // 存储总量
         startTime: '', // 有效开始日期
         endTime: '', // 有效结束日期
         effectTime: [] // 有效期
@@ -88,9 +90,9 @@ export default {
           { required: true, message: '请输入短信总量', trigger: 'blur' },
           { required: true, message: '请输入短信总量', trigger: 'change' }
         ],
-        totalStorageSpace: [
-          { required: true, validator: validTotalStorageSpace, message: '请输入存储总量，最多9,999G', trigger: 'blur' },
-          { required: true, validator: validTotalStorageSpace, message: '请输入存储总量，最多9,999G', trigger: 'change' }
+        totalStorageSpace2: [
+          { required: true, validator: validtotalStorageSpace2, message: '请输入存储总量，最多9,999G', trigger: 'blur' },
+          { required: true, validator: validtotalStorageSpace2, message: '请输入存储总量，最多9,999G', trigger: 'change' }
         ],
         effectTime: [
           { required: true, validator: validDate, trigger: 'blur' },
@@ -124,7 +126,7 @@ export default {
           payTypeName: response.data.payTypeName,
           totalUserCount: response.data.totalUserCount,
           totalSms: response.data.totalSms,
-          totalStorageSpace: response.data.totalStorageSpace,
+          totalStorageSpace2: getFileShowSizeToG(response.data.totalStorageSpace),
           startTime: response.data.startTime,
           endTime: response.data.endTime,
           effectTime: response.data.startTime ? [response.data.startTime, response.data.endTime] : ''
@@ -138,6 +140,7 @@ export default {
       this.time_range = this.effectTime || []
       this.form.startTime = this.form.effectTime[0]
       this.form.endTime = this.form.effectTime[1]
+      this.form.totalStorageSpace = getFileShowSizeToBT(this.form.totalStorageSpace2)
       this.$refs[formName].validate((valid) => {
         if (valid) {
           editCustomResource(this.form).then(response => {
@@ -155,7 +158,7 @@ export default {
     // 校验正整数
     intNum(val, field) {
       if (!val) return false
-      if (field === 'totalStorageSpace') {
+      if (field === 'totalStorageSpace2') {
         this.form[field] = validNum(val)
       } else {
         this.form[field] = validIntNum(val)
@@ -163,7 +166,7 @@ export default {
     },
     // 失焦校验
     blurNum(val) {
-      this.form.totalStorageSpace = onKeyValid(val, 2)
+      this.form.totalStorageSpace2 = onKeyValid(val, 2)
     }
   },
   beforeRouteLeave(to, from, next) {

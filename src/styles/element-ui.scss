@@ -123,18 +123,35 @@
   -webkit-transition:all 0.5s;
 }
 
+// 表格内按钮置灰
+.el-table .el-button.is-disabled {
+  color: #606266!important;
+  background-color: #E5E5E5!important;
+  border-color: #E5E5E5!important;
+  opacity: 0.8;
+}
+.el-table .el-button.is-disabled:hover {
+  color: #606266!important;
+  background-color: #E5E5E5!important;
+  border-color: #E5E5E5!important;
+  opacity: 0.8;
+}
+
+// 表格内 el-link 样式控制
+.el-table .el-link {
+  display: inline;
+}
+
 .el-icon-close {
   display: inline-block;
   width: 20px;
   height: 20px;
   text-align: center!important;
-  //margin-top: 2px!important;
   box-sizing: border-box;
   border-radius: 50% !important;
 }
 .el-icon-close:before {
   display: inline-block;
-  //margin-top: 2px;
 }
 .el-icon-close:hover {
   background-color: #f5f7fa;

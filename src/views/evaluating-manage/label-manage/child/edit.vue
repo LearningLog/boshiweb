@@ -4,16 +4,6 @@
       <el-form-item class="required" label="标签名称" prop="lname">
         <el-input v-model="form.lname" placeholder="请输入标签名称" clearable />
       </el-form-item>
-      <el-form-item label="所属小组" prop="egroup">
-        <el-select v-model="form.egroup" placeholder="请选择所属小组" clearable filterable>
-          <el-option
-            v-for="item in groupList"
-            :key="item.inc"
-            :label="item.groupName"
-            :value="item.inc"
-          />
-        </el-select>
-      </el-form-item>
       <el-form-item label="描述">
         <el-input
           v-model="form.ldesc"
@@ -70,20 +60,14 @@ export default {
   created() {
     this.id = this.$route.query.id
     this.getInitData()
-    this.getEgroups()
   },
   methods: {
     // 获取初始数据
     getInitData() {
       getOneLabel({ _id: this.id }).then(response => {
         this.form = response.data.label
+        this.form.egroup = response.data.label.egroup[0]
         this.dataIsChange = -1
-      })
-    },
-    // 获取所有小组
-    getEgroups() {
-      getUserEgroupInfo().then(response => {
-        this.groupList = response.data.egroupInfo
       })
     },
 

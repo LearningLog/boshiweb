@@ -131,15 +131,15 @@
       <el-table-column align="center" label="创建时间" min-width="140" prop="c_time" show-overflow-tooltip />
       <el-table-column class-name="status-col" label="操作" width="230" align="center" fixed="right">
         <template slot-scope="scope">
-          <el-button size="mini" @click="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
-          <el-button size="mini" @click="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
+          <el-button size="mini" :disabled="!hasThisBtnPermission('online-edit', scope.row.egroup)" @click="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
+          <el-button size="mini" :disabled="!hasThisBtnPermission('online-delete', scope.row.egroup)" @click="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
           <el-dropdown trigger="click">
             <el-button size="mini">
               <i class="iconfont icongengduo" />更多
             </el-button>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item @click.native="share(scope.row, $event)"><i class="iconfont iconfenxiang" />分享</el-dropdown-item>
-              <el-dropdown-item @click.native="detail(scope.row)"><i class="iconfont iconchakan" />详情</el-dropdown-item>
+              <el-dropdown-item :disabled="!hasThisBtnPermission('online-share', scope.row.egroup)" @click.native="share(scope.row, $event)"><i class="iconfont iconfenxiang" />分享</el-dropdown-item>
+              <el-dropdown-item :disabled="!hasThisBtnPermission('online-detail', scope.row.egroup)" @click.native="detail(scope.row)"><i class="iconfont iconchakan" />详情</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </template>
@@ -147,7 +147,7 @@
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="get_list" />
     <div id="bottomOperation">
-      <el-button v-show="total>0" type="danger" plain @click="batchDel"><i class="iconfont iconshanchu" />批量删除</el-button>
+      <el-button v-if="hasThisBtnPermission('online-multioperate')" v-show="total>0" type="danger" plain @click="batchDel"><i class="iconfont iconshanchu" />批量删除</el-button>
     </div>
     <AddSelectGroup :visible-select-group="visibleSelectGroup" :is-render-group="false" title="选择租户" @getSelectGroup="getSelectGroup" />
   </div>
@@ -163,6 +163,8 @@ import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import { chapetrList, chapetr_del } from '@/api/live-telecast-manage'
 import { findUserListByGroupId } from '@/api/work-desk'
 import { getLabelListNoPagination } from '@/api/onlineclass-label-manage'
+import { isCurrentEgroupManager, hasThisBtnPermission } from '@/utils/permission'
+
 export default {
   components: { Pagination, TenantsGroupsRoles, AddSelectGroup },
   directives: { elDragDialog },
@@ -203,6 +205,10 @@ export default {
     this.getLablesList()
   },
   methods: {
+    // 按钮权限
+    hasThisBtnPermission(code, egroup) {
+      return hasThisBtnPermission(code, isCurrentEgroupManager(egroup))
+    },
     // 获取初始化数据
     get_list() {
       this.listLoading = true
@@ -278,6 +284,13 @@ export default {
     // 新增
     add() {
       if (!this.$store.state.user.isSystemManage) {
+        if (!this.hasThisBtnPermission('online-add')) {
+          this.$message.warning('您没有该小组管理权限！')
+          return false
+        } else if (!this.$store.state.user.allEgroup.manageEgroupInfo.length) {
+          this.$message.warning('您没有管理小组权限！')
+          return false
+        }
         this.$router.push({ path: '/online-class/live-telecast-manage/add' })
       } else {
         this.visibleSelectGroup = true
@@ -349,6 +362,13 @@ export default {
       if (!this.checkedDelList.length) {
         this.$message.warning('请选择课程！')
         return false
+      }
+      for (var i = 0; i < this.checkedDelList.length; i++) {
+        var item = this.checkedDelList[i]
+        if (!this.hasThisBtnPermission('online-delete', item.egroup)) {
+          this.$message.warning(`您没有的【${item.cname}】的管理权限！`)
+          return false
+        }
       }
       this.$confirm('确定要删除选中的课程吗？', '批量删除', {
         confirmButtonText: '确定',

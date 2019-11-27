@@ -4,7 +4,7 @@
       <el-form-item class="required" label="技能名称" prop="skill_name">
         <el-input v-model="form.skill_name" placeholder="请输入技能名称" clearable />
       </el-form-item>
-      <el-form-item label="技能描述">
+      <el-form-item label="技能描述" prop="skill_desc">
         <el-input v-model="form.skill_desc" placeholder="请输入技能描述" clearable />
       </el-form-item>
       <el-form-item v-if="isSystemManage" label="所属租户" prop="groupId">
@@ -19,7 +19,7 @@
       </el-form-item>
     </el-form>
     <div id="btnGroup">
-      <el-button v-no-more-click type="primary" @click="save('form')">保存</el-button>
+      <el-button v-no-more-click type="primary" @click="save('form')">提交</el-button>
       <el-button type="primary" plain @click="cancel('form')">取消</el-button>
     </div>
   </div>
@@ -47,6 +47,12 @@ export default {
           { required: true, message: '请输入技能名称（长度在 2 到 20 个字符）', trigger: 'change' },
           { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' },
           { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'change' }
+        ],
+        skill_desc: [
+          { required: true, message: '请输入技能描述（长度在 1 到 100 个字符）', trigger: 'blur' },
+          { required: true, message: '请输入技能描述（长度在 1 到 100 个字符）', trigger: 'change' },
+          { min: 2, max: 20, message: '长度在 1 到 100 个字符', trigger: 'blur' },
+          { min: 2, max: 20, message: '长度在 1 到 100 个字符', trigger: 'change' }
         ],
         groupId: [
           { required: true, message: '请选择所属租户', trigger: 'blur' },

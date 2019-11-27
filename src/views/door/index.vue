@@ -47,7 +47,7 @@
           {{item.nodeName}}
         </el-tag>
       </div>
-      <el-scrollbar class="fileList" wrap-class="scrollbar-wrapper" v-if="type !== 4 && total">
+      <el-scrollbar class="fileList" wrap-class="scrollbar-wrapper" v-if="total">
         <div v-if="type !== 4">
           <ul
             v-infinite-scroll="getKnowledgeSearchList2"
@@ -80,7 +80,7 @@
               v-infinite-scroll="getExams2"
               :infinite-scroll-immediate="false"
           >
-            <li v-for="(item, index) in examsList" :key="item.docId + type + index" class="itemExam">
+            <li v-for="(item, index) in examsList" :key="item._id + type + index" class="itemExam">
               <div class="outer">
                 <div class="cover">
                   <el-image

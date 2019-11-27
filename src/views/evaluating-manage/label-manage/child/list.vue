@@ -12,26 +12,7 @@
               <el-form-item label="标签ID">
                 <el-input v-model="listQuery.labelIncs[0]" placeholder="请输入标签ID" clearable @keyup.enter.native="topSearch" />
               </el-form-item>
-              <el-form-item label="所属租户">
-                <el-select v-model="listQuery.selectCompanyId" placeholder="请选择所属租户" clearable filterable>
-                  <el-option
-                    v-for="item in custom_list"
-                    :key="item._id"
-                    :label="item.customname"
-                    :value="item._id"
-                  />
-                </el-select>
-              </el-form-item>
-              <el-form-item label="所属小组">
-                <el-select v-model="listQuery.egroup" placeholder="请选择所属租户" clearable filterable>
-                  <el-option
-                    v-for="item in group_list"
-                    :key="item._id"
-                    :label="item.groupName"
-                    :value="item.inc"
-                  />
-                </el-select>
-              </el-form-item>
+              <tenants-groups-roles :is-render-role="false" :is-reset="isReset" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" @resetVal="resetVal" />
               <el-form-item label="创建时间">
                 <el-date-picker
                   v-model="time_range"
@@ -83,27 +64,32 @@
       <el-table-column align="center" label="创建时间" min-width="140" show-overflow-tooltip prop="c_time" />
       <el-table-column class-name="status-col" label="操作" width="160" align="center" fixed="right" show-overflow-tooltip>
         <template slot-scope="scope">
-          <el-button size="mini" @click="go_edit_fn(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
-          <el-button size="mini" @click="delete_fn(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
+          <el-button size="mini" :disabled="!hasThisBtnPermission('evaluation-label-edit', scope.row.egroup)" @click="go_edit_fn(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
+          <el-button size="mini" :disabled="!hasThisBtnPermission('evaluation-label-delete', scope.row.egroup)" @click="delete_fn(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="get_list" />
     <div id="bottomOperation">
-      <el-button v-show="total>0" type="danger" plain @click="batch_del_fn"><i class="iconfont iconshanchu" />批量删除</el-button>
+      <el-button v-if="hasThisBtnPermission('evaluation-label-multioperate')" v-show="total>0" type="danger" plain @click="batch_del_fn"><i class="iconfont iconshanchu" />批量删除</el-button>
     </div>
+    <AddSelectGroup :visible-select-group="visibleSelectGroup" @getSelectGroup="getSelectGroup" />
   </div>
 </template>
 
 <script>
 import { getLabelList, label_delete } from '@/api/evaluatingManage-labelManage.js'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import { getCustomManageList } from '@/api/systemManage-roleManage'
-import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
+import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
+import AddSelectGroup from '@/components/AddSelectGroup'
+import { isCurrentEgroupManager, hasThisBtnPermission } from '@/utils/permission'
+
 export default {
-  components: { Pagination },
+  components: { Pagination, TenantsGroupsRoles, AddSelectGroup },
   data() {
     return {
+      isReset: false, // 是否重置三组联动数据
+      visibleSelectGroup: false, // 是否弹出选择租户、小组
       listLoading: false,
       listQuery: {
         currentPage: 1, // 当前页码
@@ -121,27 +107,33 @@ export default {
       delCheckedList: [], // 选中的数据
       list: null, // 列表数据
       total: 0, // 总条数
-      popoverVisible: false // 高级搜索是否展开
+      popoverVisible: false, // 高级搜索是否展开
+      companyId: '', // 系统管理员选择的租户id
+      egroup: '' // 系统管理员选择的小组id
     }
   },
   created() {
     this.get_list()
-    this.getCustomManageList()
-    this.getEgroups()
   },
   methods: {
-    // 获取所有小组
-    getEgroups() {
-      getUserEgroupInfo({ selectCompanyId: this.companyIds }).then(response => {
-        this.group_list = response.data.egroupInfo
+    // 按钮权限
+    hasThisBtnPermission(code, egroup) {
+      return hasThisBtnPermission(code, isCurrentEgroupManager(egroup))
+    },
+
+    // 获取标签列表
+    get_list() {
+      this.time_range = this.time_range || []
+      this.listQuery.startTime = this.time_range[0]
+      this.listQuery.endtTime = this.time_range[1]
+      this.listLoading = true
+      getLabelList(this.listQuery).then(response => {
+        this.listLoading = false
+        this.list = response.data.page.list
+        this.total = response.data.page.totalCount
       })
     },
-    // 获取所属租户list
-    getCustomManageList() {
-      getCustomManageList().then(res => {
-        this.custom_list = res.data
-      })
-    },
+
     // 搜索
     topSearch() {
       this.get_list()
@@ -157,18 +149,20 @@ export default {
       this.time_range = []
       this.get_list()
     },
-    // 获取标签列表
-    get_list() {
-      this.time_range = this.time_range || []
-      this.listQuery.startTime = this.time_range[0]
-      this.listQuery.endtTime = this.time_range[1]
-      this.listLoading = true
-      getLabelList(this.listQuery).then(response => {
-        this.listLoading = false
-        this.list = response.data.page.list
-        this.total = response.data.page.totalCount
-      })
+
+    // 监听三组数据变化
+    tenantsGroupsRolesVal(val) {
+      this.listQuery.selectCompanyId = val.companyIds
+      this.listQuery.egroup = val.egroupId
+      this.listQuery.roleId = val.roleId
+      this.group = val.group
     },
+
+    // 重置监听三组数据变化
+    resetVal(val) {
+      this.isReset = false
+    },
+
     selectable(row, index) {
       return row.auth
     },
@@ -176,10 +170,26 @@ export default {
     detail(row) {
       this.$router.push({ path: '/evaluating-manage/label-manage/detail', query: { id: row._id }})
     },
+
     // 新增
     add() {
-      this.$router.push({ path: '/evaluating-manage/label-manage/add' })
+      this.visibleSelectGroup = true
     },
+
+    // 监听选择小组返回数据
+    getSelectGroup(val) {
+      this.companyId = val.selectCompanyId
+      this.egroup = val.egroup
+      if (!this.hasThisBtnPermission('evaluation-label-add', this.egroup)) {
+        this.$message.warning('您没有该小组管理权限！')
+        return false
+      }
+      this.visibleSelectGroup = false
+      if (this.egroup) {
+        this.$router.push({ path: '/evaluating-manage/label-manage/add', query: { selectCompanyId: val.selectCompanyId, egroup: val.egroup }})
+      }
+    },
+
     // 删除单个角色
     delete_fn(row) {
       this.$confirm('确定要删除【' + row.userNickName + '】吗？', '删除角色', {
@@ -206,6 +216,13 @@ export default {
         this.$message.warning('请选择角色！')
         return false
       }
+      for (var i = 0; i < this.delCheckedList.length; i++) {
+        var item = this.delCheckedList[i]
+        if (!this.hasThisBtnPermission('evaluation-label-delete', item.egroup)) {
+          this.$message.warning(`您没有的【${item.topic_content}】的管理权限！`)
+          return false
+        }
+      }
       this.$confirm('确定要删除选中的角色吗？', '批量删除角色', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -228,7 +245,6 @@ export default {
     go_edit_fn(row) {
       this.$router.push({ path: '/evaluating-manage/label-manage/edit', query: { id: row._id }})
     }
-
   }
 }
 </script>

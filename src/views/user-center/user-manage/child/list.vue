@@ -31,7 +31,7 @@
       </transition>
     </div>
     <div id="topBtn">
-      <el-button type="primary" @click="add"><i class="iconfont iconjia" />新增</el-button>
+      <el-button type="primary" v-if="hasThisBtnPermission('user-add')" @click="add"><i class="iconfont iconjia" />新增</el-button>
     </div>
     <el-table
       v-loading="listLoading"
@@ -74,10 +74,10 @@
       <el-table-column class-name="status-col" label="操作" width="230" align="center" fixed="right" show-overflow-tooltip>
         <template slot-scope="scope">
           <div v-if="scope.row.auth">
-            <el-button size="mini" @click="go_edit_fn(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
-            <el-button v-if="scope.row.userStatus === 1" size="mini" @click="enable(scope.row, 2)"><i class="iconfont iconshixiao" />失效</el-button>
-            <el-button v-else size="mini" @click="enable(scope.row, 1)"><i class="iconfont iconshengxiao" />生效</el-button>
-            <el-button size="mini" @click="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
+            <el-button size="mini" :disabled="!hasThisBtnPermission('user-edit')" @click="go_edit_fn(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
+            <el-button v-if="scope.row.userStatus === 1" size="mini" :disabled="!hasThisBtnPermission('user-status')" @click="enable(scope.row, 2)"><i class="iconfont iconshixiao" />失效</el-button>
+            <el-button v-else size="mini" :disabled="!hasThisBtnPermission('user-status')" @click="enable(scope.row, 1)"><i class="iconfont iconshengxiao" />生效</el-button>
+            <el-button size="mini" :disabled="!hasThisBtnPermission('user-delete')" @click="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
           </div>
           <div v-else>
             <el-button size="mini" :disabled="true"><i class="iconfont iconxiugai" />修改</el-button>
@@ -90,10 +90,11 @@
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="get_list" />
     <div id="bottomOperation">
-      <a href="basicUser/img/import_user_ttemplates.xlsx" download="企业员工导入模版.xlsx">
+      <a href="basicUser/img/import_user_ttemplates.xlsx" download="企业员工导入模版.xlsx" v-if="hasThisBtnPermission('user-import')">
         <el-button v-show="total>0" type="primary" plain><i class="iconfont iconwechaticon16" />模板下载</el-button>
       </a>
       <el-upload
+        v-if="hasThisBtnPermission('user-import')"
         class="upload-demo"
         :action="uploadUrl()"
         :headers="headers"
@@ -101,10 +102,10 @@
         :show-file-list="false"
         :on-success="handleUploadSuccess"
       >
-        <el-button v-show="total>0" type="primary" plain><i class="iconfont iconziyuan" />模板导入</el-button>
+        <el-button v-show="total>0" type="primary" plain ><i class="iconfont iconziyuan" />模板导入</el-button>
       </el-upload>
-      <el-button v-show="total>0" type="primary" plain @click="assignRole"><i class="iconfont icondaifenpeifuwushang" />分配角色</el-button>
-      <el-button v-show="total>0" type="primary" plain @click="groupsManage"><i class="iconfont iconjia" />小组管理</el-button>
+      <el-button v-show="total>0" type="primary" plain v-if="hasThisBtnPermission('user-role')" @click="assignRole"><i class="iconfont icondaifenpeifuwushang" />分配角色</el-button>
+      <el-button v-show="total>0" type="primary" plain v-if="hasThisBtnPermission('user-manageegroup')" @click="groupsManage"><i class="iconfont iconjia" />小组管理</el-button>
     </div>
     <el-dialog v-el-drag-dialog class="setRolesDialog" width="650px" title="分配角色" :visible.sync="setRolesDialogVisible">
       <el-transfer v-model="roleIdList" :data="noList" :titles="['未分配角色', '已分配角色']" :props="defaultProps" @change="handleTransferChange" />
@@ -176,6 +177,8 @@ import Pagination from '@/components/Pagination' // secondary package based on e
 import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import { getToken } from '@/utils/auth'
+import { isCurrentEgroupManager, hasThisBtnPermission } from '@/utils/permission'
+
 export default {
   components: { Pagination, TenantsGroupsRoles },
   directives: { elDragDialog },
@@ -225,6 +228,10 @@ export default {
     this.get_list()
   },
   methods: {
+    // 按钮权限
+    hasThisBtnPermission(code, egroup) {
+      return hasThisBtnPermission(code, isCurrentEgroupManager(egroup))
+    },
     // 上传路径
     uploadUrl() {
       return process.env.VUE_APP_BASE_API + 'system/file/upload/'

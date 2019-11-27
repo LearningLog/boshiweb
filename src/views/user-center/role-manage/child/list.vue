@@ -36,7 +36,7 @@
       </transition>
     </div>
     <div id="topBtn">
-      <el-button type="primary" @click="add"><i class="iconfont iconjia" />新增</el-button>
+      <el-button type="primary" v-if="hasThisBtnPermission('role-add')" @click="add"><i class="iconfont iconjia" />新增</el-button>
     </div>
     <el-table
       v-loading="listLoading"
@@ -67,26 +67,26 @@
           <el-tag v-else type="danger">否</el-tag>
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="操作" width="230" align="center" fixed="right" show-overflow-tooltip>
+      <el-table-column class-name="status-col" label="操作" width="300" align="center" fixed="right" show-overflow-tooltip>
         <template slot-scope="scope">
           <div v-if="scope.row.auth">
-            <el-button size="mini" @click="go_default_fn(scope.row)"><i class="iconfont icon-pass" />设置默认</el-button>
-            <el-button size="mini" @click="go_edit_fn(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
-            <el-button size="mini" @click="delete_fn(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
-            <el-button size="mini" @click="authorize_fn(scope.row)"><i class="iconfont iconshouquan" />授权</el-button>
+            <el-button size="mini" :disabled="!hasThisBtnPermission('role-edit')" @click="go_edit_fn(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
+            <el-button size="mini" :disabled="!hasThisBtnPermission('role-delete')" @click="delete_fn(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
+            <el-button size="mini" :disabled="!hasThisBtnPermission('role-auth')" @click="authorize_fn(scope.row)"><i class="iconfont iconshouquan" />授权</el-button>
+            <el-button size="mini" v-if="isAdmin" @click="go_default_fn(scope.row)"><i class="iconfont icon-pass" />设置默认</el-button>
           </div>
           <div v-else>
-            <el-button size="mini" :disabled="true"><i class="iconfont icon-pass" />设置默认</el-button>
             <el-button size="mini" :disabled="true"><i class="iconfont iconxiugai" />修改</el-button>
             <el-button size="mini" :disabled="true"><i class="iconfont iconshanchu" />删除</el-button>
             <el-button size="mini" :disabled="true"><i class="iconfont iconshouquan" />授权</el-button>
+            <el-button size="mini" v-if="isAdmin" :disabled="true"><i class="iconfont icon-pass" />设置默认</el-button>
           </div>
         </template>
       </el-table-column>
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="get_list" />
     <div id="bottomOperation">
-      <el-button v-show="total>0" type="danger" plain @click="batch_del_fn"><i class="iconfont iconshanchu" />批量删除</el-button>
+      <el-button v-if="hasThisBtnPermission('role-multioperate')" v-show="total>0" type="danger" plain @click="batch_del_fn"><i class="iconfont iconshanchu" />批量删除</el-button>
     </div>
   </div>
 </template>
@@ -94,6 +94,8 @@
 <script>
 import { role_list, role_delete, deleteMultiRole } from '@/api/systemManage-roleManage.js'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+import { isCurrentEgroupManager, hasThisBtnPermission } from '@/utils/permission'
+
 export default {
   components: { Pagination },
   data() {
@@ -112,13 +114,19 @@ export default {
       delCheckedList: [], // 选中的数据
       list: null, // 列表数据
       total: 0, // 总条数
-      popoverVisible: false // 高级搜索是否展开
+      popoverVisible: false, // 高级搜索是否展开
+      isAdmin: false // 是否为 admin
     }
   },
   created() {
+    this.isAdmin = this.$store.state.user.userPermission.isAdmin
     this.get_list()
   },
   methods: {
+    // 按钮权限
+    hasThisBtnPermission(code, egroup) {
+      return hasThisBtnPermission(code, isCurrentEgroupManager(egroup))
+    },
     // 搜索
     topSearch() {
       this.get_list()

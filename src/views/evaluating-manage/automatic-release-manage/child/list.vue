@@ -100,16 +100,16 @@
       <el-table-column align="center" label="创建时间" min-width="140" show-overflow-tooltip prop="c_time" />
       <el-table-column class-name="status-col" label="操作" width="230" align="center" fixed="right">
         <template slot-scope="scope">
-          <el-button size="mini" @click="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
-          <el-button v-if="scope.row.auto_status == 2" size="mini" @click="stop(scope.row)"><i class="iconfont iconzanting1" />暂停</el-button>
-          <el-button v-else size="mini" @click="publish(scope.row)"><i class="iconfont iconfabu1" />发布</el-button>
-          <el-button size="mini" @click="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
+          <el-button size="mini" :disabled="!hasThisBtnPermission('auto-edit', scope.row.egroup)" @click="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
+          <el-button v-if="scope.row.auto_status == 2" :disabled="!hasThisBtnPermission('auto-publishorstop', scope.row.egroup)" size="mini" @click="stop(scope.row)"><i class="iconfont iconzanting1" />暂停</el-button>
+          <el-button v-else size="mini" :disabled="!hasThisBtnPermission('auto-publishorstop', scope.row.egroup)" @click="publish(scope.row)"><i class="iconfont iconfabu1" />发布</el-button>
+          <el-button size="mini" :disabled="!hasThisBtnPermission('auto-delete', scope.row.egroup)" @click="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="get_list" />
     <div id="bottomOperation">
-      <el-button v-show="total>0" type="danger" plain @click="batchDel"><i class="iconfont iconshanchu" />批量删除</el-button>
+      <el-button v-if="hasThisBtnPermission('auto-multioperate')" v-show="total>0" type="danger" plain @click="batchDel"><i class="iconfont iconshanchu" />批量删除</el-button>
     </div>
     <el-dialog v-el-drag-dialog class="publish" width="500px" title="发布任务" :visible.sync="visiblePublish">
       <el-form :model="publishForm" label-width="120px">
@@ -141,6 +141,8 @@ import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
 import AddSelectGroup from '@/components/AddSelectGroup'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import { getAutomaticList, delAuto, publish, stop } from '@/api/evolutionManage-automatic'
+import { isCurrentEgroupManager, hasThisBtnPermission } from '@/utils/permission'
+
 export default {
   components: { Pagination, TenantsGroupsRoles, AddSelectGroup },
   directives: { elDragDialog },
@@ -185,6 +187,10 @@ export default {
     this.get_list()
   },
   methods: {
+    // 按钮权限
+    hasThisBtnPermission(code, egroup) {
+      return hasThisBtnPermission(code, isCurrentEgroupManager(egroup))
+    },
     // 获取初始化数据
     get_list() {
       this.listLoading = true
@@ -245,6 +251,10 @@ export default {
     getSelectGroup(val) {
       this.companyId = val.selectCompanyId
       this.egroup = val.egroup
+      if (!this.hasThisBtnPermission('auto-add', this.egroup)) {
+        this.$message.warning('您没有该小组管理权限！')
+        return false
+      }
       this.visibleSelectGroup = false
       if (this.egroup) {
         this.$router.push({ path: '/evaluating-manage/automatic-release-manage/add', query: { selectCompanyId: this.companyId, egroup: this.egroup }})
@@ -273,6 +283,13 @@ export default {
       if (!this.checkedDelList.length) {
         this.$message.warning('请选择自动发布任务！')
         return false
+      }
+      for (var i = 0; i < this.checkedDelList.length; i++) {
+        var item = this.checkedDelList[i]
+        if (!this.hasThisBtnPermission('auto-delete', item.egroup)) {
+          this.$message.warning(`您没有的【${item.revolution_name}】的管理权限！`)
+          return false
+        }
       }
       this.$confirm('确定要删除选中的自动发布任务吗？', '批量删除自动发布任务', {
         confirmButtonText: '确定',

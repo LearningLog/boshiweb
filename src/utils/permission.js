@@ -1,9 +1,9 @@
 /**
-* @Author: YanHuaKang
-* @Date: 2019/11/1
-* @Description: 按钮权限
-* @remarks:
-*/
+ * @Author: YanHuaKang
+ * @Date: 2019/11/1
+ * @Description: 按钮权限
+ * @remarks:
+ */
 import store from '@/store'
 
 /**
@@ -20,6 +20,8 @@ export function isCurrentEgroupManager(egroup) {
     } else {
       egroup = [egroup + '']
     }
+  } else if (dataType === '[object Array]') {
+    egroup = [...egroup]
   } else {
     egroup = []
   }
@@ -43,13 +45,19 @@ export function hasThisBtnPermission(permissionCode, isCurrentEgroupManager) {
   const userPermission = store.state.permission.userPermission
   const allPermissionCodeSet = store.state.permission.allPermissionCodeSet
   const userPermissionDetai = store.state.permission.userPermissionDetai
-  if (userPermission.isAdmin || isCurrentEgroupManager) { // 判断数据库是否设置了当前权限code，如果没有设置则表示当前按钮没有设置特定权限
+  if (userPermission.isAdmin || isCurrentEgroupManager) {
+    // 判断数据库是否设置了当前权限code，如果没有设置则表示当前按钮没有设置特定权限
     return true
   } else {
-    if (allPermissionCodeSet.has(permissionCode)) { // 查看数据库是否设置了该按钮权限，没有设置则代表该按钮不需要控制
-      var hasCodePermission = permissionCode in userPermissionDetai ? userPermissionDetai[permissionCode] : null // 查看当前登录人是否拥有该按钮权限
+    if (allPermissionCodeSet.has(permissionCode)) {
+      // 查看数据库是否设置了该按钮权限，没有设置则代表该按钮不需要控制
+      var hasCodePermission =
+        permissionCode in userPermissionDetai
+          ? userPermissionDetai[permissionCode]
+          : null // 查看当前登录人是否拥有该按钮权限
       if (hasCodePermission) {
-        if (hasCodePermission.permissionmanage === 3) { // 查看该按钮是否需要权限
+        if (hasCodePermission.permissionmanage === 3) {
+          // 查看该按钮是否需要权限
           return true
         } else {
           if (userPermission.manageType <= hasCodePermission.permissionmanage) {
