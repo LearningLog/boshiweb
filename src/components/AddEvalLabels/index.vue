@@ -106,7 +106,7 @@ export default {
   components: { Pagination },
   directives: { elDragDialog },
   props: {
-	  visible2: {
+    visible2: {
       type: Boolean,
       default: false
     },

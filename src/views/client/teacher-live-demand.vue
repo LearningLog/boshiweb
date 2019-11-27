@@ -564,9 +564,9 @@ export default {
       findDetailInfoById({ id: this.id, isNeedValidateAuthCode: '2' }).then(
         res => {
           this.chapter = res.data.chapter
-	        if (this.chapter.type === 2) {
+          if (this.chapter.type === 2) {
             this.isActiveSet = 3
-	        } else {
+          } else {
             this.isActiveSet = 1
             $('.vjs-control-bar .vjs-reStart').hide()
           }

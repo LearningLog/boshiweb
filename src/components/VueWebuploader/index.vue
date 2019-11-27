@@ -72,7 +72,7 @@
                   <li class="file-name singleLineOmission">{{ file.name }}</li>
                 </el-tooltip>
                 <li class="progress">
-                  <el-progress :percentage="progress[index]" :key="index" />
+                  <el-progress :key="index" :percentage="progress[index]" />
                 </li>
                 <li class="file-size">{{ fileSize(file.size) }}</li>
                 <!--<li class="file-status">上传中...</li>-->

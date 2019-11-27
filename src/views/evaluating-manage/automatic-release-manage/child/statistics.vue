@@ -105,7 +105,7 @@
     <el-dialog v-el-drag-dialog class="answerInfodialog" title="答题详情" :visible.sync="answerInfodialog">
       <div class="userTopDetail"><span class="username">答题人：{{ topicsDetail.username }}</span><span class="examname">{{ topicsDetail.examname }}</span><span class="answerScore">得分：{{ topicsDetail.answer_score }}分</span></div>
       <el-scrollbar wrap-class="scrollbar-wrapper">
-        <div v-for="(item, index) in topicsList" class="topicItem">
+        <div v-for="(item, index) in topicsList" :key="item._id" class="topicItem">
           <p>{{ index + 1 }}、{{ item.topic_content }} <span class="rightOption">（正确答案：{{ item.rightOption }}）</span></p>
           <ul class="topic-options">
             <li
@@ -115,7 +115,7 @@
             >
               <el-tooltip class="item" effect="dark" :content="item2.option_content" placement="top-start">
                 <el-checkbox
-                  v-model="item2.is_selected === 'y' ? true : false"
+                  v-model="item2.is_selected"
                   class="single-line3"
                   disabled
                 >{{ getOptionOrderByIndex(index2)
@@ -196,6 +196,16 @@ export default {
     detail(row) {
       oneAnswerInfo({ _id: row._id }).then(response => {
         this.topicsList = response.data.answerInfo.answer_info
+        var list1 = this.topicsList
+        for (let i = 0; i < list1.length; i++) {
+          for (let j = 0; j < list1[i].topic_option.length; j++) {
+            if (list1[i].topic_option[j].is_selected === 'y') {
+              list1[i].topic_option[j].is_selected = true
+            }
+          }
+        }
+        this.topicsList = list1
+        // console.log(list1)
         this.topicsDetail = {
           username: response.data.username,
           examname: response.data.examname,

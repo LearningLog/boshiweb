@@ -82,8 +82,8 @@ import { getLabelList, label_delete } from '@/api/onlineclass-label-manage.js'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
 import AddSelectGroup from '@/components/AddSelectGroup'
-import { getCustomManageList } from '@/api/systemManage-roleManage'
-import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
+// import { getCustomManageList } from '@/api/systemManage-roleManage'
+// import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
 import { isCurrentEgroupManager, hasThisBtnPermission } from '@/utils/permission'
 
 export default {

@@ -133,7 +133,7 @@ export default {
       this.get_list()
     },
 
-	  // 获取选中的试卷
+    // 获取选中的试卷
     getExamRow(index, row) {
       this.checkedList = row
     },

@@ -411,7 +411,7 @@ import { firstLogin_sendsms, validate_first_sms, forget_sendsms, validate_forget
 import { regPhone, regPwd } from '@/utils/validate'
 import inputFilter from '@/directive/input-filter'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
-import {createFullUrl} from '@/utils/index'
+// import { createFullUrl } from '@/utils/index'
 
 export default {
   name: 'Login',
@@ -486,7 +486,7 @@ export default {
       param.password = pwd
       that.$store.dispatch('user/login', param).then((res) => {
         if (res.code === 0) {
-          let toPath = ('#' + (this.redirect || '/'))
+          const toPath = ('#' + (this.redirect || '/'))
           that.$router.push(toPath)
         }
         if (res.code === 5001) {

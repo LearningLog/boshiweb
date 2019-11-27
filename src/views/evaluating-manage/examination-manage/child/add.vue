@@ -1,4 +1,4 @@
-<template>
+ <template>
   <div id="addExamination">
     <el-steps
       :active="activeStep"

@@ -158,10 +158,10 @@ export default {
      * @param fileType 如 ppt、pdf、xls、word、video
      */
     openSmallWindowOnScreenMiddle(url, name, iWidth, iHeight) {
-		  // window.screen.height获得屏幕的高，window.screen.width获得屏幕的宽
-		  const iTop = (window.screen.height - 30 - iHeight) / 2 // 获得窗口的垂直位置;
+      // window.screen.height获得屏幕的高，window.screen.width获得屏幕的宽
+      const iTop = (window.screen.height - 30 - iHeight) / 2 // 获得窗口的垂直位置;
       const iLeft = (window.screen.width - 10 - iWidth) / 2 // 获得窗口的水平位置;
-		  window.open(url, name, 'height=' + iHeight + ',innerHeight=' + iHeight + ',width=' + iWidth + ',innerWidth=' + iWidth + ',top=' + iTop + ',left=' + iLeft + ',toolbar=no,menubar=no,scrollbars=auto,resizeable=no,location=no,status=no')
+      window.open(url, name, 'height=' + iHeight + ',innerHeight=' + iHeight + ',width=' + iWidth + ',innerWidth=' + iWidth + ',top=' + iTop + ',left=' + iLeft + ',toolbar=no,menubar=no,scrollbars=auto,resizeable=no,location=no,status=no')
     },
 
     // 关闭弹窗

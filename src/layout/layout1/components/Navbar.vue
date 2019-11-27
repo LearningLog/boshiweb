@@ -44,13 +44,6 @@ export default {
     User,
     HelpCenter
   },
-  computed: {
-    ...mapGetters([
-      'sidebar',
-      'logo',
-      'logo_name'
-    ])
-  },
   data() {
     return {
       systemManage: this.$store.getters.homePath,
@@ -64,6 +57,13 @@ export default {
       keyword: '',
       logo1
     }
+  },
+  computed: {
+    ...mapGetters([
+      'sidebar',
+      'logo',
+      'logo_name'
+    ])
   },
   methods: {
     async handleSelect(key, keyPath) {

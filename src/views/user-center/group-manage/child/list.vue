@@ -52,7 +52,7 @@
       </transition>
     </div>
     <div id="topBtn">
-      <el-button type="primary" v-if="hasThisBtnPermission('egroup-add')" @click="add"><i class="iconfont iconjia" />新增</el-button>
+      <el-button v-if="hasThisBtnPermission('egroup-add')" type="primary" @click="add"><i class="iconfont iconjia" />新增</el-button>
     </div>
     <el-table
       v-loading="listLoading"
