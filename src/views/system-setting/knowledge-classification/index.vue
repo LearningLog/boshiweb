@@ -18,7 +18,7 @@
                   (data.children && data.children.length > 0) ||
                     node.level === 1
                     ? '#iconwenjianjia'
-                    : '#iconzu'
+                    : '#iconyemian'
                 "
               />
             </svg>
@@ -31,7 +31,7 @@
               size="mini"
               @click="() => createTheme(1)"
             >
-              <span><i class="iconfont iconjia" /></span>
+              <span><i class="iconfont iconzengjia" /></span>
             </el-button>
           </span>
           <span v-else>
@@ -40,7 +40,7 @@
               size="mini"
               @click="() => createTheme(2, data)"
             >
-              <span><i class="iconfont iconjia" /></span>
+              <span><i class="iconfont iconzengjia" /></span>
             </el-button>
             <el-button type="text" size="mini" @click="() => editTheme(data)">
               <span><i class="iconfont iconxiugai" /></span>

@@ -13,8 +13,8 @@ const knowledgeBase = {
   redirect: 'noRedirect',
   name: 'knowledge-base',
   meta: {
-    title: '知识库啊啊啊啊',
-    icon: 'iconxitong'
+    title: '知识库',
+    icon: 'iconxitongshezhi'
   },
   children: [
     {

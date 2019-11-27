@@ -14,7 +14,7 @@ const evaluatingManage = {
   name: 'evaluating-manage',
   meta: {
     title: '评测管理',
-    icon: 'iconshouquan'
+    icon: 'iconpingceguanli'
   },
   children: [
     {

@@ -9,13 +9,13 @@
             v-if="!isMinimality"
             @click="minimality"
           ><i
-            class="minimality iconfont iconiconfontmove"
+            class="minimality iconfont iconjianhao"
           /></span>
           <span
             v-if="isMinimality"
             @click="open"
           ><i
-            class="spread iconfont iconhao"
+            class="spread iconfont iconjiahao"
           /></span>
           <span @click="close"><i class="close iconfont iconguanbi" /></span>
         </div>
@@ -39,7 +39,7 @@
                 <li class="file-type" :icon="fileCategory(file.ext)">
                   <i
                     v-if="fileCategory(file.ext) === 'image'"
-                    class="iconfont icontupian1"
+                    class="iconfont icontupian-"
                   />
                   <i
                     v-else-if="fileCategory(file.ext) === 'video'"
@@ -47,11 +47,11 @@
                   />
                   <i
                     v-else-if="fileCategory(file.ext) === 'audio'"
-                    class="iconfont iconyinpinwenjian"
+                    class="iconfont iconCombinedShape"
                   />
                   <i
                     v-else-if="fileCategory(file.ext) === 'text'"
-                    class="iconfont icondoc"
+                    class="iconfont iconword"
                   />
                   <i
                     v-else-if="fileCategory(file.ext) === 'pdf'"
@@ -59,9 +59,9 @@
                   />
                   <i
                     v-else-if="fileCategory(file.ext) === 'compressed'"
-                    class="iconfont iconyasuobao"
+                    class="iconfont iconyasuobao-"
                   />
-                  <i v-else class="iconfont iconzu" />
+                  <i v-else class="iconfont iconyemian" />
                 </li>
                 <el-tooltip
                   class="file-name-tip"

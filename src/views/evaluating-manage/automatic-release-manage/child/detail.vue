@@ -64,7 +64,7 @@
 
       <el-table-column class-name="status-col" label="操作" width="250" align="center" fixed="right">
         <template slot-scope="scope">
-          <el-button size="mini" :disabled="scope.row.exam_status === 1" @click="detail(scope.row)"><i class="iconfont iconchakan" />考试统计</el-button>
+          <el-button size="mini" :disabled="scope.row.exam_status === 1" @click="detail(scope.row)"><i class="iconfont iconxiangqing" />考试统计</el-button>
         </template>
       </el-table-column>
     </el-table>

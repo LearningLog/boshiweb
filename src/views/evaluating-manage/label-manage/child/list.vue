@@ -34,7 +34,7 @@
       </transition>
     </div>
     <div id="topBtn">
-      <el-button type="primary" @click="add"><i class="iconfont iconjia" />新增</el-button>
+      <el-button type="primary" @click="add"><i class="iconfont iconzengjia" />新增</el-button>
     </div>
     <el-table
       v-loading="listLoading"
