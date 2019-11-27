@@ -16,8 +16,8 @@
                 <el-input v-model="listQuery.phone" placeholder="请输入手机号" clearable @keyup.enter.native="topSearch" />
               </el-form-item>
               <el-form-item label="用户状态">
-                <el-select v-model="listQuery.userStatus" placeholder="请选择用户状态" clearable @keyup.enter.native="topSearch">
-                  <el-option v-for="item in userStatus" :key="item.id" :label="item.name" :value="item.id" />
+                <el-select v-model="listQuery.enableStatus" placeholder="请选择用户状态" clearable @keyup.enter.native="topSearch">
+                  <el-option v-for="item in enableStatus" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
               <tenants-groups-roles :is-reset="isReset" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" @resetVal="resetVal" />
@@ -216,9 +216,9 @@ export default {
         phone: '', // 手机号,
         roleId: '', // 角色
         egroup: '', // 分组
-        userStatus: null // 用户状态
+        enableStatus: null // 用户状态
       },
-      userStatus: [{ id: 1, name: '生效' }, { id: 2, name: '失效' }], // 用户状态
+      enableStatus: [{ id: 1, name: '生效' }, { id: 2, name: '失效' }], // 用户状态
       checkedList: [], // 选中的数据
       list: null, // 列表数据
       total: 0, // 总条数
@@ -250,7 +250,7 @@ export default {
       this.listQuery.phone = ''
       this.listQuery.roleId = ''
       this.listQuery.egroup = ''
-      this.listQuery.userStatus = null
+      this.listQuery.enableStatus = null
       this.get_list()
     },
     // 获取用户列表
