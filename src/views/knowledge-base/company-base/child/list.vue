@@ -137,7 +137,7 @@
             重命名
           </el-button>
 
-          <el-button size="mini" @click="del(scope.row)"><i class="iconfont iconwechaticon16" />下载</el-button>
+          <el-button size="mini" @click="downloadKnowledgeLibFile(scope.row)"><i class="iconfont iconwechaticon16" />下载</el-button>
           <el-dropdown trigger="click">
             <el-button size="mini">
               <i class="iconfont icongengduo" />更多
@@ -174,7 +174,7 @@
 import { getCustomManageList, listDirFile, getCompanyAllTree, classifyFiles, updateDir, deleteItem, deleteMulti } from '@/api/knowledgeBase-company'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
-
+const $ = window.$
 export default {
   directives: { elDragDialog },
   components: { Pagination },
@@ -301,7 +301,7 @@ export default {
       } else {
         this.pathQueryString = ''
         this.pathNavData = []
-        this.$router.push({ path: '/knowledge-base/company-base/list'})
+        this.$router.push({ path: '/knowledge-base/company-base/list' })
       }
     },
 
@@ -401,18 +401,6 @@ export default {
       return true
       // return row.auth
     },
-    // 修改
-    go_edit_fn(row) {
-      this.$router.push({ path: '/user-center/skill-manager/edit', query: { id: row._id }})
-    },
-    // 详情
-    detail(row) {
-      this.$router.push({ path: '/user-center/skill-manager/detail', query: { id: row._id }})
-    },
-    // 新增
-    add() {
-      this.$router.push({ path: '/user-center/skill-manager/add' })
-    },
 
     // ////////////////////////////////////知识库////////////////////////////////////
 
@@ -478,6 +466,21 @@ export default {
           type: 'success'
         })
       })
+    },
+    downloadKnowledgeLibFile(row) {
+      let fileId = row.fileId
+      this.downloadFile('api/knowledgeDirFile/downloadFile?fileId=' + fileId)
+    },
+
+    // 下载
+    downloadFile(fileUrl) {
+      $('#common_download_a').remove()
+      var elemIF = document.createElement('iframe')
+      elemIF.id = 'common_download_a'
+      elemIF.src = fileUrl
+      elemIF.style.display = 'none'
+      elemIF.load = function () { $('#common_download_a').remove() }
+      document.body.appendChild(elemIF)
     }
   }
 }
