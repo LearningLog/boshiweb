@@ -124,8 +124,7 @@
       <el-table-column class-name="status-col" label="操作" width="220" align="center" fixed="right">
         <template slot-scope="scope">
           <el-button size="mini" @click="download(scope.row)"><i class="iconfont iconwechaticon16" />下载</el-button>
-          <span v-if="getFileListData(scope.row.mainFileId).file_status===4"><el-button size="mini" @click="pushToKnowledge(scope.row)"><i class="iconfont iconfabu1" />推送</el-button></span>
-          <span v-else><el-button size="mini" disabled="disabled"><i class="iconfont iconfabu1" />推送</el-button></span>
+          <el-button size="mini" :disabled="getFileListData(scope.row.mainFileId).file_status !== 4"><i class="iconfont iconfabu1" />推送</el-button>
           <el-button size="mini" @click="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
         </template>
       </el-table-column>

@@ -17,16 +17,6 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="所属租户" prop="GroupId">
-        <el-select v-model="form.selectCompanyId" placeholder="请选择所属租户" clearable filterable>
-          <el-option
-            v-for="item in custom_list"
-            :key="item._id"
-            :label="item.customname"
-            :value="item._id"
-          />
-        </el-select>
-      </el-form-item>
     </el-form>
     <div id="btnGroup">
       <el-button v-no-more-click type="primary" @click="save('form')">提交</el-button>
@@ -74,6 +64,7 @@ export default {
     }
   },
   created() {
+    this.form.selectCompanyId = this.$route.query.selectCompanyId
     this.getCustomManageList()
     this.getEgroups()
   },
@@ -97,7 +88,7 @@ export default {
           label_add(this.form).then(response => {
             this.$message.success('添加标签成功！')
             this.noLeaveprompt = true
-            this.$router.push({ path: '/online-class/chapter-manage/list' })
+            this.$router.push({ path: '/online-class/label-manage/detail', query: { id: response.data }})
           })
         }
       })
@@ -105,7 +96,7 @@ export default {
 
     // 取消
     cancel(formName) {
-      this.$router.push({ path: '/online-class/chapter-manage/list' })
+      this.$router.push({ path: '/online-class/label-manage/list' })
     }
   },
   beforeRouteLeave(to, from, next) {

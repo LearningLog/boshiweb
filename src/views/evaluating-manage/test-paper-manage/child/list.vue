@@ -63,16 +63,16 @@
       <el-table-column align="center" label="引用次数" min-width="50" prop="usedcount" show-overflow-tooltip />
       <el-table-column class-name="status-col" label="操作" width="250" align="center" fixed="right">
         <template slot-scope="scope">
-          <el-button size="mini" @click="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
-          <el-button size="mini" @click="beginPublish(scope.row)"><i class="iconfont iconfabu1" />发布考试</el-button>
-          <el-button size="mini" @click="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
+          <el-button size="mini" :disabled="!hasThisBtnPermission('exampaper-edit', scope.row.egroup)" @click="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
+          <el-button size="mini" :disabled="!hasThisBtnPermission('exampaper-publish', scope.row.egroup)" @click="beginPublish(scope.row)"><i class="iconfont iconfabu1" />发布考试</el-button>
+          <el-button size="mini" :disabled="!hasThisBtnPermission('exampaper-delete', scope.row.egroup)" @click="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="get_list" />
     <div id="bottomOperation">
-      <el-button v-show="total>0" type="danger" plain @click="batchDel"><i class="iconfont iconshanchu" />批量删除</el-button>
-      <el-button v-show="total>0" type="primary" plain @click="exportPaper"><i class="iconfont icondaochu" />批量导出</el-button>
+      <el-button v-if="hasThisBtnPermission('exampaper-multioperate')" v-show="total>0" type="danger" plain @click="batchDel"><i class="iconfont iconshanchu" />批量删除</el-button>
+      <el-button v-if="hasThisBtnPermission('exampaper-export')" v-show="total>0" type="primary" plain @click="exportPaper"><i class="iconfont icondaochu" />批量导出</el-button>
     </div>
     <PublishExam :select-company-id="selectCompanyId" :publish-dialog="publishDialog" :score-count="scoreCount" @publishExam="publishExam" @visiblePublish="visiblePublish" />
     <AddSelectGroup :visible-select-group="visibleSelectGroup" @getSelectGroup="getSelectGroup" />
@@ -88,6 +88,7 @@ import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import { evaluationPaperList, delPaper, generateExportPaper, exportPaperOne, exportPaperMore, publish } from '@/api/test-paper-manage'
 import { skillAllList } from '@/api/userCenter-skillManage'
 import { labelAllList } from '@/api/evaluatingManage-labelManage'
+import { isCurrentEgroupManager, hasThisBtnPermission } from '@/utils/permission'
 
 export default {
   components: { Pagination, TenantsGroupsRoles, PublishExam, AddSelectGroup },
@@ -134,6 +135,10 @@ export default {
     // this.get_topic_skill_list()
   },
   methods: {
+    // 按钮权限
+    hasThisBtnPermission(code, egroup) {
+      return hasThisBtnPermission(code, isCurrentEgroupManager(egroup))
+    },
     // 获取初始化数据
     get_list() {
       this.listLoading = true
@@ -203,6 +208,10 @@ export default {
     getSelectGroup(val) {
       this.companyId = val.selectCompanyId
       this.egroup = val.egroup
+      if (!this.hasThisBtnPermission('exampaper-add', this.egroup)) {
+        this.$message.warning('您没有该小组管理权限！')
+        return false
+      }
       this.visibleSelectGroup = false
       if (this.egroup) {
         this.$router.push({ path: '/evaluating-manage/test-paper-manage/add', query: { selectCompanyId: this.companyId, egroup: this.egroup }})
@@ -256,6 +265,13 @@ export default {
       if (!this.checkedDelList.length) {
         this.$message.warning('请选择试卷！')
         return false
+      }
+      for (var i = 0; i < this.checkedDelList.length; i++) {
+        var item = this.checkedDelList[i]
+        if (!this.hasThisBtnPermission('exampaper-delete', item.egroup)) {
+          this.$message.warning(`您没有的【${item.exampaper_name}】的管理权限！`)
+          return false
+        }
       }
       this.$confirm('确定要删除选中的试卷吗？', '批量删除试卷', {
         confirmButtonText: '确定',
