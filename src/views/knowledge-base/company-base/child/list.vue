@@ -320,13 +320,14 @@ export default {
   },
   created() {
     this.path = this.$route.query.path
+    this.listQuery.selectCompanyId = this.$route.query.selectCompanyId
     this.getCustomManageList()// 租户
     this.enterFloderByQueryPath()
     // this.getDirList()// 列表
     this.getCompanyAllTree()// 知识分类树
   },
   methods: {
-    // 文件路径path
+    // 文件路径path--start
 
     goback() {
       this.pathNavData = this.pathNavData.slice(0, this.pathNavData.length - 1)
@@ -334,8 +335,7 @@ export default {
       this.pathNavData.forEach((v, k, arr) => {
         str += str ? '/' + v.id + '|' + v.name : v.id + '|' + v.name
       })
-      this.pathQueryString = str
-      this.$router.push({ path: '/knowledge-base/company-base/list', query: { path: this.pathQueryString }})
+      this.$router.push({ path: '/knowledge-base/company-base/list', query: { path: str, selectCompanyId: this.listQuery.selectCompanyId }})
     },
     pathNavClick(item, index) {
       if (item !== 'all') {
@@ -344,23 +344,22 @@ export default {
         this.pathNavData.forEach((v, k, arr) => {
           str += str ? '/' + v.id + '|' + v.name : v.id + '|' + v.name
         })
-        this.pathQueryString = str
-        this.$router.push({ path: '/knowledge-base/company-base/list', query: { path: this.pathQueryString }})
+        this.$router.push({ path: '/knowledge-base/company-base/list', query: { path: str, selectCompanyId: this.listQuery.selectCompanyId }})
       } else {
-        this.pathQueryString = ''
         this.pathNavData = []
-        this.$router.push({ path: '/knowledge-base/company-base/list' })
+        this.$router.push({ path: '/knowledge-base/company-base/list', query: { path: '', selectCompanyId: this.listQuery.selectCompanyId }})
       }
     },
 
     enterFolder(row) {
       if (row.fileAttributeDesc === 'dir') {
         this.pathQueryString += this.pathQueryString ? '/' + row.fileId + '|' + row.fileName : row.fileId + '|' + row.fileName
-        this.$router.push({ path: '/knowledge-base/company-base/list', query: { path: this.pathQueryString }})
+        this.$router.push({ path: '/knowledge-base/company-base/list', query: { path: this.pathQueryString, selectCompanyId: this.listQuery.selectCompanyId }})
       }
     },
     enterFloderByQueryPath() {
       if (this.$route.query.path) {
+        this.pathQueryString = this.$route.query.path
         const pathArray = this.$route.query.path.split('/')
         this.pathNavData = []
         pathArray.forEach((v, k, arr) => {
@@ -429,7 +428,7 @@ export default {
       this.navselctedCompany = selctedCompany[0].customname
       this.pathQueryString = ''
       this.pathNavData = []
-      this.$router.push({ path: '/knowledge-base/company-base/list' })
+      this.$router.push({ path: '/knowledge-base/company-base/list', query: { path: this.pathQueryString, selectCompanyId: this.listQuery.selectCompanyId }})
       this.enterFloderByQueryPath()
     },
     // 搜索
