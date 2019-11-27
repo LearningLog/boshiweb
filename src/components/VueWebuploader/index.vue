@@ -21,7 +21,7 @@
         </div>
       </div>
       <div class="content">
-        <div :id="uploadButton">
+        <div id="filePicker">
           <div class="drag-upload">
             <i class="iconfont iconshangchuan" />
             <p>可拖拽文件至此直接上传</p>
