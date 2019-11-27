@@ -486,8 +486,9 @@ export default {
       param.password = pwd
       that.$store.dispatch('user/login', param).then((res) => {
         if (res.code === 0) {
-          let toPath = ('#' + (this.redirect || '/'))
-          that.$router.push(toPath)
+          let toPath = ('#' + (this.redirect || ' '))
+          toPath = createFullUrl(toPath)
+          window.location.href = toPath
         }
         if (res.code === 5001) {
           that.YZ_id = res.data

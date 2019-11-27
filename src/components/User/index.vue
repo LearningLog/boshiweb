@@ -164,7 +164,8 @@ export default {
     // 退出
     async logout() {
       await this.$store.dispatch('user/logout')
-      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+      this.$router.push('/login?redirect=/')
+      // this.$router.push(`/login?redirect=${this.$route.fullPath}`)
     },
 
     // 修改密码
