@@ -38,7 +38,7 @@ export default {
         rolename: '', // 角色名称
         desc: '', // 角色描述
         defaultRole: '', // 是否默认
-        defaultRoleCode: ''// 默认角色类型
+        defaultRoleCode: '' // 默认角色类型
       },
       DefaultRoleList: [], // 默认角色类型列表
       rules: {
@@ -72,6 +72,9 @@ export default {
     getInitData() {
       getOneRole({ _id: this.id }).then(response => {
         this.form = response.data.role
+        if (!response.data.role.defaultRoleCode) {
+          this.form.defaultRoleCode = '4'
+        }
         this.dataIsChange = -1
       })
     },
