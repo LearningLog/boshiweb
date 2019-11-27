@@ -52,7 +52,7 @@
       </transition>
     </div>
     <div id="topBtn">
-      <el-button type="primary" @click="add"><i class="iconfont iconjia" />新增</el-button>
+      <el-button type="primary" @click="add"><i class="iconfont iconzengjia" />新增</el-button>
     </div>
     <el-table
       v-loading="listLoading"
@@ -88,7 +88,7 @@
           <div>
             <el-button size="mini" @click="go_edit_fn(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
             <el-button size="mini" @click="delete_fn(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
-            <el-button size="mini" @click="getTranstorInformation(scope.row)"><i class="iconfont iconshouquan" />分配技能</el-button>
+            <el-button size="mini" @click="getTranstorInformation(scope.row)"><i class="iconfont iconpingceguanli" />分配技能</el-button>
           </div>
         </template>
       </el-table-column>

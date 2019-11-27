@@ -15,18 +15,18 @@
         v-if="active !== 1"
         type="primary"
         @click="forwardStep"
-      ><i class="addIcon iconfont iconshangyibu" />上一步</el-button>
+      ><i class="addIcon iconfont iconzuojiantou" />上一步</el-button>
       <el-button
         v-if="active !== 3"
         type="primary"
         @click="nextStep()"
-      ><i class="addIcon iconfont iconxiayibu" />下一步</el-button>
+      ><i class="addIcon iconfont iconyoujiantou" />下一步</el-button>
       <el-button
         v-if="active === 3"
         v-no-more-click
         type="primary"
         @click="publish('form')"
-      ><i class="addIcon iconfont iconfabu1" />发布</el-button>
+      ><i class="addIcon iconfont iconfabu" />发布</el-button>
     </div>
     <div v-if="active === 1" class="info">
       <div class="step">

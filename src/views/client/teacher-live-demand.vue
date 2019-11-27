@@ -25,7 +25,7 @@
               </div>
               <span
                 slot="reference"
-              ><i class="iconfont iconfenxiang" />分享</span>
+              ><i class="iconfont iconfenxiang1" />分享</span>
             </el-popover>
           </div>
           <span class="interval" />
@@ -223,7 +223,7 @@
                       :disabled="loginUser === scope.row.userId"
                       size="mini"
                       @click="isRemove(scope.row, 2)"
-                    ><i class="iconfont iconjia" />加入</el-button>
+                    ><i class="iconfont iconzengjia" />加入</el-button>
                     <el-button
                       v-else
                       :disabled="loginUser === scope.row.userId"
@@ -235,13 +235,13 @@
                       :disabled="loginUser === scope.row.userId"
                       size="mini"
                       @click="isNoWord(scope.row, 2)"
-                    ><i class="iconfont iconfayan" />取消禁言</el-button>
+                    ><i class="iconfont iconspeech" />取消禁言</el-button>
                     <el-button
                       v-else
                       :disabled="loginUser === scope.row.userId"
                       size="mini"
                       @click="isNoWord(scope.row, 1)"
-                    ><i class="iconfont iconjinzhifayan" />禁言</el-button>
+                    ><i class="iconfont iconjinzhiyuyin" />禁言</el-button>
                   </template>
                 </el-table-column>
               </el-table>
@@ -316,7 +316,8 @@
             :class="{ activeSet: isActiveSet === 1 }"
             @click="active(1)"
           >
-            <i class="iconfont iconxitong" /><span>直播源设置</span>
+            <i class="iconfont iconzhiboyuanshehzi
+" /><span>直播源设置</span>
           </div>
           <div
             v-if="loginUser === chapter.user_id && chapter.type === 1"
@@ -345,7 +346,8 @@
             :class="{ activeSet: isActiveSet === 3 }"
             @click="active(3)"
           >
-            <i class="iconfont iconzu" />
+            <i class="iconfont iconwendangguanli
+" />
             <span>文档管理</span>
           </div>
           <div
@@ -353,7 +355,7 @@
             :class="{ activeSet: isActiveSet === 4 }"
             @click="active(4)"
           >
-            <i class="iconfont iconkecheng" />
+            <i class="iconfont iconkechengshehzi" />
             <span>课程设置</span>
           </div>
         </div>

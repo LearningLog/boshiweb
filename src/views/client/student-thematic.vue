@@ -30,11 +30,11 @@
                 </div>
                 <span
                   slot="reference"
-                ><i class="iconfont iconfenxiang" />分享</span>
+                ><i class="iconfont iconfenxiang1" />分享</span>
               </el-popover>
             </div>
             <span class="interval" />
-            <span class="pointer" @click="downloadFile"><i class="iconfont iconwechaticon16" />下载课件</span>
+            <span class="pointer" @click="downloadFile"><i class="iconfont iconxiazai" />下载课件</span>
             <span class="interval" />
             <span class="pointer" @click="appraise">课程评价</span>
             <span class="interval" />

@@ -56,7 +56,7 @@
             <el-table-column align="center" label="错误数" min-width="50" show-overflow-tooltip prop="error_sum" />
             <el-table-column class-name="status-col" label="操作" width="100" align="center" fixed="right">
               <template slot-scope="scope">
-                <el-button size="mini" @click="detail(scope.row)"><i class="iconfont iconchakan" />详情</el-button>
+                <el-button size="mini" @click="detail(scope.row)"><i class="iconfont iconxiangqing" />详情</el-button>
               </template>
             </el-table-column>
           </el-table>

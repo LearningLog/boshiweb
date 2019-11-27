@@ -14,7 +14,7 @@ const userCenter = {
   name: 'user-center',
   meta: {
     title: '用户中心',
-    icon: 'iconxitong'
+    icon: 'iconxitongshezhi'
   },
   children: [
     {
