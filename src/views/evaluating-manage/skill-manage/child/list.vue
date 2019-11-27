@@ -43,7 +43,8 @@
       <el-table-column label="技能ID" min-width="100" align="center" show-overflow-tooltip prop="increase_id" />
       <el-table-column align="center" label="技能名称" show-overflow-tooltip>
         <template slot-scope="scope">
-          <el-link type="primary" @click="detail(scope.row)">{{ scope.row.skill_name }}</el-link>
+          {{ scope.row.skill_name }}
+          <!--<el-link type="primary" @click="detail(scope.row)">{{ scope.row.skill_name }}</el-link>-->
         </template>
       </el-table-column>
       <el-table-column label="技能描述" min-width="100" align="center" show-overflow-tooltip prop="skill_desc" />
