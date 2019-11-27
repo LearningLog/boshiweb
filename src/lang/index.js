@@ -19,7 +19,11 @@ const messages = {
   }
 }
 export function getLanguage() {
+<<<<<<< HEAD
   const chooseLanguage = Cookies.get('language')
+=======
+  const chooseLanguage = localStorage.getItem('language')
+>>>>>>> 2afc71c771473be3a468877704086cf05c888afa
   if (chooseLanguage) return chooseLanguage
 
   // if has not choose language
