@@ -1,7 +1,7 @@
 /**
  * @Author: YanHuaKang
  * @Date: 2019/11/19
- * @Description: 课堂详情
+ * @Description: 门户
  * @remarks:
  */
 
