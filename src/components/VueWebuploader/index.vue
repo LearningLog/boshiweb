@@ -9,13 +9,13 @@
             v-if="!isMinimality"
             @click="minimality"
           ><i
-            class="minimality iconfont iconjianhao"
+            class="minimality iconfont iconiconfontmove"
           /></span>
           <span
             v-if="isMinimality"
             @click="open"
           ><i
-            class="spread iconfont iconjiahao"
+            class="spread iconfont iconhao"
           /></span>
           <span @click="close"><i class="close iconfont iconguanbi" /></span>
         </div>
@@ -72,7 +72,7 @@
                   <li class="file-name singleLineOmission">{{ file.name }}</li>
                 </el-tooltip>
                 <li class="progress">
-                  <el-progress :percentage="progress[index]" :key="index" />
+                  <el-progress :key="index" :percentage="progress[index]" />
                 </li>
                 <li class="file-size">{{ fileSize(file.size) }}</li>
                 <!--<li class="file-status">上传中...</li>-->

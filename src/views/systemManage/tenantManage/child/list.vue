@@ -36,7 +36,7 @@
       </transition>
     </div>
     <div id="topBtn">
-      <el-button type="primary" @click="add"><i class="iconfont iconzengjia" />新增</el-button>
+      <el-button type="primary" @click="add"><i class="iconfont iconjia" />新增</el-button>
     </div>
     <el-table
       v-loading="listLoading"
@@ -98,13 +98,7 @@
       <el-button v-show="total>0" type="danger" plain @click="batchDel"><i class="iconfont iconshanchu" />批量删除</el-button>
     </div>
     <el-dialog v-el-drag-dialog class="setInformationDialog" width="650px" title="资讯管理" :visible.sync="setInformationDialogVisible">
-      <el-transfer v-model="hasList" :data="noList" :titles="['未分配类别', '已分配类别']" :props="defaultProps" @change="handleTransferChange">
-        <span slot-scope="{ option }">
-          <el-tooltip class="item" effect="dark" :content="option.newscategory_name" placement="top">
-            <span>{{ option.newscategory_name }}</span> 
-          </el-tooltip>
-        </span>
-      </el-transfer>
+      <el-transfer v-model="hasList" :data="noList" :titles="['未分配类别', '已分配类别']" :props="defaultProps" @change="handleTransferChange" />
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="setInformation">确定</el-button>
         <el-button @click="setInformationDialogVisible = false">取 消</el-button>

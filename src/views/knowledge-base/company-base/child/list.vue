@@ -1,7 +1,22 @@
 <template>
   <div class="list-box">
     <div id="topSearch">
-      <el-input v-model="listQuery.content" placeholder="请输入技能名称" clearable @keyup.enter.native="topSearch">
+      <el-select
+        v-if="isSystemManage"
+        v-model="listQuery.selectCompanyId"
+        placeholder="请选择所属租户"
+        clearable
+        filterable
+        @change="companyChange($event)"
+      >
+        <el-option
+          v-for="item in custom_list"
+          :key="item._id"
+          :label="item.customname"
+          :value="item._id"
+        />
+      </el-select>
+      <el-input v-model="listQuery.content" placeholder="请输入文件名称" clearable @keyup.enter.native="topSearch">
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
       </el-input>
       <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">高级搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
@@ -21,7 +36,7 @@
                 />
               </el-form-item>
 
-              <el-form-item v-if="isSystemManage" label="所属租户">
+              <!-- <el-form-item v-if="isSystemManage" label="所属租户">
                 <el-select
                   v-model="listQuery.selectCompanyId"
                   placeholder="请选择所属租户"
@@ -35,7 +50,7 @@
                     :value="item._id"
                   />
                 </el-select>
-              </el-form-item>
+              </el-form-item> -->
 
             </el-form>
             <div id="searchPopoverBtn">
@@ -59,15 +74,15 @@
         </el-dropdown-menu>
       </el-dropdown>
       <el-button type="primary" @click="changeQuery"><i class="iconfont iconjia" />改变路由query</el-button>
-      <el-button type="primary" @click="add"><i class="iconfont iconjia" />创建文件夹</el-button>
+      <el-button type="primary" @click="createFolder"><i class="iconfont iconjia" />创建文件夹</el-button>
       <el-button type="primary" @click="classifySelected"><i class="iconfont iconjia" />加入知识分类</el-button>
-      <el-button type="primary" @click="add"><i class="iconfont iconjia" />上传资料</el-button>
+      <el-button type="primary" @click=""><i class="iconfont iconjia" />上传资料</el-button>
     </div>
 
     <div class="pathNav">
       <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item @click.native="goback()" v-if="pathNavData.length > 0">返回上一级</el-breadcrumb-item>
-        <el-breadcrumb-item @click.native="pathNavClick('all')">全部</el-breadcrumb-item>
+        <el-breadcrumb-item v-if="pathNavData.length > 0" @click.native="goback()">返回上一级</el-breadcrumb-item>
+        <el-breadcrumb-item @click.native="pathNavClick('all')">{{ navselctedCompanyName }}</el-breadcrumb-item>
         <el-breadcrumb-item v-for="(item,index) in pathNavData" :key="index" @click.native="pathNavClick(item,index)">{{ item.name }}</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -144,7 +159,7 @@
             </el-button>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item @click.native="upMenu(scope.row)"><i class="iconfont iconshangyi1" />移动</el-dropdown-item>
-              <el-dropdown-item @click.native="downMenu(scope.row)"><i class="iconfont iconshanchu" />删除</el-dropdown-item>
+              <el-dropdown-item @click.native="deleteDirFile(scope.row)"><i class="iconfont iconshanchu" />删除</el-dropdown-item>
               <el-dropdown-item @click.native="downMenu(scope.row)"><i class="iconfont iconchakan" />收藏</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
@@ -166,12 +181,25 @@
       <el-button type="primary" @click="classifySelectedConfirm">确定</el-button>
       <el-button @click="treeDialogVisible = false">取 消</el-button>
     </el-dialog>
-
+    <el-dialog v-el-drag-dialog class="createFolders" width="650px"title="创建文件夹" :visible.sync="crateFolderDialogVisible">
+      <el-form ref="ruleForm" :model="ruleForm" :rules="rules" label-width="100px" class="demo-ruleForm">
+        <el-form-item label="目录名称" prop="name">
+          <el-input v-model="ruleForm.name" />
+        </el-form-item>
+        <el-form-item label="目录描述" prop="desc">
+          <el-input v-model="ruleForm.desc" type="textarea" />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="createFolderConfirm('ruleForm')">确定</el-button>
+          <el-button @click="resetForm('ruleForm')">取消</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getCustomManageList, listDirFile, getCompanyAllTree, classifyFiles, updateDir, deleteItem, deleteMulti } from '@/api/knowledgeBase-company'
+import { getCustomManageList, listDirFile, getCompanyAllTree, classifyFiles, updateDir, deleteDirFile, createDirFile } from '@/api/knowledgeBase-company'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 const $ = window.$
@@ -190,9 +218,11 @@ export default {
       pathNavData: [],
       // 文件夹路径导航
       treeDialogVisible: false,
+      crateFolderDialogVisible: false,
       isReset: true, // 租户组件重置
       listLoading: false,
       custom_list: [], // 所属租户下拉列表
+      navselctedCompanyName: '全部',
       listQuery: {
         classifyNodeIds: [], // 分类节点id数组列表，二维数组
         classifyTreeIds: [], // 分类节点树id数组列表
@@ -201,6 +231,7 @@ export default {
         data_type: 1, // 数据类型 1企业知识库 2小组知识库
         keyword: '', // 搜索关键词
         ownerId: '', // 归属小组或租户id
+
         pageSize: 10,
         parentId: '',
         regexConditionParam: [],
@@ -213,7 +244,19 @@ export default {
       list: null, // 列表数据
       total: 0, // 总条数
       popoverVisible: false, // 高级搜索是否展开
-
+      ruleForm: {
+        name: '',
+        desc: ''
+      },
+      rules: {
+        name: [
+          { required: true, message: '请输入文件夹名称', trigger: 'blur' },
+          { min: 1, max: 12, message: '长度在 1 到 12 个字符', trigger: 'blur' }
+        ],
+        desc: [
+          { min: 2, max: 64, message: '长度在 2 到 64 个字符', trigger: 'blur' }
+        ]
+      },
       dataForTree: [{
         id: 1,
         label: '一级 1',
@@ -269,25 +312,27 @@ export default {
   watch: {
     $route() {
       this.enterFloderByQueryPath()
+    },
+    pathNavData() {
+      this.currentFileId = this.pathNavData.length > 0 ? this.pathNavData[this.pathNavData.length - 1].id : this.listQuery.selectCompanyId
     }
 
   },
   created() {
-    this.path = this.$route.query.path
     this.getCustomManageList()// 租户
     this.enterFloderByQueryPath()
-    // this.getDirList()// 列表
     this.getCompanyAllTree()// 知识分类树
   },
   methods: {
+    // 文件路径path--start
+
     goback() {
       this.pathNavData = this.pathNavData.slice(0, this.pathNavData.length - 1)
       let str = ''
       this.pathNavData.forEach((v, k, arr) => {
         str += str ? '/' + v.id + '|' + v.name : v.id + '|' + v.name
       })
-      this.pathQueryString = str
-      this.$router.push({ path: '/knowledge-base/company-base/list', query: { path: this.pathQueryString }})
+      this.$router.push({ path: '/knowledge-base/company-base/list', query: { path: str, selectCompanyId: this.listQuery.selectCompanyId }})
     },
     pathNavClick(item, index) {
       if (item !== 'all') {
@@ -296,23 +341,22 @@ export default {
         this.pathNavData.forEach((v, k, arr) => {
           str += str ? '/' + v.id + '|' + v.name : v.id + '|' + v.name
         })
-        this.pathQueryString = str
-        this.$router.push({ path: '/knowledge-base/company-base/list', query: { path: this.pathQueryString }})
+        this.$router.push({ path: '/knowledge-base/company-base/list', query: { path: str, selectCompanyId: this.listQuery.selectCompanyId }})
       } else {
-        this.pathQueryString = ''
         this.pathNavData = []
-        this.$router.push({ path: '/knowledge-base/company-base/list' })
+        this.$router.push({ path: '/knowledge-base/company-base/list', query: { path: '', selectCompanyId: this.listQuery.selectCompanyId }})
       }
     },
 
     enterFolder(row) {
       if (row.fileAttributeDesc === 'dir') {
         this.pathQueryString += this.pathQueryString ? '/' + row.fileId + '|' + row.fileName : row.fileId + '|' + row.fileName
-        this.$router.push({ path: '/knowledge-base/company-base/list', query: { path: this.pathQueryString }})
+        this.$router.push({ path: '/knowledge-base/company-base/list', query: { path: this.pathQueryString, selectCompanyId: this.listQuery.selectCompanyId }})
       }
     },
     enterFloderByQueryPath() {
       if (this.$route.query.path) {
+        this.pathQueryString = this.$route.query.path
         const pathArray = this.$route.query.path.split('/')
         this.pathNavData = []
         pathArray.forEach((v, k, arr) => {
@@ -329,10 +373,13 @@ export default {
         }
       } else {
         this.pathNavData = []
+        this.pathQueryString = ''
         this.listQuery.parentId = ''
       }
       this.getDirList()
     },
+
+    // 文件路径path--end
     modifyFileNameChange(row, val) {
       console.log(row)
       console.log(val)
@@ -363,8 +410,34 @@ export default {
     // 获取所属租户list
     getCustomManageList() {
       getCustomManageList().then(res => {
-        this.custom_list = res.data
+        const allSelect = {
+          customname: '全部',
+          _id: ''
+        }
+        this.custom_list = [allSelect, ...res.data]
+        if (this.$route.query.selectCompanyId) {
+          // 只执行一次，为租户下拉还有文件夹到航的全部那里赋值
+          const selctedCompany = this.custom_list.filter((v, k, arr) => {
+            if (v._id === this.$route.query.selectCompanyId) {
+              return v
+            }
+          })
+          this.navselctedCompanyName = selctedCompany[0].customname
+          this.listQuery.selectCompanyId = this.$route.query.selectCompanyId
+        }
       })
+    },
+    companyChange(val) {
+      const selctedCompany = this.custom_list.filter((v, k, arr) => {
+        if (v._id === val) {
+          return v
+        }
+      })
+      this.navselctedCompanyName = selctedCompany[0].customname
+      this.pathQueryString = ''
+      this.pathNavData = []
+      this.$router.push({ path: '/knowledge-base/company-base/list', query: { path: this.pathQueryString, selectCompanyId: this.listQuery.selectCompanyId }})
+      this.enterFloderByQueryPath()
     },
     // 搜索
     topSearch() {
@@ -467,11 +540,78 @@ export default {
         })
       })
     },
+
+    // 删除文件
+    deleteDirFile(row) {
+      const postId = { 'fileId': row.fileId }
+      deleteDirFile(postId).then(() => {
+        this.$message({
+          message: '删除文件成功',
+          type: 'success'
+        })
+      })
+    },
+    // 创建文件夹
+    createFolder() {
+      if (!this.listQuery.selectCompanyId) {
+        this.$message({
+          message: '请先勾选租户',
+          type: 'warning'
+        })
+        return false
+      }
+
+      this.crateFolderDialogVisible = true
+    },
+    // 创建文件夹确认
+    createFolderConfirm(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          // ruleForm: {
+          //   name: '',
+          //   desc: ''
+          // },
+          const postData = {
+            data_type: 1,
+            enable_status: '1',
+            desc: this.ruleForm.desc,
+            name: this.ruleForm.name,
+            ownerId: this.listQuery.selectCompanyId,
+            selectCompanyId: this.listQuery.selectCompanyId,
+            parentId: this.currentFileId
+          }
+
+          createDirFile(postData).then((res) => {
+            if (res.code === 0) {
+              this.$message({
+                message: '文件夹创建成功',
+                type: 'success'
+              })
+              this.enterFloderByQueryPath()
+              this.crateFolderDialogVisible = false
+              this.ruleForm = {
+                name: '',
+                desc: ''
+              }
+            }
+          })
+          //           data_type: 1
+          // desc: "fff"
+          // enable_status: "1"
+          // name: "fff"
+          // ownerId: "5db82db59a301f2f0a77221a"
+          // parentId: "5db82db59a301f2f0a77221a"
+          // selectCompanyId: "5db82db59a301f2f0a77221a
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
+    },
     downloadKnowledgeLibFile(row) {
-      let fileId = row.fileId
+      const fileId = row.fileId
       this.downloadFile('api/knowledgeDirFile/downloadFile?fileId=' + fileId)
     },
-
     // 下载
     downloadFile(fileUrl) {
       $('#common_download_a').remove()
@@ -479,7 +619,7 @@ export default {
       elemIF.id = 'common_download_a'
       elemIF.src = fileUrl
       elemIF.style.display = 'none'
-      elemIF.load = function () { $('#common_download_a').remove() }
+      elemIF.load = function() { $('#common_download_a').remove() }
       document.body.appendChild(elemIF)
     }
   }

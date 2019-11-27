@@ -12,23 +12,23 @@
         <el-radio-button :label="3">文件</el-radio-button>
         <el-radio-button :label="4">小测试</el-radio-button>
       </el-radio-group>
-      <div id="topSearch" v-show="treeList1.floorList.length">
-        <span id="advancedSearchBtn" class="classifyTree" slot="reference" @click="classifyTreeVisible = !classifyTreeVisible">知识分类<i v-show="classifyTreeVisible" class="el-icon-caret-top" /><i v-show="!classifyTreeVisible" class="el-icon-caret-bottom" /></span>
+      <div v-show="treeList1.floorList.length" id="topSearch">
+        <span id="advancedSearchBtn" slot="reference" class="classifyTree" @click="classifyTreeVisible = !classifyTreeVisible">知识分类<i v-show="classifyTreeVisible" class="el-icon-caret-top" /><i v-show="!classifyTreeVisible" class="el-icon-caret-bottom" /></span>
         <transition name="fade-advanced-search">
           <div v-show="classifyTreeVisible" class="treeList">
             <div class="treeList1">
               <p class="treeName pointer" :class="{ activeClassify: isActiveClassify(treeList1)}" @click="checkClassify(treeList1)">{{ treeList1.treeName }}</p>
-              <ul class="" v-if="treeList1.floorList.length">
-                <li class="treeItem" v-for="(item, index) in treeList1.floorList" :key="treeList1.treeId + index">
-                  <span class="classifyItem pointer" :class="{ activeClassify: isActiveClassify(item2) }" v-for="item2 in item" :key="item2.nodeIdList.join()" @click="checkClassify(item2)">{{ item2.nodeName }}</span>
+              <ul v-if="treeList1.floorList.length" class="">
+                <li v-for="(item, index) in treeList1.floorList" :key="treeList1.treeId + index" class="treeItem">
+                  <span v-for="item2 in item" :key="item2.nodeIdList.join()" class="classifyItem pointer" :class="{ activeClassify: isActiveClassify(item2) }" @click="checkClassify(item2)">{{ item2.nodeName }}</span>
                 </li>
               </ul>
             </div>
-            <div class="treeList2" v-if="treeList2.floorList.length">
+            <div v-if="treeList2.floorList.length" class="treeList2">
               <p class="treeName pointer" :class="{ activeClassify: isActiveClassify(treeList2)}" @click="checkClassify(treeList2)">{{ treeList2.treeName }}</p>
-              <ul class="" v-if="treeList2.floorList.length">
-                <li class="treeItem" v-for="(item, index) in treeList2.floorList" :key="treeList2.treeId + index">
-                  <span class="classifyItem pointer" :class="{ activeClassify: isActiveClassify(item2) }" v-for="item2 in item" :key="item2.nodeIdList.join()" @click="checkClassify(item2)">{{ item2.nodeName }}</span>
+              <ul v-if="treeList2.floorList.length" class="">
+                <li v-for="(item, index) in treeList2.floorList" :key="treeList2.treeId + index" class="treeItem">
+                  <span v-for="item2 in item" :key="item2.nodeIdList.join()" class="classifyItem pointer" :class="{ activeClassify: isActiveClassify(item2) }" @click="checkClassify(item2)">{{ item2.nodeName }}</span>
                 </li>
               </ul>
             </div>
@@ -37,17 +37,18 @@
       </div>
       <div class="classifyTags">
         <el-tag
-            v-for="(item, index) in checkedClassifys"
-            :key="item.nodeIdList.join()"
-            closable
-            size="medium"
-            :disable-transitions="false"
-            type="success"
-            @close="handlePaperLabelDel(index)">
-          {{item.nodeName}}
+          v-for="(item, index) in checkedClassifys"
+          :key="item.nodeIdList.join()"
+          closable
+          size="medium"
+          :disable-transitions="false"
+          type="success"
+          @close="handlePaperLabelDel(index)"
+        >
+          {{ item.nodeName }}
         </el-tag>
       </div>
-      <el-scrollbar class="fileList" wrap-class="scrollbar-wrapper" v-if="total">
+      <el-scrollbar v-if="total" class="fileList" wrap-class="scrollbar-wrapper">
         <div v-if="type !== 4">
           <ul
             v-infinite-scroll="getKnowledgeSearchList2"
@@ -77,16 +78,16 @@
         </div>
         <div v-else class="exams">
           <ul
-              v-infinite-scroll="getExams2"
-              :infinite-scroll-immediate="false"
+            v-infinite-scroll="getExams2"
+            :infinite-scroll-immediate="false"
           >
             <li v-for="(item, index) in examsList" :key="item._id + type + index" class="itemExam">
               <div class="outer">
                 <div class="cover">
                   <el-image
-                      class="imgCover"
-                      :src="quiz"
-                      fit="contain"
+                    class="imgCover"
+                    :src="quiz"
+                    fit="contain"
                   />
                 </div>
               </div>
@@ -94,7 +95,7 @@
                 <h4 class="fileName">{{ item.exam_name }}</h4>
                 <div>
                   <span class="nickname">{{ item.nickname }}</span>
-                  <span class="groupName" v-for="(item2, index2) in item.publish_group" :key="item2._id + type + index" >
+                  <span v-for="(item2, index2) in item.publish_group" :key="item2._id + type + index" class="groupName">
                     <span v-if="index2 === 0">{{ item2.groupName }}</span>
                     <span v-else>，{{ item2.groupName }}</span>
                   </span>
@@ -112,9 +113,9 @@
                   <span>{{ item.examstatus }}</span>
                 </div>
               </div>
-              <el-button type="primary" plain v-if="item.examstatusCode === 2 && item.answer_status === 1 && !item.haveTempTopic" @click="toExam(item)">进入考试</el-button>
-              <el-button type="primary" plain v-else-if="item.examstatusCode === 2 && item.answer_status === 1 && item.haveTempTopic" @click="toExam(item)">继续考试</el-button>
-              <el-button type="primary" plain  v-else-if="item.examstatusCode === 3 || item.answer_status === 2" @click="detail(item)">查看结果</el-button>
+              <el-button v-if="item.examstatusCode === 2 && item.answer_status === 1 && !item.haveTempTopic" type="primary" plain @click="toExam(item)">进入考试</el-button>
+              <el-button v-else-if="item.examstatusCode === 2 && item.answer_status === 1 && item.haveTempTopic" type="primary" plain @click="toExam(item)">继续考试</el-button>
+              <el-button v-else-if="item.examstatusCode === 3 || item.answer_status === 2" type="primary" plain @click="detail(item)">查看结果</el-button>
             </li>
           </ul>
         </div>
@@ -192,6 +193,15 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapGetters(['keyword']),
+    noMore() {
+      return this.list.length && this.list.length >= this.total
+    },
+    disabled() {
+      return this.loading || this.noMore
+    }
+  },
   watch: {
     keyword: function(val) {
       if (this.type !== 4) {
@@ -203,20 +213,6 @@ export default {
         this.listQuery2.keyword = val
         this.getExams()
       }
-    }
-  },
-  created() {
-    this.getKnowledgeSearchList()
-    this.getCompanyAllTreeFloorByName()
-    this.listQuery2._id = this.$store.state.user.userSystemInfo.userInfo._id
-  },
-  computed: {
-    ...mapGetters(['keyword']),
-    noMore() {
-      return this.list.length && this.list.length >= this.total
-    },
-    disabled() {
-      return this.loading || this.noMore
     }
   },
   methods: {

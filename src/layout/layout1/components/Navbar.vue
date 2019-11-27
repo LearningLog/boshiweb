@@ -14,8 +14,8 @@
         active-text-color="#ffd04b"
         @select="handleSelect"
       >
-        <el-menu-item index="/">知识门户</el-menu-item>
-        <!--<el-menu-item index="2">我的学习</el-menu-item>-->
+        <el-menu-item index="/">首页</el-menu-item>
+        <el-menu-item index="2">我的学习</el-menu-item>
         <el-menu-item index="/backstageManage">后台管理</el-menu-item>
       </el-menu>
     </div>
@@ -25,7 +25,6 @@
           <el-button slot="append" icon="el-icon-search" @click="search" />
         </el-input>
       </div>
-      <MiniPrograms></MiniPrograms>
       <help-center />
       <el-button @click="jumpOldVersion()">返回旧版</el-button>
       <user :style="customStyle" />
@@ -37,23 +36,13 @@
 import { mapGetters } from 'vuex'
 import User from '@/components/User'
 import HelpCenter from '@/components/HelpCenter'
-import MiniPrograms from '@/components/MiniPrograms'
 import logo1 from '@/assets/images/logo.png'
 import store from '@/store'
 import { createFullUrl } from '@/utils/index'
-
 export default {
   components: {
     User,
-    HelpCenter,
-    MiniPrograms
-  },
-  computed: {
-    ...mapGetters([
-      'sidebar',
-      'logo',
-      'logo_name'
-    ])
+    HelpCenter
   },
   data() {
     return {
@@ -68,6 +57,13 @@ export default {
       keyword: '',
       logo1
     }
+  },
+  computed: {
+    ...mapGetters([
+      'sidebar',
+      'logo',
+      'logo_name'
+    ])
   },
   methods: {
     async handleSelect(key, keyPath) {

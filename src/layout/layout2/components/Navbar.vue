@@ -9,8 +9,6 @@
     <breadcrumb class="breadcrumb-container" />
     <div class="right-menu">
       <!--<lang-select class="right-menu-item hover-effect" />-->
-      <router-link class="door" to="/"><i class="iconfont icongongzuotai"></i>知识门户</router-link>
-      <MiniPrograms></MiniPrograms>
       <help-center />
       <user />
     </div>
@@ -21,7 +19,6 @@
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
-import MiniPrograms from '@/components/MiniPrograms'
 // import LangSelect from '@/components/LangSelect'
 import HelpCenter from '@/components/HelpCenter'
 import User from '@/components/User'
@@ -32,8 +29,7 @@ export default {
     Hamburger,
     // LangSelect,
     HelpCenter,
-    User,
-    MiniPrograms
+    User
   },
   computed: {
     ...mapGetters(['sidebar'])
@@ -47,7 +43,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  @import "~@/styles/theme.scss";
 .navbar {
   height: 50px;
   overflow: hidden;
@@ -120,24 +115,6 @@ export default {
           top: 25px;
           font-size: 12px;
         }
-      }
-    }
-
-    .door {
-      display: inline-block;
-      padding: 0 8px;
-      font-size: 14px;
-      transition: 0.6s;
-
-      i {
-        font-size: 14px;
-        margin-right: 2px;
-      }
-
-      &:hover {
-        color: $themeColor;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
-        cursor: pointer;
       }
     }
   }

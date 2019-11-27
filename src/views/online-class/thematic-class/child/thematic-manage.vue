@@ -40,10 +40,10 @@
       </transition>
     </div>
     <div id="topBtn">
-      <el-button type="primary" @click="add(1)"><i class="iconfont iconzengjia" />新增直播</el-button>
-      <el-button type="primary" @click="add(2)"><i class="iconfont iconzengjia" />新增点播</el-button>
-      <el-button type="primary" @click="selectLesson"><i class="iconfont iconzengjia" />选择已有课堂</el-button>
-      <el-button type="primary" @click="lessonDetail"><i class="iconfont iconxiangqing" />专题详情</el-button>
+      <el-button type="primary" @click="add(1)"><i class="iconfont iconjia" />新增直播</el-button>
+      <el-button type="primary" @click="add(2)"><i class="iconfont iconjia" />新增点播</el-button>
+      <el-button type="primary" @click="selectLesson"><i class="iconfont iconjia" />选择已有课堂</el-button>
+      <el-button type="primary" @click="lessonDetail"><i class="iconfont iconchakan" />专题详情</el-button>
     </div>
     <el-table
       v-loading="listLoading"
@@ -61,8 +61,7 @@
           />
         </template>
       </el-table-column>
-      <el-table-column align="center" label="课堂名称" min-width="120" show-overflow-tooltip prop="cname">
-      </el-table-column>
+      <el-table-column align="center" label="课堂名称" min-width="120" show-overflow-tooltip prop="cname" />
       <el-table-column label="课堂类型" min-width="80" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           <span>{{ scope.row.type === 1 ? '直播课堂' : '点播课堂' }}</span>
@@ -212,7 +211,7 @@ export default {
       }).catch(() => {})
     },
 
-	  // 移除
+    // 移除
     remove(row) {
       this.$confirm('确定要移除【' + row.cname + '】吗？', '移除课程', {
         confirmButtonText: '确定',

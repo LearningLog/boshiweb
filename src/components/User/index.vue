@@ -25,53 +25,53 @@
       </el-dropdown-menu>
     </el-dropdown>
     <el-dialog
-        v-el-drag-dialog
-        title="修改密码"
-        :visible.sync="modifyPasswordVisible"
-        :append-to-body="true"
-        width="700px"
+      v-el-drag-dialog
+      title="修改密码"
+      :visible.sync="modifyPasswordVisible"
+      :append-to-body="true"
+      width="700px"
     >
       <el-form
-          class="modifyPassword"
-          ref="modifyPassword"
-          :model="user"
-          :rules="rules"
-          label-width="80px"
+        ref="modifyPassword"
+        class="modifyPassword"
+        :model="user"
+        :rules="rules"
+        label-width="80px"
       >
         <el-form-item label="原始密码" prop="password">
           <el-input
-              v-model="user.password"
-              placeholder="请输入原始密码"
-              type="password"
-              autocomplete="new-password"
-              clearable
+            v-model="user.password"
+            placeholder="请输入原始密码"
+            type="password"
+            autocomplete="new-password"
+            clearable
           />
         </el-form-item>
         <el-form-item label="新密码" prop="confirmpassword">
           <el-input
-              v-model="user.confirmpassword"
-              placeholder="请输入新密码"
-              type="password"
-              autocomplete="new-password"
-              clearable
+            v-model="user.confirmpassword"
+            placeholder="请输入新密码"
+            type="password"
+            autocomplete="new-password"
+            clearable
           />
         </el-form-item>
         <el-form-item label="确认密码" prop="secondconfirmpassword">
           <el-input
-              v-model="user.secondconfirmpassword"
-              placeholder="请输入确认密码"
-              type="password"
-              autocomplete="new-password"
-              clearable
+            v-model="user.secondconfirmpassword"
+            placeholder="请输入确认密码"
+            type="password"
+            autocomplete="new-password"
+            clearable
           />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="save">确定</el-button>
         <el-button
-            type="primary"
-            plain
-            @click="cancel"
+          type="primary"
+          plain
+          @click="cancel"
         >取消</el-button>
       </div>
     </el-dialog>

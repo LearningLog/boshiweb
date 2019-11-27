@@ -13,8 +13,8 @@ const knowledgeBase = {
   redirect: 'noRedirect',
   name: 'knowledge-base',
   meta: {
-    title: '知识库',
-    icon: 'iconxitongshezhi'
+    title: '知识库啊啊啊啊',
+    icon: 'iconxitong'
   },
   children: [
     {
@@ -26,49 +26,49 @@ const knowledgeBase = {
       children: [
         {
           path: 'list',
-          name: 'companylist',
+          name: 'skilllist',
           hidden: true,
-          component: () => import('@/views/knowledge-base/company-base/child/list.vue'),
-          meta: { title: '企业知识库列表', icon: '', activeMenu: '/knowledge-base/company-base' }
+          component: () => import('@/views/knowledge-base/skill-manager/child/list.vue'),
+          meta: { title: '技能管理列表', icon: '', activeMenu: '/knowledge-base/skill-manager' }
         },
         {
           path: 'edit',
-          name: 'companyedit',
+          name: 'skilledit',
           hidden: true,
-          component: () => import('@/views/knowledge-base/company-base/child/edit'),
-          meta: { title: '修改技能', icon: '', activeMenu: '/knowledge-base/company-base' }
+          component: () => import('@/views/knowledge-base/skill-manager/child/edit'),
+          meta: { title: '修改技能', icon: '', activeMenu: '/knowledge-base/skill-manager' }
         },
         {
           path: 'add',
-          component: () => import('@/views/knowledge-base/company-base/child/add.vue'),
-          name: 'companyadd',
+          component: () => import('@/views/knowledge-base/skill-manager/child/add.vue'),
+          name: 'skilladd',
           hidden: true,
-          meta: { title: '新增技能', icon: '', activeMenu: '/knowledge-base/company-base' }
+          meta: { title: '新增技能', icon: '', activeMenu: '/knowledge-base/skill-manager' }
         },
 
         {
           path: 'detail',
-          name: 'companydetail',
+          name: 'skilldetail',
           hidden: true,
-          component: () => import('@/views/knowledge-base/company-base/child/detail'),
-          meta: { title: '技能详情', icon: '', activeMenu: '/knowledge-base/company-base' }
+          component: () => import('@/views/knowledge-base/skill-manager/child/detail'),
+          meta: { title: '技能详情', icon: '', activeMenu: '/knowledge-base/skill-manager' }
         }
 
       ]
     },
     {
       path: 'group-base',
-      component: () => import('@/views/knowledge-base/group-base/index'),
+      component: () => import('@/views/knowledge-base/skill-manager/index'),
       redirect: '/knowledge-base/group-base/list',
       name: 'group-base',
-      meta: { title: '分组知识库', icon: '', activeMenu: '/knowledge-base/group-base' },
+      meta: { title: '分组知识库', icon: '', activeMenu: '/knowledge-base/skill-manager' },
       children: [
         {
           path: 'list',
-          name: 'grouplist',
+          name: 'skilllist',
           hidden: true,
-          component: () => import('@/views/knowledge-base/group-base/child/list.vue'),
-          meta: { title: '分组知识库列表', icon: '', activeMenu: '/knowledge-base/group-base' }
+          component: () => import('@/views/knowledge-base/skill-manager/child/list.vue'),
+          meta: { title: '分组知识库列表', icon: '', activeMenu: '/knowledge-base/skill-manager' }
         }
       ]
     }

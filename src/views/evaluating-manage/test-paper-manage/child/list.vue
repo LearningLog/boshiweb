@@ -30,7 +30,7 @@
       </transition>
     </div>
     <div id="topBtn">
-      <el-button type="primary" @click="add"><i class="iconfont iconzengjia" />新增</el-button>
+      <el-button type="primary" @click="add"><i class="iconfont iconjia" />新增</el-button>
     </div>
     <el-table
       v-loading="listLoading"
@@ -64,7 +64,7 @@
       <el-table-column class-name="status-col" label="操作" width="250" align="center" fixed="right">
         <template slot-scope="scope">
           <el-button size="mini" :disabled="!hasThisBtnPermission('exampaper-edit', scope.row.egroup)" @click="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
-          <el-button size="mini" :disabled="!hasThisBtnPermission('exampaper-publish', scope.row.egroup)" @click="beginPublish(scope.row)"><i class="iconfont iconfabu" />发布考试</el-button>
+          <el-button size="mini" :disabled="!hasThisBtnPermission('exampaper-publish', scope.row.egroup)" @click="beginPublish(scope.row)"><i class="iconfont iconfabu1" />发布考试</el-button>
           <el-button size="mini" :disabled="!hasThisBtnPermission('exampaper-delete', scope.row.egroup)" @click="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
         </template>
       </el-table-column>
@@ -72,7 +72,7 @@
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="get_list" />
     <div id="bottomOperation">
       <el-button v-if="hasThisBtnPermission('exampaper-multioperate')" v-show="total>0" type="danger" plain @click="batchDel"><i class="iconfont iconshanchu" />批量删除</el-button>
-      <el-button v-if="hasThisBtnPermission('exampaper-export')" v-show="total>0" type="primary" plain @click="exportPaper"><i class="iconfont iconpilianngdaochu" />批量导出</el-button>
+      <el-button v-if="hasThisBtnPermission('exampaper-export')" v-show="total>0" type="primary" plain @click="exportPaper"><i class="iconfont icondaochu" />批量导出</el-button>
     </div>
     <PublishExam :select-company-id="selectCompanyId" :publish-dialog="publishDialog" :score-count="scoreCount" @publishExam="publishExam" @visiblePublish="visiblePublish" />
     <AddSelectGroup :visible-select-group="visibleSelectGroup" @getSelectGroup="getSelectGroup" />

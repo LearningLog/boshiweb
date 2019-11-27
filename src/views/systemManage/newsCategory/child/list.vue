@@ -31,7 +31,7 @@
       </transition>
     </div>
     <div id="topBtn">
-      <el-button type="primary" @click="add"><i class="iconfont iconzengjia" />新增</el-button>
+      <el-button type="primary" @click="add"><i class="iconfont iconjia" />新增</el-button>
     </div>
     <el-table
       v-loading="listLoading"
@@ -52,7 +52,7 @@
       <el-table-column class-name="status-col" label="操作" width="230" align="center" fixed="right" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-button size="mini" @click="go_edit_fn(scope.row._id)"><i class="iconfont iconxiugai" />修改</el-button>
-          <el-button size="mini" @click="go_netList(scope.row._id)"><i class="iconfont iconxitongshezhi" />设置</el-button>
+          <el-button size="mini" @click="go_netList(scope.row._id)"><i class="iconfont iconxitong" />设置</el-button>
           <el-button size="mini" @click="delet_fn(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
         </template>
       </el-table-column>

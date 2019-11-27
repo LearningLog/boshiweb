@@ -6,6 +6,7 @@
         <div class="fr">
           <div class="pointer share">
             <el-popover
+              v-model="shareVisible"
               placement="bottom"
               width="114"
               height="120"
@@ -24,7 +25,7 @@
               </div>
               <span
                 slot="reference"
-              ><i class="iconfont iconfenxiang1" />分享</span>
+              ><i class="iconfont iconfenxiang" />分享</span>
             </el-popover>
           </div>
           <span class="interval" />
@@ -222,7 +223,7 @@
                       :disabled="loginUser === scope.row.userId"
                       size="mini"
                       @click="isRemove(scope.row, 2)"
-                    ><i class="iconfont iconzengjia" />加入</el-button>
+                    ><i class="iconfont iconjia" />加入</el-button>
                     <el-button
                       v-else
                       :disabled="loginUser === scope.row.userId"
@@ -234,13 +235,13 @@
                       :disabled="loginUser === scope.row.userId"
                       size="mini"
                       @click="isNoWord(scope.row, 2)"
-                    ><i class="iconfont iconspeech" />取消禁言</el-button>
+                    ><i class="iconfont iconfayan" />取消禁言</el-button>
                     <el-button
                       v-else
                       :disabled="loginUser === scope.row.userId"
                       size="mini"
                       @click="isNoWord(scope.row, 1)"
-                    ><i class="iconfont iconjinzhiyuyin" />禁言</el-button>
+                    ><i class="iconfont iconjinzhifayan" />禁言</el-button>
                   </template>
                 </el-table-column>
               </el-table>
@@ -315,8 +316,7 @@
             :class="{ activeSet: isActiveSet === 1 }"
             @click="active(1)"
           >
-            <i class="iconfont iconzhiboyuanshehzi
-" /><span>直播源设置</span>
+            <i class="iconfont iconxitong" /><span>直播源设置</span>
           </div>
           <div
             v-if="loginUser === chapter.user_id && chapter.type === 1"
@@ -345,8 +345,7 @@
             :class="{ activeSet: isActiveSet === 3 }"
             @click="active(3)"
           >
-            <i class="iconfont iconwendangguanli
-" />
+            <i class="iconfont iconzu" />
             <span>文档管理</span>
           </div>
           <div
@@ -354,7 +353,7 @@
             :class="{ activeSet: isActiveSet === 4 }"
             @click="active(4)"
           >
-            <i class="iconfont iconkechengshehzi" />
+            <i class="iconfont iconkecheng" />
             <span>课程设置</span>
           </div>
         </div>
@@ -422,6 +421,7 @@ export default {
       nocomment,
       defaultAvatar,
       flag: 0, // 第一次进入滚动到底部
+      shareVisible: false, // 是否显示分享
       shareUrl: '', // 分享地址
       isActiveSet: 1, // 底部设置按钮高亮
       isActiveSelect: 1, // 直播源设置中 设备选择按钮高亮
@@ -564,9 +564,9 @@ export default {
       findDetailInfoById({ id: this.id, isNeedValidateAuthCode: '2' }).then(
         res => {
           this.chapter = res.data.chapter
-	        if (this.chapter.type === 2) {
+          if (this.chapter.type === 2) {
             this.isActiveSet = 3
-	        } else {
+          } else {
             this.isActiveSet = 1
             $('.vjs-control-bar .vjs-reStart').hide()
           }

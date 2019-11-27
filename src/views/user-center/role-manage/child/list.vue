@@ -36,7 +36,7 @@
       </transition>
     </div>
     <div id="topBtn">
-      <el-button type="primary" v-if="hasThisBtnPermission('role-add')" @click="add"><i class="iconfont iconzengjia" />新增</el-button>
+      <el-button v-if="hasThisBtnPermission('role-add')" type="primary" @click="add"><i class="iconfont iconjia" />新增</el-button>
     </div>
     <el-table
       v-loading="listLoading"
@@ -72,14 +72,14 @@
           <div v-if="scope.row.auth">
             <el-button size="mini" :disabled="!hasThisBtnPermission('role-edit')" @click="go_edit_fn(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
             <el-button size="mini" :disabled="!hasThisBtnPermission('role-delete')" @click="delete_fn(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
-            <el-button size="mini" :disabled="!hasThisBtnPermission('role-auth')" @click="authorize_fn(scope.row)"><i class="iconfont iconpingceguanli" />授权</el-button>
-            <el-button size="mini" v-if="isAdmin" @click="go_default_fn(scope.row)"><i class="iconfont icon-pass" />设置默认</el-button>
+            <el-button size="mini" :disabled="!hasThisBtnPermission('role-auth')" @click="authorize_fn(scope.row)"><i class="iconfont iconshouquan" />授权</el-button>
+            <el-button v-if="isAdmin" size="mini" @click="go_default_fn(scope.row)"><i class="iconfont icon-pass" />设置默认</el-button>
           </div>
           <div v-else>
             <el-button size="mini" :disabled="true"><i class="iconfont iconxiugai" />修改</el-button>
             <el-button size="mini" :disabled="true"><i class="iconfont iconshanchu" />删除</el-button>
-            <el-button size="mini" :disabled="true"><i class="iconfont iconpingceguanli" />授权</el-button>
-            <el-button size="mini" v-if="isAdmin" :disabled="true"><i class="iconfont icon-pass" />设置默认</el-button>
+            <el-button size="mini" :disabled="true"><i class="iconfont iconshouquan" />授权</el-button>
+            <el-button v-if="isAdmin" size="mini" :disabled="true"><i class="iconfont icon-pass" />设置默认</el-button>
           </div>
         </template>
       </el-table-column>

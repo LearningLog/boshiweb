@@ -53,7 +53,7 @@
     </el-form>
     <div class="evaluate-list">
       <div class="listbox">
-        <div class="listone" v-for="item in list">
+        <div v-for="item in list" :key="item._id" class="listone">
           <el-row style="cursor:default">
             <el-col :span="4">
               <el-avatar class="user-avatar" :src="item.headPic || avatar1" @error="avatarErrorHandler">
@@ -82,7 +82,7 @@
             </el-col>
             <el-col :span="9" :offset="1">
               <el-link type="primary">观看时间 : {{ item.view_time }}分钟</el-link>
-              <el-tag  v-for="items in item.label_name" class="tip_lable" type="success">{{ items.label_name }}</el-tag>
+              <el-tag v-for="items in item.label_name" :key="items._id" class="tip_lable" type="success">{{ items.label_name }}</el-tag>
             </el-col>
             <el-col :span="8" :offset="2">
               <el-link value-format="yyyy-MM-dd" type="primary">{{ item.c_timestamp }}</el-link>

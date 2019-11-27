@@ -16,18 +16,18 @@
           v-if="activeStep !== 1"
           type="primary"
           @click="forwardStep"
-        ><i class="addIcon iconfont iconzuojiantou" />上一步</el-button>
+        ><i class="addIcon iconfont iconshangyibu" />上一步</el-button>
         <el-button
           v-if="activeStep !== 3"
           type="primary"
           @click="nextStep"
-        ><i class="addIcon iconfont iconyoujiantou" />下一步</el-button>
+        ><i class="addIcon iconfont iconxiayibu" />下一步</el-button>
         <el-button
           v-if="activeStep === 3"
           v-no-more-click
           type="primary"
           @click="publish('exam')"
-        ><i class="addIcon iconfont iconfabu" />发布</el-button>
+        ><i class="addIcon iconfont iconfabu1" />发布</el-button>
       </div>
     </div>
     <div>
@@ -71,7 +71,7 @@
                 class="selectPaper"
                 type="primary"
                 @click="selectPaper"
-              ><i class="iconfont iconzuojiantou" />选择试卷</el-button>
+              ><i class="iconfont iconshangyibu" />选择试卷</el-button>
               <span class="exampaper_name">{{ exampaper_name }}</span>
             </div>
           </transition>
@@ -101,7 +101,7 @@
               <span
                 class="questionBankAdd pointer"
                 @click="questionBankAdd"
-              ><i class="iconfont icontikuzhongtianjia" />题库中添加</span>
+              ><i class="iconfont icontikuguanli" />题库中添加</span>
             </div>
           </div>
         </div>

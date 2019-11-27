@@ -14,7 +14,7 @@ const systemSetting = {
   name: 'systemSetting',
   meta: {
     title: '系统设置',
-    icon: 'iconxitongshezhi'
+    icon: 'iconxitong'
   },
   children: [
     {

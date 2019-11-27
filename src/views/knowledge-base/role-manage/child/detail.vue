@@ -30,7 +30,7 @@
             <span slot-scope="{ node, data }" class="custom-tree-node">
               <span :dataType="data.type">
                 <svg class="icon" aria-hidden="true">
-                  <use :xlink:href="data.type === 'permission' ? '#iconyemian' : '#iconwenjianjia'" />
+                  <use :xlink:href="data.type === 'permission' ? '#iconzu' : '#iconwenjianjia'" />
                 </svg>
                 {{ node.label }}
               </span>

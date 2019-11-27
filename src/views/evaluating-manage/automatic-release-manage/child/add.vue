@@ -462,12 +462,12 @@
               v-if="activeStep !== 1"
               type="primary"
               @click="forwardStep"
-            ><i class="addIcon iconfont iconzuojiantou" />上一步</el-button>
+            ><i class="addIcon iconfont iconshangyibu" />上一步</el-button>
             <el-button
               v-if="activeStep !== 2"
               type="primary"
               @click="nextStep"
-            ><i class="addIcon iconfont iconyoujiantou" />下一步</el-button>
+            ><i class="addIcon iconfont iconxiayibu" />下一步</el-button>
             <el-button
               v-if="activeStep === 2"
               v-no-more-click
@@ -479,7 +479,7 @@
               v-no-more-click
               type="primary"
               @click="publish('exam2')"
-            ><i class="addIcon iconfont iconfabu" />保存并发布</el-button>
+            ><i class="addIcon iconfont iconfabu1" />保存并发布</el-button>
           </div>
         </div>
       </div>

@@ -60,7 +60,7 @@
       </transition>
     </div>
     <div id="topBtn">
-      <el-button type="primary" @click="add"><i class="iconfont iconzengjia" />新增</el-button>
+      <el-button type="primary" @click="add"><i class="iconfont iconjia" />新增</el-button>
     </div>
     <el-table
       v-loading="listLoading"
@@ -101,8 +101,8 @@
       <el-table-column class-name="status-col" label="操作" width="230" align="center" fixed="right">
         <template slot-scope="scope">
           <el-button size="mini" :disabled="!hasThisBtnPermission('auto-edit', scope.row.egroup)" @click="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
-          <el-button v-if="scope.row.auto_status == 2" :disabled="!hasThisBtnPermission('auto-publishorstop', scope.row.egroup)" size="mini" @click="stop(scope.row)"><i class="iconfont iconzanting" />暂停</el-button>
-          <el-button v-else size="mini" :disabled="!hasThisBtnPermission('auto-publishorstop', scope.row.egroup)" @click="publish(scope.row)"><i class="iconfont iconfabu" />发布</el-button>
+          <el-button v-if="scope.row.auto_status == 2" :disabled="!hasThisBtnPermission('auto-publishorstop', scope.row.egroup)" size="mini" @click="stop(scope.row)"><i class="iconfont iconzanting1" />暂停</el-button>
+          <el-button v-else size="mini" :disabled="!hasThisBtnPermission('auto-publishorstop', scope.row.egroup)" @click="publish(scope.row)"><i class="iconfont iconfabu1" />发布</el-button>
           <el-button size="mini" :disabled="!hasThisBtnPermission('auto-delete', scope.row.egroup)" @click="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
         </template>
       </el-table-column>
