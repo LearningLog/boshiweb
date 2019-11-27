@@ -161,3 +161,14 @@
   margin-right: 2px;
   font-size: 14px;
 }
+
+// 修改组件：el-transfer 穿梭框
+.el-transfer-panel__body .el-checkbox {
+  display: block; // 问题：两个如果选项长度不够会变成一行
+  margin-right: 15px; // 问题：穿梭框选择和未选择宽度不一致
+}
+
+// 修改组件：el-link 问题：字体大小与表格中其他字体一致
+.el-link {
+  font-size: 12px;
+}
