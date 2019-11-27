@@ -52,6 +52,7 @@
           <el-link type="primary" @click="detail(scope.row)">{{ scope.row.username }}</el-link>
         </template>
       </el-table-column>
+      <el-table-column v-if="isSystemManage" label="所属企业" min-width="100" align="center" show-overflow-tooltip prop="customname" />
       <el-table-column label="昵称" min-width="100" align="center" show-overflow-tooltip prop="nickname" />
       <el-table-column label="手机号" min-width="80" align="center" show-overflow-tooltip prop="phone" />
       <el-table-column align="center" label="角色" min-width="100" show-overflow-tooltip>
@@ -400,6 +401,13 @@ export default {
         this.$message.success('批量分配小组成功！')
         this.setEgroupsDialogVisible = false
       })
+    }
+  },
+  computed: {
+    // 判断当前是不是系统管理员 true：是；false：不是
+    isSystemManage() {
+      console.log('this.$store.state.user.isSystemManage', this.$store.state.user.isSystemManage)
+      return this.$store.state.user.isSystemManage
     }
   }
 }
