@@ -18,7 +18,7 @@ const messages = {
   }
 }
 export function getLanguage() {
-  const chooseLanguage = sessionStorage.getItem('language')
+  const chooseLanguage = localStorage.getItem('language')
   if (chooseLanguage) return chooseLanguage
 
   // if has not choose language
