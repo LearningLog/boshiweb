@@ -16,8 +16,8 @@
                 <el-input v-model="listQuery.phone" placeholder="请输入手机号" clearable @keyup.enter.native="topSearch" />
               </el-form-item>
               <el-form-item label="用户状态">
-                <el-select v-model="listQuery.userStatus" placeholder="请选择用户状态" clearable @keyup.enter.native="topSearch">
-                  <el-option v-for="item in userStatus" :key="item.id" :label="item.name" :value="item.id" />
+                <el-select v-model="listQuery.enableStatus" placeholder="请选择用户状态" clearable @keyup.enter.native="topSearch">
+                  <el-option v-for="item in enableStatus" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
               <tenants-groups-roles :is-reset="isReset" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" @resetVal="resetVal" />
@@ -31,7 +31,7 @@
       </transition>
     </div>
     <div id="topBtn">
-      <el-button type="primary" v-if="hasThisBtnPermission('user-add')" @click="add"><i class="iconfont iconjia" />新增</el-button>
+      <el-button v-if="hasThisBtnPermission('user-add')" type="primary" @click="add"><i class="iconfont iconzengjia" />新增</el-button>
     </div>
     <el-table
       v-loading="listLoading"
@@ -52,6 +52,7 @@
           <el-link type="primary" @click="detail(scope.row)">{{ scope.row.username }}</el-link>
         </template>
       </el-table-column>
+      <el-table-column v-if="isSystemManage" label="所属企业" min-width="100" align="center" show-overflow-tooltip prop="customname" />
       <el-table-column label="昵称" min-width="100" align="center" show-overflow-tooltip prop="nickname" />
       <el-table-column label="手机号" min-width="80" align="center" show-overflow-tooltip prop="phone" />
       <el-table-column align="center" label="角色" min-width="100" show-overflow-tooltip>
@@ -90,8 +91,8 @@
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="get_list" />
     <div id="bottomOperation">
-      <a href="basicUser/img/import_user_ttemplates.xlsx" download="企业员工导入模版.xlsx" v-if="hasThisBtnPermission('user-import')">
-        <el-button v-show="total>0" type="primary" plain><i class="iconfont iconwechaticon16" />模板下载</el-button>
+      <a v-if="hasThisBtnPermission('user-import')" href="basicUser/img/import_user_ttemplates.xlsx" download="企业员工导入模版.xlsx">
+        <el-button v-show="total>0" type="primary" plain><i class="iconfont iconxiazai" />模板下载</el-button>
       </a>
       <el-upload
         v-if="hasThisBtnPermission('user-import')"
@@ -102,10 +103,11 @@
         :show-file-list="false"
         :on-success="handleUploadSuccess"
       >
-        <el-button v-show="total>0" type="primary" plain ><i class="iconfont iconziyuan" />模板导入</el-button>
+        <el-button v-show="total>0" type="primary" plain><i class="iconfont iconziyuan" />模板导入</el-button>
       </el-upload>
-      <el-button v-show="total>0" type="primary" plain v-if="hasThisBtnPermission('user-role')" @click="assignRole"><i class="iconfont icondaifenpeifuwushang" />分配角色</el-button>
-      <el-button v-show="total>0" type="primary" plain v-if="hasThisBtnPermission('user-manageegroup')" @click="groupsManage"><i class="iconfont iconjia" />小组管理</el-button>
+      <el-button v-show="total>0" v-if="hasThisBtnPermission('user-role')" type="primary" plain @click="assignRole"><i class="iconfont iconfenpeijuese" />分配角色</el-button>
+      <el-button v-show="total>0" v-if="hasThisBtnPermission('user-manageegroup')" type="primary" plain @click="groupsManage"><i
+        class="iconfont iconxiaozuguanli1"/>小组管理</el-button>
     </div>
     <el-dialog v-el-drag-dialog class="setRolesDialog" width="650px" title="分配角色" :visible.sync="setRolesDialogVisible">
       <el-transfer v-model="roleIdList" :data="noList" :titles="['未分配角色', '已分配角色']" :props="defaultProps" @change="handleTransferChange" />
@@ -215,9 +217,9 @@ export default {
         phone: '', // 手机号,
         roleId: '', // 角色
         egroup: '', // 分组
-        userStatus: null // 用户状态
+        enableStatus: null // 用户状态
       },
-      userStatus: [{ id: 1, name: '生效' }, { id: 2, name: '失效' }], // 用户状态
+      enableStatus: [{ id: 1, name: '生效' }, { id: 2, name: '失效' }], // 用户状态
       checkedList: [], // 选中的数据
       list: null, // 列表数据
       total: 0, // 总条数
@@ -249,7 +251,7 @@ export default {
       this.listQuery.phone = ''
       this.listQuery.roleId = ''
       this.listQuery.egroup = ''
-      this.listQuery.userStatus = null
+      this.listQuery.enableStatus = null
       this.get_list()
     },
     // 获取用户列表
@@ -318,7 +320,7 @@ export default {
     },
     // 删除单个角色
     del(row) {
-      this.$confirm('确定要删除【' + row.username + '】吗？', '删除用户', {
+      this.$confirm('删除用户后，该用户下所有的数据都将被清除并且不可修复。请问是否继续进行删除操作？', '删除用户', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -400,6 +402,13 @@ export default {
         this.$message.success('批量分配小组成功！')
         this.setEgroupsDialogVisible = false
       })
+    }
+  },
+  computed: {
+    // 判断当前是不是系统管理员 true：是；false：不是
+    isSystemManage() {
+      console.log('this.$store.state.user.isSystemManage', this.$store.state.user.isSystemManage)
+      return this.$store.state.user.isSystemManage
     }
   }
 }

@@ -34,7 +34,7 @@
         </transition>
       </div>
       <div id="topBtn">
-        <el-button type="primary" @click="add"><i class="iconfont iconjia" />新增</el-button>
+        <el-button type="primary" @click="add"><i class="iconfont iconzengjia" />新增</el-button>
       </div>
       <el-table
         v-loading="listLoading"
@@ -76,7 +76,7 @@
               </el-button>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item @click.native="upMenu(scope.row)"><i class="iconfont iconshangyi1" />上移</el-dropdown-item>
-                <el-dropdown-item @click.native="downMenu(scope.row)"><i class="iconfont iconxiayi1" />下移</el-dropdown-item>
+                <el-dropdown-item @click.native="downMenu(scope.row)"><i class="iconfont iconxiayi" />下移</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>

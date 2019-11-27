@@ -52,7 +52,7 @@
       </transition>
     </div>
     <div id="topBtn">
-      <el-button type="primary" v-if="hasThisBtnPermission('egroup-add')" @click="add"><i class="iconfont iconjia" />新增</el-button>
+      <el-button type="primary" v-if="hasThisBtnPermission('egroup-add')" @click="add"><i class="iconfont iconzengjia" />新增</el-button>
     </div>
     <el-table
       v-loading="listLoading"
@@ -88,7 +88,8 @@
           <div>
             <el-button size="mini" :disabled="!hasThisBtnPermission('egroup-edit')" @click="go_edit_fn(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
             <el-button size="mini" :disabled="!hasThisBtnPermission('egroup-delete')" @click="delete_fn(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
-            <el-button size="mini" :disabled="!hasThisBtnPermission('egroup-skill')" @click="getTranstorInformation(scope.row)"><i class="iconfont iconshouquan" />分配技能</el-button>
+            <el-button size="mini" :disabled="!hasThisBtnPermission('egroup-skill')" @click="getTranstorInformation(scope.row)"><i class="iconfont iconfenpeijineng
+" />分配技能</el-button>
           </div>
         </template>
       </el-table-column>
@@ -101,7 +102,7 @@
     <el-dialog v-el-drag-dialog class="setInformationDialog" width="650px" title="分配技能" :visible.sync="transforBoxVisible">
       <el-transfer v-model="hasList" :data="noList" :titles="['未分配类别', '已分配类别']" :props="defaultProps" @change="handleTransferChange" />
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="setTranstorInformation">确定</el-button>
+        <el-button type="primary" @click="setTranstorInformation">提交</el-button>
         <el-button @click="transforBoxVisible = false">取 消</el-button>
       </div>
     </el-dialog>

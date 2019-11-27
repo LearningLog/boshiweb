@@ -14,7 +14,7 @@ const onlineClass = {
   name: 'online-class',
   meta: {
     title: '在线课堂',
-    icon: 'iconboshizhishiguanliicon'
+    icon: 'iconzaixianketang'
   },
   children: [
     {

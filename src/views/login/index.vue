@@ -15,7 +15,7 @@
           <el-input v-model.trim="username" placeholder="请输入用户名或手机号" />
         </p>
         <p class="posire">
-          <span class="iconfont iconziyuanxhdpi" />
+          <span class="iconfont iconmima" />
           <el-input v-model.trim="password" type="password" placeholder="请输入密码" autocomplete="off" @keyup.enter.native="login_fn" />
         </p>
         <p v-if="is_first" class="posire sms-box">
@@ -44,11 +44,11 @@
             <el-button class="sendsms-btn" :disabled="forget_dis" @click="forget_sendsms_fn">{{ forget_down }}</el-button>
           </p>
           <p class="posire">
-            <span class="iconfont iconziyuanxhdpi" />
+            <span class="iconfont iconmima" />
             <el-input v-model.trim="new_pwd" type="password" placeholder="请输入新密码(最少六位,数字+字母)" autocomplete="new-password" />
           </p>
           <p class="posire">
-            <span class="iconfont iconziyuanxhdpi" />
+            <span class="iconfont iconmima" />
             <el-input v-model.trim="confirm_pwd" type="password" placeholder="请再次确认密码(最少六位,数字+字母)" autocomplete="new-password" />
           </p>
         </div>

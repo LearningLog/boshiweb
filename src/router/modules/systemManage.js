@@ -14,7 +14,7 @@ const systemManage = {
   name: 'systemManage',
   meta: {
     title: '租户配置',
-    icon: 'iconxitong'
+    icon: 'iconxitongshezhi'
   },
   children: [
     {
