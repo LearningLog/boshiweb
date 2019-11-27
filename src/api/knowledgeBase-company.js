@@ -48,6 +48,22 @@ export function classifyFiles(data) {
     data
   })
 }
+// 删除文件夹
+export function deleteDirFile(data) {
+  return request({
+    url: 'knowledgeDirFile/deleteDirFile',
+    method: 'post',
+    data
+  })
+}
+// 创建文件夹
+export function createDirFile(data) {
+  return request({
+    url: 'knowledgeDirFile/createDir',
+    method: 'post',
+    data
+  })
+}
 
 // 获取技能列表
 export function skillManagerList(data) {
