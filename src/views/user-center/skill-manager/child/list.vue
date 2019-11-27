@@ -47,7 +47,7 @@
       </transition>
     </div>
     <div id="topBtn">
-      <el-button type="primary" @click="add"><i class="iconfont iconjia" />新增</el-button>
+      <el-button type="primary" v-if="hasThisBtnPermission('skill-add')" @click="add"><i class="iconfont iconjia" />新增</el-button>
     </div>
     <el-table
       v-loading="listLoading"
@@ -74,15 +74,15 @@
       <el-table-column class-name="status-col" label="操作" width="160" align="center" fixed="right" show-overflow-tooltip>
         <template slot-scope="scope">
           <div>
-            <el-button size="mini" @click="go_edit_fn(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
-            <el-button size="mini" @click="delete_fn(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
+            <el-button size="mini" :disabled="!hasThisBtnPermission('skill-edit')" @click="go_edit_fn(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
+            <el-button size="mini" :disabled="!hasThisBtnPermission('skill-delete')" @click="delete_fn(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
           </div>
         </template>
       </el-table-column>
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="get_list" />
     <div id="bottomOperation">
-      <el-button v-show="total>0" type="danger" plain @click="batch_del_fn"><i class="iconfont iconshanchu" />批量删除</el-button>
+      <el-button v-if="hasThisBtnPermission('skill-multioperate')" v-show="total>0" type="danger" plain @click="batch_del_fn"><i class="iconfont iconshanchu" />批量删除</el-button>
     </div>
   </div>
 </template>
@@ -93,6 +93,7 @@ import { getCustomManageList } from '@/api/systemManage-roleManage'
 import { skillManagerList, deleteItem, deleteMulti } from '@/api/userCenter-skillManage'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 // import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
+import { isCurrentEgroupManager, hasThisBtnPermission } from '@/utils/permission'
 
 export default {
   components: { Pagination },
@@ -128,6 +129,10 @@ export default {
     this.getCustomManageList()
   },
   methods: {
+    // 按钮权限
+    hasThisBtnPermission(code, egroup) {
+      return hasThisBtnPermission(code, isCurrentEgroupManager(egroup))
+    },
     // 获取所属租户list
     getCustomManageList() {
       getCustomManageList().then(res => {

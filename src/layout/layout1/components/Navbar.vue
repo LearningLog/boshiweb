@@ -38,7 +38,7 @@ import User from '@/components/User'
 import HelpCenter from '@/components/HelpCenter'
 import logo1 from '@/assets/images/logo.png'
 import store from '@/store'
-import {createFullUrl} from '@/utils/index'
+import { createFullUrl } from '@/utils/index'
 export default {
   components: {
     User,
@@ -78,7 +78,7 @@ export default {
     },
 
     jumpOldVersion: function() {
-      let path = createFullUrl('/portal.html')
+      const path = createFullUrl('/portal.html')
       window.location.href = path
     },
 
