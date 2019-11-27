@@ -37,31 +37,27 @@
                 :class="`file-${file.id}`"
               >
                 <li class="file-type" :icon="fileCategory(file.ext)">
-                  <i
-                    v-if="fileCategory(file.ext) === 'image'"
-                    class="iconfont icontupian1"
-                  />
-                  <i
-                    v-else-if="fileCategory(file.ext) === 'video'"
-                    class="iconfont iconshipinwenjian"
-                  />
-                  <i
-                    v-else-if="fileCategory(file.ext) === 'audio'"
-                    class="iconfont iconyinpinwenjian"
-                  />
-                  <i
-                    v-else-if="fileCategory(file.ext) === 'text'"
-                    class="iconfont icondoc"
-                  />
-                  <i
-                    v-else-if="fileCategory(file.ext) === 'pdf'"
-                    class="iconfont iconpdf"
-                  />
-                  <i
-                    v-else-if="fileCategory(file.ext) === 'compressed'"
-                    class="iconfont iconyasuobao"
-                  />
-                  <i v-else class="iconfont iconzu" />
+                  <svg class="icon" aria-hidden="true" v-if="fileCategory(file.ext) === 'image'">
+                    <use xlink:href="icontupian" />
+                  </svg>
+                  <svg class="icon" aria-hidden="true" v-else-if="fileCategory(file.ext) === 'video'">
+                    <use xlink:href="iconvideo-" />
+                  </svg>
+                  <svg class="icon" aria-hidden="true" v-else-if="fileCategory(file.ext) === 'audio'">
+                    <use xlink:href="iconaudio" />
+                  </svg>
+                  <svg class="icon" aria-hidden="true" v-else-if="fileCategory(file.ext) === 'text'">
+                    <use xlink:href="icontext" />
+                  </svg>
+                  <svg class="icon" aria-hidden="true" v-else-if="fileCategory(file.ext) === 'pdf'">
+                    <use xlink:href="iconpdf1" />
+                  </svg>
+                  <svg class="icon" aria-hidden="true" v-else-if="fileCategory(file.ext) === 'compressed'">
+                    <use xlink:href="iconyasuobao" />
+                  </svg>
+                  <svg class="icon" aria-hidden="true" v-else>
+                    <use xlink:href="iconyemian" />
+                  </svg>
                 </li>
                 <el-tooltip
                   class="file-name-tip"
@@ -84,7 +80,7 @@
                     title="移除"
                     @click="remove(file)"
                   ><i
-                    class=" iconfont iconquxiao1"
+                    class=" iconfont iconguanbi"
                   /></span>
                 </li>
               </ul>

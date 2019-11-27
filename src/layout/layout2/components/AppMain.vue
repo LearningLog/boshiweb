@@ -9,31 +9,21 @@
       <back-to-top :visibility-height="mainContentHeight" :back-position="0" transition-name="fade" />
     </el-tooltip>
     <file-uploader />
-    <!--<vue-webuploader-->
-        <!--ref="uploader"-->
-        <!--upload-button="#filePicker"-->
-        <!--upload-dnd-button="#filePicker"-->
-        <!--multiple-->
-        <!--:url="url"-->
-    <!--/>-->
   </section>
 </template>
 
 <script>
 import BackToTop from '@/components/BackToTop'
 import FileUploader from '@/components/VueWebuploader'
-// import VueWebuploader from '@/components/VueWebuploader/VueWebuploader'
 
 export default {
   name: 'AppMain',
   components: { BackToTop,
-    FileUploader,
-    // VueWebuploader
+    FileUploader
   },
   data() {
     return {
-      mainContentHeight: 400,
-      url: this.$store.state.user.applicationInfo.uploadUrl, // 租户上传路径
+      mainContentHeight: 400
     }
   },
   computed: {
