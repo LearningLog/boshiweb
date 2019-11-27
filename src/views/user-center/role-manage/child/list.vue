@@ -63,7 +63,7 @@
       <el-table-column align="center" label="所属租户" min-width="140" show-overflow-tooltip prop="customname" />
       <el-table-column align="center" label="是否默认" min-width="80" show-overflow-tooltip>
         <template slot-scope="scope">
-          <el-tag v-if="scope.row.defaultRole === '1'" type="success">是</el-tag>
+          <el-tag v-if="scope.row.defaultRole === 1" type="success">是</el-tag>
           <el-tag v-else type="danger">否</el-tag>
         </template>
       </el-table-column>

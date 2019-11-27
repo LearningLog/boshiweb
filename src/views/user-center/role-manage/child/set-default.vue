@@ -37,9 +37,10 @@ export default {
       form: {
         rolename: '', // 角色名称
         desc: '', // 角色描述
-        defaultRole: ''// 是否默认
+        defaultRole: '', // 是否默认
+        defaultRoleCode: '' // 默认角色类型
       },
-      DefaultRoleList: [], // 默认角色类型
+      DefaultRoleList: [], // 默认角色类型列表
       rules: {
         rolename: [
           { required: true, message: '请输入角色名称（长度在 2 到 20 个字符）', trigger: 'blur' },
@@ -70,17 +71,17 @@ export default {
     // 获取初始数据
     getInitData() {
       getOneRole({ _id: this.id }).then(response => {
-        console.log(response)
         this.form = response.data.role
+        if (!response.data.role.defaultRoleCode) {
+          this.form.defaultRoleCode = '4'
+        }
         this.dataIsChange = -1
       })
     },
     // 获取默认角色类型
     getDefaultRole() {
       setDefaultRole({}).then(response => {
-        console.log(response)
         this.DefaultRoleList = response.data
-        this.dataIsChange = -1
       })
     },
     // 保存
@@ -90,7 +91,7 @@ export default {
           updateDefaul(this.form).then(response => {
             this.$message.success('修改角色成功！')
             this.noLeaveprompt = true
-            this.$router.push({ path: '/user-center/role-manage/set-default', query: { id: this.id }})
+            this.$router.push({ path: '/user-center/role-manage/list' })
           })
         }
       })
@@ -124,4 +125,7 @@ export default {
 	#btnGroup{
 		padding-left: 120px;
 	}
+    .el-radio{
+      line-height: 2;
+    }
 </style>

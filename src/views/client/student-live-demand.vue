@@ -129,6 +129,7 @@
 
 <script>
 import User from '@/components/User'
+import { createFullUrl } from '@/utils/index'
 import clip from '@/utils/clipboard'
 import { parseTime } from '@/utils/index'
 import elDragDialog from '@/directive/el-drag-dialog'
@@ -272,18 +273,20 @@ export default {
   created() {
     this.id = this.$route.query._id
     this.listQuery.cid = this.$route.query._id
-    const host = location.host
-    if (host.indexOf('localhost:') > -1) {
-      this.shareUrl =
-        host +
-        '#/client/student-live-demand?_id=' +
-        this.id
-    } else {
-      this.shareUrl =
-        process.env.VUE_APP_BASE_API +
-        '#/client/student-live-demand?_id=' +
-        this.id
-    }
+    // const host = location.host
+    // if (host.indexOf('localhost:') > -1) {
+    //   this.shareUrl =
+    //     host +
+    //     '#/client/student-live-demand?_id=' +
+    //     this.id
+    // } else {
+    //   this.shareUrl =
+    //     process.env.VUE_APP_BASE_API +
+    //     '#/client/student-live-demand?_id=' +
+    //     this.id
+    // }
+    const subPath = '#/client/student-live-demand?_id=' + this.id
+    this.shareUrl = createFullUrl(subPath)
     this.findDetailInfoById()
     this.getComments()
   },

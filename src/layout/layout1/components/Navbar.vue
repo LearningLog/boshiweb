@@ -26,6 +26,7 @@
         </el-input>
       </div>
       <help-center />
+      <el-button @click="jumpOldVersion()">返回旧版</el-button>
       <user :style="customStyle" />
     </div>
   </div>
@@ -37,6 +38,7 @@ import User from '@/components/User'
 import HelpCenter from '@/components/HelpCenter'
 import logo1 from '@/assets/images/logo.png'
 import store from '@/store'
+import {createFullUrl} from '@/utils/index'
 export default {
   components: {
     User,
@@ -73,6 +75,11 @@ export default {
           this.$router.push({ path: this.$store.getters.homePath })
           break
       }
+    },
+
+    jumpOldVersion: function() {
+      let path = createFullUrl('/portal.html')
+      window.location.href = path
     },
 
     // 搜索文件

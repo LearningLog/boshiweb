@@ -155,6 +155,7 @@
 
 <script>
 import clip from '@/utils/clipboard'
+import { createFullUrl } from '@/utils/index'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
 import AddSelectGroup from '@/components/AddSelectGroup'
@@ -306,18 +307,20 @@ export default {
 
     // 分享
     share(row, event) {
-      const host = location.host
-      if (host.indexOf('localhost:') > -1) {
-        this.shareUrl =
-          host +
-          '#/client/student-live-demand?_id=' +
-          row._id
-      } else {
-        this.shareUrl =
-          process.env.VUE_APP_BASE_API +
-          '#/client/student-live-demand?_id=' +
-          row._id
-      }
+      // const host = location.host
+      // if (host.indexOf('localhost:') > -1) {
+      //   this.shareUrl =
+      //     host +
+      //     '#/client/student-live-demand?_id=' +
+      //     row._id
+      // } else {
+      //   this.shareUrl =
+      //     process.env.VUE_APP_BASE_API +
+      //     '#/client/student-live-demand?_id=' +
+      //     row._id
+      // }
+      const subPath = '#/client/student-live-demand?_id=' + row._id
+      this.shareUrl = createFullUrl(subPath)
       clip(this.shareUrl, event)
     },
 
