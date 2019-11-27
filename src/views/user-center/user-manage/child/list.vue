@@ -318,7 +318,7 @@ export default {
     },
     // 删除单个角色
     del(row) {
-      this.$confirm('确定要删除【' + row.username + '】吗？', '删除用户', {
+      this.$confirm('删除用户后，该用户下所有的数据都将被清除并且不可修复。请问是否继续进行删除操作？', '删除用户', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
