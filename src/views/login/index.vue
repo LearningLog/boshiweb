@@ -15,7 +15,7 @@
           <el-input v-model.trim="username" placeholder="请输入用户名或手机号" />
         </p>
         <p class="posire">
-          <span class="iconfont iconziyuanxhdpi" />
+          <span class="iconfont iconmima" />
           <el-input v-model.trim="password" type="password" placeholder="请输入密码" autocomplete="off" @keyup.enter.native="login_fn" />
         </p>
         <p v-if="is_first" class="posire sms-box">
@@ -44,11 +44,11 @@
             <el-button class="sendsms-btn" :disabled="forget_dis" @click="forget_sendsms_fn">{{ forget_down }}</el-button>
           </p>
           <p class="posire">
-            <span class="iconfont iconziyuanxhdpi" />
+            <span class="iconfont iconmima" />
             <el-input v-model.trim="new_pwd" type="password" placeholder="请输入新密码(最少六位,数字+字母)" autocomplete="new-password" />
           </p>
           <p class="posire">
-            <span class="iconfont iconziyuanxhdpi" />
+            <span class="iconfont iconmima" />
             <el-input v-model.trim="confirm_pwd" type="password" placeholder="请再次确认密码(最少六位,数字+字母)" autocomplete="new-password" />
           </p>
         </div>
@@ -411,7 +411,7 @@ import { firstLogin_sendsms, validate_first_sms, forget_sendsms, validate_forget
 import { regPhone, regPwd } from '@/utils/validate'
 import inputFilter from '@/directive/input-filter'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
-// import { createFullUrl } from '@/utils/index'
+import { createFullUrl } from '@/utils/index'
 
 export default {
   name: 'Login',
@@ -486,7 +486,7 @@ export default {
       param.password = pwd
       that.$store.dispatch('user/login', param).then((res) => {
         if (res.code === 0) {
-          const toPath = ('#' + (this.redirect || '/'))
+          let toPath = ('#' + (this.redirect || '/'))
           that.$router.push(toPath)
         }
         if (res.code === 5001) {

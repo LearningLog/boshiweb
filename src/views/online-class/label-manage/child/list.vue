@@ -34,7 +34,7 @@
       </transition>
     </div>
     <div id="topBtn">
-      <el-button type="primary" @click="add"><i class="iconfont iconjia" />新增</el-button>
+      <el-button type="primary" @click="add"><i class="iconfont iconzengjia" />新增</el-button>
     </div>
     <el-table
       v-loading="listLoading"
@@ -82,8 +82,6 @@ import { getLabelList, label_delete } from '@/api/onlineclass-label-manage.js'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
 import AddSelectGroup from '@/components/AddSelectGroup'
-// import { getCustomManageList } from '@/api/systemManage-roleManage'
-// import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
 import { isCurrentEgroupManager, hasThisBtnPermission } from '@/utils/permission'
 
 export default {

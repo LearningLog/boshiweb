@@ -47,7 +47,7 @@
         </el-table-column>
         <el-table-column class-name="status-col" label="操作" width="160" align="center" fixed="right">
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleCopy(scope.row,$event)"><i class="iconfont iconchakan" />一键复制链接</el-button>
+            <el-button size="mini" @click="handleCopy(scope.row,$event)"><i class="iconfont iconxiangqing" />一键复制链接</el-button>
           </template>
         </el-table-column>
 

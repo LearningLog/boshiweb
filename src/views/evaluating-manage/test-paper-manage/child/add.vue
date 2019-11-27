@@ -15,7 +15,7 @@
           v-no-more-click
           type="primary"
           @click="publishTestPaper"
-        ><i class="addIcon iconfont iconfabu1" />发布考试</el-button>
+        ><i class="addIcon iconfont iconfabu" />发布考试</el-button>
         <el-button
           v-no-more-click
           type="primary"
@@ -39,11 +39,11 @@
           <span
             class="intelligentAdd pointer"
             @click="intelligentAdd"
-          ><i class="iconfont iconzhinenghua" />智能添加</span>
+          ><i class="iconfont iconzhinengtianjia" />智能添加</span>
           <span
             class="questionBankAdd pointer"
             @click="questionBankAdd"
-          ><i class="iconfont icontikuguanli" />题库中添加</span>
+          ><i class="iconfont icontikuzhongtianjia" />题库中添加</span>
         </div>
       </div>
     </div>

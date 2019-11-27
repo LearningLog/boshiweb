@@ -11,7 +11,6 @@
           <div class="fr">
             <div class="pointer share">
               <el-popover
-                v-model="shareVisible"
                 placement="bottom"
                 width="114"
                 height="120"
@@ -30,11 +29,11 @@
                 </div>
                 <span
                   slot="reference"
-                ><i class="iconfont iconfenxiang" />分享</span>
+                ><i class="iconfont iconfenxiang1" />分享</span>
               </el-popover>
             </div>
             <span class="interval" />
-            <span class="pointer" @click="downloadFile"><i class="iconfont iconwechaticon16" />下载课件</span>
+            <span class="pointer" @click="downloadFile"><i class="iconfont iconxiazai" />下载课件</span>
             <span class="interval" />
             <span class="pointer" @click="appraise">课程评价</span>
             <span class="interval" />
@@ -170,7 +169,6 @@ export default {
       nocomment,
       defaultAvatar,
       flag: 0, // 第一次进入滚动到底部
-      shareVisible: false, // 是否显示分享
       shareUrl: '', // 分享地址
       appraiseVisible: false, // 是否弹出评价
       lableList: [], // 评价标签

@@ -40,10 +40,10 @@
       </transition>
     </div>
     <div id="topBtn">
-      <el-button type="primary" @click="add(1)"><i class="iconfont iconjia" />新增直播</el-button>
-      <el-button type="primary" @click="add(2)"><i class="iconfont iconjia" />新增点播</el-button>
-      <el-button type="primary" @click="selectLesson"><i class="iconfont iconjia" />选择已有课堂</el-button>
-      <el-button type="primary" @click="lessonDetail"><i class="iconfont iconchakan" />专题详情</el-button>
+      <el-button type="primary" @click="add(1)"><i class="iconfont iconzengjia" />新增直播</el-button>
+      <el-button type="primary" @click="add(2)"><i class="iconfont iconzengjia" />新增点播</el-button>
+      <el-button type="primary" @click="selectLesson"><i class="iconfont iconzengjia" />选择已有课堂</el-button>
+      <el-button type="primary" @click="lessonDetail"><i class="iconfont iconxiangqing" />专题详情</el-button>
     </div>
     <el-table
       v-loading="listLoading"

@@ -91,49 +91,43 @@ export default {
   },
   computed: {
     widths: function() {
-      return fn1()
-      function fn1() {
-        var num = 0
-        if (this.isSystemManage) {
-          num++
-        }
-        if (this.isRenderGroup) {
-          num++
-        }
-        if (this.isRenderRole) {
-          num++
-        }
-        switch (num) {
-          case 1:
-            return '33%'
-          case 2:
-            return '66.2%'
-          case 3:
-            return '100%'
-        }
+      var num = 0
+      if (this.isSystemManage) {
+        num++
+      }
+      if (this.isRenderGroup) {
+        num++
+      }
+      if (this.isRenderRole) {
+        num++
+      }
+      switch (num) {
+        case 1:
+          return '33%'
+        case 2:
+          return '66.2%'
+        case 3:
+          return '100%'
       }
     },
     itemWidth: function() {
-      return fn2()
-      function fn2() {
-        var num = 0
-        if (this.isSystemManage) {
-          num++
-        }
-        if (this.isRenderGroup) {
-          num++
-        }
-        if (this.isRenderRole) {
-          num++
-        }
-        switch (num) {
-          case 1:
-            return '100%'
-          case 2:
-            return '49.7%'
-          case 3:
-            return '33%'
-        }
+      var num = 0
+      if (this.isSystemManage) {
+        num++
+      }
+      if (this.isRenderGroup) {
+        num++
+      }
+      if (this.isRenderRole) {
+        num++
+      }
+      switch (num) {
+        case 1:
+          return '100%'
+        case 2:
+          return '49.7%'
+        case 3:
+          return '33%'
       }
     }
   },

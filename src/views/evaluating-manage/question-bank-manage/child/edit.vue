@@ -329,7 +329,6 @@ import AddLabels from '@/components/AddEvalLabels'
 import AddSkills from '@/components/AddEvalSkills'
 import { getToken } from '@/utils/auth'
 import { topicDetil, topicEdit } from '@/api/question-bank-manage'
-// import { getOptionOrderByIndex } from '@/utils/index'
 const $ = window.$
 
 export default {

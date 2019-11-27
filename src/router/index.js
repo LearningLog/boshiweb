@@ -63,6 +63,7 @@ export const constantRoutes = [
   },
 
   door,
+  client,
 
   {
     path: '/404',
@@ -82,14 +83,13 @@ export const asyncRoutes = [
   evaluatingManage,
   systemSetting,
   onlineClass,
-  client,
 
   {
     path: '/enterpriseData',
     component: Layout,
     redirect: '/enterpriseData/list',
     name: 'enterpriseData',
-    meta: { title: '企业数据', icon: 'iconshuju' },
+    meta: { title: '企业数据', icon: 'iconqiyeshuju' },
     children: [
       {
         path: 'edit',
@@ -119,7 +119,7 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/enterprise-resource/detail',
     name: 'enterprise-resource',
-    meta: { title: '企业资源', icon: 'iconqiyeguanli' },
+    meta: { title: '企业资源', icon: 'iconqiyeziyuan' },
     children: [
       {
         path: 'detail',
@@ -135,7 +135,7 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/data-screening/detail',
     name: 'data-screening',
-    meta: { title: '数据总览', icon: 'iconpaihangbang' },
+    meta: { title: '数据总览', icon: 'iconshujuzonglan' },
     children: [
       {
         path: 'detail',

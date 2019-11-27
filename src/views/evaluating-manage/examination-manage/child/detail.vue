@@ -56,7 +56,7 @@
             <el-table-column align="center" label="错误数" min-width="50" show-overflow-tooltip prop="error_sum" />
             <el-table-column class-name="status-col" label="操作" width="100" align="center" fixed="right">
               <template slot-scope="scope">
-                <el-button size="mini" @click="detail(scope.row)"><i class="iconfont iconchakan" />详情</el-button>
+                <el-button size="mini" @click="detail(scope.row)"><i class="iconfont iconxiangqing" />详情</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -115,7 +115,7 @@
             >
               <el-tooltip class="item" effect="dark" :content="item2.option_content" placement="top-start">
                 <el-checkbox
-                  v-model="item2.is_selected"
+                  v-model="item2.is_selected === 'y' ? true : false"
                   class="single-line3"
                   disabled
                 >{{ getOptionOrderByIndex(index2)
@@ -196,15 +196,6 @@ export default {
     detail(row) {
       oneAnswerInfo({ _id: row._id }).then(response => {
         this.topicsList = response.data.answerInfo.answer_info
-        var list1 = this.topicsList
-        for (let i = 0; i < list1.length; i++) {
-          for (let j = 0; j < list1[i].topic_option.length; j++) {
-            if (list1[i].topic_option[j].is_selected === 'y') {
-              list1[i].topic_option[j].is_selected = true
-            }
-          }
-        }
-        this.topicsList = list1
         this.topicsDetail = {
           username: response.data.username,
           examname: response.data.examname,

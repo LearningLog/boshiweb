@@ -73,7 +73,7 @@
       </transition>
     </div>
     <div id="topBtn">
-      <el-button type="primary" @click="add"><i class="iconfont iconjia" />新增</el-button>
+      <el-button type="primary" @click="add"><i class="iconfont iconzengjia" />新增</el-button>
     </div>
     <el-table
       v-loading="listLoading"
@@ -138,8 +138,8 @@
               <i class="iconfont icongengduo" />更多
             </el-button>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item :disabled="!hasThisBtnPermission('online-share', scope.row.egroup)" @click.native="share(scope.row, $event)"><i class="iconfont iconfenxiang" />分享</el-dropdown-item>
-              <el-dropdown-item :disabled="!hasThisBtnPermission('online-detail', scope.row.egroup)" @click.native="detail(scope.row)"><i class="iconfont iconchakan" />详情</el-dropdown-item>
+              <el-dropdown-item :disabled="!hasThisBtnPermission('online-share', scope.row.egroup)" @click.native="share(scope.row, $event)"><i class="iconfont iconfenxiang1" />分享</el-dropdown-item>
+              <el-dropdown-item :disabled="!hasThisBtnPermission('online-detail', scope.row.egroup)" @click.native="detail(scope.row)"><i class="iconfont iconxiangqing" />详情</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </template>

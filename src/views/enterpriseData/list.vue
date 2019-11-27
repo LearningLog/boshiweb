@@ -71,7 +71,7 @@
       </el-table-column>
       <el-table-column class-name="status-col" label="操作" width="160" align="center" fixed="right" show-overflow-tooltip>
         <template slot-scope="scope">
-          <el-button size="mini" @click="detail(scope.row)"><i class="iconfont iconchakan" />查看</el-button>
+          <el-button size="mini" @click="detail(scope.row)"><i class="iconfont iconxiangqing" />查看</el-button>
           <el-button size="mini" @click="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
         </template>
       </el-table-column>

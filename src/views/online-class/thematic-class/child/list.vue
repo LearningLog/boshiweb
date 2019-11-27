@@ -70,7 +70,7 @@
       </transition>
     </div>
     <div id="topBtn">
-      <el-button type="primary" @click="add"><i class="iconfont iconjia" />新增</el-button>
+      <el-button type="primary" @click="add"><i class="iconfont iconzengjia" />新增</el-button>
     </div>
     <el-table
       v-loading="listLoading"
@@ -121,14 +121,15 @@
       <el-table-column align="center" label="创建时间" min-width="140" prop="c_time" show-overflow-tooltip />
       <el-table-column class-name="status-col" label="操作" width="260" align="center" fixed="right">
         <template slot-scope="scope">
-          <el-button size="mini" :disabled="!hasThisBtnPermission('lesson-manage', scope.row.egroup)" @click="manage(scope.row)"><i class="iconfont iconxiugai" />课堂管理</el-button>
-          <el-button size="mini" :disabled="!hasThisBtnPermission('lesson-share', scope.row.egroup)" @click="share(scope.row, $event)"><i class="iconfont iconfenxiang" />分享</el-button>
+          <el-button size="mini" :disabled="!hasThisBtnPermission('lesson-manage', scope.row.egroup)" @click="manage(scope.row)"><i class="iconfont iconketangguanli
+" />课堂管理</el-button>
+          <el-button size="mini" :disabled="!hasThisBtnPermission('lesson-share', scope.row.egroup)" @click="share(scope.row, $event)"><i class="iconfont iconfenxiang1" />分享</el-button>
           <el-dropdown trigger="click">
             <el-button size="mini">
               <i class="iconfont icongengduo" />更多
             </el-button>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item :disabled="!hasThisBtnPermission('lesson-detail', scope.row.egroup)" @click.native="detail(scope.row)"><i class="iconfont iconchakan" />专题详情</el-dropdown-item>
+              <el-dropdown-item :disabled="!hasThisBtnPermission('lesson-detail', scope.row.egroup)" @click.native="detail(scope.row)"><i class="iconfont iconxiangqing" />专题详情</el-dropdown-item>
               <el-dropdown-item :disabled="!hasThisBtnPermission('lesson-edit', scope.row.egroup)" @click.native="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-dropdown-item>
               <el-dropdown-item :disabled="!hasThisBtnPermission('lesson-delete', scope.row.egroup)" @click.native="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-dropdown-item>
             </el-dropdown-menu>
