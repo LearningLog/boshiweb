@@ -77,6 +77,7 @@ export default {
     getInitData() {
       getOneLabel({ _id: this.id }).then(response => {
         this.form = response.data
+        this.form.egroup = response.data.egroup[0]
         this.dataIsChange = -1
       })
     },
@@ -94,14 +95,14 @@ export default {
           label_edit(this.form).then(response => {
             this.$message.success('修改标签成功！')
             this.noLeaveprompt = true
-            this.$router.push({ path: '/online-class/chapter-manage/detail', query: { id: this.id }})
+            this.$router.push({ path: '/online-class/label-manage/detail', query: { id: this.id }})
           })
         }
       })
     },
     // 取消
     cancel(formName) {
-      this.$router.push({ path: '/online-class/chapter-manage/list' })
+      this.$router.push({ path: '/online-class/label-manage/list' })
     }
   },
   beforeRouteLeave(to, from, next) {

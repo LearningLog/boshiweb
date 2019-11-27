@@ -115,14 +115,14 @@ export default {
         this.$emit('closePreview')
         return false
       }
-      if (val === 'pic' && this.isFilePreview) {
+      if ((val === 'video' || val === 'audio' || val === 'pic') && this.isFilePreview) {
         this.filePreviewVisible = true
       }
       if (this.isFilePreview) {
         var that = this
         if ((val === 'video' || val === 'audio')) {
           setTimeout(function() {
-            that.initVideo(that.fileTypeCode, that.fileUrl)
+            that.initVideo(val, that.fileUrl)
           })
         }
         if (val === 'pic') {

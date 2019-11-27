@@ -1,9 +1,8 @@
-import Cookies from 'js-cookie'
 import { getLanguage } from '@/lang/index'
 
 const state = {
   sidebar: {
-    opened: Cookies.get('sidebarStatus') ? !!+Cookies.get('sidebarStatus') : true,
+    opened: sessionStorage.getItem('sidebarStatus') ? !!+sessionStorage.getItem('sidebarStatus') : true,
     withoutAnimation: false
   },
   language: getLanguage(),
@@ -16,13 +15,13 @@ const mutations = {
     state.sidebar.opened = !state.sidebar.opened
     state.sidebar.withoutAnimation = false
     if (state.sidebar.opened) {
-      Cookies.set('sidebarStatus', 1)
+      sessionStorage.setItem('sidebarStatus', 1)
     } else {
-      Cookies.set('sidebarStatus', 0)
+      sessionStorage.setItem('sidebarStatus', 0)
     }
   },
   CLOSE_SIDEBAR: (state, withoutAnimation) => {
-    Cookies.set('sidebarStatus', 0)
+    sessionStorage.setItem('sidebarStatus', 0)
     state.sidebar.opened = false
     state.sidebar.withoutAnimation = withoutAnimation
   },
@@ -31,7 +30,7 @@ const mutations = {
   },
   SET_LANGUAGE: (state, language) => {
     state.language = language
-    Cookies.set('language', language)
+    sessionStorage.setItem('language', language)
   },
   SET_DOCUMENT_HEIGHT: (state, documentHeight) => {
     state.tableHeight = documentHeight - 234

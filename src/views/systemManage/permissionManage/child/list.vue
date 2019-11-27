@@ -52,6 +52,7 @@
           <el-link type="primary" @click="go_detail(scope.row._id)">{{ scope.row.permissionname }}</el-link>
         </template>
       </el-table-column>
+      <el-table-column label="权限code" min-width="120" align="center" show-overflow-tooltip prop="permissioncode" />
       <el-table-column label="菜单模块" min-width="120" align="center" show-overflow-tooltip prop="modulename" />
       <el-table-column class-name="status-col" label="描述" align="center" show-overflow-tooltip prop="permissiondesc" />
       <el-table-column class-name="status-col" label="菜单" min-width="120" align="center" show-overflow-tooltip prop="permissionbelongmenuname" />

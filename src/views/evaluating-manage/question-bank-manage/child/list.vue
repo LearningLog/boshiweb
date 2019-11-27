@@ -121,14 +121,14 @@
       <el-table-column align="center" label="引用次数" min-width="80" prop="quote_count" show-overflow-tooltip />
       <el-table-column class-name="status-col" label="操作" width="160" align="center" fixed="right">
         <template slot-scope="scope">
-          <el-button size="mini" @click="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
-          <el-button size="mini" @click="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
+          <el-button size="mini" :disabled="!hasThisBtnPermission('topic-edit', scope.row.egroup)" @click="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
+          <el-button size="mini" :disabled="!hasThisBtnPermission('topic-delete', scope.row.egroup)" @click="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="get_list" />
     <div id="bottomOperation">
-      <el-button v-show="total>0" type="danger" plain @click="batchDel"><i class="iconfont iconshanchu" />批量删除</el-button>
+      <el-button v-if="hasThisBtnPermission('topic-multioperate')" v-show="total>0" type="danger" plain @click="batchDel"><i class="iconfont iconshanchu" />批量删除</el-button>
     </div>
     <AddSelectGroup :visible-select-group="visibleSelectGroup" @getSelectGroup="getSelectGroup" />
   </div>
@@ -142,6 +142,8 @@ import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import { evaluationTopicList, delTopic } from '@/api/question-bank-manage'
 import { skillAllList } from '@/api/userCenter-skillManage'
 import { labelAllList } from '@/api/evaluatingManage-labelManage'
+import { isCurrentEgroupManager, hasThisBtnPermission } from '@/utils/permission'
+
 export default {
   components: { Pagination, TenantsGroupsRoles, AddSelectGroup },
   directives: { elDragDialog },
@@ -183,11 +185,16 @@ export default {
     }
   },
   created() {
+    console.log(this.$store.state.user.allEgroup)
     this.get_list()
     // this.get_topic_label_list()
     // this.get_topic_skill_list()
   },
   methods: {
+    // 按钮权限
+    hasThisBtnPermission(code, egroup) {
+      return hasThisBtnPermission(code, isCurrentEgroupManager(egroup))
+    },
     // 获取初始化数据
     get_list() {
       this.listLoading = true
@@ -288,6 +295,10 @@ export default {
     getSelectGroup(val) {
       this.companyId = val.selectCompanyId
       this.egroup = val.egroup
+      if (!this.hasThisBtnPermission('topic-add', this.egroup)) {
+        this.$message.warning('您没有该小组管理权限！')
+        return false
+      }
       this.visibleSelectGroup = false
       if (this.egroup) {
         this.$router.push({ path: '/evaluating-manage/question-bank-manage/add', query: { selectCompanyId: this.companyId, egroup: this.egroup }})
@@ -321,6 +332,13 @@ export default {
       if (!this.checkedDelList.length) {
         this.$message.warning('请选择试题！')
         return false
+      }
+      for (var i = 0; i < this.checkedDelList.length; i++) {
+        var item = this.checkedDelList[i]
+        if (!this.hasThisBtnPermission('topic-delete', item.egroup)) {
+          this.$message.warning(`您没有的【${item.topic_content}】的管理权限！`)
+          return false
+        }
       }
       this.$confirm('确定要删除选中的试题吗？', '批量删除试题', {
         confirmButtonText: '确定',

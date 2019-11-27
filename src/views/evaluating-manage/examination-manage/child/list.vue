@@ -72,15 +72,15 @@
 
       <el-table-column class-name="status-col" label="操作" width="250" align="center" fixed="right">
         <template slot-scope="scope">
-          <el-button size="mini" :disabled="scope.row.exam_status !== 1" @click="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
-          <el-button size="mini" :disabled="scope.row.exam_status === 1" @click="detail(scope.row)"><i class="iconfont iconchakan" />考试统计</el-button>
-          <el-button size="mini" @click="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
+          <el-button size="mini" :disabled="scope.row.exam_status !== 1 || !hasThisBtnPermission('exam-edit', scope.row.egroup)" @click="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
+          <el-button size="mini" :disabled="scope.row.exam_status === 1 || !hasThisBtnPermission('exam-statistics', scope.row.egroup)" @click="detail(scope.row)"><i class="iconfont iconchakan" />考试统计</el-button>
+          <el-button size="mini" :disabled="!hasThisBtnPermission('exam-delete', scope.row.egroup)" @click="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="get_list" />
     <div id="bottomOperation">
-      <el-button v-show="total>0" type="danger" plain @click="batchDel"><i class="iconfont iconshanchu" />批量删除</el-button>
+      <el-button v-if="hasThisBtnPermission('exam-multioperate')" v-show="total>0" type="danger" plain @click="batchDel"><i class="iconfont iconshanchu" />批量删除</el-button>
     </div>
     <AddSelectGroup :visible-select-group="visibleSelectGroup" @getSelectGroup="getSelectGroup" />
     <PublishExam :select-company-id="selectCompanyId" :publish-dialog="publishDialog" :score-count="scoreCount" :exam="exam" @publishExam="publishExam" @visiblePublish="visiblePublish" />
@@ -94,6 +94,8 @@ import AddSelectGroup from '@/components/AddSelectGroup'
 import PublishExam from '@/components/PublishExam'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import { getExaminationList, delExam, examDetail, examUpdate } from '@/api/evolutionManage-examination'
+import { isCurrentEgroupManager, hasThisBtnPermission } from '@/utils/permission'
+
 export default {
   components: { Pagination, TenantsGroupsRoles, PublishExam, AddSelectGroup },
   directives: { elDragDialog },
@@ -131,6 +133,10 @@ export default {
     this.get_list()
   },
   methods: {
+    // 按钮权限
+    hasThisBtnPermission(code, egroup) {
+      return hasThisBtnPermission(code, isCurrentEgroupManager(egroup))
+    },
     // 获取初始化数据
     get_list() {
       this.listLoading = true
@@ -189,6 +195,10 @@ export default {
     getSelectGroup(val) {
       this.companyId = val.selectCompanyId
       this.egroup = val.egroup
+      if (!this.hasThisBtnPermission('exam-add', this.egroup)) {
+        this.$message.warning('您没有该小组管理权限！')
+        return false
+      }
       this.visibleSelectGroup = false
       if (this.egroup) {
         this.$router.push({ path: '/evaluating-manage/examination-manage/add', query: { selectCompanyId: this.companyId, egroup: this.egroup }})
@@ -217,6 +227,13 @@ export default {
       if (!this.checkedDelList.length) {
         this.$message.warning('请选择考试！')
         return false
+      }
+      for (var i = 0; i < this.checkedDelList.length; i++) {
+        var item = this.checkedDelList[i]
+        if (!this.hasThisBtnPermission('exam-delete', item.egroup)) {
+          this.$message.warning(`您没有的【${item.exam_name}】的管理权限！`)
+          return false
+        }
       }
       this.$confirm('确定要删除选中的考试吗？', '批量删除考试', {
         confirmButtonText: '确定',

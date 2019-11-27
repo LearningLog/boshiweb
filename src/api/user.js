@@ -48,6 +48,15 @@ export function getAllRoles() {
   })
 }
 
+// 获取所有角色 不分页
+export function getAllRolesNoPage() {
+  return request({
+    url: 'system/roleV2/getAllRole',
+    method: 'post',
+    data: {}
+  })
+}
+
 // 获取所有小组
 export function getAllEgroup() {
   return request({

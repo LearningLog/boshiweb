@@ -12,43 +12,48 @@
         <el-radio-button :label="3">文件</el-radio-button>
         <el-radio-button :label="4">小测试</el-radio-button>
       </el-radio-group>
-      <div id="topSearch" v-show="treeList1.length">
+      <div id="topSearch" v-show="treeList1.floorList.length">
         <span id="advancedSearchBtn" class="classifyTree" slot="reference" @click="classifyTreeVisible = !classifyTreeVisible">知识分类<i v-show="classifyTreeVisible" class="el-icon-caret-top" /><i v-show="!classifyTreeVisible" class="el-icon-caret-bottom" /></span>
         <transition name="fade-advanced-search">
           <div v-show="classifyTreeVisible" class="treeList">
-            <ul class="treeList1" v-if="treeList1.length">
-              <li class="treeItem" v-for="(item, index) in treeList1" :key="item.id">{{ item.title }}
-                <div v-for="item2 in item.children" :key="item2.id">{{ item2.title }}
-                  <div v-for="item3 in item2.children" :key="item3.id">{{ item3.title }}
-                    <div v-for="item4 in item3.children" :key="item4.id">{{ item4.title }}
-                      <div v-for="item5 in item4.children" :key="item5.id">{{ item5.title }}22222</div>
-                    </div>
-                  </div>
-                </div>
-              </li>
-            </ul>
+            <div class="treeList1">
+              <p class="treeName pointer" :class="{ activeClassify: isActiveClassify(treeList1)}" @click="checkClassify(treeList1)">{{ treeList1.treeName }}</p>
+              <ul class="" v-if="treeList1.floorList.length">
+                <li class="treeItem" v-for="(item, index) in treeList1.floorList" :key="treeList1.treeId + index">
+                  <span class="classifyItem pointer" :class="{ activeClassify: isActiveClassify(item2) }" v-for="item2 in item" :key="item2.nodeIdList.join()" @click="checkClassify(item2)">{{ item2.nodeName }}</span>
+                </li>
+              </ul>
+            </div>
+            <div class="treeList2" v-if="treeList2.floorList.length">
+              <p class="treeName pointer" :class="{ activeClassify: isActiveClassify(treeList2)}" @click="checkClassify(treeList2)">{{ treeList2.treeName }}</p>
+              <ul class="" v-if="treeList2.floorList.length">
+                <li class="treeItem" v-for="(item, index) in treeList2.floorList" :key="treeList2.treeId + index">
+                  <span class="classifyItem pointer" :class="{ activeClassify: isActiveClassify(item2) }" v-for="item2 in item" :key="item2.nodeIdList.join()" @click="checkClassify(item2)">{{ item2.nodeName }}</span>
+                </li>
+              </ul>
+            </div>
           </div>
         </transition>
       </div>
       <div class="classifyTags">
         <el-tag
             v-for="(item, index) in checkedClassifys"
-            :key="item.id"
+            :key="item.nodeIdList.join()"
             closable
             size="medium"
             :disable-transitions="false"
             type="success"
             @close="handlePaperLabelDel(index)">
-          {{item.title}}
+          {{item.nodeName}}
         </el-tag>
       </div>
-      <el-scrollbar class="fileList" wrap-class="scrollbar-wrapper" v-if="type !== 4 ? total : total">
+      <el-scrollbar class="fileList" wrap-class="scrollbar-wrapper" v-if="total">
         <div v-if="type !== 4">
           <ul
             v-infinite-scroll="getKnowledgeSearchList2"
             :infinite-scroll-immediate="false"
           >
-            <li v-for="item in list" :key="item.docId" class="itemFile">
+            <li v-for="(item, index) in list" :key="item.docId + type + index" class="itemFile">
               <el-image
                 class="imgCover pointer"
                 :src="(item.thumbnails && item.thumbnails[0]) || file_knowledge"
@@ -75,7 +80,7 @@
               v-infinite-scroll="getExams2"
               :infinite-scroll-immediate="false"
           >
-            <li v-for="item in examsList" :key="item.docId" class="itemExam">
+            <li v-for="(item, index) in examsList" :key="item._id + type + index" class="itemExam">
               <div class="outer">
                 <div class="cover">
                   <el-image
@@ -89,7 +94,7 @@
                 <h4 class="fileName">{{ item.exam_name }}</h4>
                 <div>
                   <span class="nickname">{{ item.nickname }}</span>
-                  <span class="groupName" v-for="(item2, index2) in item.publish_group" :key="item2._id" >
+                  <span class="groupName" v-for="(item2, index2) in item.publish_group" :key="item2._id + type + index" >
                     <span v-if="index2 === 0">{{ item2.groupName }}</span>
                     <span v-else>，{{ item2.groupName }}</span>
                   </span>
@@ -107,8 +112,8 @@
                   <span>{{ item.examstatus }}</span>
                 </div>
               </div>
-              <el-button type="primary" plain v-if="item.answer_status === 1 && !item.haveTempTopic" @click="toExam(item)">进入考试</el-button>
-              <el-button type="primary" plain v-else-if="item.answer_status === 1 && item.haveTempTopic" @click="toExam(item)">继续考试</el-button>
+              <el-button type="primary" plain v-if="item.examstatusCode === 2 && item.answer_status === 1 && !item.haveTempTopic" @click="toExam(item)">进入考试</el-button>
+              <el-button type="primary" plain v-else-if="item.examstatusCode === 2 && item.answer_status === 1 && item.haveTempTopic" @click="toExam(item)">继续考试</el-button>
               <el-button type="primary" plain  v-else-if="item.examstatusCode === 3 || item.answer_status === 2" @click="detail(item)">查看结果</el-button>
             </li>
           </ul>
@@ -116,7 +121,7 @@
         <p v-if="loading" class="loading">加载中...</p>
         <p v-if="noMore" class="noMore">没有更多了</p>
       </el-scrollbar>
-      <div v-else class="noData">
+      <div v-if="(type !== 4 && !total) || (type === 4 && !total2)" class="noData">
         <img class="nodataimg" :src="nodataimg" alt="暂无数据">
         <p class="sorry">很抱歉，没有找到相关结果</p>
         <p class="changeKey">请修改或尝试其他搜索词</p>
@@ -139,8 +144,7 @@ import file_knowledge from '@/assets/images/file_knowledge.png'
 import nodataimg from '@/assets/images/nodataimg.png'
 import quiz from '@/assets/images/quiz.png'
 import { getFileShowSize } from '@/utils/index'
-import { knowledgeSearch, getExams } from '@/api/door/index'
-import { getCompanyAllTree } from '@/api/system-setting/knowledge-classification'
+import { knowledgeSearch, getCompanyAllTreeFloorByName, getExams } from '@/api/door/index'
 
 export default {
   components: { FilePreview },
@@ -170,8 +174,12 @@ export default {
       loading: false,
       level: null, // 创建的主题级别 1，一级主题；2，子级主题
       // 知识树列表
-      treeList1: [],
-      treeList2: [],
+      treeList1: {
+        floorList: []
+      },
+      treeList2: {
+        floorList: []
+      },
       checkedClassifys: [], // 选中的分类
       examsList: [], // 试卷数组
       total2: 0, // 总条数
@@ -199,13 +207,13 @@ export default {
   },
   created() {
     this.getKnowledgeSearchList()
-    this.getCompanyAllTree()
+    this.getCompanyAllTreeFloorByName()
     this.listQuery2._id = this.$store.state.user.userSystemInfo.userInfo._id
   },
   computed: {
     ...mapGetters(['keyword']),
     noMore() {
-      return this.list.length >= this.total
+      return this.list.length && this.list.length >= this.total
     },
     disabled() {
       return this.loading || this.noMore
@@ -213,21 +221,17 @@ export default {
   },
   methods: {
     // 知识树获取租户所有树
-    getCompanyAllTree() {
+    getCompanyAllTreeFloorByName() {
       this.treeList1.length = 0
       this.treeList2.length = 0
-      getCompanyAllTree().then(res => {
+      getCompanyAllTreeFloorByName().then(res => {
         res.data.treeList = res.data.treeList || []
         var arr = JSON.parse(JSON.stringify(res.data.treeList))
         if (arr[0]) {
-          arr[0].node.parentrRootNodeIdId = arr[0].rootNodeId
-          arr[0].node.parentId = arr[0].id
-          this.treeList1 = [arr[0].node]
+          this.treeList1 = arr[0]
         }
         if (arr[1]) {
-          arr[1].node.parentrRootNodeIdId = arr[1].rootNodeId
-          arr[1].node.parentId = arr[1].id
-          this.treeList2 = [arr[1].node]
+          this.treeList2 = arr[1]
         }
       })
     },
@@ -305,6 +309,7 @@ export default {
       }
       if (val !== 4) {
         this.list.length = 0
+        this.listQuery.currentPage = 0
         this.getKnowledgeSearchList()
       }
     },
@@ -329,11 +334,55 @@ export default {
       this.title = ''
     },
 
+    // 选择分类
+    checkClassify(classify) {
+      if (classify.treeId) {
+        classify.nodeIdList = [classify.treeId]
+        classify.nodeName = classify.treeName
+      }
+      var index = this.checkedClassifys.findIndex(function(item) {
+        return item.nodeIdList.join() === classify.nodeIdList.join()
+      })
+      if (index > -1) {
+        this.checkedClassifys.splice(index, 1)
+      } else {
+        this.checkedClassifys.push(classify)
+      }
+      this.classifyNodeIds()
+    },
+
+    // 过滤分类ids，进行搜索
+    classifyNodeIds() {
+      this.listQuery.classifyNodeIds.length = 0
+      this.checkedClassifys.forEach(item => {
+        this.listQuery.classifyNodeIds.push(item.nodeIdList)
+      })
+      this.list.length = 0
+      this.total = 0
+      this.listQuery.currentPage = 0
+      this.getKnowledgeSearchList()
+    },
+
+    // 根据 idList返回是否active
+    isActiveClassify(classify) {
+      if (classify.treeId) {
+        classify.nodeIdList = [classify.treeId]
+        classify.nodeName = classify.treeName
+      }
+      var index = this.checkedClassifys.findIndex(function(item) {
+        return item.nodeIdList.join() === classify.nodeIdList.join()
+      })
+      if (index > -1) {
+        return true
+      } else {
+        return false
+      }
+    },
+
     // 删除标签
     handlePaperLabelDel(index) {
       this.checkedClassifys.splice(index, 1)
-      this.$refs.treeList1.setCheckedNodes(this.checkedClassifys)
-      this.$refs.treeList2.setCheckedNodes(this.checkedClassifys)
+      this.classifyNodeIds()
     },
 
     // 前往考试
@@ -350,13 +399,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  @import "~@/styles/theme.scss";
 .content {
   width: 1100px;
   margin: 0 auto;
   position: relative;
 
   .fileList.el-scrollbar {
-    height: calc(100vh - 130px);
+    height: calc(100vh - 192px);
   }
   .itemFile {
     padding: 20px 0;
@@ -402,6 +452,32 @@ export default {
     margin: 16px 0;
     padding: 16px;
     border: 1px solid #ebebeb;
+    font-size: 14px;
+
+    .treeName {
+      font-size: 16px;
+      margin-top: 0;
+    }
+
+    .treeList1, .treeList2 {
+      display: inline-block;
+      width: 49%;
+      vertical-align: top;
+    }
+    .treeList2 {
+      padding-left: 20px;
+    }
+    .classifyItem {
+      margin-right: 20px;
+    }
+
+    .treeItem {
+      padding: 10px 0;
+      border-bottom: 1px solid #e8e8e8e8;
+    }
+    .activeClassify {
+      color: $themeColor;
+    }
   }
   .classifyTags /deep/ .el-tag {
     display: inline-block;
@@ -409,6 +485,9 @@ export default {
   }
   .noData {
     text-align: center;
+    /*display:flex;!*将其定义为弹性容器*!*/
+    /*align-items: center;!*垂直居中对齐*!*/
+    /*justify-content: center;!*水平居中对齐*!*/
 
     .changeKey {
       font-size: 12px;

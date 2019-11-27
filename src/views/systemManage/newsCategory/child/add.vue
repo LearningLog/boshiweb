@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import { newscategory_add } from '@/api/systemManage-newsCategorry.js'
+import { newscategory_add } from '@/api/systemManage-newsCategorry'
 export default {
   data() {
     return {

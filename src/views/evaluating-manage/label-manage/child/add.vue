@@ -7,26 +7,6 @@
       <el-form-item label="标签描述">
         <el-input v-model="form.ldesc" placeholder="请输入标签描述" clearable />
       </el-form-item>
-      <el-form-item label="所属小组" prop="egroup">
-        <el-select v-model="form.egroup" placeholder="请选择所属小组" clearable filterable>
-          <el-option
-            v-for="item in groupList"
-            :key="item._id"
-            :label="item.groupName"
-            :value="item.inc"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="所属租户" prop="selectCompanyId">
-        <el-select v-model="form.selectCompanyId" placeholder="请选择所属租户" clearable filterable>
-          <el-option
-            v-for="item in custom_list"
-            :key="item._id"
-            :label="item.customname"
-            :value="item._id"
-          />
-        </el-select>
-      </el-form-item>
     </el-form>
     <div id="btnGroup">
       <el-button v-no-more-click type="primary" @click="save('form')">提交</el-button>
@@ -75,6 +55,8 @@ export default {
     }
   },
   created() {
+    this.form.selectCompanyId = this.$route.query.selectCompanyId
+    this.form.egroup = this.$route.query.egroup
     this.getCustomManageList()
     this.getEgroups()
   },
@@ -98,7 +80,7 @@ export default {
           label_add(this.form).then(response => {
             this.$message.success('添加标签成功！')
             this.noLeaveprompt = true
-            this.$router.push({ path: '/evaluating-manage/label-manage/list' })
+            this.$router.push({ path: '/evaluating-manage/label-manage/detail', query: { id: response.data }})
           })
         }
       })

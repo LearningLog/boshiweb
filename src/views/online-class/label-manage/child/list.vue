@@ -12,26 +12,7 @@
               <el-form-item label="标签ID">
                 <el-input v-model="listQuery.linc" placeholder="请输入标签ID" clearable @keyup.enter.native="topSearch" />
               </el-form-item>
-              <el-form-item label="所属租户">
-                <el-select v-model="listQuery.selectCompanyId" placeholder="请选择所属租户" clearable filterable>
-                  <el-option
-                    v-for="item in custom_list"
-                    :key="item._id"
-                    :label="item.customname"
-                    :value="item._id"
-                  />
-                </el-select>
-              </el-form-item>
-              <el-form-item label="所属小组">
-                <el-select v-model="listQuery.egroup" placeholder="请选择所属租户" clearable filterable>
-                  <el-option
-                    v-for="item in group_list"
-                    :key="item._id"
-                    :label="item.groupName"
-                    :value="item.inc"
-                  />
-                </el-select>
-              </el-form-item>
+              <tenants-groups-roles :is-render-role="false" :is-reset="isReset" which-group="manageEgroupInfo" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" @resetVal="resetVal" />
               <el-form-item label="创建时间">
                 <el-date-picker
                   v-model="time_range"
@@ -83,27 +64,34 @@
       <el-table-column align="center" label="创建时间" min-width="140" show-overflow-tooltip prop="c_time" />
       <el-table-column class-name="status-col" label="操作" width="160" align="center" fixed="right" show-overflow-tooltip>
         <template slot-scope="scope">
-          <el-button size="mini" @click="go_edit_fn(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
-          <el-button size="mini" @click="delete_fn(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
+          <el-button size="mini" :disabled="!hasThisBtnPermission('classroom-label-edit', scope.row.egroup)" @click="go_edit_fn(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
+          <el-button size="mini" :disabled="!hasThisBtnPermission('classroom-label-delete', scope.row.egroup)" @click="delete_fn(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="get_list" />
     <div id="bottomOperation">
-      <el-button v-show="total>0" type="danger" plain @click="batch_del_fn"><i class="iconfont iconshanchu" />批量删除</el-button>
+      <el-button v-if="hasThisBtnPermission('classroom-label-multioperate')" v-show="total>0" type="danger" plain @click="batch_del_fn"><i class="iconfont iconshanchu" />批量删除</el-button>
     </div>
+    <AddSelectGroup :visible-select-group="visibleSelectGroup" :is-render-group="false" title="选择租户" @getSelectGroup="getSelectGroup" />
   </div>
 </template>
 
 <script>
 import { getLabelList, label_delete } from '@/api/onlineclass-label-manage.js'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
+import AddSelectGroup from '@/components/AddSelectGroup'
 import { getCustomManageList } from '@/api/systemManage-roleManage'
 import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
+import { isCurrentEgroupManager, hasThisBtnPermission } from '@/utils/permission'
+
 export default {
-  components: { Pagination },
+  components: { Pagination, TenantsGroupsRoles, AddSelectGroup },
   data() {
     return {
+      isReset: false, // 是否重置三组
+      visibleSelectGroup: false, // 是否弹出选择租户、小组
       listLoading: false,
       listQuery: {
         currentPage: 1, // 当前页码
@@ -126,22 +114,23 @@ export default {
   },
   created() {
     this.get_list()
-    this.getCustomManageList()
-    this.getEgroups()
   },
   methods: {
-    // 获取所有小组
-    getEgroups() {
-      getUserEgroupInfo({ selectCompanyId: this.companyIds }).then(response => {
-        this.group_list = response.data.egroupInfo
-      })
+    // 按钮权限
+    hasThisBtnPermission(code, egroup) {
+      return hasThisBtnPermission(code, isCurrentEgroupManager(egroup))
     },
-    // 获取所属租户list
-    getCustomManageList() {
-      getCustomManageList().then(res => {
-        this.custom_list = res.data
-      })
+
+    // 监听三组数据变化
+    tenantsGroupsRolesVal(val) {
+      this.listQuery.selectCompanyId = val.companyIds
+      this.listQuery.egroup = val.egroupId
     },
+    // 重置监听三组数据变化
+    resetVal(val) {
+      this.isReset = false
+    },
+
     // 搜索
     topSearch() {
       this.get_list()
@@ -174,12 +163,33 @@ export default {
     },
     // 详情
     detail(row) {
-      this.$router.push({ path: '/online-class/chapter-manage/detail', query: { id: row._id }})
+      this.$router.push({ path: '/online-class/label-manage/detail', query: { id: row._id }})
     },
+
     // 新增
     add() {
-      this.$router.push({ path: '/online-class/chapter-manage/add' })
+      if (!this.$store.state.user.isSystemManage) {
+        if (!this.hasThisBtnPermission('classroom-label-add')) {
+          this.$message.warning('您没有该小组管理权限！')
+          return false
+        } else if (!this.$store.state.user.allEgroup.manageEgroupInfo.length) {
+          this.$message.warning('您没有管理小组权限！')
+          return false
+        }
+        this.$router.push({ path: '/online-class/label-manage/add' })
+      } else {
+        this.visibleSelectGroup = true
+      }
     },
+
+    // 监听选择小组返回数据
+    getSelectGroup(val) {
+      this.visibleSelectGroup = false
+      if (val.selectCompanyId) {
+        this.$router.push({ path: '/online-class/label-manage/add', query: { selectCompanyId: val.selectCompanyId }})
+      }
+    },
+
     // 删除单个角色
     delete_fn(row) {
       this.$confirm('确定要删除【' + row.groupName + '】吗？', '删除角色', {
@@ -206,6 +216,13 @@ export default {
         this.$message.warning('请选择角色！')
         return false
       }
+      for (var i = 0; i < this.delCheckedList.length; i++) {
+        var item = this.delCheckedList[i]
+        if (!this.hasThisBtnPermission('online-delete', item.egroup)) {
+          this.$message.warning(`您没有的【${item.groupName}】的管理权限！`)
+          return false
+        }
+      }
       this.$confirm('确定要删除选中的角色吗？', '批量删除角色', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -226,7 +243,7 @@ export default {
     },
     // 修改
     go_edit_fn(row) {
-      this.$router.push({ path: '/online-class/chapter-manage/edit', query: { id: row._id }})
+      this.$router.push({ path: '/online-class/label-manage/edit', query: { id: row._id }})
     }
 
   }

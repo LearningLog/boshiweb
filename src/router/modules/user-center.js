@@ -176,7 +176,7 @@ const userCenter = {
         },
         {
           path: 'set-default',
-          name: 'roleAuthorize',
+          name: 'roleDefault',
           hidden: true,
           component: () => import('@/views/user-center/role-manage/child/set-default'),
           meta: { title: '设置默认', icon: '', activeMenu: '/user-center/role-manage' }

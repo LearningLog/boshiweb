@@ -69,7 +69,7 @@
       </transition>
     </div>
     <div id="topBtn">
-      <el-button type="primary" @click="showUpload()"><i class="iconfont iconziyuan" />上传资料</el-button>
+      <el-button type="primary" v-if="hasThisBtnPermission('workdesk-upload')" @click="showUpload()"><i class="iconfont iconziyuan" />上传资料</el-button>
     </div>
     <el-table
       v-loading="listLoading"
@@ -123,18 +123,17 @@
       </el-table-column>
       <el-table-column class-name="status-col" label="操作" width="220" align="center" fixed="right">
         <template slot-scope="scope">
-          <el-button size="mini" @click="download(scope.row)"><i class="iconfont iconwechaticon16" />下载</el-button>
-          <span v-if="getFileListData(scope.row.mainFileId).file_status===4"><el-button size="mini" @click="pushToKnowledge(scope.row)"><i class="iconfont iconfabu1" />推送</el-button></span>
-          <span v-else><el-button size="mini" disabled="disabled"><i class="iconfont iconfabu1" />推送</el-button></span>
-          <el-button size="mini" @click="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
+          <el-button size="mini" :disabled="!hasThisBtnPermission('workdesk-download')" @click="download(scope.row)"><i class="iconfont iconwechaticon16" />下载</el-button>
+          <el-button size="mini" :disabled="getFileListData(scope.row.mainFileId).file_status !== 4 || !hasThisBtnPermission('workdesk-push')"><i class="iconfont iconfabu1" />推送</el-button>
+          <el-button size="mini" :disabled="!hasThisBtnPermission('workdesk-delete')" @click="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="get_list" />
     <div id="bottomOperation">
-      <el-button v-show="total>0" type="primary" plain @click="batchPush"><i class="iconfont iconfabu1" />批量推送</el-button>
-      <el-button v-show="total>0" type="danger" plain @click="batchDel"><i class="iconfont iconshanchu" />批量删除</el-button>
-      <el-button v-show="total>0" type="primary" plain @click="batchDownload"><i class="iconfont iconwechaticon16" />批量下载</el-button>
+      <el-button v-if="hasThisBtnPermission('workdesk-delete')" v-show="total>0" type="primary" plain @click="batchPush"><i class="iconfont iconfabu1" />批量推送</el-button>
+      <el-button v-if="hasThisBtnPermission('workdesk-push')" v-show="total>0" type="danger" plain @click="batchDel"><i class="iconfont iconshanchu" />批量删除</el-button>
+      <el-button v-if="hasThisBtnPermission('workdesk-download')" v-show="total>0" type="primary" plain @click="batchDownload"><i class="iconfont iconwechaticon16" />批量下载</el-button>
     </div>
     <el-dialog
       v-el-drag-dialog
@@ -179,6 +178,7 @@ import { getFileShowSize, parseTime } from '@/utils/index'
 import elDragDialog from '@/directive/el-drag-dialog'
 import FilePreview from '@/components/FilePreview'
 import file_knowledge from '@/assets/images/file_knowledge.png'
+import { isCurrentEgroupManager, hasThisBtnPermission } from '@/utils/permission'
 
 export default {
   directives: { elDragDialog },
@@ -250,6 +250,10 @@ export default {
     store.dispatch('fileUpload/belongs', { data_type: 3 })
   },
   methods: {
+    // 按钮权限
+    hasThisBtnPermission(code, egroup) {
+      return hasThisBtnPermission(code, isCurrentEgroupManager(egroup))
+    },
     // 启动上传
     showUpload() {
       store.dispatch('fileUpload/isVisibility', 1)

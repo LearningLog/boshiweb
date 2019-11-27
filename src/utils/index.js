@@ -109,6 +109,7 @@ export function param2Obj(url) {
   )
 }
 
+// 翻页序号
 export function getSerialNum(index, currentPage, pageSize) {
   return ((index + 1) + (currentPage - 1)) * pageSize
 }
@@ -163,6 +164,33 @@ export function getFileShowSize(fileSize) {
   }
 }
 
+// 获取存储空间大小，G
+export function getFileShowSizeToG(fileSize) {
+  if (fileSize) {
+    var KLength = 1024
+    var MLength = KLength * 1024
+    var GLength = MLength * 1024
+
+    var showStr = ''
+    var G = 0
+    G = fileSize / GLength
+
+    G = parseInt(G.toFixed(2))
+    G = fileSize / GLength
+    showStr = G.toFixed(2) * 1
+
+    return showStr
+  } else {
+    return 0
+  }
+}
+
+// 获取存储空间大小，bt
+export function getFileShowSizeToBT(fileSize) {
+  fileSize = Math.ceil(fileSize * 1 * Math.pow(1024, 3))
+  return fileSize
+}
+
 // 根据选项在数组中位置获取选项序号
 export function getOptionOrderByIndex(index) {
   // 选项序号
@@ -172,4 +200,28 @@ export function getOptionOrderByIndex(index) {
     return 'Z. '
   }
   return option_order[index]
+}
+
+// 根据当前页面补全地址，当传入参数以/开头时只补全协议和域名，否则根据当前访问页面补全地址
+export function createFullUrl(subPath) {
+  var prePath = location.protocol + '//' + location.host
+  var curPath = location.pathname
+
+  if (subPath.startsWith('/')) {
+    return prePath + subPath
+  } else if (subPath.startsWith('#')) {
+    return prePath + curPath + subPath
+  }
+
+  var midPath = '/'
+  if (curPath !== '' && curPath !== '/') {
+    if (!curPath.endsWith('/')) {
+      curPath = curPath.substring(0, curPath.lastIndexOf('/'))
+      midPath = curPath
+    } else {
+      midPath = curPath
+    }
+  }
+
+  return prePath + midPath + '/' + subPath
 }

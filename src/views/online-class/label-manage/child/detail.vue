@@ -32,7 +32,7 @@ export default {
       noLeaveprompt: false, // 表单提交后，设置为true，据此判断提交不再弹出离开提示
       setRolesDialogVisible: false,
       form: {
-
+        groupName: []
       }
     }
   },
@@ -49,7 +49,7 @@ export default {
     },
     // 确定
     confirm() {
-      this.$router.push({ path: '/online-class/chapter-manage/list' })
+      this.$router.push({ path: '/online-class/label-manage/list' })
     }
   }
 }

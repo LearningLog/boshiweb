@@ -52,7 +52,7 @@
       </transition>
     </div>
     <div id="topBtn">
-      <el-button type="primary" @click="add"><i class="iconfont iconjia" />新增</el-button>
+      <el-button type="primary" v-if="hasThisBtnPermission('egroup-add')" @click="add"><i class="iconfont iconjia" />新增</el-button>
     </div>
     <el-table
       v-loading="listLoading"
@@ -68,12 +68,12 @@
         width="55"
         :selectable="selectable"
       />
-      <el-table-column align="center" label="名称" show-overflow-tooltip>
+      <el-table-column align="center" min-width="120" label="名称" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-link type="primary" @click="detail(scope.row)">{{ scope.row.groupName }}</el-link>
         </template>
       </el-table-column>
-      <el-table-column label="描述" min-width="300" align="center" show-overflow-tooltip prop="desc" />
+      <el-table-column label="描述" min-width="120" align="center" show-overflow-tooltip prop="desc" />
       <el-table-column align="center" label="创建时间" min-width="140" show-overflow-tooltip prop="createtime" />
       <el-table-column align="center" label="所属企业" min-width="140" show-overflow-tooltip prop="customname" />
       <el-table-column align="center" label="管理员" show-overflow-tooltip min-width="240">
@@ -81,21 +81,21 @@
           {{ parseMinc(scope.row.mincNameList) }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="来源" min-width="140" show-overflow-tooltip prop="dataTypeName" />
-      <el-table-column align="center" label="成员人数" min-width="140" show-overflow-tooltip prop="usercount" />
+      <el-table-column align="center" label="来源" min-width="80" show-overflow-tooltip prop="dataTypeName" />
+      <el-table-column align="center" label="成员人数" min-width="70" show-overflow-tooltip prop="usercount" />
       <el-table-column class-name="status-col" label="操作" width="250" align="center" fixed="right" show-overflow-tooltip>
         <template slot-scope="scope">
           <div>
-            <el-button size="mini" @click="go_edit_fn(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
-            <el-button size="mini" @click="delete_fn(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
-            <el-button size="mini" @click="getTranstorInformation(scope.row)"><i class="iconfont iconshouquan" />分配技能</el-button>
+            <el-button size="mini" :disabled="!hasThisBtnPermission('egroup-edit')" @click="go_edit_fn(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
+            <el-button size="mini" :disabled="!hasThisBtnPermission('egroup-delete')" @click="delete_fn(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
+            <el-button size="mini" :disabled="!hasThisBtnPermission('egroup-skill')" @click="getTranstorInformation(scope.row)"><i class="iconfont iconshouquan" />分配技能</el-button>
           </div>
         </template>
       </el-table-column>
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="get_list" />
     <div id="bottomOperation">
-      <el-button v-show="total>0" type="danger" plain @click="batch_del_fn"><i class="iconfont iconshanchu" />批量删除</el-button>
+      <el-button v-if="hasThisBtnPermission('egroup-multioperate')" v-show="total>0" type="danger" plain @click="batch_del_fn"><i class="iconfont iconshanchu" />批量删除</el-button>
     </div>
 
     <el-dialog v-el-drag-dialog class="setInformationDialog" width="650px" title="分配技能" :visible.sync="transforBoxVisible">
@@ -112,6 +112,7 @@
 import { findUserListByGroupId, findEmployeeGroupList, getCustomManageList, deleteItem, deleteMultiRole, egroupskill, saveGroupSkill } from '@/api/userCenter-groupManage'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+import { isCurrentEgroupManager, hasThisBtnPermission } from '@/utils/permission'
 
 export default {
   components: { Pagination },
@@ -158,6 +159,10 @@ export default {
     this.getAlluserList()
   },
   methods: {
+    // 按钮权限
+    hasThisBtnPermission(code, egroup) {
+      return hasThisBtnPermission(code, isCurrentEgroupManager(egroup))
+    },
     // 格式化负责人
     parseMinc(data) {
       return data.join('、')
