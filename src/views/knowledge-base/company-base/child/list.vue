@@ -66,10 +66,9 @@
 
     <div class="pathNav">
       <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item>全部</el-breadcrumb-item>
-        <el-breadcrumb-item>文件1</el-breadcrumb-item>
-        <el-breadcrumb-item>文件2</el-breadcrumb-item>
-        <el-breadcrumb-item>文件3</el-breadcrumb-item>
+        <el-breadcrumb-item @click.native="goback()" v-if="pathNavData.length > 0">返回上一级</el-breadcrumb-item>
+        <el-breadcrumb-item @click.native="pathNavClick('all')">全部</el-breadcrumb-item>
+        <el-breadcrumb-item v-for="(item,index) in pathNavData" :key="index" @click.native="pathNavClick(item,index)">{{ item.name }}</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <el-table
@@ -103,7 +102,14 @@
               取消
             </el-button>
           </template>
-          <span v-else>{{ row.fileName }}</span>
+          <div v-else @click="enterFolder(row)">
+
+            <svg class="icon" aria-hidden="true">
+              <use :xlink:href="row.fileAttributeDesc==='dir' ? '#iconwenjianjia':''" />
+            </svg>
+            <!-- <i v-if="row.fileAttributeDesc==='dir'" class="iconfont iconwenjianjia" /> -->
+            {{ row.fileName }}
+          </div>
         </template>
 
       </el-table-column>
@@ -180,6 +186,9 @@ export default {
         label: 'title'
       },
       // tree--end
+      pathQueryString: '',
+      pathNavData: [],
+      // 文件夹路径导航
       treeDialogVisible: false,
       isReset: true, // 租户组件重置
       listLoading: false,
@@ -257,24 +266,83 @@ export default {
       return this.$store.state.user.isSystemManage
     }
   },
+  watch: {
+    $route() {
+      this.enterFloderByQueryPath()
+    }
+
+  },
   created() {
     this.path = this.$route.query.path
-    if (this.path) {
-      alert(this.path)
-    }
     this.getCustomManageList()// 租户
-    this.getDirList()// 列表
+    this.enterFloderByQueryPath()
+    // this.getDirList()// 列表
     this.getCompanyAllTree()// 知识分类树
   },
   methods: {
+    goback() {
+      this.pathNavData = this.pathNavData.slice(0, this.pathNavData.length - 1)
+      let str = ''
+      this.pathNavData.forEach((v, k, arr) => {
+        str += str ? '/' + v.id + '|' + v.name : v.id + '|' + v.name
+      })
+      this.pathQueryString = str
+      this.$router.push({ path: '/knowledge-base/company-base/list', query: { path: this.pathQueryString }})
+    },
+    pathNavClick(item, index) {
+      if (item !== 'all') {
+        this.pathNavData = this.pathNavData.slice(0, index + 1)
+        let str = ''
+        this.pathNavData.forEach((v, k, arr) => {
+          str += str ? '/' + v.id + '|' + v.name : v.id + '|' + v.name
+        })
+        this.pathQueryString = str
+        this.$router.push({ path: '/knowledge-base/company-base/list', query: { path: this.pathQueryString }})
+      } else {
+        this.pathQueryString = ''
+        this.pathNavData = []
+        this.$router.push({ path: '/knowledge-base/company-base/list'})
+      }
+    },
+
+    enterFolder(row) {
+      if (row.fileAttributeDesc === 'dir') {
+        this.pathQueryString += this.pathQueryString ? '/' + row.fileId + '|' + row.fileName : row.fileId + '|' + row.fileName
+        this.$router.push({ path: '/knowledge-base/company-base/list', query: { path: this.pathQueryString }})
+      }
+    },
+    enterFloderByQueryPath() {
+      if (this.$route.query.path) {
+        const pathArray = this.$route.query.path.split('/')
+        this.pathNavData = []
+        pathArray.forEach((v, k, arr) => {
+          const obj = {
+            id: v.split('|')[0],
+            name: v.split('|')[1]
+          }
+          this.pathNavData.push(obj)
+        })
+        if (this.pathNavData.length > 0) {
+          this.listQuery.parentId = this.pathNavData[this.pathNavData.length - 1].id
+        } else {
+          this.listQuery.parentId = ''
+        }
+      } else {
+        this.pathNavData = []
+        this.listQuery.parentId = ''
+      }
+      this.getDirList()
+    },
     modifyFileNameChange(row, val) {
       console.log(row)
       console.log(val)
-      if (val.indexOf('/') > 0) {
+
+      const reg = new RegExp('[\\\\/:*?\"<>|]')
+      if (reg.test(val)) {
         row.fileName = row.originalTitle
         row.edit = false
         this.$message({
-          message: '文件夹名称不能存在特殊字符/',
+          message: '文件名不能包含【\\\/:*?\"<>|】这些非法字符,请重新命名!',
           type: 'warning'
         })
         return
@@ -427,5 +495,9 @@ export default {
 
 .pathNav{
   margin:15px 0;
+}
+
+.el-breadcrumb .el-breadcrumb__item{
+  cursor: pointer;
 }
 </style>
