@@ -531,7 +531,7 @@ export default {
     }
     return {
       id: '', // 查询ID
-      dataIsChange: -1, // 计数器，据此判断表单是否已编辑
+      dataIsChange: -3, // 计数器，据此判断表单是否已编辑
       dataIsChange2: 0, // 计数器，据此判断考试人员是否已编辑
       noLeaveprompt: false, // 表单提交后，设置为true，据此判断提交不再弹出离开提示
       activeStep: 1, // 当前激活步骤
