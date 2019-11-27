@@ -23,18 +23,18 @@ export default {
 		height: 50px;
 		line-height: 50px;
     padding: 0 8px;
-		float: left;
-    transition: background 0.5s;
+		/*float: left;*/
+    transition: 0.6s;
     font-size: 14px;
 
-    i.iconbangzhuzhongxin {
+    i {
       margin-right: 0px;
-      font-size: 18px;
+      font-size: 14px;
     }
 
     &:hover {
       color: $themeColor;
-      background-color: #f9f9f9;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
       cursor: pointer;
     }
 }

@@ -11,7 +11,6 @@
           <div class="fr">
             <div class="pointer share">
               <el-popover
-                v-model="shareVisible"
                 placement="bottom"
                 width="114"
                 height="120"
@@ -155,7 +154,6 @@ export default {
       nocomment,
       defaultAvatar,
       flag: 0, // 第一次进入滚动到底部
-      shareVisible: false, // 是否显示分享
       shareUrl: '', // 分享地址
       appraiseVisible: false, // 是否弹出评价
       lableList: [], // 评价标签
