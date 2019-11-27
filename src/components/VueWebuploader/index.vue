@@ -21,9 +21,9 @@
         </div>
       </div>
       <div class="content">
-        <div id="filePicker">
+        <div :id="uploadButton">
           <div class="drag-upload">
-            <i class="iconfont iconziyuan" />
+            <i class="iconfont iconshangchuan" />
             <p>可拖拽文件至此直接上传</p>
           </div>
         </div>
@@ -39,7 +39,7 @@
                 <li class="file-type" :icon="fileCategory(file.ext)">
                   <i
                     v-if="fileCategory(file.ext) === 'image'"
-                    class="iconfont icontupian-"
+                    class="iconfont icontupian1"
                   />
                   <i
                     v-else-if="fileCategory(file.ext) === 'video'"
@@ -47,11 +47,11 @@
                   />
                   <i
                     v-else-if="fileCategory(file.ext) === 'audio'"
-                    class="iconfont iconCombinedShape"
+                    class="iconfont iconyinpinwenjian"
                   />
                   <i
                     v-else-if="fileCategory(file.ext) === 'text'"
-                    class="iconfont iconword"
+                    class="iconfont icondoc"
                   />
                   <i
                     v-else-if="fileCategory(file.ext) === 'pdf'"
@@ -59,9 +59,9 @@
                   />
                   <i
                     v-else-if="fileCategory(file.ext) === 'compressed'"
-                    class="iconfont iconyasuobao-"
+                    class="iconfont iconyasuobao"
                   />
-                  <i v-else class="iconfont iconyemian" />
+                  <i v-else class="iconfont iconzu" />
                 </li>
                 <el-tooltip
                   class="file-name-tip"
@@ -144,6 +144,7 @@ export default {
   },
   data() {
     return {
+      uploadButton: 'filePicker',
       fileList: [], // 上传列表
       url: this.$store.state.user.applicationInfo.uploadUrl, // 租户上传路径
       formData: {
