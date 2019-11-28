@@ -114,8 +114,8 @@
         </el-form-item>
         <el-form-item label="发言控制" prop="can_discuss">
           <el-radio-group v-model="form.can_discuss">
-            <el-radio :label="1">开启</el-radio>
-            <el-radio :label="2">关闭</el-radio>
+            <el-radio :label="1">允许发言</el-radio>
+            <el-radio :label="2">禁止发言</el-radio>
           </el-radio-group>
         </el-form-item>
       </el-form>
@@ -273,6 +273,7 @@
     <select-file
       :visible.sync="visibleSelectFile"
       :is-upload="true"
+      :fileTypeList="fileTypeList"
       @checkedFile="checkedFile"
     />
     <AddLessonEvalLabels
@@ -348,6 +349,7 @@ export default {
       },
       visibleSelectVideo: false, // 弹出选择视频
       visibleSelectFile: false, // 弹出选择文件
+      fileTypeList: ['ppt', 'word', 'xls', 'pdf'], // 查询的文件类型
       visible2: false, // 弹出选择标签
       currentLabels: [], // 标签obj
       headers: {
@@ -725,6 +727,10 @@ export default {
 
     // 发布
     publish() {
+      if (!this.checkedGroupIds.length) {
+        this.$message.warning('请选择发布小组！')
+        return false
+      }
       this.form.labels.length = 0
       this.currentLabels.forEach(item => {
         this.form.labels.push(item.linc)
