@@ -1,14 +1,14 @@
 <template>
   <div class="form-edit">
-    <el-form ref="form" class="form" :model="form" label-width="120px">
+    <el-form ref="form" class="form" :model="form" :rules="rules" label-width="120px">
       <el-form-item label="角色名称：">
         <span>{{ form.rolename }}</span>
       </el-form-item>
       <el-form-item label="角色描述：">
         <span>{{ form.desc }}</span>
       </el-form-item>
-      <el-form-item label="角色类型：" prop="roleGroupId">
-        <el-radio-group v-model="manageType">
+      <el-form-item label="角色类型：" prop="manageType" v-show="manageTypeList.length !== 1">
+        <el-radio-group v-model="manageType" @change="handleChangeManageType">
           <el-radio v-for="item in manageTypeList" :key="item.id" :label="item.id">{{ item.name }}</el-radio>
         </el-radio-group>
       </el-form-item>
@@ -39,8 +39,8 @@
       </el-form-item>
     </el-form>
     <div id="btnGroup">
-      <el-button v-no-more-click type="primary" @click="save">提交</el-button>
-      <el-button type="primary" plain @click="cancel('form')">取消</el-button>
+      <el-button v-no-more-click type="primary" @click="save('form')">提交</el-button>
+      <el-button type="primary" plain @click="cancel()">取消</el-button>
     </div>
   </div>
 </template>
@@ -68,7 +68,13 @@ export default {
         id: '_id'
       },
       menuids: [], // 菜单权限集合
-      permissionids: [] // 功能权限集合
+      permissionids: [], // 功能权限集合
+      rules: {
+        manageType: [
+          { required: true, message: '请选择角色类型', trigger: 'blur' },
+          { required: true, message: '请选择角色类型', trigger: 'change' }
+        ]
+      }
     }
   },
   watch: {
@@ -85,7 +91,6 @@ export default {
   created() {
     this.id = this.$route.query.id
     this.getInitData()
-    this.getManageType()
     this.getAllMenus()
   },
   methods: {
@@ -93,13 +98,24 @@ export default {
     getInitData() {
       getOneRole({ _id: this.id }).then(response => {
         this.form = response.data.role
+        this.manageType = this.form.manageType
         this.dataIsChange = -1
+        this.getManageType()
       })
     },
+
+    // 处理更改角色类型
+    handleChangeManageType(val) {
+      this.form.manageType = val
+    },
+
     // 获取角色授权页面管理类型
     getManageType() {
       get_role_manage_type().then(res => {
         this.manageTypeList = res.data
+        if (this.manageTypeList.length === 1) {
+          this.manageType = this.manageTypeList[0].id
+        }
       })
     },
     // 获取权限树数据
@@ -140,23 +156,27 @@ export default {
       })
     },
     // 保存
-    save() {
-      const menuTree = this.$refs.menuTree.getCheckedNodes(false, true)
-      this.getMenuidsAndPermissionids(menuTree)
-      const param = {
-        _id: this.id,
-        manageType: this.manageType,
-        menuids: this.menuids,
-        permissionids: this.permissionids
-      }
-      setRoleAuthority(param).then(response => {
-        this.$message.success('角色授权成功！')
-        this.noLeaveprompt = true
-        this.$router.push({ path: '/user-center/role-manage/list' })
+    save(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          const menuTree = this.$refs.menuTree.getCheckedNodes(false, true)
+          this.getMenuidsAndPermissionids(menuTree)
+          const param = {
+            _id: this.id,
+            manageType: this.manageType,
+            menuids: this.menuids,
+            permissionids: this.permissionids
+          }
+          setRoleAuthority(param).then(response => {
+            this.$message.success('角色授权成功！')
+            this.noLeaveprompt = true
+            this.$router.push({ path: '/user-center/role-manage/list' })
+          })
+        }
       })
     },
     // 取消
-    cancel(formName) {
+    cancel() {
       this.$router.push({ path: '/user-center/role-manage/list' })
     }
   },

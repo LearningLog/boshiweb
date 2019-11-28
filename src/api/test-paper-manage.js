@@ -10,7 +10,12 @@ import { MessageBox } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 
-axios.interceptors.request.use(
+// create an axios instance
+const service = axios.create({
+  timeout: 5000 // request timeout
+})
+
+service.interceptors.request.use(
   config => {
     config.headers['Authorization'] = getToken()
     return config
@@ -27,7 +32,7 @@ axios.interceptors.request.use(
  * 例如需要对每个接口进行 403 权限认证判断
  * 如果本地响应的数据是 403 ，则我们提示用户：你没有权限执行该操作
  */
-axios.interceptors.response.use(
+service.interceptors.response.use(
   /**
    * If you want to get http information such as headers or status
    * Please return  response => response
@@ -166,7 +171,7 @@ export function generateExportPaper(data) {
 // 导出单个试卷
 export function exportPaperOne(data) {
   var url = process.env.VUE_APP_BASE_API + '/evaluation/paper/manage/downloadword'
-  return axios({
+  return service({
     url,
     method: 'post',
     responseType: 'blob',
@@ -176,7 +181,7 @@ export function exportPaperOne(data) {
 // 导出多个文件
 export function exportPaperMore(data) {
   var url = process.env.VUE_APP_BASE_API + '/evaluation/paper/manage/downloadzip'
-  return axios({
+  return service({
     url,
     method: 'post',
     responseType: 'blob',

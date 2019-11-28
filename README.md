@@ -10,11 +10,11 @@
 
 ## 简介
 
-博士知识库
+博识知识库
 
 ## 项目目标（价值）
 
-- 实现博士知识库
+- 实现博识知识库
 - 实现更加高级的产品设计，以及自定义页面设置，提供更好的用户体验
 - 开发低耦合、高容错、高复用的公用组件、公用方法，设定规范并在此过程中逐步修改并形成合理统一的前端开发规范及各种相关技术文档
 - 推动公司自己的UI框架开发
@@ -128,7 +128,7 @@
 - 使用 [Mock.js](https://github.com/nuysoft/Mock) 进行模拟请求数据
 - 使用 [nprogress](http://ricostacruz.com/nprogress/) 轻量的全局进度条控制
 - 使用 [vue-i18n](http://kazupon.github.io/vue-i18n/zh/) 实现国际化
-- 使用iconfont字体图标 [仓库地址](https://www.iconfont.cn/manage/index?spm=a313x.7781069.1998910419.11&manage_type=myprojects&projectId=1441544&keyword=)
+- 使用iconfont字体图标 [仓库地址](https://www.iconfont.cn/manage/index?spm=a313x.7781069.1998910419.11&manage_type=myprojects&projectId=1527226&keyword=)
 
 ## Build Setup
 

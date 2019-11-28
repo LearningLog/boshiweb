@@ -14,6 +14,9 @@
       <el-form-item label="昵称：">
         <span>{{ form.nickname }}</span>
       </el-form-item>
+      <el-form-item label="用户类型：">
+        <span>{{ form.type == 2 ? '管理层' : '非管理层' }}</span>
+      </el-form-item>
       <el-form-item label="手机号：">
         <span>{{ form.phone }}</span>
       </el-form-item>

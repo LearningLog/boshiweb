@@ -120,8 +120,17 @@
         <el-button @click="setRolesDialogVisible = false">取 消</el-button>
       </div>
     </el-dialog>
-    <el-dialog v-el-drag-dialog class="setRolesDialog" width="650px" title="分配小组" :visible.sync="setEgroupsDialogVisible">
-      <el-transfer v-model="einc" class="setEgroups" :data="noList2" :titles="['未分配小组', '已分配小组']" :props="defaultProps2" @change="handleTransferChange2" />
+    <el-dialog v-el-drag-dialog class="setRolesDialog" width="650px" title="分配小组" :visible.sync="setEgroupsDialogVisible" @close="closeSetRolesDialog">
+      <el-transfer v-model="einc" class="setEgroups" :data="noList2" :titles="['未分配小组', '已分配小组']" :props="defaultProps2" @change="handleTransferChange2">
+         <!--<span slot-scope="{ option }">{{ option.label }}-->
+          <!--<span class="groupName">{{ option.groupName }}</span>-->
+          <!--<div class="fr eincs">-->
+            <!--<el-checkbox-group v-model="chargemanList">-->
+              <!--<el-checkbox :label="option.inc">组长</el-checkbox>-->
+            <!--</el-checkbox-group>-->
+          <!--</div>-->
+        <!--</span>-->
+      </el-transfer>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="setEgroups">确定</el-button>
         <el-button @click="setEgroupsDialogVisible = false">取 消</el-button>
@@ -370,16 +379,11 @@ export default {
       this.checkedList.forEach(item => {
         groupIds.push(item.groupId)
       })
-      var groupIdList = [...new Set(groupIds)]
-      if (groupIdList.length > 1) {
+      var companyIds = [...new Set(groupIds)]
+      if (companyIds.length > 1) {
         this.$message.warning('请选择单租户下的用户进行批量分配角色！')
         return false
       }
-      let companyIds = []
-      this.checkedList.forEach(item => {
-        companyIds.push(item.groupId)
-      })
-      companyIds = [...new Set(companyIds)]
       getAllRole({ companyIds }).then(response => {
         this.noList = response.data.allRoleList
         this.setRolesDialogVisible = true
@@ -391,6 +395,12 @@ export default {
     handleTransferChange2(value, direction, movedKeys) {
       this.einc = value
     },
+
+    // 关闭批量设置小组
+    closeSetRolesDialog() {
+      this.chargemanList.length = 0
+    },
+
     // 设置角色
     setRoles() {
       const _ids = []
@@ -414,18 +424,13 @@ export default {
       this.checkedList.forEach(item => {
         groupIds.push(item.groupId)
       })
-      var groupIdList = [...new Set(groupIds)]
-      if (groupIdList.length > 1) {
+      var companyIds = [...new Set(groupIds)]
+      if (companyIds.length > 1) {
         this.$message.warning('请选择单租户下的用户进行批量小组管理！')
         return false
       }
 
-      let companyIds = []
-      this.checkedList.forEach(item => {
-        companyIds.push(item.groupId)
-      })
-      companyIds = [...new Set(companyIds)]
-      getAllEmployeeGroup({}).then(response => {
+      getAllEmployeeGroup({ companyIds }).then(response => {
         this.noList2 = response.data.allEmployeeGroupList
         this.setEgroupsDialogVisible = true
       })

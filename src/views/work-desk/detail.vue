@@ -12,10 +12,7 @@
         <div class="fl file-info m0a">
           <el-form ref="form" :model="form" class="formDetail" label-width="100px">
             <el-form-item label="">
-              <h1 class="tc" style="font-size: 30px;">{{ form.fileName }}</h1>
-            </el-form-item>
-            <el-form-item label="文件ID：">
-              <span>{{ form.mainFileId }}</span>
+              <h1 class="tc fileName" style="font-size: 30px;">{{ form.fileName }}</h1>
             </el-form-item>
             <el-form-item label="文件ID：">
               <span>{{ form.mainFileId }}</span>
@@ -62,22 +59,30 @@
 import clip from '@/utils/clipboard'
 import { getFileShowSize, parseTime } from '@/utils/index'
 import file_knowledge from '@/assets/images/file_knowledge.png'
+import { findFileById } from '@/api/work-desk'
 
 export default {
   data() {
     return {
       file_knowledge,
       listLoading: false,
+      mainFileId: '', // 查询ID
       list: [],
       form: []
     }
   },
   created() {
-    this.list = this.$route.query.row.subFileList
-    this.form = this.$route.query.row
-    console.log(this.list)
+    this.mainFileId = this.$route.query.id
+    this.getDetail()
   },
   methods: {
+    getDetail() {
+      findFileById({ mainFileId: this.mainFileId }).then(res => {
+        this.form = res.data
+        this.list = res.data.subFileList
+      })
+    },
+
     // 复制链接
     handleCopy(row, event) {
       clip(row.fileUrl, event)
@@ -116,6 +121,10 @@ export default {
   .formDetail {
     width: 50%;
     margin: 0 auto;
+  }
+  .fileName {
+    word-break: break-all;
+    word-wrap: break-word;
   }
   .detailForm {
     border: 1px solid #f2f2f2;

@@ -135,11 +135,11 @@ export default {
       this.listLoading = true
       source_file_list(param).then(res => {
         this.listLoading = false
-        const dt = res.data.page.list
+        const dt = res.data.page.list || []
         dt.forEach(item => {
           item.status_txt = status_map[item.enable_status]
         })
-        that.list = res.data.page.list
+        that.list = res.data.page.list || []
         that.total = res.data.page.totalCount
         that.page_count = res.data.page.pageCount
       }).catch(error => {

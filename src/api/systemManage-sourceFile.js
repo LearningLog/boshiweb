@@ -24,7 +24,7 @@ export function source_file_add(data) {
 // 文件来源详情
 export function source_file_detail(data) {
   return request({
-    url: '/sourceSystem/findById',
+    url: '/sourceSystem/findSourceSystemById',
     method: 'post',
     data
   })

@@ -266,7 +266,7 @@ export default {
 
     // 移除
     remove(file) {
-      this.$confirm('确定要删除上传【' + file.name + '】任务吗？', '删除任务', {
+      this.$confirm('确定要删除此上传任务吗？', '删除任务', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

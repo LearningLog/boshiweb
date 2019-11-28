@@ -52,7 +52,7 @@
       fit
       highlight-current-row
     >
-      <el-table-column align="center" label="课堂封面" min-width="166" show-overflow-tooltip>
+      <el-table-column align="center" label="课堂封面" min-width="166">
         <template slot-scope="scope">
           <el-image
             class="thumbnail-online-class"
