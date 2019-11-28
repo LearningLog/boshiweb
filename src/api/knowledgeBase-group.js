@@ -15,11 +15,11 @@ export function getCustomManageList() {
   })
 }
 // 小组下拉
-export function getUserEgroupInfo() {
+export function getUserEgroupInfo(data) {
   return request({
     url: 'system/user/getUserEgroupInfo',
     method: 'post',
-    data: {}
+    data
   })
 }
 

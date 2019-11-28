@@ -3,19 +3,37 @@
     <div id="topSearch">
       <el-select
         v-if="isSystemManage"
-        v-model="listQuery.ownerId"
-        placeholder="请选择所属小组"
+        v-model="listQuery.selectCompanyId"
+        placeholder="请选择所属租户"
         clearable
         filterable
         @change="companyChange($event)"
       >
         <el-option
           v-for="item in custom_list"
+          :key="item._id"
+          :label="item.customname"
+          :value="item._id"
+        />
+      </el-select>
+      
+      <el-select
+        v-if="isSystemManage"
+        v-model="listQuery.ownerId"
+        placeholder="请选择所属小组"
+        clearable
+        filterable
+        @change="groupChange($event)"
+      >
+        <el-option
+          v-for="item in group_list"
           :key="item.inc"
           :label="item.groupName"
           :value="item.inc"
         />
       </el-select>
+
+
       <el-input v-model="listQuery.keyword" placeholder="请输入文件名称" clearable @keyup.enter.native="topSearch">
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
       </el-input>
@@ -232,7 +250,8 @@ export default {
       crateFolderDialogVisible: false,
       isReset: true, // 租户组件重置
       listLoading: false,
-      custom_list: [], // 所属租户下拉列表
+      custom_list:[],//所属租户下拉
+      group_list: [], // 所属小组下拉列表
       navselctedCompanyName: '全部',
       listQuery: {
         classifyNodeIds: [], // 分类节点id数组列表，二维数组
@@ -353,12 +372,31 @@ export default {
   created() {
     this.listQuery.ownerId = this.$route.query.ownerId
     this.getUserEgroupInfo()// 小组
+    this.getCustomManageList()
     this.enterFloderByQueryPath()
     this.getCompanyAllTree()// 知识分类树
-
     this.getCompanyAllTreeFloorByName()// 知识分类啊啊
   },
   methods: {
+        // 获取所属租户list
+    getCustomManageList() {
+      getCustomManageList().then(res => {
+        const allSelect = {
+          customname: '全部',
+          _id: ''
+        }
+        this.custom_list = [allSelect, ...res.data]
+        // if (this.$route.query.selectCompanyId) {
+        //   // 只执行一次，为租户下拉还有文件夹到航的全部那里赋值
+        //   const selctedCompany = this.group_list.filter((v, k, arr) => {
+        //     if (v._id === this.$route.query.selectCompanyId) {
+        //       return v
+        //     }
+        //   })
+        //   this.navselctedCompanyName = selctedCompany[0].customname
+        // }
+      })
+    },
     // ----------知识分类-----start------
     // 点击选择分类
     checkClassify(classify) {
@@ -551,7 +589,7 @@ export default {
     },
     // 获取所属租户list
     getUserEgroupInfo() {
-      getUserEgroupInfo(this.listQuery.selectCompanyId).then(res => {
+      getUserEgroupInfo().then(res => {
         const allSelect = {
           groupName: '全部',
           inc: ''
@@ -559,10 +597,10 @@ export default {
         res.data.egroupInfo.forEach((v, k, arr) => {
           v.inc = v.inc + ''
         })
-        this.custom_list = [allSelect, ...res.data.egroupInfo]
+        this.group_list = [allSelect, ...res.data.egroupInfo]
         if (this.$route.query.ownerId) {
           // 只执行一次，为租户下拉还有文件夹到航的全部那里赋值
-          const selctedCompany = this.custom_list.filter((v, k, arr) => {
+          const selctedCompany = this.group_list.filter((v, k, arr) => {
             if (v.inc === this.$route.query.ownerId) {
               return v
             }
@@ -571,8 +609,21 @@ export default {
         }
       })
     },
-    companyChange(val) {
-      const selctedCompany = this.custom_list.filter((v, k, arr) => {
+    companyChange(event){
+      const postData={selectCompanyId:event}
+    getUserEgroupInfo(postData).then(res => {
+      const allSelect = {
+        groupName: '全部',
+        inc: ''
+      }
+      res.data.egroupInfo.forEach((v, k, arr) => {
+        v.inc = v.inc + ''
+      })
+      this.group_list = [allSelect, ...res.data.egroupInfo]
+    })
+    },
+    groupChange(val) {
+      const selctedCompany = this.group_list.filter((v, k, arr) => {
         if (v.inc === val) {
           return v
         }
