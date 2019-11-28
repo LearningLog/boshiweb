@@ -193,6 +193,11 @@ export default {
       }
     }
   },
+  created() {
+    this.getKnowledgeSearchList()
+    this.getCompanyAllTreeFloorByName()
+    this.listQuery2._id = this.$store.state.user.userSystemInfo.userInfo._id
+  },
   computed: {
     ...mapGetters(['keyword']),
     noMore() {

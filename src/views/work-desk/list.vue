@@ -69,7 +69,7 @@
       </transition>
     </div>
     <div id="topBtn">
-      <el-button type="primary" v-if="hasThisBtnPermission('workdesk-upload')" @click="showUpload()"><i class="iconfont iconziyuan" />上传资料</el-button>
+      <el-button type="primary" v-if="hasThisBtnPermission('workdesk-upload')" @click="showUpload()"><i class="iconfont iconshangchuan" />上传资料</el-button>
     </div>
     <el-table
       v-loading="listLoading"
