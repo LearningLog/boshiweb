@@ -91,7 +91,10 @@
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="get_list" />
     <div id="bottomOperation">
-      <a v-if="hasThisBtnPermission('user-import')" href="basicUser/img/import_user_ttemplates.xlsx" download="企业员工导入模版.xlsx">
+      <!-- <a v-if="hasThisBtnPermission('user-import')" href="basicUser/img/import_user_ttemplates.xlsx" download="企业员工导入模版.xlsx">
+        <el-button v-show="total>0" type="primary" plain><i class="iconfont iconxiazai" />模板下载</el-button>
+      </a> -->
+      <a v-if="hasThisBtnPermission('user-import')" @click="downloadFile()">
         <el-button v-show="total>0" type="primary" plain><i class="iconfont iconxiazai" />模板下载</el-button>
       </a>
       <el-upload
@@ -190,6 +193,8 @@ import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import { getToken } from '@/utils/auth'
 import { isCurrentEgroupManager, hasThisBtnPermission } from '@/utils/permission'
+import { downloadFileByStream } from '@/utils/downloadFileByStream'
+import { downloadModel } from '@/api/file-download'
 
 export default {
   components: { Pagination, TenantsGroupsRoles },
@@ -334,6 +339,11 @@ export default {
           this.get_list()
         })
       }
+    },
+    downloadFile() {
+      downloadModel({params: {code: 'USER_IMPORT'}}).then(response => {
+        downloadFileByStream({file: response.data, fileName: '企业员工导入模版.xlsx'})
+      })
     },
     // 删除单个角色
     del(row) {
