@@ -232,6 +232,7 @@ export default {
         deskAddFile(params).then(res => {
           console.log(res)
           this.$message.success('上传成功！')
+          store.dispatch('fileUpload/deskAddFileSuccess', res.data)
         })
       } else {
         // const currentFile = this.fileQueued.get(sourceUid)
@@ -249,7 +250,7 @@ export default {
         knowledgeCreateFile(params).then(res => {
           console.log(res)
           this.$message.success('上传成功！')
-          this.$emit('createFileSuccess', res)
+          store.dispatch('fileUpload/createFileSuccess', res.data)
         })
       }
     },
