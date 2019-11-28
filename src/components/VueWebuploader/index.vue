@@ -20,6 +20,9 @@
           <span @click="close"><i class="close iconfont iconguanbi" /></span>
         </div>
       </div>
+      <svg class="icon" aria-hidden="true">
+        <use xlink:href="icontupian" />
+      </svg>
       <div class="content">
         <div id="filePicker">
           <div class="drag-upload">
