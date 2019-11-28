@@ -12,9 +12,7 @@
               <el-form-item label="创建人">
                 <el-input v-model="listQuery.creater" placeholder="请输入创建人" clearable @keyup.enter.native="topSearch" />
               </el-form-item>
-              <el-form-item label="所属租户">
-                <el-input v-model="listQuery.customname" placeholder="请输入所属租户" clearable @keyup.enter.native="topSearch" />
-              </el-form-item>
+              <tenants-groups-roles :isRenderGroup="false" :is-render-role="false" :is-reset="isReset" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" @resetVal="resetVal" />
               <el-form-item label="创建时间">
                 <el-date-picker
                   v-model="time_range"
@@ -54,7 +52,8 @@
       />
       <el-table-column align="center" label="名称" show-overflow-tooltip>
         <template slot-scope="scope">
-          <el-link type="primary" @click="detail(scope.row)">{{ scope.row.rolename }}</el-link>
+          <el-link v-if="scope.row.auth" type="primary" @click="detail(scope.row)">{{ scope.row.rolename }}</el-link>
+          <span v-else>{{ scope.row.rolename }}</span>
         </template>
       </el-table-column>
       <el-table-column label="描述" min-width="100" align="center" show-overflow-tooltip prop="desc" />
@@ -92,14 +91,16 @@
 </template>
 
 <script>
+  import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
 import { role_list, role_delete, deleteMultiRole } from '@/api/systemManage-roleManage.js'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { isCurrentEgroupManager, hasThisBtnPermission } from '@/utils/permission'
 
 export default {
-  components: { Pagination },
+  components: { Pagination, TenantsGroupsRoles },
   data() {
     return {
+      isReset: false, // 是否重置三组
       listLoading: false,
       listQuery: {
         currentPage: 1, // 当前页码
@@ -108,7 +109,7 @@ export default {
         creater: '', // 创建人
         startTime: '', // 开始时间
         endTime: '', // 结束时间
-        customname: '' // 所属租户
+        selectCompanyId: '' // 所属租户
       },
       time_range: [],
       delCheckedList: [], // 选中的数据
@@ -141,6 +142,16 @@ export default {
       this.listQuery.customname = ''
       this.get_list()
     },
+
+    // 监听三组数据变化
+    tenantsGroupsRolesVal(val) {
+      this.listQuery.selectCompanyId = val.companyIds
+    },
+    // 重置监听三组数据变化
+    resetVal(val) {
+      this.isReset = false
+    },
+
     // 获取角色列表
     get_list() {
       this.time_range = this.time_range || []
