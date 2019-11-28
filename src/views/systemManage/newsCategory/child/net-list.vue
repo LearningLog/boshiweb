@@ -203,10 +203,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        const param = {}
-        param.ids = []
-        param.ids.push(row._id)
-        net_delet(param).then(response => {
+        net_delet({ _id: row._id }).then(response => {
           this.$message.success(response.message)
           if ((this.list.length - 1) === 0) { // 如果当前页数据已删完，则去往上一页
             this.listQuery.currentPage -= 1

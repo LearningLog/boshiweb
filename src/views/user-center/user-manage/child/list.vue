@@ -302,8 +302,9 @@ export default {
     // 导入成功
     handleUploadSuccess(data) {
       leadingIn({ fileId: data.data.fileId, url: data.data.saveHttpPath }).then(res => {
+        // console.log(res.data.data.length)
         if (res.data.importStatus) {
-          this.$message.success('模板导入成功！')
+          this.$message.success('模板导入' + res.data.data.length + '条！')
           this.get_list()
         } else {
           this.$message.error('模板导入失败！')
