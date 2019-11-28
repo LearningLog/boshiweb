@@ -230,7 +230,8 @@ export default {
       },
       selectNodes: [], // 选择的树的节点
       fileId: '', // 当前文件id
-      showCustom: true// 租户查询是否显示
+      showCustom: true, // 租户查询是否显示
+      timer: null// 定时任务
     }
   },
   beforeDestroy() {
@@ -238,7 +239,9 @@ export default {
   },
   created() {
     this.manageType = this.$store.state.user.userPermission.manageType
+
     this.get_list()
+    this.isNeedRefrssh()
 
     if (this.manageType !== 1) {
       this.showCustom = false
@@ -281,17 +284,32 @@ export default {
           this.list = response.data.page.list
           this.fileList = response.data.filePackageIdWorkDeskFile
           this.total = response.data.page.totalCount
-          this.isNeedRefrssh()
+          this.have_encoding()
         })
       } else if (this.manageType === 1 || this.manageType === 2) {
         getFileListManage(this.listQuery).then(response => {
           this.list = response.data.page.list
           this.fileList = response.data.filePackageIdWorkDeskFile
           this.total = response.data.page.totalCount
-          this.isNeedRefrssh()
+          this.have_encoding()
         })
       } else {
         this.$message.success('无法获取权限信息！')
+      }
+    },
+    // 获取编码中的文件
+    have_encoding() {
+      this.file_encoding.length = 0
+      for (let i = 0; i < this.list.length; i++) {
+        if (this.getFileListData(this.list[i].mainFileId).file_status === 1) {
+          this.file_encoding.push(this.list[i].mainFileId)
+        }
+      }
+      if (this.timer != null) {
+        clearInterval(this.timer)
+      }
+      if (this.file_encoding.length > 0) {
+        this.isNeedRefrssh()
       }
     },
     // 搜索
@@ -303,17 +321,9 @@ export default {
     },
     // 判断是否有编码中的数据需要刷新
     isNeedRefrssh() {
-      this.file_encoding.length = 0
-      for (let i = 0; i < this.list.length; i++) {
-        if (this.getFileListData(this.list[i].mainFileId).file_status === 1) {
-          this.file_encoding.push(this.list[i].mainFileId)
-        }
-      }
-      if (this.file_encoding.length > 0) {
-        setTimeout(() => {
-          this.get_list()
-        }, 50000)
-      }
+      this.timer = setInterval(() => {
+        this.get_list()
+      }, 5000)
     },
     // 重置
     reset() {
