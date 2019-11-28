@@ -329,8 +329,8 @@ export default {
     // 设置小组
     setEgroups() {
       this.setEgroupsDialogVisible = false
-      this.egroups = []
       if (this.form.einc.length) {
+        this.egroups = [];
         this.form.noList2.forEach((item, index) => {
           this.form.einc.forEach(item1 => {
             if (item1 === item.inc) {
