@@ -30,30 +30,7 @@ const knowledgeBase = {
           hidden: true,
           component: () => import('@/views/knowledge-base/company-base/child/list.vue'),
           meta: { title: '企业知识库列表', icon: '', activeMenu: '/knowledge-base/company-base' }
-        },
-        {
-          path: 'edit',
-          name: 'companyedit',
-          hidden: true,
-          component: () => import('@/views/knowledge-base/company-base/child/edit'),
-          meta: { title: '修改技能', icon: '', activeMenu: '/knowledge-base/company-base' }
-        },
-        {
-          path: 'add',
-          component: () => import('@/views/knowledge-base/company-base/child/add.vue'),
-          name: 'companyadd',
-          hidden: true,
-          meta: { title: '新增技能', icon: '', activeMenu: '/knowledge-base/company-base' }
-        },
-
-        {
-          path: 'detail',
-          name: 'companydetail',
-          hidden: true,
-          component: () => import('@/views/knowledge-base/company-base/child/detail'),
-          meta: { title: '技能详情', icon: '', activeMenu: '/knowledge-base/company-base' }
         }
-
       ]
     },
     {

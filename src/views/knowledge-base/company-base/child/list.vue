@@ -23,7 +23,7 @@
         <transition name="fade-advanced-search">
           <div v-show="popoverVisible" class="treeList">
                   <div class="treeList1">
-              <p class="treeName pointer" :class="{ activeClassify: isActiveClassify(treeList1)}" @click="checkClassify(treeList1)">{{ treeList1.treeName }}</p>
+              <!-- <p class="treeName pointer" :class="{ activeClassify: isActiveClassify(treeList1)}" @click="checkClassify(treeList1)">{{ treeList1.treeName }}</p> -->
               <ul v-if="treeList1.floorList.length" class="">
                 <li v-for="(item, index) in treeList1.floorList" :key="treeList1.treeId + index" class="treeItem">
                   <span v-for="item2 in item" :key="item2.nodeIdList.join()" class="classifyItem pointer" :class="{ activeClassify: isActiveClassify(item2) }" @click="checkClassify(item2)">{{ item2.nodeName }}</span>
@@ -31,7 +31,7 @@
               </ul>
             </div>
             <div v-if="treeList2.floorList.length" class="treeList2">
-              <p class="treeName pointer" :class="{ activeClassify: isActiveClassify(treeList2)}" @click="checkClassify(treeList2)">{{ treeList2.treeName }}</p>
+              <!-- <p class="treeName pointer" :class="{ activeClassify: isActiveClassify(treeList2)}" @click="checkClassify(treeList2)">{{ treeList2.treeName }}</p> -->
               <ul v-if="treeList2.floorList.length" class="">
                 <li v-for="(item, index) in treeList2.floorList" :key="treeList2.treeId + index" class="treeItem">
                   <span v-for="item2 in item" :key="item2.nodeIdList.join()" class="classifyItem pointer" :class="{ activeClassify: isActiveClassify(item2) }" @click="checkClassify(item2)">{{ item2.nodeName }}</span>
