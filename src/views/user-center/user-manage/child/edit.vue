@@ -232,19 +232,27 @@ export default {
     // 获取所属企业list
     getUserById() {
       getUserById({ _id: this.id }).then(res => {
-        this.form = res.data.user
-        this.form.type = this.form.type ? this.form.type * 1 : 1
+        const { user } = res.data
+        this.form.username = user.username
+        this.form.customname = user.customname
+        this.form.nickname = user.nickname
+        this.form.type = user.type ? user.type * 1 : 1
+        this.form.phone = user.phone
+        this.form.userStatus = user.userStatus
+        this.form.email = user.email
+        this.form.desc = user.desc
+
         this.roleIdList.length = 0
-        res.data.user.roleList.forEach(item => {
+        user.roleList.forEach(item => {
           this.roleIdList.push(item._id)
         })
-        this.roles = this.form.roleList
+        this.roles = JSON.parse(JSON.stringify(user.roleList))
         if (this.roles.length) {
           this.form.falseRole = '11111'
         }
-        this.egroups = this.form.groupList
+        this.egroups = user.groupList
         this.einc.length = 0
-        res.data.user.groupList.forEach(item => {
+        user.groupList.forEach(item => {
           this.einc.push(item.inc)
           if (item.manage) {
             this.chargemanList.push(item.inc)
@@ -309,6 +317,12 @@ export default {
     },
     handleTransferChange2(value, direction, movedKeys) {
       this.form.einc = value
+      for (var i = this.chargemanList.length - 1; i >= 0; i--) {
+        var item = this.chargemanList[i]
+        if (this.form.einc.indexOf(item) === -1) {
+          this.chargemanList.splice(i, 1)
+        }
+      }
     },
     // 设置角色
     setRoles() {
@@ -331,7 +345,7 @@ export default {
     // 获取所有小组
     getEgroups() {
       getAllEmployeeGroup({ _id: this.id }).then(response => {
-        this.form.noList2 = response.data.allEmployeeGroupList.concat(response.data.existEmployeeGroupList)
+        this.form.noList2 = response.data.allEmployeeGroupList.concat(response.data.existEmployeeGroupList || [])
         // response.data.existEmployeeGroupList.forEach(item => {
         //   this.einc.push(item._id)
         // })
@@ -341,8 +355,8 @@ export default {
     // 设置小组
     setEgroups() {
       this.setEgroupsDialogVisible = false
-      if (this.form.einc.length) {
-        this.egroups = [];
+      if (this.einc.length) {
+        this.egroups = []
         this.form.noList2.forEach((item, index) => {
           this.einc.forEach(item1 => {
             if (item1 === item.inc) {
