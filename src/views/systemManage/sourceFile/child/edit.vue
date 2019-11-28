@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { source_file_detail, source_file_edit } from '@/api/systemManage-sourceFile.js'
+import { source_file_detail, source_file_edit } from '@/api/systemManage-sourceFile'
 export default {
   data() {
     return {

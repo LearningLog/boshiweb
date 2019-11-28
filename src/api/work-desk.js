@@ -89,6 +89,16 @@ export function getFileList(data) {
     data
   })
 }
+
+// 文件详情
+export function findFileById(data) {
+  return request({
+    url: '/workDeskFileList/findFileById',
+    method: 'post',
+    data
+  })
+}
+
 // 根据租户获取用户列表
 export function findUserListByGroupId(data) {
   return request({

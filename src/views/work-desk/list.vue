@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div id="topSearch">
-      <el-input v-model="listQuery.content" placeholder="请输入文件名" clearable @keyup.enter.native="topSearch">
+      <el-input v-model="listQuery.fileName" placeholder="请输入文件名" clearable @keyup.enter.native="topSearch">
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
       </el-input>
       <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">高级搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
@@ -69,10 +69,9 @@
       </transition>
     </div>
     <div id="topBtn">
-      <el-button type="primary" v-if="hasThisBtnPermission('workdesk-upload')" @click="showUpload()"><i class="iconfont iconshangchuan" />上传资料</el-button>
+      <el-button v-if="hasThisBtnPermission('workdesk-upload')" type="primary" @click="showUpload()"><i class="iconfont iconshangchuan" />上传资料</el-button>
     </div>
     <el-table
-      v-loading="listLoading"
       :data="list"
       element-loading-text="Loading"
       border
@@ -221,7 +220,6 @@ export default {
       time_range: [], // 时间范围
       fileSource_list: [{ value: 'file_upload', name: '个人上传' }, { value: 'live_record', name: '直播收录' }, { value: 'company_knowledge_lib', name: '企业知识库收藏' },
         { value: 'group_knowledge_lib', name: '小组知识库收藏' }, { value: 'courseware_upload', name: '课件上传' }],
-      listLoading: true, // 表格是否开启遮罩
       isDisabled: false, // 推送按钮是否可用
       menu_tree_flag: false, // 是否显示树
       treeData: [], // 推送的知识库菜单
@@ -234,6 +232,9 @@ export default {
       fileId: '', // 当前文件id
       showCustom: true// 租户查询是否显示
     }
+  },
+  beforeDestroy() {
+
   },
   created() {
     this.manageType = this.$store.state.user.userPermission.manageType
@@ -275,13 +276,11 @@ export default {
     },
     // 获取列表数据
     get_list() {
-      this.listLoading = true
       if (this.manageType === 3) {
         getFileList(this.listQuery).then(response => {
           this.list = response.data.page.list
           this.fileList = response.data.filePackageIdWorkDeskFile
           this.total = response.data.page.totalCount
-          this.listLoading = false
           this.isNeedRefrssh()
         })
       } else if (this.manageType === 1 || this.manageType === 2) {
@@ -289,7 +288,6 @@ export default {
           this.list = response.data.page.list
           this.fileList = response.data.filePackageIdWorkDeskFile
           this.total = response.data.page.totalCount
-          this.listLoading = false
           this.isNeedRefrssh()
         })
       } else {
@@ -505,7 +503,7 @@ export default {
     },
     // 查看详情
     detail(row) {
-      this.$router.push({ path: '/work-desk/detail', query: { row: row }})
+      this.$router.push({ path: '/work-desk/detail', query: { id: row.mainFileId }})
     },
     parseTime(time, cFormat) {
       return parseTime(time, cFormat)

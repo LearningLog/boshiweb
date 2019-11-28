@@ -23,6 +23,12 @@
       <el-form-item label="昵称" prop="nickname">
         <el-input v-model="form.nickname" placeholder="请输入昵称" :max-length="20" clearable />
       </el-form-item>
+      <el-form-item label="用户类型" prop="type">
+        <el-radio-group v-model="form.type">
+          <el-radio :label="1">非管理层</el-radio>
+          <el-radio :label="2">管理层</el-radio>
+        </el-radio-group>
+      </el-form-item>
       <el-form-item label="手机号" prop="phone">
         <el-input v-model="form.phone" placeholder="请输入手机号" clearable />
       </el-form-item>
@@ -145,6 +151,7 @@ export default {
         username: '', // 用户名称
         groupId: '', // 所属企业
         nickname: '', // 昵称
+        type: 1, // 用户类型
         phone: '', // 手机号
         password: '', // 密码
         setUpPwd: 0, // 默认不修改密码
@@ -177,6 +184,10 @@ export default {
           { required: true, message: '请输入用户登入平台后显示的名称（长度在 2 到 20 位字符）', trigger: 'change' },
           { min: 2, max: 20, message: '长度在 2 到 20 位字符', trigger: 'blur' },
           { min: 2, max: 20, message: '长度在 2 到 20 位字符', trigger: 'change' }
+        ],
+        type: [
+          { required: true, message: '请选择用户类型', trigger: 'blur' },
+          { required: true, message: '请选择用户类型', trigger: 'change' }
         ],
         phone: [
           { required: true, validator: phone, message: '请输入11位手机号', trigger: 'blur' },
@@ -222,6 +233,7 @@ export default {
     getUserById() {
       getUserById({ _id: this.id }).then(res => {
         this.form = res.data.user
+        this.form.type = this.form.type ? this.form.type * 1 : 1
         this.roleIdList.length = 0
         res.data.user.roleList.forEach(item => {
           this.roleIdList.push(item._id)
