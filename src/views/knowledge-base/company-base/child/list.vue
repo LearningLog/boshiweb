@@ -200,6 +200,7 @@
 
 <script>
 import store from '@/store'
+import { mapGetters } from 'vuex'
 import { getCustomManageList, listDirFile, getCompanyAllTree, classifyFiles, updateDir, deleteDirFile, createDirFile, shareFileToWorkDesk } from '@/api/knowledgeBase-company'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
@@ -313,16 +314,17 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['createFileSuccessData']),
     isSystemManage() {
       return this.$store.state.user.isSystemManage
-    },
-    haha() {
-	  	return this.$store.state.user.isSystemManage
-	  }
+    }
+    // uploadSuccess() {
+	  // 	return this.$store.state.user.isSystemManage
+	  // }
   },
-
   watch: {
-    haha() {
+    createFileSuccessData(val) {
+      this.enterFloderByQueryPath()
     },
     $route() {
       this.enterFloderByQueryPath()
@@ -452,8 +454,6 @@ export default {
       })
     },
     companyChange(val) {
-
-
       const selctedCompany = this.custom_list.filter((v, k, arr) => {
         if (v._id === val) {
           return v
