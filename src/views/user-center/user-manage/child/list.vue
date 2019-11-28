@@ -356,6 +356,15 @@ export default {
         this.$message.warning('请选择用户！')
         return false
       }
+      var groupIds = []
+      this.checkedList.forEach(item => {
+        groupIds.push(item.groupId)
+      })
+      var groupIdList = [...new Set(groupIds)]
+      if (groupIdList.length > 1) {
+        this.$message.warning('请选择单租户下的用户进行批量分配角色！')
+        return false
+      }
       let companyIds = []
       this.checkedList.forEach(item => {
         companyIds.push(item.groupId)
@@ -381,6 +390,7 @@ export default {
       batchAssignRole({ roleIdList: this.roleIdList, _ids }).then(res => {
         this.$message.success('批量分配角色成功！')
         this.setRolesDialogVisible = false
+        this.get_list()
       })
     },
 
@@ -419,6 +429,7 @@ export default {
       batchGroupsManage({ einc: this.einc, _ids }).then(res => {
         this.$message.success('批量分配小组成功！')
         this.setEgroupsDialogVisible = false
+        this.get_list()
       })
     }
   }

@@ -248,7 +248,8 @@ export default {
         }
         knowledgeCreateFile(params).then(res => {
           console.log(res)
-          this.$message.success('上传成功')
+          this.$message.success('上传成功！')
+          this.$emit('createFileSuccess', res)
         })
       }
     },
