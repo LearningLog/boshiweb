@@ -774,7 +774,7 @@ export default {
     createFolder() {
       if (!this.listQuery.ownerId) {
         this.$message({
-          message: '请先勾选文件',
+          message: '请先勾选小组',
           type: 'warning'
         })
         return false
