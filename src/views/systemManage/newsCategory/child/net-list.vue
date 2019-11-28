@@ -93,7 +93,7 @@
     <!--修改网站弹窗-->
     <el-dialog
       v-el-drag-dialog
-      title="新增网站"
+      title="修改网站"
       :visible.sync="net_edit_flag"
       width="50%"
     >
