@@ -239,6 +239,8 @@ export default {
             this.$message.success('添加成功！')
             this.net_add_flag = false
             this.get_list()
+            this.net_add_form.website_desc = ''
+            this.net_add_form.website_name = ''
           })
         }
       })
