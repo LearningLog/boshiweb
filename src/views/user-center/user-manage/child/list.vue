@@ -91,7 +91,10 @@
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="get_list" />
     <div id="bottomOperation">
-      <a v-if="hasThisBtnPermission('user-import')" href="basicUser/img/import_user_ttemplates.xlsx" download="企业员工导入模版.xlsx">
+      <!-- <a v-if="hasThisBtnPermission('user-import')" href="basicUser/img/import_user_ttemplates.xlsx" download="企业员工导入模版.xlsx">
+        <el-button v-show="total>0" type="primary" plain><i class="iconfont iconxiazai" />模板下载</el-button>
+      </a> -->
+      <a v-if="hasThisBtnPermission('user-import')" @click="downloadFile()">
         <el-button v-show="total>0" type="primary" plain><i class="iconfont iconxiazai" />模板下载</el-button>
       </a>
       <el-upload
@@ -117,8 +120,17 @@
         <el-button @click="setRolesDialogVisible = false">取 消</el-button>
       </div>
     </el-dialog>
-    <el-dialog v-el-drag-dialog class="setRolesDialog" width="650px" title="分配小组" :visible.sync="setEgroupsDialogVisible">
-      <el-transfer v-model="einc" class="setEgroups" :data="noList2" :titles="['未分配小组', '已分配小组']" :props="defaultProps2" @change="handleTransferChange2" />
+    <el-dialog v-el-drag-dialog class="setRolesDialog" width="650px" title="分配小组" :visible.sync="setEgroupsDialogVisible" @close="closeSetRolesDialog">
+      <el-transfer v-model="einc" class="setEgroups" :data="noList2" :titles="['未分配小组', '已分配小组']" :props="defaultProps2" @change="handleTransferChange2">
+         <!--<span slot-scope="{ option }">{{ option.label }}-->
+          <!--<span class="groupName">{{ option.groupName }}</span>-->
+          <!--<div class="fr eincs">-->
+            <!--<el-checkbox-group v-model="chargemanList">-->
+              <!--<el-checkbox :label="option.inc">组长</el-checkbox>-->
+            <!--</el-checkbox-group>-->
+          <!--</div>-->
+        <!--</span>-->
+      </el-transfer>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="setEgroups">确定</el-button>
         <el-button @click="setEgroupsDialogVisible = false">取 消</el-button>
@@ -181,6 +193,8 @@ import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import { getToken } from '@/utils/auth'
 import { isCurrentEgroupManager, hasThisBtnPermission } from '@/utils/permission'
+import { downloadFileByStream } from '@/utils/downloadFileByStream'
+import { downloadModel } from '@/api/file-download'
 
 export default {
   components: { Pagination, TenantsGroupsRoles },
@@ -288,8 +302,9 @@ export default {
     // 导入成功
     handleUploadSuccess(data) {
       leadingIn({ fileId: data.data.fileId, url: data.data.saveHttpPath }).then(res => {
+        // console.log(res.data.data.length)
         if (res.data.importStatus) {
-          this.$message.success('模板导入成功！')
+          this.$message.success('模板导入' + res.data.data.length + '条！')
           this.get_list()
         } else {
           this.$message.error('模板导入失败！')
@@ -326,6 +341,11 @@ export default {
         })
       }
     },
+    downloadFile() {
+      downloadModel({params: {code: 'USER_IMPORT'}}).then(response => {
+        downloadFileByStream({file: response.data, fileName: '企业员工导入模版.xlsx'})
+      })
+    },
     // 删除单个角色
     del(row) {
       this.$confirm('删除用户后，该用户下所有的数据都将被清除并且不可修复。请问是否继续进行删除操作？', '删除用户', {
@@ -360,16 +380,11 @@ export default {
       this.checkedList.forEach(item => {
         groupIds.push(item.groupId)
       })
-      var groupIdList = [...new Set(groupIds)]
-      if (groupIdList.length > 1) {
+      var companyIds = [...new Set(groupIds)]
+      if (companyIds.length > 1) {
         this.$message.warning('请选择单租户下的用户进行批量分配角色！')
         return false
       }
-      let companyIds = []
-      this.checkedList.forEach(item => {
-        companyIds.push(item.groupId)
-      })
-      companyIds = [...new Set(companyIds)]
       getAllRole({ companyIds }).then(response => {
         this.noList = response.data.allRoleList
         this.setRolesDialogVisible = true
@@ -381,6 +396,12 @@ export default {
     handleTransferChange2(value, direction, movedKeys) {
       this.einc = value
     },
+
+    // 关闭批量设置小组
+    closeSetRolesDialog() {
+      this.chargemanList.length = 0
+    },
+
     // 设置角色
     setRoles() {
       const _ids = []
@@ -404,18 +425,13 @@ export default {
       this.checkedList.forEach(item => {
         groupIds.push(item.groupId)
       })
-      var groupIdList = [...new Set(groupIds)]
-      if (groupIdList.length > 1) {
+      var companyIds = [...new Set(groupIds)]
+      if (companyIds.length > 1) {
         this.$message.warning('请选择单租户下的用户进行批量小组管理！')
         return false
       }
 
-      let companyIds = []
-      this.checkedList.forEach(item => {
-        companyIds.push(item.groupId)
-      })
-      companyIds = [...new Set(companyIds)]
-      getAllEmployeeGroup({}).then(response => {
+      getAllEmployeeGroup({ companyIds }).then(response => {
         this.noList2 = response.data.allEmployeeGroupList
         this.setEgroupsDialogVisible = true
       })

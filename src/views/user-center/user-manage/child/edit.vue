@@ -23,6 +23,12 @@
       <el-form-item label="昵称" prop="nickname">
         <el-input v-model="form.nickname" placeholder="请输入昵称" :max-length="20" clearable />
       </el-form-item>
+      <el-form-item label="用户类型" prop="type">
+        <el-radio-group v-model="form.type">
+          <el-radio :label="1">非管理层</el-radio>
+          <el-radio :label="2">管理层</el-radio>
+        </el-radio-group>
+      </el-form-item>
       <el-form-item label="手机号" prop="phone">
         <el-input v-model="form.phone" placeholder="请输入手机号" clearable />
       </el-form-item>
@@ -145,6 +151,7 @@ export default {
         username: '', // 用户名称
         groupId: '', // 所属企业
         nickname: '', // 昵称
+        type: 1, // 用户类型
         phone: '', // 手机号
         password: '', // 密码
         setUpPwd: 0, // 默认不修改密码
@@ -177,6 +184,10 @@ export default {
           { required: true, message: '请输入用户登入平台后显示的名称（长度在 2 到 20 位字符）', trigger: 'change' },
           { min: 2, max: 20, message: '长度在 2 到 20 位字符', trigger: 'blur' },
           { min: 2, max: 20, message: '长度在 2 到 20 位字符', trigger: 'change' }
+        ],
+        type: [
+          { required: true, message: '请选择用户类型', trigger: 'blur' },
+          { required: true, message: '请选择用户类型', trigger: 'change' }
         ],
         phone: [
           { required: true, validator: phone, message: '请输入11位手机号', trigger: 'blur' },
@@ -221,18 +232,27 @@ export default {
     // 获取所属企业list
     getUserById() {
       getUserById({ _id: this.id }).then(res => {
-        this.form = res.data.user
+        const { user } = res.data
+        this.form.username = user.username
+        this.form.customname = user.customname
+        this.form.nickname = user.nickname
+        this.form.type = user.type ? user.type * 1 : 1
+        this.form.phone = user.phone
+        this.form.userStatus = user.userStatus
+        this.form.email = user.email
+        this.form.desc = user.desc
+
         this.roleIdList.length = 0
-        res.data.user.roleList.forEach(item => {
+        user.roleList.forEach(item => {
           this.roleIdList.push(item._id)
         })
-        this.roles = this.form.roleList
+        this.roles = JSON.parse(JSON.stringify(user.roleList))
         if (this.roles.length) {
           this.form.falseRole = '11111'
         }
-        this.egroups = this.form.groupList
+        this.egroups = user.groupList
         this.einc.length = 0
-        res.data.user.groupList.forEach(item => {
+        user.groupList.forEach(item => {
           this.einc.push(item.inc)
           if (item.manage) {
             this.chargemanList.push(item.inc)
@@ -297,6 +317,12 @@ export default {
     },
     handleTransferChange2(value, direction, movedKeys) {
       this.form.einc = value
+      for (var i = this.chargemanList.length - 1; i >= 0; i--) {
+        var item = this.chargemanList[i]
+        if (this.form.einc.indexOf(item) === -1) {
+          this.chargemanList.splice(i, 1)
+        }
+      }
     },
     // 设置角色
     setRoles() {
@@ -319,7 +345,7 @@ export default {
     // 获取所有小组
     getEgroups() {
       getAllEmployeeGroup({ _id: this.id }).then(response => {
-        this.form.noList2 = response.data.allEmployeeGroupList.concat(response.data.existEmployeeGroupList)
+        this.form.noList2 = response.data.allEmployeeGroupList.concat(response.data.existEmployeeGroupList || [])
         // response.data.existEmployeeGroupList.forEach(item => {
         //   this.einc.push(item._id)
         // })
@@ -329,8 +355,8 @@ export default {
     // 设置小组
     setEgroups() {
       this.setEgroupsDialogVisible = false
-      this.egroups = []
       if (this.einc.length) {
+        this.egroups = []
         this.form.noList2.forEach((item, index) => {
           this.einc.forEach(item1 => {
             if (item1 === item.inc) {

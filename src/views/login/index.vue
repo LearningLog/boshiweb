@@ -454,15 +454,18 @@ export default {
     show_agreement_fn() {
       this.show_agreement = true
     },
+
     // 协议统一否
     agree_fn() {
       this.agree_check = true
       this.show_agreement = false
     },
+
     // 是否忘记密码
     foget_pwd_fn() {
       this.forget_pwd_flag = true
     },
+
     // 登录
     login_fn() {
       const that = this
@@ -486,8 +489,9 @@ export default {
       param.password = pwd
       that.$store.dispatch('user/login', param).then((res) => {
         if (res.code === 0) {
-          let toPath = ('#' + (this.redirect || '/'))
-          that.$router.push(toPath)
+          let toPath = ('#' + (this.redirect || ' '))
+          toPath = createFullUrl(toPath)
+          window.location.href = toPath
         }
         if (res.code === 5001) {
           that.YZ_id = res.data
@@ -497,6 +501,7 @@ export default {
         console.log(res)
       })
     },
+
     // 手机号第一次登录的弹窗
     show_first_fn() {
       const that = this
@@ -510,6 +515,7 @@ export default {
         console.log('取消激活')
       })
     },
+
     // 手机号第一次登录的发送验证码
     first_sendsms_fn() {
       const that = this
@@ -529,6 +535,7 @@ export default {
         console.log(error)
       })
     },
+
     // 手机号第一次登录的倒计时
     first_countdown_fn() {
       const that = this
@@ -549,6 +556,7 @@ export default {
         }, 1000)
       }
     },
+
     // 验证手机号第一次登录的验证码
     first_sms_vali_fn() {
       const that = this
@@ -567,6 +575,7 @@ export default {
         })
       }
     },
+
     // 忘记密码发送验证码
     forget_sendsms_fn() {
       const that = this
@@ -590,6 +599,7 @@ export default {
         console.log(error)
       })
     },
+
     // 忘记密码倒计时
     forget_countdown() {
       const that = this
@@ -607,6 +617,7 @@ export default {
       }, 1000)
       console.log(that.forget_down)
     },
+
     // 重置密码登录
     forget_log_fn() {
       const that = this

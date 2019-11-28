@@ -106,6 +106,7 @@
         <!--学习榜列表-->
         <div v-show="listSort == 0">
           <el-table
+            :default-sort="{prop: 'studyTimeTotal', order: 'descending'}"
             :data="tableData"
             style="width: 100%"
             height="370"
@@ -168,6 +169,7 @@
         <!--课程发布榜列表-->
         <div v-show="listSort == 1">
           <el-table
+            :default-sort="{prop: 'publishTrainCount', order: 'descending'}"
             :data="courseTableData"
             style="width: 100%"
             height="370"
@@ -1186,7 +1188,7 @@ export default {
     },
     // 排行榜标签切换
     listActive(index) {
-
+      this.listSort = index
     },
 
     // 排行榜导出

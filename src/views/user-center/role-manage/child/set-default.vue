@@ -72,8 +72,11 @@ export default {
     getInitData() {
       getOneRole({ _id: this.id }).then(response => {
         this.form = response.data.role
-        if (!response.data.role.defaultRoleCode) {
+        if (!this.form.defaultRoleCode) {
           this.form.defaultRoleCode = '4'
+        }
+        if (!this.form.defaultRole) {
+          this.form.defaultRole = 2
         }
         this.dataIsChange = -1
       })

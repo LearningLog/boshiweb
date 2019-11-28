@@ -86,7 +86,7 @@
         width="50"
         fixed
       />
-      <el-table-column align="center" label="课堂封面" min-width="166" show-overflow-tooltip>
+      <el-table-column align="center" label="课堂封面" min-width="166">
         <template slot-scope="scope">
           <el-image
             class="thumbnail-online-class"
@@ -100,7 +100,7 @@
           <el-link type="primary" @click="detail(scope.row)">{{ scope.row.cname }}</el-link>
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="标签" min-width="100" align="center" prop="labelNames" show-overflow-tooltip />
+      <el-table-column class-name="status-col" label="标签" min-width="100" align="center" prop="labelName" show-overflow-tooltip />
       <!--<el-table-column class-name="status-col" label="开始时间" min-width="140" align="center" prop="s_time" />-->
       <el-table-column class-name="status-col" label="课程评价" min-width="150" align="center" show-overflow-tooltip>
         <template slot-scope="scope">

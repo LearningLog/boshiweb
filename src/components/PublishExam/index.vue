@@ -204,9 +204,9 @@ export default {
         }
       }
       if (flag) {
-        this.exam.memer = '111'
+        this.paparForm.memer = '111'
       } else {
-        this.exam.memer = ''
+        this.paparForm.memer = ''
       }
     },
     // 取消
