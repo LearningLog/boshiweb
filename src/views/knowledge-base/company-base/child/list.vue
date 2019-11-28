@@ -391,6 +391,7 @@ export default {
       this.total = 0
       this.listQuery.currentPage = 0
 
+      this.$router.push({ path: '/knowledge-base/company-base/list', query: { path: '', selectCompanyId: this.listQuery.selectCompanyId }})
        this.enterFloderByQueryPath()
       // this.getKnowledgeSearchList()
     },
