@@ -16,50 +16,30 @@
           :value="item._id"
         />
       </el-select>
-      <el-input v-model="listQuery.content" placeholder="请输入文件名称" clearable @keyup.enter.native="topSearch">
+      <el-input v-model="listQuery.keyword" placeholder="请输入文件名称" clearable @keyup.enter.native="topSearch">
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
       </el-input>
-      <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">高级搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
-      <transition name="fade-advanced-search">
-        <el-row v-show="popoverVisible">
-          <el-card id="advancedSearchArea" shadow="never">
-            <el-form ref="form" :model="listQuery" label-width="100px">
-              <el-form-item label="创建时间">
-                <el-date-picker
-                  v-model="time_range"
-                  type="daterange"
-                  clearable
-                  range-separator="至"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                  value-format="yyyy-MM-dd"
-                />
-              </el-form-item>
-
-              <!-- <el-form-item v-if="isSystemManage" label="所属租户">
-                <el-select
-                  v-model="listQuery.selectCompanyId"
-                  placeholder="请选择所属租户"
-                  clearable
-                  filterable
-                >
-                  <el-option
-                    v-for="item in custom_list"
-                    :key="item._id"
-                    :label="item.customname"
-                    :value="item._id"
-                  />
-                </el-select>
-              </el-form-item> -->
-
-            </el-form>
-            <div id="searchPopoverBtn">
-              <el-button type="primary" @click="topSearch">搜索</el-button>
-              <el-button type="primary" plain @click="reset">重置</el-button>
+      <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">按知识分类搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
+        <transition name="fade-advanced-search">
+          <div v-show="popoverVisible" class="treeList">
+                  <div class="treeList1">
+              <p class="treeName pointer" :class="{ activeClassify: isActiveClassify(treeList1)}" @click="checkClassify(treeList1)">{{ treeList1.treeName }}</p>
+              <ul v-if="treeList1.floorList.length" class="">
+                <li v-for="(item, index) in treeList1.floorList" :key="treeList1.treeId + index" class="treeItem">
+                  <span v-for="item2 in item" :key="item2.nodeIdList.join()" class="classifyItem pointer" :class="{ activeClassify: isActiveClassify(item2) }" @click="checkClassify(item2)">{{ item2.nodeName }}</span>
+                </li>
+              </ul>
             </div>
-          </el-card>
-        </el-row>
-      </transition>
+            <div v-if="treeList2.floorList.length" class="treeList2">
+              <p class="treeName pointer" :class="{ activeClassify: isActiveClassify(treeList2)}" @click="checkClassify(treeList2)">{{ treeList2.treeName }}</p>
+              <ul v-if="treeList2.floorList.length" class="">
+                <li v-for="(item, index) in treeList2.floorList" :key="treeList2.treeId + index" class="treeItem">
+                  <span v-for="item2 in item" :key="item2.nodeIdList.join()" class="classifyItem pointer" :class="{ activeClassify: isActiveClassify(item2) }" @click="checkClassify(item2)">{{ item2.nodeName }}</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </transition>
     </div>
     <div id="topBtn">
       <el-dropdown trigger="click">
@@ -68,12 +48,11 @@
         </el-button>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item @click.native="deleteDirFileSelected"><i class="iconfont iconshanchu" />批量删除</el-dropdown-item>
-          <el-dropdown-item><i class="iconfont iconshangyi1" />批量移动</el-dropdown-item>
+          <el-dropdown-item @click.native="moveFileSelected"><i class="iconfont iconshangyi1" />批量移动</el-dropdown-item>
           <el-dropdown-item @click.native="downloadFileSelected"><i class="iconfont iconxiazai" />批量下载</el-dropdown-item>
           <el-dropdown-item @click.native="shareFileToWorkDeskSlected"><i class="iconfont iconfenxiang1" />批量收藏</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
-      <el-button type="primary" @click="changeQuery"><i class="iconfont iconzengjia" />改变路由query</el-button>
       <el-button type="primary" @click="createFolder"><i class="iconfont iconzengjia" />创建文件夹</el-button>
       <el-button type="primary" @click="classifySelected"><i class="iconfont iconzengjia" />加入知识分类</el-button>
       <el-button type="primary" @click="showUpload"><i class="iconfont iconzengjia" />上传资料</el-button>
@@ -86,6 +65,19 @@
         <el-breadcrumb-item v-for="(item,index) in pathNavData" :key="index" @click.native="pathNavClick(item,index)">{{ item.name }}</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
+          <div class="classifyTags">
+        <el-tag
+          v-for="(item, index) in checkedClassifys"
+          :key="item.nodeIdList.join()"
+          closable
+          size="medium"
+          :disable-transitions="false"
+          type="success"
+          @close="handlePaperLabelDel(index)"
+        >
+          {{ item.nodeName }}
+        </el-tag>
+      </div>
     <el-table
       v-loading="listLoading"
       :data="list"
@@ -119,8 +111,8 @@
           </template>
           <div v-else @click="enterFolder(row)">
 
-            <svg class="icon" aria-hidden="true">
-              <use :xlink:href="row.fileAttributeDesc==='dir' ? '#iconwenjianjia':''" />
+            <svg class="icon" aria-hidden="true" style="font-size:18px;">
+              <use :xlink:href="parseTypeOfFile(row)" />
             </svg>
             <!-- <i v-if="row.fileAttributeDesc==='dir'" class="iconfont iconwenjianjia" /> -->
             {{ row.fileName }}
@@ -130,7 +122,13 @@
       </el-table-column>
       <el-table-column label="文件大小" min-width="100" align="center" show-overflow-tooltip prop="skill_desc" />
       <el-table-column align="center" label="文件属性" min-width="140" show-overflow-tooltip prop="fileAttributeDesc" />
-      <el-table-column align="center" label="创建人" show-overflow-tooltip prop="customname" />
+      <el-table-column align="center" label="创建人" show-overflow-tooltip prop="customname" >
+      <template  slot-scope="{row}">
+        <div>
+          {{ parseCreateUser(row) }}
+        </div>
+      </template>
+      </el-table-column>
       <el-table-column align="center" label="创建时间" min-width="140" show-overflow-tooltip prop="createTimeStr" />
       <el-table-column class-name="status-col" label="操作" width="260px" align="center" fixed="right">
         <template slot-scope="scope">
@@ -152,13 +150,13 @@
             重命名
           </el-button>
 
-          <el-button size="mini" @click="downloadKnowledgeLibFile(scope.row)"><i class="iconfont iconxiazai" />下载</el-button>
+          <el-button size="mini" @click="download(scope.row)"><i class="iconfont iconxiazai" />下载</el-button>
           <el-dropdown trigger="click">
             <el-button size="mini">
               <i class="iconfont icongengduo" />更多
             </el-button>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item @click.native="upMenu(scope.row)"><i class="iconfont iconfenxiang1" />移动</el-dropdown-item>
+              <el-dropdown-item @click.native="moveFile(scope.row)"><i class="iconfont " />移动</el-dropdown-item>
               <el-dropdown-item @click.native="deleteDirFile(scope.row)"><i class="iconfont iconshanchu" />删除</el-dropdown-item>
               <el-dropdown-item @click.native="shareFileToWorkDesk(scope.row)"><i class="iconfont iconfenxiang1" />收藏</el-dropdown-item>
             </el-dropdown-menu>
@@ -201,7 +199,8 @@
 <script>
 import store from '@/store'
 import { mapGetters } from 'vuex'
-import { getCustomManageList, listDirFile, getCompanyAllTree, classifyFiles, updateDir, deleteDirFile, createDirFile, shareFileToWorkDesk } from '@/api/knowledgeBase-company'
+import { getCustomManageList, listDirFile, getCompanyAllTree, classifyFiles, updateDir, deleteDirFile, createDirFile, shareFileToWorkDesk, getDownloadToken,getCompanyAllTreeFloorByName } from '@/api/knowledgeBase-company'
+import { getFileShowSize, parseTime } from '@/utils/index'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 const $ = window.$
@@ -210,6 +209,16 @@ export default {
   components: { Pagination },
   data() {
     return {
+      // 分类树
+      // 知识树列表
+      treeList1: {
+        floorList: []
+      },
+      treeList2: {
+        floorList: []
+      },
+      checkedClassifys: [], // 选中的分类
+      userInfoForList: {},//存储用户列表里面的信息用于列表里面的创建人
       // tree--start
       treeProps: {
         children: 'children',
@@ -260,11 +269,11 @@ export default {
         ]
       },
       currentFileId: '',
-      fileUploadPara: { 
+      fileUploadPara: {
         data_type: 1,
         ownerId: '',
         parentId: '',
-        selectCompanyId: '',
+        selectCompanyId: ''
       },
       dataForTree: [{
         id: 1,
@@ -342,13 +351,120 @@ export default {
 
   },
   created() {
+    this.listQuery.selectCompanyId = this.$route.query.selectCompanyId
     this.getCustomManageList()// 租户
     this.enterFloderByQueryPath()
     this.getCompanyAllTree()// 知识分类树
+
+    this.getCompanyAllTreeFloorByName()//知识分类啊啊
   },
   methods: {
-    // 文件路径path--start
+    // ----------知识分类-----start------
+    //点击选择分类
+    checkClassify(classify) {
+      if (classify.treeId) {
+        classify.nodeIdList = [classify.treeId]
+        classify.nodeName = classify.treeName
+      }
+      var index = this.checkedClassifys.findIndex(function(item) {
+        return item.nodeIdList.join() === classify.nodeIdList.join()
+      })
+      if (index > -1) {
+        this.checkedClassifys.splice(index, 1)
+      } else {
+        this.checkedClassifys.push(classify)
+      }
+      this.classifyNodeIds()
+    },
+    // 删除标签
+    handlePaperLabelDel(index) {
+      this.checkedClassifys.splice(index, 1)
+      this.classifyNodeIds()
+    },
+    // 过滤分类ids，进行搜索
+    classifyNodeIds() {
+      this.listQuery.classifyNodeIds.length = 0
+      this.checkedClassifys.forEach(item => {
+        this.listQuery.classifyNodeIds.push(item.nodeIdList)
+      })
+      this.list.length = 0
+      this.total = 0
+      this.listQuery.currentPage = 0
 
+       this.enterFloderByQueryPath()
+      // this.getKnowledgeSearchList()
+    },
+    // 根据 idList返回是否active
+    isActiveClassify(classify) {
+      if (classify.treeId) {
+        classify.nodeIdList = [classify.treeId]
+        classify.nodeName = classify.treeName
+      }
+      var index = this.checkedClassifys.findIndex(function(item) {
+        return item.nodeIdList.join() === classify.nodeIdList.join()
+      })
+      if (index > -1) {
+        return true
+      } else {
+        return false
+      }
+    },
+    // ----------知识分类------end-----
+    // 知识树获取租户所有树
+    getCompanyAllTreeFloorByName() {
+      this.treeList1.length = 0
+      this.treeList2.length = 0
+      getCompanyAllTreeFloorByName().then(res => {
+        res.data.treeList = res.data.treeList || []
+        var arr = JSON.parse(JSON.stringify(res.data.treeList))
+        if (arr[0]) {
+          this.treeList1 = arr[0]
+        }
+        if (arr[1]) {
+          this.treeList2 = arr[1]
+        }
+      })
+    },
+    getFileShowSize(fileSize) {
+      return getFileShowSize(fileSize)
+    },
+    parseCreateUser(row) {
+      return this.userInfoForList[row.userId].nickname
+    },
+    parseTypeOfFile(row) {
+      if (row.fileAttributeDesc === 'dir') {
+        return '#iconwenjianjia'
+      } else {
+        if (row.fileType === 1) {
+          return '#iconvideo-'
+        } else if (row.fileType === 2) {
+          return '#iconaudio'
+        } else if (row.fileType === 3) {
+          return '#icontupian'
+        } else if (row.fileType === 4) {
+          return '#icontext'
+        } else if (row.fileType === 5) {
+          return '#iconppt'
+        } else if (row.fileType === 6) {
+          return '#icondoc'
+        } else if (row.fileType === 7) {
+          return '#iconpdf1'
+        } else if (row.fileType === 8) {
+          return '#iconwendangguanli'
+        } else if (row.fileType === 9) {
+          return '#iconwendangguanli'
+        } else if (row.fileType === 10) {
+          return '#iconex'
+        } else if (row.fileType === 11) {
+          return '#iconyasuobao'
+        }
+      }
+      //  文件类型代码 VIDEO(1,"video"),AUDIO(2,"audio"),PIC(3,"pic"),TEXT(4,"text"),PPT(5,"ppt"),WORD(6,"word"),PDF(7,"pdf"),OTHER(8,"other"),UNKNOW(9,"unknow"),XLS(10,"xls"),ZIP(11,"zip")
+      //  row.fileAttributeDesc==='dir' ? '#iconwenjianjia':''
+
+      // return getFileShowSize(fileSize)
+    },
+    // 文件路径path--start
     goback() {
       this.pathNavData = this.pathNavData.slice(0, this.pathNavData.length - 1)
       let str = ''
@@ -402,6 +518,8 @@ export default {
       this.fileUploadPara.ownerId = this.listQuery.selectCompanyId
       this.fileUploadPara.parentId = this.pathNavData.length > 0 ? this.pathNavData[this.pathNavData.length - 1].id : this.listQuery.selectCompanyId
       this.fileUploadPara.selectCompanyId = this.listQuery.selectCompanyId
+
+      console.log('上传parentId', this.fileUploadPara.parentId)
       this.getDirList()
     },
 
@@ -420,9 +538,6 @@ export default {
         })
         return
       }
-    },
-    changeQuery() {
-      this.$router.push({ path: '/knowledge-base/company-base/list', query: { path: '6666' }})
     },
     getCompanyAllTree() {
       getCompanyAllTree().then((res) => {
@@ -449,7 +564,6 @@ export default {
             }
           })
           this.navselctedCompanyName = selctedCompany[0].customname
-          this.listQuery.selectCompanyId = this.$route.query.selectCompanyId
         }
       })
     },
@@ -467,7 +581,7 @@ export default {
     },
     // 搜索
     topSearch() {
-      this.getDirList()
+      this.enterFloderByQueryPath()
     },
     // 重置
     reset() {
@@ -488,6 +602,7 @@ export default {
       const { data } = await listDirFile(this.listQuery)
       console.log(data)
       this.listLoading = false
+      this.userInfoForList = data.userInfo
       this.list = data.page.list.map(v => {
         this.$set(v, 'edit', false) // https://vuejs.org/v2/guide/reactivity.html
         v.originalTitle = v.fileName //  will be used when user click the cancel botton
@@ -656,28 +771,70 @@ export default {
         }
       })
     },
-    downloadKnowledgeLibFile(row) {
-      const fileId = row.fileId
-      this.downloadFile('api/knowledgeDirFile/downloadFile?fileId=' + fileId)
-    },
     // 下载
-    downloadFile(fileUrl) {
+    //   downloadKnowledgeLibFile(row) {
+    //     const fileId = row.fileId
+    //     this.downloadFile('api/knowledgeDirFile/downloadFile?fileId=' + fileId)
+    //   },
+    // downloadFile(fileUrl) {
+    //   $('#common_download_a').remove()
+    //   var elemIF = document.createElement('iframe')
+    //   elemIF.id = 'common_download_a'
+    //   elemIF.src = fileUrl
+    //   elemIF.style.display = 'none'
+    //   elemIF.load = function() { $('#common_download_a').remove() }
+    //   document.body.appendChild(elemIF)
+    // },
+    // downloadFileSelected(fileUrl) {
+    //   $('#common_download_a').remove()
+    //   var elemIF = document.createElement('iframe')
+    //   elemIF.id = 'common_download_a'
+    //   elemIF.src = fileUrl
+    //   elemIF.style.display = 'none'
+    //   elemIF.load = function() { $('#common_download_a').remove() }
+    //   document.body.appendChild(elemIF)
+    // },
+    // 单个下载
+    download(row) {
+      const fileId = row.fileId
+      const url = process.env.VUE_APP_BASE_API + 'api/knowledgeDirFile/downloadFile?fileId=' + fileId
+      const a = document.createElement('a')
+      a.id = 'common_download_a'
+      a.download = row.fileName + '\.' + row.fileFormat
+      a.href = url
+      document.body.appendChild(a)
+      a.click()
       $('#common_download_a').remove()
-      var elemIF = document.createElement('iframe')
-      elemIF.id = 'common_download_a'
-      elemIF.src = fileUrl
-      elemIF.style.display = 'none'
-      elemIF.load = function() { $('#common_download_a').remove() }
-      document.body.appendChild(elemIF)
     },
-    downloadFileSelected(fileUrl) {
-      $('#common_download_a').remove()
-      var elemIF = document.createElement('iframe')
-      elemIF.id = 'common_download_a'
-      elemIF.src = fileUrl
-      elemIF.style.display = 'none'
-      elemIF.load = function() { $('#common_download_a').remove() }
-      document.body.appendChild(elemIF)
+    // 批量下载
+    downloadFileSelected() {
+      if (!this.selectedRow.length) {
+        this.$message.warning('请选择文件！')
+        return false
+      }
+      const fileIdList = []
+      this.selectedRow.forEach(item => {
+        fileIdList.push(item.fileId)
+      })
+      getDownloadToken({
+        fileIdList,
+        ownerId: this.listQuery.selectCompanyId
+      }).then(response => {
+        const token = response.data.token
+        const size = this.getFileShowSize(response.data.size)
+        this.$confirm('文件约为' + size + '确定要下载吗', '批量下载', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          const url = process.env.VUE_APP_BASE_API + '/api/knowledgeDirFile/downloadZipFile?token=' + token
+          const a = document.createElement('a')
+          a.download = '批量下载.zip'
+          a.href = url
+          document.body.appendChild(a)
+          a.click()
+        }).catch(() => {})
+      })
     },
     // 收藏
     shareFileToWorkDesk(row) {
@@ -727,6 +884,17 @@ export default {
     // 启动上传
     showUpload() {
       store.dispatch('fileUpload/isVisibility', 1)
+    },
+    // 移动
+    moveFileSelected() {
+      if (!this.selectedRow.length) {
+        this.$message.warning('请选择文件！')
+        return false
+      }
+      this.$message.warning('待开发')
+    },
+    moveFile() {
+      this.$message.warning('待开发')
     }
   }
 }
@@ -748,5 +916,131 @@ export default {
 
 .el-breadcrumb .el-breadcrumb__item{
   cursor: pointer;
+}
+
+
+// 知识分类树
+
+ @import "~@/styles/theme.scss";
+
+
+
+  .loading,
+  .noMore {
+    text-align: center;
+    color: #606266;
+  }
+  .scrollbar-wrapper {
+    overflow-x: hidden;
+  }
+  .knowledgeTree {
+    display: inline-block;
+    width: 49%;
+  }
+  .classifyTree {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+  .treeList {
+    margin: 16px 0;
+    padding: 16px;
+    border: 1px solid #ebebeb;
+    font-size: 14px;
+
+    .treeName {
+      font-size: 16px;
+      margin-top: 0;
+    }
+
+    .treeList1, .treeList2 {
+      display: inline-block;
+      width: 49%;
+      vertical-align: top;
+    }
+    .treeList2 {
+      padding-left: 20px;
+    }
+    .classifyItem {
+      margin-right: 20px;
+    }
+
+    .treeItem {
+      padding: 10px 0;
+      border-bottom: 1px solid #e8e8e8e8;
+    }
+    .activeClassify {
+      color: $themeColor;
+    }
+  }
+
+  .classifyTags{
+    margin-bottom:20px;
+  }
+  .classifyTags /deep/ .el-tag {
+    display: inline-block;
+    margin-right: 10px;
+  }
+  .noData {
+    text-align: center;
+    /*display:flex;!*将其定义为弹性容器*!*/
+    /*align-items: center;!*垂直居中对齐*!*/
+    /*justify-content: center;!*水平居中对齐*!*/
+
+    .changeKey {
+      font-size: 12px;
+      color: #838282;
+    }
+  }
+
+  .itemExam {
+    padding-top: 20px;
+    border-bottom: 1px solid #e8e8e8;
+
+    .outer {
+      display: inline-block;
+    }
+    .cover {
+      width: 150px;
+      height: 150px;
+      vertical-align: middle;
+      text-align: center;
+      display:flex;/*将其定义为弹性容器*/
+      align-items: center;/*垂直居中对齐*/
+      justify-content: center;/*水平居中对齐*/
+
+      .imgCover {
+        width: auto;
+      }
+    }
+
+    .fileInfo {
+      display: inline-block;
+      vertical-align: top;
+      font-size: 14px;
+
+      .fileName {
+        margin: 10px 0;
+        font-size: 16px;
+      }
+
+      .nickname {
+        display: inline-block;
+        margin-right: 20px;
+      }
+      .groupName {
+        display: inline-block;
+      }
+      span {
+        display: inline-block;
+        height: 20px;
+        line-height: 20px;
+      }
+    }
+
+    /deep/ .el-button {
+      float: right;
+      margin-right: 30px;
+    }
 }
 </style>

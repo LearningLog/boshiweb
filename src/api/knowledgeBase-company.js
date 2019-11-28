@@ -74,3 +74,21 @@ export function shareFileToWorkDesk(data) {
   })
 }
 
+
+// 获取下载token信息
+export function getDownloadToken(data) {
+  return request({
+    url: 'api/knowledgeDirFile/getToken',
+    method: 'post',
+    data
+  })
+}
+
+// 获取租户所有树并按每层节点名聚合
+export function getCompanyAllTreeFloorByName(data) {
+  return request({
+    url: '/classifyTree/getCompanyAllTreeFloorByName',
+    method: 'post',
+    data
+  })
+}
