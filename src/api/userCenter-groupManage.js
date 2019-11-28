@@ -51,7 +51,7 @@ export function modifyItem(data) {
 // 获取所有小组列表
 export function getAllEmployeeGroup(data) {
   return request({
-    url: 'system/employeeGroup/getAllEmployeeGroup',
+    url: 'system/employeeGroupV2/getAllEmployeeGroup',
     method: 'post',
     data
   })

@@ -103,11 +103,12 @@
         :show-file-list="false"
         :on-success="handleUploadSuccess"
       >
-        <el-button v-show="total>0" type="primary" plain><i class="iconfont iconziyuan" />模板导入</el-button>
+        <el-button v-show="total>0" type="primary" plain><i class="iconfont iconshangchuan" />模板导入</el-button>
       </el-upload>
       <el-button v-show="total>0" v-if="hasThisBtnPermission('user-role')" type="primary" plain @click="assignRole"><i class="iconfont iconfenpeijuese" />分配角色</el-button>
       <el-button v-show="total>0" v-if="hasThisBtnPermission('user-manageegroup')" type="primary" plain @click="groupsManage"><i
-        class="iconfont iconxiaozuguanli1"/>小组管理</el-button>
+        class="iconfont iconxiaozuguanli1"
+      />小组管理</el-button>
     </div>
     <el-dialog v-el-drag-dialog class="setRolesDialog" width="650px" title="分配角色" :visible.sync="setRolesDialogVisible">
       <el-transfer v-model="roleIdList" :data="noList" :titles="['未分配角色', '已分配角色']" :props="defaultProps" @change="handleTransferChange" />
@@ -224,6 +225,13 @@ export default {
       list: null, // 列表数据
       total: 0, // 总条数
       popoverVisible: false // 高级搜索是否展开
+    }
+  },
+  computed: {
+    // 判断当前是不是系统管理员 true：是；false：不是
+    isSystemManage() {
+      console.log('this.$store.state.user.isSystemManage', this.$store.state.user.isSystemManage)
+      return this.$store.state.user.isSystemManage
     }
   },
   created() {
@@ -382,6 +390,16 @@ export default {
         this.$message.warning('请选择用户！')
         return false
       }
+      var groupIds = []
+      this.checkedList.forEach(item => {
+        groupIds.push(item.groupId)
+      })
+      var groupIdList = [...new Set(groupIds)]
+      if (groupIdList.length > 1) {
+        this.$message.warning('请选择单租户下的用户进行批量小组管理！')
+        return false
+      }
+
       let companyIds = []
       this.checkedList.forEach(item => {
         companyIds.push(item.groupId)
@@ -402,13 +420,6 @@ export default {
         this.$message.success('批量分配小组成功！')
         this.setEgroupsDialogVisible = false
       })
-    }
-  },
-  computed: {
-    // 判断当前是不是系统管理员 true：是；false：不是
-    isSystemManage() {
-      console.log('this.$store.state.user.isSystemManage', this.$store.state.user.isSystemManage)
-      return this.$store.state.user.isSystemManage
     }
   }
 }
