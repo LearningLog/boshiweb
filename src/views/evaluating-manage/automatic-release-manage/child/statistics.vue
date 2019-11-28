@@ -105,7 +105,7 @@
     <el-dialog v-el-drag-dialog class="answerInfodialog" title="答题详情" :visible.sync="answerInfodialog">
       <div class="userTopDetail"><span class="username">答题人：{{ topicsDetail.username }}</span><span class="examname">{{ topicsDetail.examname }}</span><span class="answerScore">得分：{{ topicsDetail.answer_score }}分</span></div>
       <el-scrollbar wrap-class="scrollbar-wrapper">
-        <div v-for="(item, index) in topicsList" class="topicItem">
+        <div v-for="(item, index) in topicsList" :key="item._id" class="topicItem">
           <p>{{ index + 1 }}、{{ item.topic_content }} <span class="rightOption">（正确答案：{{ item.rightOption }}）</span></p>
           <ul class="topic-options">
             <li

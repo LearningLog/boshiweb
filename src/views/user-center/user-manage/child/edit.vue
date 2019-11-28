@@ -329,10 +329,15 @@ export default {
     // 设置小组
     setEgroups() {
       this.setEgroupsDialogVisible = false
+<<<<<<< HEAD
       if (this.form.einc.length) {
         this.egroups = [];
+=======
+      this.egroups = []
+      if (this.einc.length) {
+>>>>>>> 5b8f8ae4956eea1fd15eb1cb67f116027681bb99
         this.form.noList2.forEach((item, index) => {
-          this.form.einc.forEach(item1 => {
+          this.einc.forEach(item1 => {
             if (item1 === item.inc) {
               this.egroups.push(item)
             }

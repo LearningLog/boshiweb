@@ -22,7 +22,6 @@
 
 <script>
 import { getOneLabel, label_edit } from '@/api/evaluatingManage-labelManage.js'
-import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
 export default {
   data() {
     return {

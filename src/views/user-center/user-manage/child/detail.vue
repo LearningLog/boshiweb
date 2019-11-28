@@ -17,9 +17,9 @@
       <el-form-item label="手机号：">
         <span>{{ form.phone }}</span>
       </el-form-item>
-      <!-- <el-form-item label="密码：">
+      <el-form-item label="密码：">
         <span>{{ form.password }}</span>
-      </el-form-item> -->
+      </el-form-item>
       <el-form-item label="用户状态：">
         <span>{{ form.userStatusName }}</span>
       </el-form-item>
@@ -33,15 +33,11 @@
         <span>{{ form.rolename.join(',') }}</span>
       </el-form-item>
       <el-form-item label="小组：">
-        <group-list :data="form.egroups"></group-list>
-        <!-- <span v-for="itemEgroup in form.egroups" :key="itemEgroup._id" class="group-list-box">
-          <span>{{itemEgroup.groupName}}</span>
-          <span class="manage-tips" v-if="itemEgroup.manage">负责人</span>
-        </span> -->
+        <span>{{ form.egroups.join(',') }}</span>
       </el-form-item>
-      <!-- <el-form-item label="管理小组：">
+      <el-form-item label="管理小组：">
         <span>{{ form.incName.join(',') }}</span>
-      </el-form-item> -->
+      </el-form-item>
     </el-form>
     <div id="btnGroup">
       <el-button type="primary" @click="confirm">确定</el-button>
@@ -51,7 +47,6 @@
 
 <script>
 import { getUserById } from '@/api/userCenter-userManage'
-import GroupList from '@/components/User/groupList'
 
 export default {
   data() {
@@ -75,9 +70,6 @@ export default {
       }
     }
   },
-  components: {
-    GroupList
-  },
   created() {
     this.id = this.$route.query.id
     this.getUserById()
@@ -94,7 +86,7 @@ export default {
           this.form.rolename.push(item.rolename)
         })
         res.data.user.groupList.forEach(item => {
-          this.form.egroups.push(item)
+          this.form.egroups.push(item.groupName)
           if (item.manage) {
             this.form.incName.push(item.groupName)
           }

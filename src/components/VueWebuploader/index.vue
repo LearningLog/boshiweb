@@ -20,10 +20,13 @@
           <span @click="close"><i class="close iconfont iconguanbi" /></span>
         </div>
       </div>
+      <svg class="icon" aria-hidden="true">
+        <use xlink:href="icontupian" />
+      </svg>
       <div class="content">
         <div id="filePicker">
           <div class="drag-upload">
-            <i class="iconfont iconziyuan" />
+            <i class="iconfont iconshangchuan" />
             <p>可拖拽文件至此直接上传</p>
           </div>
         </div>
@@ -37,31 +40,27 @@
                 :class="`file-${file.id}`"
               >
                 <li class="file-type" :icon="fileCategory(file.ext)">
-                  <i
-                    v-if="fileCategory(file.ext) === 'image'"
-                    class="iconfont icontupian-"
-                  />
-                  <i
-                    v-else-if="fileCategory(file.ext) === 'video'"
-                    class="iconfont iconshipinwenjian"
-                  />
-                  <i
-                    v-else-if="fileCategory(file.ext) === 'audio'"
-                    class="iconfont iconCombinedShape"
-                  />
-                  <i
-                    v-else-if="fileCategory(file.ext) === 'text'"
-                    class="iconfont iconword"
-                  />
-                  <i
-                    v-else-if="fileCategory(file.ext) === 'pdf'"
-                    class="iconfont iconpdf"
-                  />
-                  <i
-                    v-else-if="fileCategory(file.ext) === 'compressed'"
-                    class="iconfont iconyasuobao-"
-                  />
-                  <i v-else class="iconfont iconyemian" />
+                  <svg class="icon" aria-hidden="true" v-if="fileCategory(file.ext) === 'image'">
+                    <use xlink:href="icontupian" />
+                  </svg>
+                  <svg class="icon" aria-hidden="true" v-else-if="fileCategory(file.ext) === 'video'">
+                    <use xlink:href="iconvideo-" />
+                  </svg>
+                  <svg class="icon" aria-hidden="true" v-else-if="fileCategory(file.ext) === 'audio'">
+                    <use xlink:href="iconaudio" />
+                  </svg>
+                  <svg class="icon" aria-hidden="true" v-else-if="fileCategory(file.ext) === 'text'">
+                    <use xlink:href="icontext" />
+                  </svg>
+                  <svg class="icon" aria-hidden="true" v-else-if="fileCategory(file.ext) === 'pdf'">
+                    <use xlink:href="iconpdf1" />
+                  </svg>
+                  <svg class="icon" aria-hidden="true" v-else-if="fileCategory(file.ext) === 'compressed'">
+                    <use xlink:href="iconyasuobao" />
+                  </svg>
+                  <svg class="icon" aria-hidden="true" v-else>
+                    <use xlink:href="iconyemian" />
+                  </svg>
                 </li>
                 <el-tooltip
                   class="file-name-tip"
@@ -84,7 +83,7 @@
                     title="移除"
                     @click="remove(file)"
                   ><i
-                    class=" iconfont iconquxiao1"
+                    class=" iconfont iconguanbi"
                   /></span>
                 </li>
               </ul>
@@ -144,6 +143,7 @@ export default {
   },
   data() {
     return {
+      uploadButton: 'filePicker',
       fileList: [], // 上传列表
       url: this.$store.state.user.applicationInfo.uploadUrl, // 租户上传路径
       formData: {
@@ -232,6 +232,7 @@ export default {
         deskAddFile(params).then(res => {
           console.log(res)
           this.$message.success('上传成功！')
+          store.dispatch('fileUpload/deskAddFileSuccess', res.data)
         })
       } else {
         // const currentFile = this.fileQueued.get(sourceUid)
@@ -248,7 +249,8 @@ export default {
         }
         knowledgeCreateFile(params).then(res => {
           console.log(res)
-          this.$message.success('上传成功')
+          this.$message.success('上传成功！')
+          store.dispatch('fileUpload/createFileSuccess', res.data)
         })
       }
     },

@@ -18,7 +18,9 @@ import FileUploader from '@/components/VueWebuploader'
 
 export default {
   name: 'AppMain',
-  components: { BackToTop, FileUploader },
+  components: { BackToTop,
+    FileUploader
+  },
   data() {
     return {
       mainContentHeight: 400

@@ -25,16 +25,16 @@ export default {
       required: true
     }
   },
+  data() {
+    return {
+      logo1
+    }
+  },
   computed: {
     ...mapGetters([
       'logo',
       'logo_name'
     ])
-  },
-  data() {
-    return {
-      logo1
-    }
   }
 }
 </script>

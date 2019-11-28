@@ -412,7 +412,7 @@ export default {
   .el-table /deep/ .el-table__body tr {
     height: 90px!important;
   }
-  .starboxs /deep/ .el-rate__icon {
+  .el-table  /deep/ .el-rate__item{
     cursor: pointer!important;
   }
 </style>

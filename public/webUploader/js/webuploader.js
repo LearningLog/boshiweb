@@ -1372,7 +1372,7 @@
          *
          * Uploader.register({
          *     'make-thumb': function() {
-         *
+         *         
          *     }
          * });
          */
@@ -1415,9 +1415,9 @@
          *
          * Uploader.register({
          *     name: 'custom',
-         *
+         *     
          *     'make-thumb': function() {
-         *
+         *         
          *     }
          * });
          *
@@ -1565,6 +1565,7 @@
             name: 'paste',
             
             init: function( opts ) {
+    
                 if ( !opts.paste ||
                         this.request('predict-runtime-type') !== 'html5' ) {
                     return;
@@ -2933,7 +2934,7 @@
              * @namespace options
              * @for Uploader
              * @description 设置为 true 后，不需要手动调用上传，有文件选择即开始上传。
-             *
+             * 
              */
     
             /**
@@ -4899,7 +4900,7 @@
                     input.attr( 'multiple', 'multiple' );
                 }
     
-                // @ Firefox不支持单独指定后缀
+                // @todo Firefox不支持单独指定后缀
                 if ( opts.accept && opts.accept.length > 0 ) {
                     arr = [];
     
@@ -4909,12 +4910,11 @@
     
                     input.attr( 'accept', arr.join(',') );
                 }
-             
-              container.append( input );
-              container.append( label );
-              //添加回调方法-临时解决2019年10月17日23:04:55
-              $(me.input).click()
-              mouseHandler = function( e ) {
+    
+                container.append( input );
+                container.append( label );
+    
+                mouseHandler = function( e ) {
                     owner.trigger( e.type );
                 };
     
@@ -7896,7 +7896,7 @@
                         // try {
                         //     me._responseJson = xhr.exec('getResponseAsJson');
                         // } catch ( error ) {
-                        
+                            
                         p = window.JSON && window.JSON.parse || function( s ) {
                             try {
                                 return new Function('return ' + s).call();
@@ -7905,7 +7905,7 @@
                             }
                         };
                         me._responseJson  = me._response ? p(me._response) : {};
-                        
+                            
                         // }
                     }
                     

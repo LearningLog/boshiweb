@@ -15,21 +15,21 @@
             <div class="detail">
               <p class="topic-type">
                 {{ index + 1 }}、{{
-                switchTopicTypeToName(item.topic_type)
+                  switchTopicTypeToName(item.topic_type)
                 }}&nbsp;[{{ item.topic_score }}分]
               </p>
               <p class="topic-content">{{ item.topic_content }}</p>
               <ul class="topic-options">
                 <li
-                    v-for="(item2, index2) in item.topic_option"
-                    :key="item2.option_id"
-                    class="item-topic"
+                  v-for="(item2, index2) in item.topic_option"
+                  :key="item2.option_id"
+                  class="item-topic"
                 >
                   <el-checkbox
-                      :checked="item2.is_selected === 'y'"
-                      disabled
+                    :checked="item2.is_selected === 'y'"
+                    disabled
                   >{{ getOptionOrderByIndex(index2)
-                    }}{{ item2.option_content }}</el-checkbox>
+                  }}{{ item2.option_content }}</el-checkbox>
                 </li>
               </ul>
             </div>

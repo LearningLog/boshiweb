@@ -411,7 +411,7 @@ import { firstLogin_sendsms, validate_first_sms, forget_sendsms, validate_forget
 import { regPhone, regPwd } from '@/utils/validate'
 import inputFilter from '@/directive/input-filter'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
-import {createFullUrl} from '@/utils/index'
+import { createFullUrl } from '@/utils/index'
 
 export default {
   name: 'Login',

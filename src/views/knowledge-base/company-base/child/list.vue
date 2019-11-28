@@ -416,7 +416,6 @@ export default {
         }
         this.custom_list = [allSelect, ...res.data]
         if (this.$route.query.selectCompanyId) {
-
           // 只执行一次，为租户下拉还有文件夹到航的全部那里赋值
           const selctedCompany = this.custom_list.filter((v, k, arr) => {
             if (v._id === this.$route.query.selectCompanyId) {

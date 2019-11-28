@@ -102,7 +102,7 @@
     <el-dialog v-el-drag-dialog class="setInformationDialog" width="650px" title="分配技能" :visible.sync="transforBoxVisible">
       <el-transfer v-model="hasList" :data="noList" :titles="['未分配类别', '已分配类别']" :props="defaultProps" @change="handleTransferChange" />
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="setTranstorInformation">提交</el-button>
+        <el-button type="primary" @click="setTranstorInformation">确定</el-button>
         <el-button @click="transforBoxVisible = false">取 消</el-button>
       </div>
     </el-dialog>

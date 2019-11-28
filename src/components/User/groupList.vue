@@ -1,8 +1,8 @@
 <template>
   <div class="user-group-list">
     <span v-for="item in data" :key="item._id" class="group-list-box">
-        <span>{{item.groupName}}</span>
-        <span class="manage-tips" v-if="item.manage">负责人</span>
+      <span>{{ item.groupName }}</span>
+      <span v-if="item.manage" class="manage-tips">负责人</span>
     </span>
   </div>
 </template>

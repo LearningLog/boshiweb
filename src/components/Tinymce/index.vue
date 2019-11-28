@@ -47,6 +47,7 @@ export default {
       default: 'file edit insert view format table'
     },
     plugins: {
+      type: Array,
       required: false,
       default() {
         return []

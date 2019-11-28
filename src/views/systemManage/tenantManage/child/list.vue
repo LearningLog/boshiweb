@@ -101,7 +101,7 @@
       <el-transfer v-model="hasList" :data="noList" :titles="['未分配类别', '已分配类别']" :props="defaultProps" @change="handleTransferChange">
         <span slot-scope="{ option }">
           <el-tooltip class="item" effect="dark" :content="option.newscategory_name" placement="top">
-            <span>{{ option.newscategory_name }}</span> 
+            <span>{{ option.newscategory_name }}</span>
           </el-tooltip>
         </span>
       </el-transfer>
