@@ -7,7 +7,7 @@
       <el-form-item label="角色描述：">
         <span>{{ form.desc }}</span>
       </el-form-item>
-      <el-form-item label="角色类型：" prop="manageType" v-show="manageTypeList.length === 1">
+      <el-form-item label="角色类型：" prop="manageType" v-show="manageTypeList.length !== 1">
         <el-radio-group v-model="manageType" @change="handleChangeManageType">
           <el-radio v-for="item in manageTypeList" :key="item.id" :label="item.id">{{ item.name }}</el-radio>
         </el-radio-group>
@@ -114,7 +114,7 @@ export default {
       get_role_manage_type().then(res => {
         this.manageTypeList = res.data
         if (this.manageTypeList.length === 1) {
-          this.manageType = this.manageTypeList[0]
+          this.manageType = this.manageTypeList[0].id
         }
       })
     },

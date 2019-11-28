@@ -3,7 +3,12 @@ import { MessageBox } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 
-axios.interceptors.request.use(
+// create an axios instance
+const service = axios.create({
+  timeout: 5000 // request timeout
+})
+
+service.interceptors.request.use(
   config => {
     config.headers['Authorization'] = getToken()
     return config
@@ -20,7 +25,7 @@ axios.interceptors.request.use(
  * 例如需要对每个接口进行 403 权限认证判断
  * 如果本地响应的数据是 403 ，则我们提示用户：你没有权限执行该操作
  */
-axios.interceptors.response.use(
+service.interceptors.response.use(
   /**
    * If you want to get http information such as headers or status
    * Please return  response => response
@@ -68,7 +73,7 @@ axios.interceptors.response.use(
 // 下载文件
 export function downloadModel(options) {
   var url = process.env.VUE_APP_BASE_API + '/system/model/downloadModel'
-  return axios({
+  return service({
     url,
     method: 'get',
     responseType: 'blob',

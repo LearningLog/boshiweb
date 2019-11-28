@@ -411,7 +411,7 @@ export default {
       getDownloadToken({ fileIdList: fileIdList }).then(response => {
         const token = response.data.token
         const size = this.getFileShowSize(response.data.size)
-        this.$confirm('文件约为' + size + '确定要下载吗', '批量下载', {
+        this.$confirm('文件约为' + size + '确定要下载吗？', '批量下载', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
