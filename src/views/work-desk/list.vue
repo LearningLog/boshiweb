@@ -88,17 +88,17 @@
           <span>{{ scope.$index + (listQuery.currentPage - 1) * listQuery.pageSize + 1 }} </span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="信息" min-width="240" show-overflow-tooltip>
+      <el-table-column align="center" label="信息" min-width="300" show-overflow-tooltip>
         <template slot-scope="scope">
-          <div class="clearfix">
-            <div class="fl pointer" @click="preview(scope.row)">
+          <div class="tab-message-box clearfix">
+            <div class="pointer message-img" @click="preview(scope.row)">
               <el-image
                 class="thumbnail"
                 :src="getPic(scope.row) || file_knowledge"
                 fit="contain"
               />
             </div>
-            <div class="fl pointer fileDetail" @click="detail(scope.row)">
+            <div class="pointer fileDetail" @click="detail(scope.row)">
               <p class="fileDetailItem">{{ scope.row.fileName }}</p>
               <p class="fileDetailItem"><span>文件大小：</span>{{ getFileShowSize(scope.row.fileSize) }}</p>
               <p class="fileDetailItem"><span>文件格式：</span>{{ scope.row.fileFormat }}</p>
@@ -515,11 +515,27 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+  .tab-message-box {
+    position: relative;
+    height: 100px;
+  }
+  .tab-message-box .pointer {
+    position: absolute;
+  }
+  .tab-message-box .message-img {
+    left: 0;
+  }
+  .tab-message-box .fileDetail {
+    left: 100px;
+  }
   .fileDetail {
     margin-left: 10px;
   }
   .fileDetail p {
     margin: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
   .fileDetailItem {
     text-align: left;
