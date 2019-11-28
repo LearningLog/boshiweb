@@ -67,16 +67,16 @@
           批量操作<i class="el-icon-arrow-down el-icon--right" />
         </el-button>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item><i class="iconfont iconshanchu" />批量删除</el-dropdown-item>
+          <el-dropdown-item @click.native="deleteDirFileSelected"><i class="iconfont iconshanchu" />批量删除</el-dropdown-item>
           <el-dropdown-item><i class="iconfont iconshangyi1" />批量移动</el-dropdown-item>
-          <el-dropdown-item><i class="iconfont iconwechaticon16" />批量下载</el-dropdown-item>
-          <el-dropdown-item><i class="iconfont iconshangyi1" />批量收藏</el-dropdown-item>
+          <el-dropdown-item @click.native="downloadFileSelected"><i class="iconfont iconxiazai" />批量下载</el-dropdown-item>
+          <el-dropdown-item @click.native="shareFileToWorkDeskSlected"><i class="iconfont iconfenxiang1" />批量收藏</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
-      <el-button type="primary" @click="changeQuery"><i class="iconfont iconjia" />改变路由query</el-button>
-      <el-button type="primary" @click="createFolder"><i class="iconfont iconjia" />创建文件夹</el-button>
-      <el-button type="primary" @click="classifySelected"><i class="iconfont iconjia" />加入知识分类</el-button>
-      <el-button type="primary" @click=""><i class="iconfont iconjia" />上传资料</el-button>
+      <el-button type="primary" @click="changeQuery"><i class="iconfont iconzengjia" />改变路由query</el-button>
+      <el-button type="primary" @click="createFolder"><i class="iconfont iconzengjia" />创建文件夹</el-button>
+      <el-button type="primary" @click="classifySelected"><i class="iconfont iconzengjia" />加入知识分类</el-button>
+      <el-button type="primary" @click="showUpload"><i class="iconfont iconzengjia" />上传资料</el-button>
     </div>
 
     <div class="pathNav">
@@ -152,15 +152,15 @@
             重命名
           </el-button>
 
-          <el-button size="mini" @click="downloadKnowledgeLibFile(scope.row)"><i class="iconfont iconwechaticon16" />下载</el-button>
+          <el-button size="mini" @click="downloadKnowledgeLibFile(scope.row)"><i class="iconfont iconxiazai" />下载</el-button>
           <el-dropdown trigger="click">
             <el-button size="mini">
               <i class="iconfont icongengduo" />更多
             </el-button>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item @click.native="upMenu(scope.row)"><i class="iconfont iconshangyi1" />移动</el-dropdown-item>
+              <el-dropdown-item @click.native="upMenu(scope.row)"><i class="iconfont iconfenxiang1" />移动</el-dropdown-item>
               <el-dropdown-item @click.native="deleteDirFile(scope.row)"><i class="iconfont iconshanchu" />删除</el-dropdown-item>
-              <el-dropdown-item @click.native="downMenu(scope.row)"><i class="iconfont iconchakan" />收藏</el-dropdown-item>
+              <el-dropdown-item @click.native="shareFileToWorkDesk(scope.row)"><i class="iconfont iconfenxiang1" />收藏</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </template>
@@ -199,7 +199,8 @@
 </template>
 
 <script>
-import { getCustomManageList, listDirFile, getCompanyAllTree, classifyFiles, updateDir, deleteDirFile, createDirFile } from '@/api/knowledgeBase-company'
+import store from '@/store'
+import { getCustomManageList, listDirFile, getCompanyAllTree, classifyFiles, updateDir, deleteDirFile, createDirFile, shareFileToWorkDesk } from '@/api/knowledgeBase-company'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 const $ = window.$
@@ -257,6 +258,13 @@ export default {
           { min: 2, max: 64, message: '长度在 2 到 64 个字符', trigger: 'blur' }
         ]
       },
+      currentFileId: '',
+      fileUploadPara: { 
+        data_type: 1,
+        ownerId: '',
+        parentId: '',
+        selectCompanyId: '',
+      },
       dataForTree: [{
         id: 1,
         label: '一级 1',
@@ -307,14 +315,27 @@ export default {
   computed: {
     isSystemManage() {
       return this.$store.state.user.isSystemManage
-    }
+    },
+    haha() {
+	  	return this.$store.state.user.isSystemManage
+	  }
   },
+
   watch: {
+    haha() {
+    },
     $route() {
       this.enterFloderByQueryPath()
     },
     pathNavData() {
       this.currentFileId = this.pathNavData.length > 0 ? this.pathNavData[this.pathNavData.length - 1].id : this.listQuery.selectCompanyId
+    },
+    fileUploadPara: {
+      handler(newName, oldName) {
+        store.dispatch('fileUpload/belongs', this.fileUploadPara)
+      },
+      immediate: true,
+      deep: true
     }
 
   },
@@ -376,6 +397,9 @@ export default {
         this.pathQueryString = ''
         this.listQuery.parentId = ''
       }
+      this.fileUploadPara.ownerId = this.listQuery.selectCompanyId
+      this.fileUploadPara.parentId = this.pathNavData.length > 0 ? this.pathNavData[this.pathNavData.length - 1].id : this.listQuery.selectCompanyId
+      this.fileUploadPara.selectCompanyId = this.listQuery.selectCompanyId
       this.getDirList()
     },
 
@@ -428,6 +452,8 @@ export default {
       })
     },
     companyChange(val) {
+
+
       const selctedCompany = this.custom_list.filter((v, k, arr) => {
         if (v._id === val) {
           return v
@@ -485,7 +511,7 @@ export default {
     // 批量加入知识分类
     classifySelected() {
       if (!this.selectedRow.length) {
-        this.$message.warning('请选择知识分类！')
+        this.$message.warning('请勾选文件')
         return false
       } else {
         this.treeDialogVisible = true
@@ -540,16 +566,39 @@ export default {
         })
       })
     },
-
     // 删除文件
     deleteDirFile(row) {
-      const postId = { 'fileId': row.fileId }
-      deleteDirFile(postId).then(() => {
-        this.$message({
-          message: '删除文件成功',
-          type: 'success'
+      this.$confirm('确定要删除该文件吗？', '删除', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const postId = { 'fileId': row.fileId }
+        deleteDirFile(postId).then(() => {
+          this.$message({
+            message: '删除文件成功',
+            type: 'success'
+          })
         })
-      })
+      }).catch(() => {})
+    },
+    deleteDirFileSelected(row) {
+      this.$confirm('确定要批量删除该文件吗？', '删除', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const fileIdList = this.selectedRow.map((v, k, arr) => {
+          return v.fileId
+        })
+        const postId = { fileIdList }
+        deleteDirFile(postId).then(() => {
+          this.$message({
+            message: '删除文件成功',
+            type: 'success'
+          })
+        })
+      }).catch(() => {})
     },
     // 创建文件夹
     createFolder() {
@@ -560,7 +609,6 @@ export default {
         })
         return false
       }
-
       this.crateFolderDialogVisible = true
     },
     // 创建文件夹确认
@@ -621,6 +669,64 @@ export default {
       elemIF.style.display = 'none'
       elemIF.load = function() { $('#common_download_a').remove() }
       document.body.appendChild(elemIF)
+    },
+    downloadFileSelected(fileUrl) {
+      $('#common_download_a').remove()
+      var elemIF = document.createElement('iframe')
+      elemIF.id = 'common_download_a'
+      elemIF.src = fileUrl
+      elemIF.style.display = 'none'
+      elemIF.load = function() { $('#common_download_a').remove() }
+      document.body.appendChild(elemIF)
+    },
+    // 收藏
+    shareFileToWorkDesk(row) {
+      this.$confirm('确定要收藏到工作台吗？', '收藏到工作台', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const postData = {
+          fileId: row.fileId,
+          fileIdList: [],
+          fromCompany: false
+        }
+        shareFileToWorkDesk(postData).then(() => {
+          this.$message({
+            message: '收藏到工作台成功',
+            type: 'success'
+          })
+        })
+      }).catch(() => {})
+    },
+    shareFileToWorkDeskSlected() {
+      if (!this.selectedRow.length) {
+        this.$message.warning('请勾选文件')
+        return false
+      }
+      this.$confirm('确定要将选中的文件收藏到工作台吗？', '收藏到工作台', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const fileIdList = this.selectedRow.map((v, k, arr) => {
+          return v.fileId
+        })
+        const postData = {
+          fileIdList,
+          fromCompany: false
+        }
+        shareFileToWorkDesk(postData).then(() => {
+          this.$message({
+            message: '收藏到工作台成功',
+            type: 'success'
+          })
+        })
+      }).catch(() => {})
+    },
+    // 启动上传
+    showUpload() {
+      store.dispatch('fileUpload/isVisibility', 1)
     }
   }
 }

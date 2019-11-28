@@ -65,61 +65,12 @@ export function createDirFile(data) {
   })
 }
 
-// 获取技能列表
-export function skillManagerList(data) {
+// 收藏到工作台
+export function shareFileToWorkDesk(data) {
   return request({
-    url: '/system/skill/listV2',
+    url: 'knowledgeDirFile/shareFileToWorkDesk',
     method: 'post',
     data
   })
 }
 
-// 获取所有技能列表
-export function skillAllList(data) {
-  return request({
-    url: '/evaluation/automatic/skillList',
-    method: 'post',
-    data
-  })
-}
-// 单个技能详情 system/skill/one
-export function getItem(data) {
-  return request({
-    url: '/system/skill/one',
-    method: 'post',
-    data
-  })
-}
-// 修改技能
-export function modifyItem(data) {
-  return request({
-    url: '/system/skill/update',
-    method: 'post',
-    data
-  })
-}
-
-// 新增技能
-export function addItem(data) {
-  return request({
-    url: '/system/skill/add',
-    method: 'post',
-    data
-  })
-}
-// 删除技能
-export function deleteItem(data) {
-  return request({
-    url: 'system/skill/delete',
-    method: 'post',
-    data
-  })
-}
-// 删除技能
-export function deleteMulti(data) {
-  return request({
-    url: 'system/skill/deleteMulti',
-    method: 'post',
-    data
-  })
-}
