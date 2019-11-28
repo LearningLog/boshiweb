@@ -24,7 +24,7 @@
             :on-success="handleSuccess"
             :on-error="handleUploadError"
           >
-            <el-button type="primary">上传</el-button>
+            <el-button type="primary"><i class="iconfont iconshangchuan"></i>上传</el-button>
           </el-upload>
         </div>
         <div class="fr">

@@ -92,7 +92,7 @@
             :value="item.value"
           />
         </el-select>
-        <el-button type="success" class="btn-search app-dataScreening-export" @click="listExport"><i class="el-icon-upload el-icon--right" />全部导出</el-button>
+        <el-button type="success" class="btn-search app-dataScreening-export" @click="listExport"><i class="iconfont iconpilianngdaochu" />全部导出</el-button>
       </div>
       <!--标签-->
       <div class="app-dataScreening-listTags">
@@ -228,7 +228,7 @@
       <!--头部-->
       <div class="app-dataScreening-head app-dataScreening-statistic-head">
         <span class="app-dataScreening-head-title">统计分析</span>
-        <el-button type="success" class="btn-search app-dataScreening-export" @click="statisticExport"><i class="el-icon-upload el-icon--right" />全部导出</el-button>
+        <el-button type="success" class="btn-search app-dataScreening-export" @click="statisticExport"><i class="iconfont iconpilianngdaochu" />全部导出</el-button>
       </div>
       <!--内容-->
       <div class="app-dataScreening-statistic-body">
@@ -250,7 +250,7 @@
               <span class="time-desc">当前是{{ staffData.desc }}的数据</span>
             </div>
 
-            <el-button type="success" class="btn-search app-dataScreening-export" @click="dialog=true"><i class="el-icon-upload el-icon--right" />生成对比图</el-button>
+            <el-button type="success" class="btn-search app-dataScreening-export" @click="dialog=true"><i class="" />生成对比图</el-button>
           </div>
           <div class="fl w55 employeePortrait-eacharts">
             <!--员工画像概览-->

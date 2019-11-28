@@ -20,6 +20,9 @@
           <span @click="close"><i class="close iconfont iconguanbi" /></span>
         </div>
       </div>
+      <svg class="icon" aria-hidden="true">
+        <use xlink:href="icontupian" />
+      </svg>
       <div class="content">
         <div id="filePicker">
           <div class="drag-upload">
@@ -229,6 +232,7 @@ export default {
         deskAddFile(params).then(res => {
           console.log(res)
           this.$message.success('上传成功！')
+          store.dispatch('fileUpload/deskAddFileSuccess', res.data)
         })
       } else {
         // const currentFile = this.fileQueued.get(sourceUid)
@@ -245,7 +249,8 @@ export default {
         }
         knowledgeCreateFile(params).then(res => {
           console.log(res)
-          this.$message.success('上传成功')
+          this.$message.success('上传成功！')
+          store.dispatch('fileUpload/createFileSuccess', res.data)
         })
       }
     },

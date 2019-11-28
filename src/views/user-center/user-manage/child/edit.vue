@@ -330,9 +330,9 @@ export default {
     setEgroups() {
       this.setEgroupsDialogVisible = false
       this.egroups = []
-      if (this.form.einc.length) {
+      if (this.einc.length) {
         this.form.noList2.forEach((item, index) => {
-          this.form.einc.forEach(item1 => {
+          this.einc.forEach(item1 => {
             if (item1 === item.inc) {
               this.egroups.push(item)
             }

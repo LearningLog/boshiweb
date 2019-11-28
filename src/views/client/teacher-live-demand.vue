@@ -112,7 +112,7 @@
                       >
                         <el-input :value="item.auth_appcode" disabled /><span
                           class="copy"
-                          @click="clipboard(item.auth_appcode, $event)"
+                          @click="copy(item.auth_appcode, $event)"
                         >复制</span>
                       </el-form-item>
                     </el-form>

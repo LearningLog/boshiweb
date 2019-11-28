@@ -7,7 +7,9 @@
 const state = {
   visibility: { bottom: '-60vh' }, // 是否弹出上传组件
   isMinimality: false, // 控制最小化
-  belongs: {} // 上传的文件所属 工作台还是知识库
+  belongs: {}, // 上传的文件所属 工作台还是知识库
+  deskAddFileSuccessData: {}, // 工作台上传成功后返回的数据
+  createFileSuccessData: {} // 知识库上传成功后返回的数据
 }
 
 const mutations = {
@@ -35,6 +37,13 @@ const mutations = {
   },
   SET_BELONGS: (state, belongs) => {
     state.belongs = belongs
+  },
+  DESK_ADD_DILE_SUCCESS: (state, data) => {
+    state.deskAddFileSuccessData = data
+    console.log('state.deskAddFileSuccessData', state.deskAddFileSuccessData)
+  },
+  CREAT_FILE_SUCCESS: (state, data) => {
+    state.createFileSuccessData = data
   }
 }
 
@@ -47,6 +56,12 @@ const actions = {
   },
   belongs({ commit }, belongs) {
     commit('SET_BELONGS', belongs)
+  },
+  deskAddFileSuccess({ commit }, data) {
+    commit('DESK_ADD_DILE_SUCCESS', data)
+  },
+  createFileSuccess({ commit }, data) {
+    commit('CREAT_FILE_SUCCESS', data)
   }
 }
 
