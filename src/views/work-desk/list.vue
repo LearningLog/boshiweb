@@ -30,12 +30,11 @@
                 </el-select>
               </el-form-item>
               <el-form-item label="文件来源">
-                <el-select v-model="listQuery.sourceSystemList" placeholder="请选择文件来源" clearable filterable>
+                <el-select v-model="sourceSystem" placeholder="请选择文件来源" clearable filterable>
                   <el-option
                     v-for="item in fileSource_list"
                     :key="item.value"
-                    :label="item.name"
-                    :value="[item.value]"
+                    :value="item.value"
                   />
                 </el-select>
               </el-form-item>
@@ -50,12 +49,12 @@
                 />
               </el-form-item>
               <el-form-item label="状态">
-                <el-select v-model="listQuery.fileStatusList" placeholder="请选择状态" clearable filterable>
+                <el-select v-model="fileStatus" placeholder="请选择状态" clearable filterable>
                   <el-option
                     v-for="(value,key) in file_status"
                     :key="key"
                     :label="value"
-                    :value="[key]"
+                    :value="key"
                   />
                 </el-select>
               </el-form-item>
@@ -192,6 +191,8 @@ export default {
       fileName: '', // 文件名称（弹窗title）
       popoverVisible: false, // 高级搜索是否显示
       total: 0, // 总条数
+      fileStatus: '', // 文件状态
+      sourceSystem: '', // 来源系统
       listQuery: { // 查询条件
         currentPage: 1, // 当前页
         pageSize: 10, // 当前页请求条数
@@ -235,7 +236,9 @@ export default {
     }
   },
   beforeDestroy() {
-
+    if (this.timer != null) {
+      clearInterval(this.timer)
+    }
   },
   created() {
     this.manageType = this.$store.state.user.userPermission.manageType
@@ -279,6 +282,12 @@ export default {
     },
     // 获取列表数据
     get_list() {
+      if (this.fileStatus !== '') {
+        this.listQuery.fileStatusList.push(this.fileStatus)
+      }
+      if (this.sourceSystem !== '') {
+        this.listQuery.sourceSystemList.push(this.sourceSystem)
+      }
       if (this.manageType === 3) {
         getFileList(this.listQuery).then(response => {
           this.list = response.data.page.list
@@ -335,6 +344,8 @@ export default {
       this.listQuery.endTime = ''
       this.time_range = []
       this.listQuery.fileStatusList = []
+      this.fileStatus = ''
+      this.sourceSystem = ''
       this.get_list()
     },
     // 获取租户列表
