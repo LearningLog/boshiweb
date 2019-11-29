@@ -226,6 +226,7 @@ export default {
   },
   created() {
     this.id = this.$route.query.id
+    this.form._id = this.$route.query.id
     this.getCustomManageList()
   },
   methods: {
