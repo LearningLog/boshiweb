@@ -7,7 +7,7 @@
       <el-form-item label="角色描述：">
         <span>{{ form.desc }}</span>
       </el-form-item>
-      <el-form-item label="角色类型：" prop="manageType" v-show="manageTypeList.length !== 1">
+      <el-form-item v-show="manageTypeList.length !== 1" label="角色类型：" prop="manageType">
         <el-radio-group v-model="manageType" @change="handleChangeManageType">
           <el-radio v-for="item in manageTypeList" :key="item.id" :label="item.id">{{ item.name }}</el-radio>
         </el-radio-group>

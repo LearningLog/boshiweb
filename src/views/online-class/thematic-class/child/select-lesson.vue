@@ -67,11 +67,7 @@
           />
         </template>
       </el-table-column>
-      <el-table-column align="center" label="课堂名称" min-width="120" show-overflow-tooltip>
-        <template slot-scope="scope">
-          <el-link type="primary" @click="detail(scope.row)">{{ scope.row.lesson_name }}</el-link>
-        </template>
-      </el-table-column>
+      <el-table-column align="center" label="课堂名称" min-width="120" show-overflow-tooltip prop="cname" />
       <el-table-column class-name="status-col" label="标签" min-width="100" align="center" prop="labelName" show-overflow-tooltip />
       <el-table-column class-name="status-col" label="课堂数" min-width="64" align="center" prop="chapter_count" show-overflow-tooltip />
       <!--<el-table-column class-name="status-col" label="开始时间" min-width="140" align="center" prop="s_time" />-->

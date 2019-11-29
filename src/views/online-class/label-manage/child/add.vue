@@ -7,10 +7,10 @@
       <el-form-item label="所属小组" prop="egroup">
         <el-select v-model="form.egroup" placeholder="请选择所属小组" clearable filterable>
           <el-option
-              v-for="item in groupList"
-              :key="item._id"
-              :label="item.groupName"
-              :value="item.inc"
+            v-for="item in groupList"
+            :key="item._id"
+            :label="item.groupName"
+            :value="item.inc"
           />
         </el-select>
       </el-form-item>

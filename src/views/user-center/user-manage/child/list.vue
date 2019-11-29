@@ -197,28 +197,28 @@
     </el-dialog>
     <el-dialog v-el-drag-dialog class="setRolesDialog" width="650px" title="重置密码" :visible.sync="resetPasswordVisible" @close="closeResetPasswordDialog">
       <el-form
-          ref="modifyPassword"
-          class="modifyPassword"
-          :model="user"
-          :rules="rules"
-          label-width="120px"
+        ref="modifyPassword"
+        class="modifyPassword"
+        :model="user"
+        :rules="rules"
+        label-width="120px"
       >
         <el-form-item label="新密码" prop="password">
           <el-input
-              v-model="user.password"
-              placeholder="请输入新密码"
-              type="password"
-              autocomplete="new-password"
-              clearable
+            v-model="user.password"
+            placeholder="请输入新密码"
+            type="password"
+            autocomplete="new-password"
+            clearable
           />
         </el-form-item>
         <el-form-item label="再次输入密码" prop="secondconfirmpassword">
           <el-input
-              v-model="user.secondconfirmpassword"
-              placeholder="再次输入密码"
-              type="password"
-              autocomplete="new-password"
-              clearable
+            v-model="user.secondconfirmpassword"
+            placeholder="再次输入密码"
+            type="password"
+            autocomplete="new-password"
+            clearable
           />
         </el-form-item>
       </el-form>

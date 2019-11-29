@@ -9,8 +9,8 @@
     <breadcrumb class="breadcrumb-container" />
     <div class="right-menu">
       <!--<lang-select class="right-menu-item hover-effect" />-->
-      <router-link class="door" to="/"><i class="iconfont icongongzuotai"></i>知识门户</router-link>
-      <MiniPrograms></MiniPrograms>
+      <router-link class="door" to="/"><i class="iconfont icongongzuotai" />知识门户</router-link>
+      <MiniPrograms />
       <help-center />
       <user />
     </div>

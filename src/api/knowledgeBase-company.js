@@ -74,7 +74,6 @@ export function shareFileToWorkDesk(data) {
   })
 }
 
-
 // 获取下载token信息
 export function getDownloadToken(data) {
   return request({

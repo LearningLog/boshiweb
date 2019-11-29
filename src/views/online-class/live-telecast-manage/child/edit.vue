@@ -306,7 +306,7 @@
     <select-file
       :visible.sync="visibleSelectFile"
       :is-upload="true"
-      :fileTypeList="fileTypeList"
+      :file-type-list="fileTypeList"
       @checkedFile="checkedFile"
     />
     <AddLessonEvalLabels

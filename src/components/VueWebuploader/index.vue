@@ -37,26 +37,32 @@
                 :class="`file-${file.id}`"
               >
                 <li class="file-type" :icon="fileCategory(file.ext)">
-                  <svg class="icon" aria-hidden="true" v-if="fileCategory(file.ext) === 'image'">
-                    <use xlink:href="icontupian" />
+                  <svg v-if="fileCategory(file.ext) === 'image'" class="icon" aria-hidden="true">
+                    <use xlink:href="#icontupian" />
                   </svg>
-                  <svg class="icon" aria-hidden="true" v-else-if="fileCategory(file.ext) === 'video'">
-                    <use xlink:href="iconvideo-" />
+                  <svg v-else-if="fileCategory(file.ext) === 'video'" class="icon" aria-hidden="true">
+                    <use xlink:href="#iconvideo-" />
                   </svg>
-                  <svg class="icon" aria-hidden="true" v-else-if="fileCategory(file.ext) === 'audio'">
-                    <use xlink:href="iconaudio" />
+                  <svg v-else-if="fileCategory(file.ext) === 'audio'" class="icon" aria-hidden="true">
+                    <use xlink:href="#iconaudio" />
                   </svg>
-                  <svg class="icon" aria-hidden="true" v-else-if="fileCategory(file.ext) === 'text'">
-                    <use xlink:href="icontext" />
+                  <svg v-else-if="fileCategory(file.ext) === 'text'" class="icon" aria-hidden="true">
+                    <use xlink:href="#icontext" />
                   </svg>
-                  <svg class="icon" aria-hidden="true" v-else-if="fileCategory(file.ext) === 'pdf'">
-                    <use xlink:href="iconpdf1" />
+                  <svg v-else-if="fileCategory(file.ext) === 'excel'" class="icon" aria-hidden="true">
+                    <use xlink:href="#iconex" />
                   </svg>
-                  <svg class="icon" aria-hidden="true" v-else-if="fileCategory(file.ext) === 'compressed'">
-                    <use xlink:href="iconyasuobao" />
+                  <svg v-else-if="fileCategory(file.ext) === 'ppt'" class="icon" aria-hidden="true">
+                    <use xlink:href="#iconppt" />
                   </svg>
-                  <svg class="icon" aria-hidden="true" v-else>
-                    <use xlink:href="iconyemian" />
+                  <svg v-else-if="fileCategory(file.ext) === 'pdf'" class="icon" aria-hidden="true">
+                    <use xlink:href="#iconpdf1" />
+                  </svg>
+                  <svg v-else-if="fileCategory(file.ext) === 'compressed'" class="icon" aria-hidden="true">
+                    <use xlink:href="#iconyasuobao" />
+                  </svg>
+                  <svg v-else class="icon" aria-hidden="true">
+                    <use xlink:href="#iconyemian" />
                   </svg>
                 </li>
                 <el-tooltip
@@ -68,7 +74,7 @@
                   <li class="file-name singleLineOmission">{{ file.name }}</li>
                 </el-tooltip>
                 <li class="progress">
-                  <el-progress :percentage="progress[index]" :key="index" />
+                  <el-progress :key="index" :percentage="progress[index]" />
                 </li>
                 <li class="file-size">{{ fileSize(file.size) }}</li>
                 <!--<li class="file-status">上传中...</li>-->
@@ -331,15 +337,10 @@ export default {
           'txt',
           'docx',
           'pages',
-          'epub',
-          'numbers',
-          'csv',
-          'xls',
-          'xlsx',
-          'keynote',
-          'ppt',
-          'pptx'
+          'epub'
         ],
+        excel: ['numbers', 'csv', 'xls', 'xlsx'],
+        ppt: ['keynote', 'ppt', 'pptx'],
         compressed: ['zip', 'rar'],
         pdf: ['pdf']
       }
@@ -452,6 +453,7 @@ export default {
     > .file-type {
       width: 24px;
       height: 30px;
+      vertical-align: top;
 
       > i {
         display: table-cell;
@@ -459,6 +461,7 @@ export default {
     }
     > .file-name {
       width: 18%;
+      vertical-align: top;
     }
     > .progress {
       width: 70%;
@@ -510,5 +513,8 @@ export default {
 
 #filePicker /deep/ .webuploader-pick-hover {
   background-color: #fafafa !important;
+}
+#mainFileUpload > #header > .fr.icons span {
+  padding: 0 1px;
 }
 </style>

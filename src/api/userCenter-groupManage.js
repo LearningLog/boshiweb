@@ -105,7 +105,6 @@ export function saveGroupSkill(data) {
   })
 }
 
-// /////////////////////////////
 // 批量删除
 export function deleteMultiRole(data) {
   return request({

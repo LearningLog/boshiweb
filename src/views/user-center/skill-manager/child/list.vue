@@ -36,8 +36,8 @@
                   />
                 </el-select>
               </el-form-item>
-                <el-form-item label="技能ID">
-              <el-input v-model="listQuery.skillInc" placeholder="技能ID" clearable @keyup.enter.native="topSearch" />
+              <el-form-item label="技能ID">
+                <el-input v-model="listQuery.skillInc" placeholder="技能ID" clearable @keyup.enter.native="topSearch" />
               </el-form-item>
               <!-- </el-form-item>
                 <el-form-item label="技能名称">
@@ -53,7 +53,7 @@
       </transition>
     </div>
     <div id="topBtn">
-      <el-button type="primary" v-if="hasThisBtnPermission('skill-add')" @click="add"><i class="iconfont iconzengjia" />新增</el-button>
+      <el-button v-if="hasThisBtnPermission('skill-add')" type="primary" @click="add"><i class="iconfont iconzengjia" />新增</el-button>
     </div>
     <el-table
       v-loading="listLoading"
@@ -118,7 +118,7 @@ export default {
         // roleId: '', // 角色
         startTime: '', // 开始时间
         endTime: '', // 结束时间
-        skillInc:''//技能id
+        skillInc: ''// 技能id
       },
       listQuery1: {
         currentPage: 1, // 当前页码

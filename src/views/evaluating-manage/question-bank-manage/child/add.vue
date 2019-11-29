@@ -372,7 +372,7 @@
       </el-tab-pane>
       <el-tab-pane class="excel" label="Excel添加" name="excel">
         <div v-show="!topics.length" class="topicFile">
-          <el-button size="small" class="" type="primary" @click="downTemplete"><i class="iconfont iconxiazai"></i>下载Excel模板</el-button>
+          <el-button size="small" class="" type="primary" @click="downTemplete"><i class="iconfont iconxiazai" />下载Excel模板</el-button>
           <el-upload
             ref="uploadExcel"
             class="excel-uploader"
@@ -383,7 +383,7 @@
             :on-success="handleExcelSuccess"
             :before-upload="beforeExcelUpload"
           >
-            <el-button size="small" class="uploadExcel" type="primary"><i class="iconfont iconshangchuan"></i>上传试题文件</el-button>
+            <el-button size="small" class="uploadExcel" type="primary"><i class="iconfont iconshangchuan" />上传试题文件</el-button>
           </el-upload>
         </div>
         <div v-show="topics.length">
