@@ -244,7 +244,7 @@ const onlineClass = {
           component: () =>
                   import('@/views/online-class/thematic-class/child/evaluate'),
           meta: {
-            title: '专题评论',
+            title: '专题评价',
             icon: '',
             activeMenu: '/online-class/thematic-class'
           }
