@@ -230,8 +230,15 @@ export default {
 
     // 获取创建人（实际就是用户）
     getCreater() {
-      findUserListByGroupId({ groupId: this.listQuery.selectCompanyId || this.$store.state.user.userPermission.groupId }).then(res => {
+      findUserListByGroupId({ groupId: this.listQuery1.selectCompanyId || this.$store.state.user.userPermission.groupId }).then(res => {
         this.createrList = res.data
+        var that = this
+        var has = this.createrList.find(function(item) {
+          return item._id === that.listQuery1.createUser
+        })
+        if (!has) {
+          this.listQuery1.createUser = ''
+        }
       })
     },
 

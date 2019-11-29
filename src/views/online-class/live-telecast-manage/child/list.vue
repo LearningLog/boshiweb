@@ -243,11 +243,18 @@ export default {
     // 获取创建人（实际就是用户）
     getCreater() {
       var psrams = {}
-      if (!this.$store.state.user.isSystemManage || this.listQuery.selectCompanyId) {
-        psrams = { groupId: this.listQuery.selectCompanyId || this.$store.state.user.userPermission.groupId }
+      if (!this.$store.state.user.isSystemManage || this.listQuery1.selectCompanyId) {
+        psrams = { groupId: this.listQuery1.selectCompanyId || this.$store.state.user.userPermission.groupId }
       }
       findUserListByGroupId(psrams).then(res => {
         this.createrList = res.data
+        var that = this
+        var has = this.createrList.find(function(item) {
+          return item._id === that.listQuery1.createUser
+        })
+        if (!has) {
+          this.listQuery1.createUser = ''
+        }
       })
     },
 
