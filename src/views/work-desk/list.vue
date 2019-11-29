@@ -430,6 +430,8 @@ export default {
       a.href = url
       document.body.appendChild(a)
       a.click()
+      URL.revokeObjectURL(a.href)
+      document.body.removeChild(a)
     },
     // 批量下载
     batchDownload() {
@@ -455,6 +457,8 @@ export default {
           a.href = url
           document.body.appendChild(a)
           a.click()
+          URL.revokeObjectURL(a.href)
+          document.body.removeChild(a)
         }).catch(() => {})
       })
     },
