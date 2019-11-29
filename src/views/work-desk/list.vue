@@ -30,12 +30,11 @@
                 </el-select>
               </el-form-item>
               <el-form-item label="文件来源">
-                <el-select v-model="listQuery.sourceSystemList" placeholder="请选择文件来源" clearable filterable>
+                <el-select v-model="sourceSystem" placeholder="请选择文件来源" clearable filterable>
                   <el-option
                     v-for="item in fileSource_list"
                     :key="item.value"
-                    :label="item.name"
-                    :value="[item.value]"
+                    :value="item.value"
                   />
                 </el-select>
               </el-form-item>
@@ -50,12 +49,12 @@
                 />
               </el-form-item>
               <el-form-item label="状态">
-                <el-select v-model="listQuery.fileStatusList" placeholder="请选择状态" clearable filterable>
+                <el-select v-model="fileStatus" placeholder="请选择状态" clearable filterable>
                   <el-option
                     v-for="(value,key) in file_status"
                     :key="key"
                     :label="value"
-                    :value="[key]"
+                    :value="key"
                   />
                 </el-select>
               </el-form-item>
@@ -192,6 +191,8 @@ export default {
       fileName: '', // 文件名称（弹窗title）
       popoverVisible: false, // 高级搜索是否显示
       total: 0, // 总条数
+      fileStatus: '', // 文件状态
+      sourceSystem: '', // 来源系统
       listQuery: { // 查询条件
         currentPage: 1, // 当前页
         pageSize: 10, // 当前页请求条数
@@ -230,15 +231,20 @@ export default {
       },
       selectNodes: [], // 选择的树的节点
       fileId: '', // 当前文件id
-      showCustom: true// 租户查询是否显示
+      showCustom: true, // 租户查询是否显示
+      timer: null// 定时任务
     }
   },
   beforeDestroy() {
-
+    if (this.timer != null) {
+      clearInterval(this.timer)
+    }
   },
   created() {
     this.manageType = this.$store.state.user.userPermission.manageType
+
     this.get_list()
+    this.isNeedRefrssh()
 
     if (this.manageType !== 1) {
       this.showCustom = false
@@ -276,22 +282,43 @@ export default {
     },
     // 获取列表数据
     get_list() {
+      if (this.fileStatus !== '') {
+        this.listQuery.fileStatusList.push(this.fileStatus)
+      }
+      if (this.sourceSystem !== '') {
+        this.listQuery.sourceSystemList.push(this.sourceSystem)
+      }
       if (this.manageType === 3) {
         getFileList(this.listQuery).then(response => {
           this.list = response.data.page.list
           this.fileList = response.data.filePackageIdWorkDeskFile
           this.total = response.data.page.totalCount
-          this.isNeedRefrssh()
+          this.have_encoding()
         })
       } else if (this.manageType === 1 || this.manageType === 2) {
         getFileListManage(this.listQuery).then(response => {
           this.list = response.data.page.list
           this.fileList = response.data.filePackageIdWorkDeskFile
           this.total = response.data.page.totalCount
-          this.isNeedRefrssh()
+          this.have_encoding()
         })
       } else {
         this.$message.success('无法获取权限信息！')
+      }
+    },
+    // 获取编码中的文件
+    have_encoding() {
+      this.file_encoding.length = 0
+      for (let i = 0; i < this.list.length; i++) {
+        if (this.getFileListData(this.list[i].mainFileId).file_status === 1) {
+          this.file_encoding.push(this.list[i].mainFileId)
+        }
+      }
+      if (this.timer != null) {
+        clearInterval(this.timer)
+      }
+      if (this.file_encoding.length > 0) {
+        this.isNeedRefrssh()
       }
     },
     // 搜索
@@ -303,17 +330,9 @@ export default {
     },
     // 判断是否有编码中的数据需要刷新
     isNeedRefrssh() {
-      this.file_encoding.length = 0
-      for (let i = 0; i < this.list.length; i++) {
-        if (this.getFileListData(this.list[i].mainFileId).file_status === 1) {
-          this.file_encoding.push(this.list[i].mainFileId)
-        }
-      }
-      if (this.file_encoding.length > 0) {
-        setTimeout(() => {
-          this.get_list()
-        }, 50000)
-      }
+      this.timer = setInterval(() => {
+        this.get_list()
+      }, 5000)
     },
     // 重置
     reset() {
@@ -325,6 +344,8 @@ export default {
       this.listQuery.endTime = ''
       this.time_range = []
       this.listQuery.fileStatusList = []
+      this.fileStatus = ''
+      this.sourceSystem = ''
       this.get_list()
     },
     // 获取租户列表

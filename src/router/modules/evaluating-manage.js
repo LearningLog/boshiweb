@@ -117,7 +117,7 @@ const evaluatingManage = {
           name: 'examination-list',
           hidden: true,
           component: () => import('@/views/evaluating-manage/examination-manage/child/list.vue'),
-          meta: { title: '试卷列表', icon: '', activeMenu: '/evaluating-manage/examination-manage' }
+          meta: { title: '考试列表', icon: '', activeMenu: '/evaluating-manage/examination-manage' }
         },
         {
           path: 'detail',
