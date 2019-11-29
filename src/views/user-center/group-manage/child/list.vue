@@ -139,7 +139,8 @@ export default {
         startTime: '', // 开始时间
         endTime: '', // 结束时间
 
-        selectCompanyId: this.$store.state.user.userSystemInfo.userInfo.groupId // 所属租户
+        // selectCompanyId: this.$store.state.user.userSystemInfo.userInfo.groupId // 所属租户
+        selectCompanyId: '' // 所属租户
       },
       listQuery1: {
         currentPage: 1, // 当前页码
@@ -150,7 +151,7 @@ export default {
         startTime: '', // 开始时间
         endTime: '', // 结束时间
         
-        selectCompanyId: this.$store.state.user.userSystemInfo.userInfo.groupId // 所属租户
+        selectCompanyId: '' // 所属租户
       },
       time_range: [],
       delCheckedList: [], // 选中的数据

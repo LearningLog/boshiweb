@@ -120,8 +120,20 @@
         </template>
 
       </el-table-column>
-      <el-table-column label="文件大小" min-width="100" align="center" show-overflow-tooltip prop="skill_desc" />
-      <el-table-column align="center" label="文件属性" min-width="140" show-overflow-tooltip prop="fileAttributeDesc" />
+      <el-table-column label="文件大小" min-width="100" align="center" show-overflow-tooltip prop="skill_desc" >
+         <template slot-scope="{row}">
+          <div>
+            {{ parseFileSize(row) }}
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="文件属性" min-width="140" show-overflow-tooltip prop="fileAttributeDesc" >
+        <template slot-scope="{row}">
+          <div>
+            {{ parseFileType(row) }}
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="创建人" show-overflow-tooltip prop="customname">
         <template slot-scope="{row}">
           <div>
@@ -189,7 +201,7 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="createFolderConfirm('ruleForm')">确定</el-button>
-          <el-button @click="resetForm('ruleForm')">取消</el-button>
+          <el-button @click="crateFolderDialogVisible=false">取消</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -436,6 +448,21 @@ export default {
     getFileShowSize(fileSize) {
       return getFileShowSize(fileSize)
     },
+    parseFileType(row) {
+      const fileTypeName=row.fileAttributeDesc==='dir'?'文件夹':'文件'
+      return fileTypeName
+    },
+    parseFileSize(row) {
+      if(!row.fileSize){
+        return
+      }
+      var bytes=row.fileSize
+      if (bytes === 0) return '0 B';
+      let k = 1024,
+      sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
+      i = Math.floor(Math.log(bytes) / Math.log(k));
+      return (bytes / Math.pow(k, i)). toFixed(2) + ' ' + sizes[i];
+    },
     parseCreateUser(row) {
       return this.userInfoForList[row.userId].nickname
     },
@@ -497,6 +524,9 @@ export default {
 
     enterFolder(row) {
       if (row.fileAttributeDesc === 'dir') {
+             // 进文件夹的检索和文件别的input检索不共存
+      this.listQuery.currentPage = 1
+      this.listQuery.keyword= ''
         this.pathQueryString += this.pathQueryString ? '/' + row.fileId + '|' + row.fileName : row.fileId + '|' + row.fileName
         this.$router.push({ path: '/knowledge-base/company-base/list', query: { path: this.pathQueryString, selectCompanyId: this.listQuery.selectCompanyId }})
       }
@@ -523,6 +553,10 @@ export default {
         this.pathQueryString = ''
         this.listQuery.parentId = ''
       }
+
+ 
+
+
       this.fileUploadPara.ownerId = this.listQuery.selectCompanyId
       this.fileUploadPara.parentId = this.pathNavData.length > 0 ? this.pathNavData[this.pathNavData.length - 1].id : this.listQuery.selectCompanyId
       this.fileUploadPara.selectCompanyId = this.listQuery.selectCompanyId
@@ -603,6 +637,7 @@ export default {
 
       // this.time_range = []// 时间范围
       // this.getDirList()
+
     },
     // 知识库列表
     async  getDirList() {
@@ -703,6 +738,7 @@ export default {
             type: 'success'
           })
         })
+        this.enterFloderByQueryPath()
       }).catch(() => {})
     },
     deleteDirFileSelected(row) {
@@ -721,6 +757,7 @@ export default {
             type: 'success'
           })
         })
+        this.enterFloderByQueryPath()
       }).catch(() => {})
     },
     // 创建文件夹
