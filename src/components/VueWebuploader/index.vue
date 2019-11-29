@@ -38,25 +38,31 @@
               >
                 <li class="file-type" :icon="fileCategory(file.ext)">
                   <svg class="icon" aria-hidden="true" v-if="fileCategory(file.ext) === 'image'">
-                    <use xlink:href="icontupian" />
+                    <use xlink:href="#icontupian" />
                   </svg>
                   <svg class="icon" aria-hidden="true" v-else-if="fileCategory(file.ext) === 'video'">
-                    <use xlink:href="iconvideo-" />
+                    <use xlink:href="#iconvideo-" />
                   </svg>
                   <svg class="icon" aria-hidden="true" v-else-if="fileCategory(file.ext) === 'audio'">
-                    <use xlink:href="iconaudio" />
+                    <use xlink:href="#iconaudio" />
                   </svg>
                   <svg class="icon" aria-hidden="true" v-else-if="fileCategory(file.ext) === 'text'">
-                    <use xlink:href="icontext" />
+                    <use xlink:href="#icontext" />
+                  </svg>
+                  <svg class="icon" aria-hidden="true" v-else-if="fileCategory(file.ext) === 'excel'">
+                    <use xlink:href="#iconex" />
+                  </svg>
+                  <svg class="icon" aria-hidden="true" v-else-if="fileCategory(file.ext) === 'ppt'">
+                    <use xlink:href="#iconppt" />
                   </svg>
                   <svg class="icon" aria-hidden="true" v-else-if="fileCategory(file.ext) === 'pdf'">
-                    <use xlink:href="iconpdf1" />
+                    <use xlink:href="#iconpdf1" />
                   </svg>
                   <svg class="icon" aria-hidden="true" v-else-if="fileCategory(file.ext) === 'compressed'">
-                    <use xlink:href="iconyasuobao" />
+                    <use xlink:href="#iconyasuobao" />
                   </svg>
                   <svg class="icon" aria-hidden="true" v-else>
-                    <use xlink:href="iconyemian" />
+                    <use xlink:href="#iconyemian" />
                   </svg>
                 </li>
                 <el-tooltip
@@ -331,15 +337,10 @@ export default {
           'txt',
           'docx',
           'pages',
-          'epub',
-          'numbers',
-          'csv',
-          'xls',
-          'xlsx',
-          'keynote',
-          'ppt',
-          'pptx'
+          'epub'
         ],
+        excel: ['numbers', 'csv', 'xls', 'xlsx'],
+        ppt: ['keynote', 'ppt', 'pptx'],
         compressed: ['zip', 'rar'],
         pdf: ['pdf']
       }
@@ -452,6 +453,7 @@ export default {
     > .file-type {
       width: 24px;
       height: 30px;
+      vertical-align: top;
 
       > i {
         display: table-cell;
@@ -459,6 +461,7 @@ export default {
     }
     > .file-name {
       width: 18%;
+      vertical-align: top;
     }
     > .progress {
       width: 70%;
@@ -510,5 +513,8 @@ export default {
 
 #filePicker /deep/ .webuploader-pick-hover {
   background-color: #fafafa !important;
+}
+#mainFileUpload > #header > .fr.icons span {
+  padding: 0 1px;
 }
 </style>

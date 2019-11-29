@@ -182,7 +182,7 @@ export default {
     // 获取全部角色
     getAllQueryRoles() {
       getAllQueryRole({ companyIds: this.companyIds ? [this.companyIds] : [] }).then(response => {
-        this.roleList = response.data.allRoleList
+        this.roleList = response.data.roleList
         var that = this
         var has = this.roleList.find(function(item) {
           return item._id === that.roleId

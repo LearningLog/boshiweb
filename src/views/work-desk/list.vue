@@ -87,12 +87,13 @@
           <span>{{ scope.$index + (listQuery.currentPage - 1) * listQuery.pageSize + 1 }} </span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="信息" min-width="300" show-overflow-tooltip>
+      <el-table-column header-align="center" align="left" label="信息" min-width="240" show-overflow-tooltip>
         <template slot-scope="scope">
-          <div class="tab-message-box clearfix">
+          <div class="tab-message-box">
             <div class="pointer message-img" @click="preview(scope.row)">
               <el-image
                 class="thumbnail"
+                style="width: 100px; height: 100px; vertical-align: middle;"
                 :src="getPic(scope.row) || file_knowledge"
                 fit="contain"
               />
@@ -567,20 +568,15 @@ export default {
 </script>
 <style lang="scss" scoped>
   .tab-message-box {
-    position: relative;
-    height: 100px;
+    text-align: left;
   }
-  .tab-message-box .pointer {
-    position: absolute;
-  }
-  .tab-message-box .message-img {
-    left: 0;
-  }
-  .tab-message-box .fileDetail {
-    left: 100px;
+  .message-img {
+    display: inline-block;
   }
   .fileDetail {
     margin-left: 10px;
+    display: inline-block;
+    vertical-align: middle;;
   }
   .fileDetail p {
     margin: 0;
