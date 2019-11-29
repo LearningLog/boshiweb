@@ -1,7 +1,7 @@
 <template>
   <div class="list-box">
     <div id="topSearch">
-      <el-input v-model="listQuery.newscategory_name" placeholder="请输入类别名称" clearable @keyup.enter.native="topSearch">
+      <el-input v-model="listQuery1.newscategory_name" placeholder="请输入类别名称" clearable @keyup.enter.native="topSearch">
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
       </el-input>
       <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">高级搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
@@ -11,7 +11,7 @@
             <el-form ref="form" :model="listQuery" label-width="100px">
               <el-form-item label="创建时间">
                 <el-date-picker
-                  v-model="listQuery.time_range"
+                  v-model="listQuery1.time_range"
                   type="daterange"
                   format="yyyy-MM-dd"
                   value-format="yyyy-MM-dd"
@@ -74,6 +74,12 @@ export default {
         currentPage: 1,
         pageSize: 10
       },
+      listQuery1: {
+        newscategory_name: '',
+        time_range: null,
+        currentPage: 1,
+        pageSize: 10
+      },
       list: null,
       listLoading: false,
       total: 0,
@@ -87,13 +93,15 @@ export default {
   methods: {
     // 高级搜索
     topSearch() {
+      this.listQuery = JSON.parse(JSON.stringify(this.listQuery1))
       this.get_list()
     },
     // 重置
     reset() {
-      this.listQuery.newscategory_name = ''
-      this.listQuery.creater = ''
-      this.listQuery.time_range = null
+      this.listQuery1.newscategory_name = ''
+      this.listQuery1.creater = ''
+      this.listQuery1.time_range = null
+      this.listQuery = JSON.parse(JSON.stringify(this.listQuery1))
       this.get_list()
     },
     // 列表资讯类别
