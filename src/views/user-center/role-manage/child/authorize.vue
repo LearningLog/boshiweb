@@ -97,8 +97,12 @@ export default {
     // 获取初始数据
     getInitData() {
       getOneRole({ _id: this.id }).then(response => {
-        this.form = response.data.role
-        this.manageType = this.form.manageType
+        const { role } = response.data
+        this.form.rolename = role.rolename
+        this.form.desc = role.desc
+        this.form.manageType = role.manageType || 3
+        this.manageType = role.manageType || 3
+
         this.dataIsChange = -1
         this.getManageType()
       })

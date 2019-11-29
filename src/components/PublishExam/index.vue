@@ -44,6 +44,7 @@
           <Examiners
             :select-company-id="selectCompanyId"
             :selected-options="selectedOptions"
+            :load="true"
             @examiners="getExaminers"
           />
         </el-form-item>
@@ -177,7 +178,7 @@ export default {
       if (val) {
         this.paparForm.time_range[0] = val.begin_time
         this.paparForm.time_range[1] = val.end_time
-        this.selectedOptions = []
+        this.selectedOptions.length = 0
         $.extend(true, this.paparForm, val)
         for (const key in val.target_user) {
           const item = val.target_user[key]
@@ -223,7 +224,9 @@ export default {
           this.paparForm.end_time = this.paparForm.time_range[1]
           delete this.paparForm.time_range
           this.paparForm.targetUser = this.targetUser
-          this.$emit('publishExam', this.paparForm)
+          const paparForm = JSON.parse(JSON.stringify(this.paparForm))
+          this.$emit('publishExam', paparForm)
+          this.visible = false
         }
       })
     },

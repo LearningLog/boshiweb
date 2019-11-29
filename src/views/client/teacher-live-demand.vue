@@ -247,7 +247,6 @@
               <pagination
                 v-show="total > 0"
                 :total="total"
-                :page-sizes="[]"
                 :page.sync="listQuery.currentPage"
                 :limit.sync="listQuery.pageSize"
                 @pagination="getUserList"
@@ -324,7 +323,7 @@
             :class="{ activeSet: isActiveSet === 2 }"
             @click="active(2)"
           >
-            <i class="iconfont iconchengyuanguanli" />
+            <i class="iconfont iconxiaozuguanli1" />
             <span>成员管理</span>
           </div>
           <div v-if="chapter.type === 1" class="itemOperate pointer">

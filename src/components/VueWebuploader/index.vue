@@ -20,9 +20,6 @@
           <span @click="close"><i class="close iconfont iconguanbi" /></span>
         </div>
       </div>
-      <svg class="icon" aria-hidden="true">
-        <use xlink:href="icontupian" />
-      </svg>
       <div class="content">
         <div id="filePicker">
           <div class="drag-upload">
@@ -171,7 +168,9 @@ export default {
     ...mapGetters(['visibility', 'isMinimality', 'belongs'])
   },
   watch: {},
-  mounted() {},
+  mounted() {
+    store.dispatch('fileUpload/isVisibility', 2)
+  },
   created() {},
   methods: {
     // 关闭
@@ -212,6 +211,8 @@ export default {
 
     // 上传成功
     onSuccess(file, response) {
+      console.log('file', file)
+      console.log('response', response)
       this.uploadIndex++
       console.log('上传成功', file)
       console.log(this.belongs)
@@ -220,6 +221,9 @@ export default {
       const fileId = file.path.split('ZmlsZUlk=')[1]
       const sourceUid = file.source.uid // 文件上传文件唯一id
       var currentFile = this.fileQueued.get(sourceUid)
+      console.log('sourceUid', sourceUid)
+      console.log('currentFile', currentFile)
+      console.log('this.fileQueued', this.fileQueued)
       console.log('fileId', fileId)
       if (currentFile.data_type === 3) {
         const params = {

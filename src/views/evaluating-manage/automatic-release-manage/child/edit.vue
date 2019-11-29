@@ -1029,6 +1029,7 @@ export default {
           this.revolutionType = this.exam.revolution_type
           this.exam.revolution_type = 2
         }
+        this.time_range = [this.exam.start_time, this.exam.end_time]
 
         if (this.exam.revolution_type === 2) {
           this.max_revolution = 52

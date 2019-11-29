@@ -23,6 +23,15 @@ export function getAllRole(data) {
   })
 }
 
+// 获取所有角色
+export function getAllQueryRole(data) {
+  return request({
+    url: '/system/roleV2/getAllQueryRole',
+    method: 'post',
+    data
+  })
+}
+
 // 分配角色
 export function saveRole(data) {
   return request({
