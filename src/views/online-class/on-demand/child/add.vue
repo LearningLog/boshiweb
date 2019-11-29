@@ -439,9 +439,10 @@ export default {
 
     // 选择视频
     selectVideo() {
+      this.listQuery.fileName = ''
       this.listQuery.currentPage = 0
       this.videolist.length = 0
-      this.visibleSelectVideo = true
+      this.getFileList()
     },
 
     // 获取文件列表
@@ -463,6 +464,7 @@ export default {
             }
           })
         })
+        this.visibleSelectVideo = true
       })
     },
 

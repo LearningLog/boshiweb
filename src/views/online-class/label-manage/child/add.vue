@@ -4,18 +4,18 @@
       <el-form-item class="required" label="标签名称" prop="lname">
         <el-input v-model="form.lname" placeholder="请输入标签名称" clearable />
       </el-form-item>
-      <el-form-item label="标签描述">
-        <el-input v-model="form.ldesc" placeholder="请输入标签描述" clearable />
-      </el-form-item>
-      <el-form-item label="所属小组" prop="roleId">
+      <el-form-item label="所属小组" prop="egroup">
         <el-select v-model="form.egroup" placeholder="请选择所属小组" clearable filterable>
           <el-option
-            v-for="item in groupList"
-            :key="item._id"
-            :label="item.groupName"
-            :value="item.inc"
+              v-for="item in groupList"
+              :key="item._id"
+              :label="item.groupName"
+              :value="item.inc"
           />
         </el-select>
+      </el-form-item>
+      <el-form-item label="标签描述">
+        <el-input v-model="form.ldesc" type="textarea" placeholder="请输入标签描述" clearable />
       </el-form-item>
     </el-form>
     <div id="btnGroup">
@@ -48,6 +48,10 @@ export default {
           { required: true, message: '请输入标签名称（长度在 2 到 20 个字符）', trigger: 'change' },
           { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' },
           { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'change' }
+        ],
+        egroup: [
+          { required: true, message: '请选择所属小组', trigger: 'blur' },
+          { required: true, message: '请选择所属小组', trigger: 'change' }
         ]
       }
     }

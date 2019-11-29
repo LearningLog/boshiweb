@@ -227,7 +227,11 @@ export default {
 
     // 获取创建人（实际就是用户）
     getCreater() {
-      findUserListByGroupId({ groupId: this.listQuery.selectCompanyId || this.$store.state.user.userPermission.groupId }).then(res => {
+      var psrams = {}
+      if (!this.$store.state.user.isSystemManage || this.listQuery.selectCompanyId) {
+        psrams = { groupId: this.listQuery.selectCompanyId || this.$store.state.user.userPermission.groupId }
+      }
+      findUserListByGroupId(psrams).then(res => {
         this.createrList = res.data
       })
     },
