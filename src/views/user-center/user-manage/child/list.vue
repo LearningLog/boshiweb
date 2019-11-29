@@ -76,14 +76,14 @@
         <template slot-scope="scope">
           <div v-if="scope.row.auth">
             <el-button size="mini" :disabled="!hasThisBtnPermission('user-edit')" @click="go_edit_fn(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
-            <el-button v-if="scope.row.userStatus === 1" size="mini" :disabled="!hasThisBtnPermission('user-status')" @click="enable(scope.row, 2)"><i class="iconfont iconshixiao" />失效</el-button>
-            <el-button v-else size="mini" :disabled="!hasThisBtnPermission('user-status')" @click="enable(scope.row, 1)"><i class="iconfont iconshengxiao" />生效</el-button>
+            <el-button v-if="scope.row.userStatus === 1" size="mini" :disabled="!hasThisBtnPermission('user-status') || userId === scope.row._id" @click="enable(scope.row, 2)"><i class="iconfont iconshixiao" />失效</el-button>
+            <el-button v-else size="mini" :disabled="!hasThisBtnPermission('user-status') || userId === scope.row._id" @click="enable(scope.row, 1)"><i class="iconfont iconshengxiao" />生效</el-button>
             <el-dropdown trigger="click">
               <el-button size="mini">
                 <i class="iconfont icongengduo" />更多
               </el-button>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item :disabled="!hasThisBtnPermission('user-delete')" @click.native="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-dropdown-item>
+                <el-dropdown-item :disabled="!hasThisBtnPermission('user-delete') || userId === scope.row._id" @click.native="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-dropdown-item>
                 <el-dropdown-item :disabled="!hasThisBtnPermission('user-resetpassword')" @click.native="openResetPassword(scope.row)"><i class="iconfont iconzhongzhi" />重置密码</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
@@ -107,9 +107,6 @@
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="get_list" />
     <div id="bottomOperation">
-      <!-- <a v-if="hasThisBtnPermission('user-import')" href="basicUser/img/import_user_ttemplates.xlsx" download="企业员工导入模版.xlsx">
-        <el-button v-show="total>0" type="primary" plain><i class="iconfont iconxiazai" />模板下载</el-button>
-      </a> -->
       <a v-if="hasThisBtnPermission('user-import')" @click="downloadFile()">
         <el-button v-show="total>0" type="primary" plain><i class="iconfont iconxiazai" />模板下载</el-button>
       </a>
@@ -328,6 +325,7 @@ export default {
         password: '', // 原密码
         secondconfirmpassword: '' // 再次密码
       },
+      userId: '', // 当前登录人id
       rules: {
         password: [
           { required: true, validator: validatePassword, trigger: 'blur' },
@@ -348,6 +346,7 @@ export default {
   },
   created() {
     this.get_list()
+    this.userId = this.$store.state.user.userSystemInfo.userInfo._id
   },
   methods: {
     // 按钮权限

@@ -461,7 +461,7 @@ export default {
           $('.coverPic .el-upload--picture-card').hide()
         }
         this.form.selectCompanyId = data.groupId
-        this.form.egroup = data.egroup || []
+        this.form.egroup = data.egroup[0] || []
         this.form.groupList = data.egroup || []
         this.checkedGroupIds = data.egroup || []
         this.getEgroups()
@@ -719,6 +719,10 @@ export default {
 
     // 发布
     publish() {
+      if (!this.checkedGroupIds.length) {
+        this.$message.warning('请选择发布小组！')
+        return false
+      }
       this.form.labels.length = 0
       this.currentLabels.forEach(item => {
         this.form.labels.push(item.linc)

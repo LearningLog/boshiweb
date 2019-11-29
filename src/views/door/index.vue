@@ -48,80 +48,82 @@
           {{ item.nodeName }}
         </el-tag>
       </div>
-      <el-scrollbar v-if="total" class="fileList" wrap-class="scrollbar-wrapper">
-        <div v-if="type !== 4">
-          <ul
-            v-infinite-scroll="getKnowledgeSearchList2"
-            :infinite-scroll-immediate="false"
-          >
-            <li v-for="(item, index) in list" :key="item.docId + type + index" class="itemFile">
-              <el-image
-                class="imgCover pointer"
-                :src="(item.thumbnails && item.thumbnails[0]) || file_knowledge"
-                fit="contain"
-                @click.native="preview(item)"
-              />
-              <div class="fileInfo">
-                <h4 class="fileName">{{ item.docTitle }}</h4>
-                <span
-                  v-if="item.fileDesc || item.autoDesc"
-                >文件描述：{{ item.fileDesc || item.autoDesc }}</span>
-                <span>创建时间：{{ item.createTime }}</span>
-                <span
-                  class="fileSize"
-                >文件大小：{{
+      <div v-if="(type !== 4 && total) || (type === 4 && total2)">
+        <el-scrollbar class="fileList" wrap-class="scrollbar-wrapper">
+          <div v-if="type !== 4">
+            <ul
+                v-infinite-scroll="getKnowledgeSearchList2"
+                :infinite-scroll-immediate="false"
+            >
+              <li v-for="(item, index) in list" :key="item.docId + type + index" class="itemFile">
+                <el-image
+                    class="imgCover pointer"
+                    :src="(item.thumbnails && item.thumbnails[0]) || file_knowledge"
+                    fit="contain"
+                    @click.native="preview(item)"
+                />
+                <div class="fileInfo">
+                  <h4 class="fileName">{{ item.docTitle }}</h4>
+                  <span
+                      v-if="item.fileDesc || item.autoDesc"
+                  >文件描述：{{ item.fileDesc || item.autoDesc }}</span>
+                  <span>创建时间：{{ item.createTime }}</span>
+                  <span
+                      class="fileSize"
+                  >文件大小：{{
                   getFileShowSize(item.fileList && item.fileList[0].fileSize)
                 }}</span>
-              </div>
-            </li>
-          </ul>
-        </div>
-        <div v-else class="exams">
-          <ul
-            v-infinite-scroll="getExams2"
-            :infinite-scroll-immediate="false"
-          >
-            <li v-for="(item, index) in examsList" :key="item._id + type + index" class="itemExam">
-              <div class="outer">
-                <div class="cover">
-                  <el-image
-                    class="imgCover"
-                    :src="quiz"
-                    fit="contain"
-                  />
                 </div>
-              </div>
-              <div class="fileInfo">
-                <h4 class="fileName">{{ item.exam_name }}</h4>
-                <div>
-                  <span class="nickname">{{ item.nickname }}</span>
-                  <span v-for="(item2, index2) in item.publish_group" :key="item2._id + type + index" class="groupName">
+              </li>
+            </ul>
+          </div>
+          <div v-else-if="total2" class="exams">
+            <ul
+                v-infinite-scroll="getExams2"
+                :infinite-scroll-immediate="false"
+            >
+              <li v-for="(item, index) in examsList" :key="item._id + type + index" class="itemExam">
+                <div class="outer">
+                  <div class="cover">
+                    <el-image
+                        class="imgCover"
+                        :src="quiz"
+                        fit="contain"
+                    />
+                  </div>
+                </div>
+                <div class="fileInfo">
+                  <h4 class="fileName">{{ item.exam_name }}</h4>
+                  <div>
+                    <span class="nickname">{{ item.nickname }}</span>
+                    <span v-for="(item2, index2) in item.publish_group" :key="item2._id + type + index" class="groupName">
                     <span v-if="index2 === 0">{{ item2.groupName }}</span>
                     <span v-else>，{{ item2.groupName }}</span>
                   </span>
+                  </div>
+                  <div v-if="item.answer_status === 1">
+                    <span>答题状态：未答题</span>
+                  </div>
+                  <div v-else>
+                    <span>答题成绩：{{ item.answer_score }}</span>
+                  </div>
+                  <div>
+                    <span>截止时间：{{ item.end_time }}</span>
+                  </div>
+                  <div>
+                    <span>{{ item.examstatus }}</span>
+                  </div>
                 </div>
-                <div v-if="item.answer_status === 1">
-                  <span>答题状态：未答题</span>
-                </div>
-                <div v-else>
-                  <span>答题成绩：{{ item.answer_score }}</span>
-                </div>
-                <div>
-                  <span>截止时间：{{ item.end_time }}</span>
-                </div>
-                <div>
-                  <span>{{ item.examstatus }}</span>
-                </div>
-              </div>
-              <el-button v-if="item.examstatusCode === 2 && item.answer_status === 1 && !item.haveTempTopic" type="primary" plain @click="toExam(item)">进入考试</el-button>
-              <el-button v-else-if="item.examstatusCode === 2 && item.answer_status === 1 && item.haveTempTopic" type="primary" plain @click="toExam(item)">继续考试</el-button>
-              <el-button v-else-if="item.examstatusCode === 3 || item.answer_status === 2" type="primary" plain @click="detail(item)">查看结果</el-button>
-            </li>
-          </ul>
-        </div>
-        <p v-if="loading" class="loading">加载中...</p>
-        <p v-if="noMore" class="noMore">没有更多了</p>
-      </el-scrollbar>
+                <el-button v-if="item.examstatusCode === 2 && item.answer_status === 1 && !item.haveTempTopic" type="primary" plain @click="toExam(item)">进入考试</el-button>
+                <el-button v-else-if="item.examstatusCode === 2 && item.answer_status === 1 && item.haveTempTopic" type="primary" plain @click="toExam(item)">继续考试</el-button>
+                <el-button v-else-if="item.examstatusCode === 3 || item.answer_status === 2" type="primary" plain @click="detail(item)">查看结果</el-button>
+              </li>
+            </ul>
+          </div>
+          <p v-if="loading" class="loading">加载中...</p>
+          <p v-if="noMore" class="noMore">没有更多了</p>
+        </el-scrollbar>
+      </div>
       <div v-if="(type !== 4 && !total) || (type === 4 && !total2)" class="noData">
         <img class="nodataimg" :src="nodataimg" alt="暂无数据">
         <p class="sorry">很抱歉，没有找到相关结果</p>

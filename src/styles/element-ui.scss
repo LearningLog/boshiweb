@@ -189,3 +189,9 @@
 .el-link {
   font-size: 12px;
 }
+
+// 修改 el-dropdown 中 disabled 样式
+.el-dropdown-menu__item.is-disabled {
+  cursor: not-allowed;
+  pointer-events: auto;
+}

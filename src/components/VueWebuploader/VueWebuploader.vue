@@ -6,6 +6,7 @@
 <script>
 import { fileUpload } from '@/api/uploadFile'
 const qs = require('querystring')
+const md5 = window.md5
 const $ = window.$
 
 export default {

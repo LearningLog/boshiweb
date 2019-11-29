@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import { getCustomManageList, getAllRole } from '@/api/systemManage-roleManage'
+import { getCustomManageList, getAllQueryRole } from '@/api/systemManage-roleManage'
 import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
 
 export default {
@@ -148,7 +148,7 @@ export default {
       this.getEgroups()
     }
     if (this.isRenderRole) {
-      this.getAllRoles()
+      this.getAllQueryRoles()
     }
   },
   methods: {
@@ -170,19 +170,33 @@ export default {
         } else {
           this.groupList = response.data.egroupInfo
         }
+        var that = this
+        var has = this.groupList.find(function(item) {
+          return item.inc === that.groupId
+        })
+        if (!has) {
+          this.groupId = ''
+        }
       })
     },
     // 获取全部角色
-    getAllRoles() {
-      getAllRole({ companyIds: this.companyIds ? [this.companyIds] : [] }).then(response => {
+    getAllQueryRoles() {
+      getAllQueryRole({ companyIds: this.companyIds ? [this.companyIds] : [] }).then(response => {
         this.roleList = response.data.allRoleList
+        var that = this
+        var has = this.roleList.find(function(item) {
+          return item._id === that.roleId
+        })
+        if (!has) {
+          this.roleId = ''
+        }
       })
     },
 
     // 更改所属租户
     changeCompany(val) {
       this.companyIds = val
-      this.getAllRoles()
+      this.getAllQueryRoles()
       this.getEgroups()
       this.$emit('tenantsGroupsRolesVal', { companyIds: this.companyIds, egroupId: this.groupId, roleId: this.roleId })
     },

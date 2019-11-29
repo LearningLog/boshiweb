@@ -683,6 +683,10 @@ export default {
 
     // 发布
     publish() {
+      if (!this.checkedGroupIds.length) {
+        this.$message.warning('请选择发布小组！')
+        return false
+      }
       this.form.labels.length = 0
       this.currentLabels.forEach(item => {
         this.form.labels.push(item.linc)

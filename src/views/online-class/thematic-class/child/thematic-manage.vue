@@ -72,7 +72,7 @@
         <template slot-scope="scope">
           <el-button size="mini" @click="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
           <el-button size="mini" @click="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
-          <el-button size="mini" @click="remove(scope.row)"><i class="iconfont iconshanchu" />移除</el-button>
+          <el-button size="mini" @click="remove(scope.row)"><i class="iconfont iconyichu" />移除</el-button>
         </template>
       </el-table-column>
     </el-table>

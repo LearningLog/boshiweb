@@ -177,6 +177,7 @@ import elDragDialog from '@/directive/el-drag-dialog'
 import FilePreview from '@/components/FilePreview'
 import file_knowledge from '@/assets/images/file_knowledge.png'
 import { isCurrentEgroupManager, hasThisBtnPermission } from '@/utils/permission'
+import { mapGetters } from 'vuex'
 
 export default {
   directives: { elDragDialog },
@@ -248,6 +249,14 @@ export default {
   beforeDestroy() {
     if (this.timer != null) {
       clearInterval(this.timer)
+    }
+  },
+  computed: {
+    ...mapGetters(['deskAddFileSuccessData'])
+  },
+  watch: {
+    deskAddFileSuccessData(val) {
+      this.get_list()
     }
   },
   created() {
@@ -425,13 +434,19 @@ export default {
     download(row) {
       const fileId = this.getFileListData(row.mainFileId)._id
       const url = process.env.VUE_APP_BASE_API + '/api/workDeskFile/downloadFile?fileId=' + fileId
-      const a = document.createElement('a')
+      const elemIF = document.createElement('iframe')
+      elemIF.src = url
+      elemIF.style.display = 'none'
+      document.body.appendChild(elemIF)
+      elemIF.loadData()
+      document.body.removeChild(elemIF)
+      /* const a = document.createElement('a')
       a.download = row.fileName + '\.' + row.fileFormat
       a.href = url
       document.body.appendChild(a)
       a.click()
       URL.revokeObjectURL(a.href)
-      document.body.removeChild(a)
+      document.body.removeChild(a)*/
     },
     // 批量下载
     batchDownload() {
@@ -452,13 +467,12 @@ export default {
           type: 'warning'
         }).then(() => {
           const url = process.env.VUE_APP_BASE_API + '/api/workDeskFile/downloadZipFile?token=' + token
-          const a = document.createElement('a')
-          a.download = '批量下载.zip'
-          a.href = url
-          document.body.appendChild(a)
-          a.click()
-          URL.revokeObjectURL(a.href)
-          document.body.removeChild(a)
+          const elemIF = document.createElement('iframe')
+          elemIF.src = url
+          elemIF.style.display = 'none'
+          document.body.appendChild(elemIF)
+          elemIF.loadData()
+          document.body.removeChild(elemIF)
         }).catch(() => {})
       })
     },
