@@ -8,7 +8,7 @@
     </div>
     <div class="right">
       <div id="topSearch">
-        <el-input v-model="listQuery.menuname" placeholder="请输入菜单名称" clearable @keyup.enter.native="topSearch">
+        <el-input v-model="listQuery1.menuname" placeholder="请输入菜单名称" clearable @keyup.enter.native="topSearch">
           <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
         </el-input>
         <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">高级搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
@@ -17,10 +17,10 @@
             <el-card id="advancedSearchArea" shadow="never">
               <el-form ref="form" :model="listQuery" label-width="100px">
                 <el-form-item label="标识">
-                  <el-input v-model="listQuery.cmark" placeholder="请输入菜单标识" clearable @keyup.enter.native="topSearch" />
+                  <el-input v-model="listQuery1.cmark" placeholder="请输入菜单标识" clearable @keyup.enter.native="topSearch" />
                 </el-form-item>
                 <el-form-item label="菜单模块">
-                  <el-select v-model="listQuery.type" placeholder="请选择菜单模块" clearable @keyup.enter.native="topSearch">
+                  <el-select v-model="listQuery1.type" placeholder="请选择菜单模块" clearable @keyup.enter.native="topSearch">
                     <el-option v-for="item in menuType" :key="item.id" :label="item.name" :value="item.id" />
                   </el-select>
                 </el-form-item>
@@ -109,6 +109,14 @@ export default {
         cmark: '', // 描述
         type: '' // 菜单模块
       },
+      listQuery1: { // 查询条件
+        currentPage: 1, // 当前页
+        pageSize: 10, // 当前请求条数
+        pid: 'firstMenu', // 父id
+        menuname: '', // 菜单名称
+        cmark: '', // 描述
+        type: '' // 菜单模块
+      },
       popoverVisible: false, // 是否展开高级搜索
       treeData: [], // 菜单树list
       defaultProps: { // 菜单树节点数据别名
@@ -145,13 +153,15 @@ export default {
     },
     // 搜索
     topSearch() {
+      this.listQuery = JSON.parse(JSON.stringify(this.listQuery1))
       this.getMenuList()
     },
     // 重置
     reset() {
-      this.listQuery.menuname = ''
-      this.listQuery.cmark = ''
-      this.listQuery.type = ''
+      this.listQuery1.menuname = ''
+      this.listQuery1.cmark = ''
+      this.listQuery1.type = ''
+      this.listQuery = JSON.parse(JSON.stringify(this.listQuery1))
       this.getMenuList()
     },
     // 选中左侧菜单树节点的回调
