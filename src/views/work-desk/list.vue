@@ -439,15 +439,6 @@ export default {
       elemIF.src = url
       elemIF.style.display = 'none'
       document.body.appendChild(elemIF)
-      elemIF.loadData()
-      document.body.removeChild(elemIF)
-      /* const a = document.createElement('a')
-      a.download = row.fileName + '\.' + row.fileFormat
-      a.href = url
-      document.body.appendChild(a)
-      a.click()
-      URL.revokeObjectURL(a.href)
-      document.body.removeChild(a)*/
     },
     // 批量下载
     batchDownload() {
@@ -472,8 +463,6 @@ export default {
           elemIF.src = url
           elemIF.style.display = 'none'
           document.body.appendChild(elemIF)
-          elemIF.loadData()
-          document.body.removeChild(elemIF)
         }).catch(() => {})
       })
     },

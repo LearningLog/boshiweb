@@ -63,11 +63,11 @@
       highlight-current-row
       @selection-change="select_fn"
     >
-      <el-table-column
+      <!-- <el-table-column
         type="selection"
         width="55"
         :selectable="selectable"
-      />
+      /> -->
       <el-table-column align="center" min-width="120" label="名称" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-link type="primary" @click="detail(scope.row)">{{ scope.row.groupName }}</el-link>
@@ -94,9 +94,9 @@
       </el-table-column>
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="get_list" />
-    <div id="bottomOperation">
+    <!-- <div id="bottomOperation">
       <el-button v-if="hasThisBtnPermission('egroup-multioperate')" v-show="total>0" type="danger" plain @click="batch_del_fn"><i class="iconfont iconshanchu" />批量删除</el-button>
-    </div>
+    </div> -->
 
     <el-dialog v-el-drag-dialog class="setInformationDialog" width="650px" title="分配技能" :visible.sync="transforBoxVisible">
       <el-transfer v-model="hasList" :data="noList" :titles="['未分配类别', '已分配类别']" :props="defaultProps" @change="handleTransferChange" />

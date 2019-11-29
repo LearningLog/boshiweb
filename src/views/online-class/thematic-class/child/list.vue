@@ -358,7 +358,7 @@ export default {
     // 评分详情
     rateDetail(row) {
       if (row.general_level) {
-        this.$router.push({ path: '/online-class/thematic-class/evaluate', query: { cname: row.cname, _id: row._id, type: this.listQuery.type }})
+        this.$router.push({ path: '/online-class/thematic-class/evaluate', query: { cname: row.lesson_name, _id: row._id, type: this.listQuery.type }})
       }
     },
 
