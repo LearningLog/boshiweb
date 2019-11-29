@@ -7,7 +7,7 @@
     >
       <el-row>
         <el-col :span="6">
-          <el-form-item label="课程名称：">
+          <el-form-item label="专题名称：">
             <span>{{ form.cname }}</span>
           </el-form-item>
         </el-col>
