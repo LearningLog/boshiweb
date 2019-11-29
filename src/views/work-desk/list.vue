@@ -177,6 +177,7 @@ import elDragDialog from '@/directive/el-drag-dialog'
 import FilePreview from '@/components/FilePreview'
 import file_knowledge from '@/assets/images/file_knowledge.png'
 import { isCurrentEgroupManager, hasThisBtnPermission } from '@/utils/permission'
+import { mapGetters } from 'vuex'
 
 export default {
   directives: { elDragDialog },
@@ -248,6 +249,14 @@ export default {
   beforeDestroy() {
     if (this.timer != null) {
       clearInterval(this.timer)
+    }
+  },
+  computed: {
+    ...mapGetters(['deskAddFileSuccessData'])
+  },
+  watch: {
+    deskAddFileSuccessData(val) {
+      this.get_list()
     }
   },
   created() {
