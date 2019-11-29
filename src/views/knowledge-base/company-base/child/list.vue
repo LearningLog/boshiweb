@@ -20,26 +20,26 @@
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
       </el-input>
       <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">按知识分类搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
-        <transition name="fade-advanced-search">
-          <div v-show="popoverVisible" class="treeList">
-                  <div class="treeList1">
-              <!-- <p class="treeName pointer" :class="{ activeClassify: isActiveClassify(treeList1)}" @click="checkClassify(treeList1)">{{ treeList1.treeName }}</p> -->
-              <ul v-if="treeList1.floorList.length" class="">
-                <li v-for="(item, index) in treeList1.floorList" :key="treeList1.treeId + index" class="treeItem">
-                  <span v-for="item2 in item" :key="item2.nodeIdList.join()" class="classifyItem pointer" :class="{ activeClassify: isActiveClassify(item2) }" @click="checkClassify(item2)">{{ item2.nodeName }}</span>
-                </li>
-              </ul>
-            </div>
-            <div v-if="treeList2.floorList.length" class="treeList2">
-              <!-- <p class="treeName pointer" :class="{ activeClassify: isActiveClassify(treeList2)}" @click="checkClassify(treeList2)">{{ treeList2.treeName }}</p> -->
-              <ul v-if="treeList2.floorList.length" class="">
-                <li v-for="(item, index) in treeList2.floorList" :key="treeList2.treeId + index" class="treeItem">
-                  <span v-for="item2 in item" :key="item2.nodeIdList.join()" class="classifyItem pointer" :class="{ activeClassify: isActiveClassify(item2) }" @click="checkClassify(item2)">{{ item2.nodeName }}</span>
-                </li>
-              </ul>
-            </div>
+      <transition name="fade-advanced-search">
+        <div v-show="popoverVisible" class="treeList">
+          <div class="treeList1">
+            <!-- <p class="treeName pointer" :class="{ activeClassify: isActiveClassify(treeList1)}" @click="checkClassify(treeList1)">{{ treeList1.treeName }}</p> -->
+            <ul v-if="treeList1.floorList.length" class="">
+              <li v-for="(item, index) in treeList1.floorList" :key="treeList1.treeId + index" class="treeItem">
+                <span v-for="item2 in item" :key="item2.nodeIdList.join()" class="classifyItem pointer" :class="{ activeClassify: isActiveClassify(item2) }" @click="checkClassify(item2)">{{ item2.nodeName }}</span>
+              </li>
+            </ul>
           </div>
-        </transition>
+          <div v-if="treeList2.floorList.length" class="treeList2">
+            <!-- <p class="treeName pointer" :class="{ activeClassify: isActiveClassify(treeList2)}" @click="checkClassify(treeList2)">{{ treeList2.treeName }}</p> -->
+            <ul v-if="treeList2.floorList.length" class="">
+              <li v-for="(item, index) in treeList2.floorList" :key="treeList2.treeId + index" class="treeItem">
+                <span v-for="item2 in item" :key="item2.nodeIdList.join()" class="classifyItem pointer" :class="{ activeClassify: isActiveClassify(item2) }" @click="checkClassify(item2)">{{ item2.nodeName }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </transition>
     </div>
     <div id="topBtn">
       <el-dropdown trigger="click">
@@ -48,7 +48,7 @@
         </el-button>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item @click.native="deleteDirFileSelected"><i class="iconfont iconshanchu" />批量删除</el-dropdown-item>
-          <el-dropdown-item @click.native="moveFileSelected"><i class="iconfont iconshangyi1" />批量移动</el-dropdown-item>
+          <!-- <el-dropdown-item @click.native="moveFileSelected"><i class="iconfont iconshangyi1" />批量移动</el-dropdown-item> -->
           <el-dropdown-item @click.native="downloadFileSelected"><i class="iconfont iconxiazai" />批量下载</el-dropdown-item>
           <el-dropdown-item @click.native="shareFileToWorkDeskSlected"><i class="iconfont iconfenxiang1" />批量收藏</el-dropdown-item>
         </el-dropdown-menu>
@@ -65,19 +65,19 @@
         <el-breadcrumb-item v-for="(item,index) in pathNavData" :key="index" @click.native="pathNavClick(item,index)">{{ item.name }}</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
-          <div class="classifyTags">
-        <el-tag
-          v-for="(item, index) in checkedClassifys"
-          :key="item.nodeIdList.join()"
-          closable
-          size="medium"
-          :disable-transitions="false"
-          type="success"
-          @close="handlePaperLabelDel(index)"
-        >
-          {{ item.nodeName }}
-        </el-tag>
-      </div>
+    <div class="classifyTags">
+      <el-tag
+        v-for="(item, index) in checkedClassifys"
+        :key="item.nodeIdList.join()"
+        closable
+        size="medium"
+        :disable-transitions="false"
+        type="success"
+        @close="handlePaperLabelDel(index)"
+      >
+        {{ item.nodeName }}
+      </el-tag>
+    </div>
     <el-table
       v-loading="listLoading"
       :data="list"
@@ -120,14 +120,26 @@
         </template>
 
       </el-table-column>
-      <el-table-column label="文件大小" min-width="100" align="center" show-overflow-tooltip prop="skill_desc" />
-      <el-table-column align="center" label="文件属性" min-width="140" show-overflow-tooltip prop="fileAttributeDesc" />
-      <el-table-column align="center" label="创建人" show-overflow-tooltip prop="customname" >
-      <template  slot-scope="{row}">
-        <div>
-          {{ parseCreateUser(row) }}
-        </div>
-      </template>
+      <el-table-column label="文件大小" min-width="100" align="center" show-overflow-tooltip prop="skill_desc" >
+         <template slot-scope="{row}">
+          <div>
+            {{ parseFileSize(row) }}
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="文件属性" min-width="140" show-overflow-tooltip prop="fileAttributeDesc" >
+        <template slot-scope="{row}">
+          <div>
+            {{ parseFileType(row) }}
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="创建人" show-overflow-tooltip prop="customname">
+        <template slot-scope="{row}">
+          <div>
+            {{ parseCreateUser(row) }}
+          </div>
+        </template>
       </el-table-column>
       <el-table-column align="center" label="创建时间" min-width="140" show-overflow-tooltip prop="createTimeStr" />
       <el-table-column class-name="status-col" label="操作" width="260px" align="center" fixed="right">
@@ -156,7 +168,7 @@
               <i class="iconfont icongengduo" />更多
             </el-button>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item @click.native="moveFile(scope.row)"><i class="iconfont " />移动</el-dropdown-item>
+              <!-- <el-dropdown-item @click.native="moveFile(scope.row)"><i class="iconfont " />移动</el-dropdown-item> -->
               <el-dropdown-item @click.native="deleteDirFile(scope.row)"><i class="iconfont iconshanchu" />删除</el-dropdown-item>
               <el-dropdown-item @click.native="shareFileToWorkDesk(scope.row)"><i class="iconfont iconfenxiang1" />收藏</el-dropdown-item>
             </el-dropdown-menu>
@@ -179,7 +191,7 @@
       <el-button type="primary" @click="classifySelectedConfirm">确定</el-button>
       <el-button @click="treeDialogVisible = false">取 消</el-button>
     </el-dialog>
-    <el-dialog v-el-drag-dialog class="createFolders" width="650px"title="创建文件夹" :visible.sync="crateFolderDialogVisible">
+    <el-dialog v-el-drag-dialog class="createFolders" width="650px" title="创建文件夹" :visible.sync="crateFolderDialogVisible">
       <el-form ref="ruleForm" :model="ruleForm" :rules="rules" label-width="100px" class="demo-ruleForm">
         <el-form-item label="目录名称" prop="name">
           <el-input v-model="ruleForm.name" />
@@ -189,7 +201,7 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="createFolderConfirm('ruleForm')">确定</el-button>
-          <el-button @click="resetForm('ruleForm')">取消</el-button>
+          <el-button @click="crateFolderDialogVisible=false">取消</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -199,7 +211,7 @@
 <script>
 import store from '@/store'
 import { mapGetters } from 'vuex'
-import { getCustomManageList, listDirFile, getCompanyAllTree, classifyFiles, updateDir, deleteDirFile, createDirFile, shareFileToWorkDesk, getDownloadToken,getCompanyAllTreeFloorByName } from '@/api/knowledgeBase-company'
+import { getCustomManageList, listDirFile, getCompanyAllTree, classifyFiles, updateDir, deleteDirFile, createDirFile, shareFileToWorkDesk, getDownloadToken, getCompanyAllTreeFloorByName } from '@/api/knowledgeBase-company'
 import { getFileShowSize, parseTime } from '@/utils/index'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
@@ -218,7 +230,7 @@ export default {
         floorList: []
       },
       checkedClassifys: [], // 选中的分类
-      userInfoForList: {},//存储用户列表里面的信息用于列表里面的创建人
+      userInfoForList: {}, //  存储用户列表里面的信息用于列表里面的创建人
       // tree--start
       treeProps: {
         children: 'children',
@@ -352,15 +364,22 @@ export default {
   },
   created() {
     this.listQuery.selectCompanyId = this.$route.query.selectCompanyId
+
+    if(!this.$store.state.user.isSystemManage){
+      // 不是系统管理员进来之后
+    this.listQuery.parentId=  this.$store.state.user.userPermission.groupId
+    this.listQuery.selectCompanyId=  this.$store.state.user.userPermission.groupId
+    }
+
     this.getCustomManageList()// 租户
     this.enterFloderByQueryPath()
     this.getCompanyAllTree()// 知识分类树
 
-    this.getCompanyAllTreeFloorByName()//知识分类啊啊
+    this.getCompanyAllTreeFloorByName()// 知识分类啊啊
   },
   methods: {
     // ----------知识分类-----start------
-    //点击选择分类
+    // 点击选择分类
     checkClassify(classify) {
       if (classify.treeId) {
         classify.nodeIdList = [classify.treeId]
@@ -392,7 +411,7 @@ export default {
       this.listQuery.currentPage = 0
 
       this.$router.push({ path: '/knowledge-base/company-base/list', query: { path: '', selectCompanyId: this.listQuery.selectCompanyId }})
-       this.enterFloderByQueryPath()
+      this.enterFloderByQueryPath()
       // this.getKnowledgeSearchList()
     },
     // 根据 idList返回是否active
@@ -428,6 +447,21 @@ export default {
     },
     getFileShowSize(fileSize) {
       return getFileShowSize(fileSize)
+    },
+    parseFileType(row) {
+      const fileTypeName=row.fileAttributeDesc==='dir'?'文件夹':'文件'
+      return fileTypeName
+    },
+    parseFileSize(row) {
+      if(!row.fileSize){
+        return
+      }
+      var bytes=row.fileSize
+      if (bytes === 0) return '0 B';
+      let k = 1024,
+      sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
+      i = Math.floor(Math.log(bytes) / Math.log(k));
+      return (bytes / Math.pow(k, i)). toFixed(2) + ' ' + sizes[i];
     },
     parseCreateUser(row) {
       return this.userInfoForList[row.userId].nickname
@@ -490,6 +524,9 @@ export default {
 
     enterFolder(row) {
       if (row.fileAttributeDesc === 'dir') {
+             // 进文件夹的检索和文件别的input检索不共存
+      this.listQuery.currentPage = 1
+      this.listQuery.keyword= ''
         this.pathQueryString += this.pathQueryString ? '/' + row.fileId + '|' + row.fileName : row.fileId + '|' + row.fileName
         this.$router.push({ path: '/knowledge-base/company-base/list', query: { path: this.pathQueryString, selectCompanyId: this.listQuery.selectCompanyId }})
       }
@@ -516,6 +553,10 @@ export default {
         this.pathQueryString = ''
         this.listQuery.parentId = ''
       }
+
+ 
+
+
       this.fileUploadPara.ownerId = this.listQuery.selectCompanyId
       this.fileUploadPara.parentId = this.pathNavData.length > 0 ? this.pathNavData[this.pathNavData.length - 1].id : this.listQuery.selectCompanyId
       this.fileUploadPara.selectCompanyId = this.listQuery.selectCompanyId
@@ -596,6 +637,7 @@ export default {
 
       // this.time_range = []// 时间范围
       // this.getDirList()
+
     },
     // 知识库列表
     async  getDirList() {
@@ -696,6 +738,7 @@ export default {
             type: 'success'
           })
         })
+        this.enterFloderByQueryPath()
       }).catch(() => {})
     },
     deleteDirFileSelected(row) {
@@ -714,6 +757,7 @@ export default {
             type: 'success'
           })
         })
+        this.enterFloderByQueryPath()
       }).catch(() => {})
     },
     // 创建文件夹
@@ -919,12 +963,9 @@ export default {
   cursor: pointer;
 }
 
-
 // 知识分类树
 
  @import "~@/styles/theme.scss";
-
-
 
   .loading,
   .noMore {

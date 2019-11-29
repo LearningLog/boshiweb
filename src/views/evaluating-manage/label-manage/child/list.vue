@@ -57,8 +57,9 @@
       <el-table-column align="center" label="名称" min-width="120" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-link type="primary" @click="detail(scope.row)">{{ scope.row.lname }}</el-link>
-        </template>
+        </template>inc
       </el-table-column>
+      <el-table-column align="center" label="标签ID" min-width="120" show-overflow-tooltip prop="linc" />
       <el-table-column label="描述" min-width="120" align="center" show-overflow-tooltip prop="ldesc" />
       <el-table-column align="center" label="小组" min-width="120" show-overflow-tooltip prop="groupName" />
       <el-table-column align="center" label="创建时间" min-width="140" show-overflow-tooltip prop="c_time" />

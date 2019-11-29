@@ -244,7 +244,7 @@ const onlineClass = {
           component: () =>
                   import('@/views/online-class/thematic-class/child/evaluate'),
           meta: {
-            title: '专题评论',
+            title: '专题评价',
             icon: '',
             activeMenu: '/online-class/thematic-class'
           }
@@ -316,7 +316,7 @@ const onlineClass = {
       component: () => import('@/views/online-class/label-manage/index'),
       redirect: '/online-class/label-manage/list',
       meta: {
-        title: '标签管理',
+        title: '课堂管理',
         icon: '',
         activeMenu: '/online-class/label-manage'
       },

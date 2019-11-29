@@ -16,7 +16,7 @@
           :value="item._id"
         />
       </el-select>
-      
+
       <el-select
         v-model="listQuery.ownerId"
         placeholder="请选择所属小组"
@@ -31,7 +31,6 @@
           :value="item.inc"
         />
       </el-select>
-
 
       <el-input v-model="listQuery.keyword" placeholder="请输入文件名称" clearable @keyup.enter.native="topSearch">
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
@@ -65,7 +64,7 @@
         </el-button>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item @click.native="deleteDirFileSelected"><i class="iconfont iconshanchu" />批量删除</el-dropdown-item>
-          <el-dropdown-item @click.native="moveFileSelected"><i class="iconfont iconshangyi1" />批量移动</el-dropdown-item>
+          <!-- <el-dropdown-item @click.native="moveFileSelected"><i class="iconfont iconshangyi1" />批量移动</el-dropdown-item> -->
           <el-dropdown-item @click.native="downloadFileSelected"><i class="iconfont iconxiazai" />批量下载</el-dropdown-item>
           <el-dropdown-item @click.native="shareFileToWorkDeskSlected"><i class="iconfont iconfenxiang1" />批量收藏</el-dropdown-item>
         </el-dropdown-menu>
@@ -137,8 +136,20 @@
         </template>
 
       </el-table-column>
-      <el-table-column label="文件大小" min-width="100" align="center" show-overflow-tooltip prop="skill_desc" />
-      <el-table-column align="center" label="文件属性" min-width="140" show-overflow-tooltip prop="fileAttributeDesc" />
+      <el-table-column label="文件大小" min-width="100" align="center" show-overflow-tooltip prop="skill_desc" >
+         <template slot-scope="{row}">
+          <div>
+            {{ parseFileSize(row) }}
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="文件属性" min-width="140" show-overflow-tooltip prop="fileAttributeDesc" >
+        <template slot-scope="{row}">
+          <div>
+            {{ parseFileType(row) }}
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="创建人" show-overflow-tooltip prop="groupName">
         <template slot-scope="{row}">
           <div>
@@ -173,7 +184,7 @@
               <i class="iconfont icongengduo" />更多
             </el-button>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item @click.native="moveFile(scope.row)"><i class="iconfont " />移动</el-dropdown-item>
+              <!-- <el-dropdown-item @click.native="moveFile(scope.row)"><i class="iconfont " />移动</el-dropdown-item> -->
               <el-dropdown-item @click.native="deleteDirFile(scope.row)"><i class="iconfont iconshanchu" />删除</el-dropdown-item>
               <el-dropdown-item @click.native="shareFileToWorkDesk(scope.row)"><i class="iconfont iconfenxiang1" />收藏</el-dropdown-item>
             </el-dropdown-menu>
@@ -206,7 +217,7 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="createFolderConfirm('ruleForm')">确定</el-button>
-          <el-button @click="resetForm('ruleForm')">取消</el-button>
+          <el-button @click="crateFolderDialogVisible=false">取消</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -249,7 +260,7 @@ export default {
       crateFolderDialogVisible: false,
       isReset: true, // 租户组件重置
       listLoading: false,
-      custom_list:[],//所属租户下拉
+      custom_list: [], // 所属租户下拉
       group_list: [], // 所属小组下拉列表
       navselctedCompanyName: '全部',
       listQuery: {
@@ -290,8 +301,8 @@ export default {
       fileUploadPara: {
         data_type: 2,
         ownerId: '',
-        parentId: '',
-        ownerId: ''
+        parentId: ''
+        // ownerId: ''
       },
       dataForTree: [{
         id: 1,
@@ -346,8 +357,8 @@ export default {
       return this.$store.state.user.isSystemManage
     }
     // uploadSuccess() {
-	  // 	return this.$store.state.user.isSystemManage
-	  // }
+    // 	return this.$store.state.user.isSystemManage
+    // }
   },
   watch: {
     createFileSuccessData(val) {
@@ -377,7 +388,7 @@ export default {
     this.getCompanyAllTreeFloorByName()// 知识分类啊啊
   },
   methods: {
-        // 获取所属租户list
+    // 获取所属租户list
     getCustomManageList() {
       getCustomManageList().then(res => {
         const allSelect = {
@@ -463,8 +474,20 @@ export default {
         }
       })
     },
-    getFileShowSize(fileSize) {
-      return getFileShowSize(fileSize)
+    parseFileType(row) {
+      const fileTypeName=row.fileAttributeDesc==='dir'?'文件夹':'文件'
+      return fileTypeName
+    },
+    parseFileSize(row) {
+      if(!row.fileSize){
+        return
+      }
+      var bytes=row.fileSize
+      if (bytes === 0) return '0 B';
+      let k = 1024,
+      sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
+      i = Math.floor(Math.log(bytes) / Math.log(k));
+      return (bytes / Math.pow(k, i)). toFixed(2) + ' ' + sizes[i];
     },
     parseCreateUser(row) {
       return this.userInfoForList[row.userId].nickname
@@ -527,6 +550,10 @@ export default {
 
     enterFolder(row) {
       if (row.fileAttributeDesc === 'dir') {
+            // 每次点击的时候都回到第一页
+      // 进文件夹的检索和文件别的input检索不共存
+        this.listQuery.currentPage = 1
+        this.listQuery.keyword= ''
         this.pathQueryString += this.pathQueryString ? '/' + row.fileId + '|' + row.fileName : row.fileId + '|' + row.fileName
         this.$router.push({ path: '/knowledge-base/group-base/list', query: { path: this.pathQueryString, ownerId: this.listQuery.ownerId }})
       }
@@ -553,6 +580,8 @@ export default {
         this.pathQueryString = ''
         this.listQuery.parentId = this.listQuery.ownerId
       }
+  
+
       this.fileUploadPara.ownerId = this.listQuery.ownerId
       this.fileUploadPara.parentId = this.pathNavData.length > 0 ? this.pathNavData[this.pathNavData.length - 1].id : this.listQuery.ownerId
       this.fileUploadPara.ownerId = this.listQuery.ownerId
@@ -608,18 +637,18 @@ export default {
         }
       })
     },
-    companyChange(event){
-      const postData={selectCompanyId:event}
-    getUserEgroupInfo(postData).then(res => {
-      const allSelect = {
-        groupName: '全部',
-        inc: ''
-      }
-      res.data.egroupInfo.forEach((v, k, arr) => {
-        v.inc = v.inc + ''
+    companyChange(event) {
+      const postData = { selectCompanyId: event }
+      getUserEgroupInfo(postData).then(res => {
+        const allSelect = {
+          groupName: '全部',
+          inc: ''
+        }
+        res.data.egroupInfo.forEach((v, k, arr) => {
+          v.inc = v.inc + ''
+        })
+        this.group_list = [allSelect, ...res.data.egroupInfo]
       })
-      this.group_list = [allSelect, ...res.data.egroupInfo]
-    })
     },
     groupChange(val) {
       const selctedCompany = this.group_list.filter((v, k, arr) => {
@@ -749,6 +778,7 @@ export default {
             type: 'success'
           })
         })
+         this.enterFloderByQueryPath()
       }).catch(() => {})
     },
     deleteDirFileSelected(row) {
@@ -767,6 +797,7 @@ export default {
             type: 'success'
           })
         })
+         this.enterFloderByQueryPath()
       }).catch(() => {})
     },
     // 创建文件夹
