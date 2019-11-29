@@ -3,7 +3,7 @@
     <div id="topSearch">
       <el-select
         v-if="isSystemManage"
-        v-model="listQuery.selectCompanyId"
+        v-model="listQuery1.selectCompanyId"
         placeholder="请选择所属租户"
         clearable
         filterable
@@ -179,7 +179,7 @@
       <el-button type="primary" @click="classifySelectedConfirm">确定</el-button>
       <el-button @click="treeDialogVisible = false">取 消</el-button>
     </el-dialog>
-    <el-dialog v-el-drag-dialog class="createFolders" width="650px"title="创建文件夹" :visible.sync="crateFolderDialogVisible">
+    <el-dialog v-el-drag-dialog class="createFolders" width="650px" title="创建文件夹" :visible.sync="crateFolderDialogVisible">
       <el-form ref="ruleForm" :model="ruleForm" :rules="rules" label-width="100px" class="demo-ruleForm">
         <el-form-item label="目录名称" prop="name">
           <el-input v-model="ruleForm.name" />
