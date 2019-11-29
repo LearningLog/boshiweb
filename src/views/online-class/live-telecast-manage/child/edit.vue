@@ -863,6 +863,7 @@ export default {
       })
       this.form.can_discuss = this.form.can_discuss + ''
       // 判断获取informationType
+      this.form.sendSms = this.form.sendSms1
       if (this.informationTypeList.length === 2) {
         this.form.informationType = 3
       } else if (this.informationTypeList.length === 1) {

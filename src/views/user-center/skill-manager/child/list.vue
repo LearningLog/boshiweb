@@ -1,7 +1,7 @@
 <template>
   <div class="list-box">
     <div id="topSearch">
-      <el-input v-model="listQuery.content" placeholder="请输入技能名称" clearable @keyup.enter.native="topSearch">
+      <el-input v-model="listQuery1.content" placeholder="请输入技能名称" clearable @keyup.enter.native="topSearch">
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
       </el-input>
       <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">高级搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
@@ -23,7 +23,7 @@
 
               <el-form-item v-if="isSystemManage" label="所属租户">
                 <el-select
-                  v-model="listQuery.selectCompanyId"
+                  v-model="listQuery1.selectCompanyId"
                   placeholder="请选择所属租户"
                   clearable
                   filterable
@@ -120,6 +120,16 @@ export default {
         endTime: '', // 结束时间
         skillInc:''//技能id
       },
+      listQuery1: {
+        currentPage: 1, // 当前页码
+        pageSize: 10, // 当前列表请求条数
+        content: '', // 技能名称
+        selectCompanyId: '', // 企业名称
+        // egroup: '', // 分组
+        // roleId: '', // 角色
+        startTime: '', // 开始时间
+        endTime: '' // 结束时间
+      },
       time_range: [], // 时间范围model
       delCheckedList: [], // 选中的数据
       list: null, // 列表数据
@@ -149,19 +159,21 @@ export default {
     },
     // 搜索
     topSearch() {
+      this.listQuery = JSON.parse(JSON.stringify(this.listQuery1))
       this.get_list()
     },
     // 重置
     reset() {
       this.isReset = true
-      this.listQuery.content = ''// 技能名
-      this.listQuery.startTime = ''// 开始时间
-      this.listQuery.endTime = ''// 结束时间
-      this.listQuery.selectCompanyId = ''// 企业名称
+      this.listQuery1.content = ''// 技能名
+      this.listQuery1.startTime = ''// 开始时间
+      this.listQuery1.endTime = ''// 结束时间
+      this.listQuery1.selectCompanyId = ''// 企业名称
       // this.listQuery.egroup = ''// 分组
       // this.listQuery.roleId = ''// 角色
 
       this.time_range = []// 时间范围
+      this.listQuery = JSON.parse(JSON.stringify(this.listQuery1))
       this.get_list()
     },
     // 获取技能列表

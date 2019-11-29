@@ -94,3 +94,12 @@ export function getEgroupAndUserinfo(data) {
     data
   })
 }
+
+// 重置密码
+export function updatePassword(data) {
+  return request({
+    url: '/system/userV2/updatePasswordByAdmin',
+    method: 'post',
+    data
+  })
+}

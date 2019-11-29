@@ -1,7 +1,7 @@
 <template>
   <div class="list-box">
     <div id="topSearch">
-      <el-input v-model="listQuery.content" placeholder="请输入标签名称" clearable @keyup.enter.native="topSearch">
+      <el-input v-model="listQuery1.content" placeholder="请输入标签名称" clearable @keyup.enter.native="topSearch">
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
       </el-input>
       <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">高级搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
@@ -10,7 +10,7 @@
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
               <el-form-item label="标签ID">
-                <el-input v-model="listQuery.labelIncs[0]" placeholder="请输入标签ID" clearable @keyup.enter.native="topSearch" />
+                <el-input v-model="listQuery1.labelIncs[0]" placeholder="请输入标签ID" clearable @keyup.enter.native="topSearch" />
               </el-form-item>
               <tenants-groups-roles :is-render-role="false" :is-reset="isReset" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" @resetVal="resetVal" />
               <el-form-item label="创建时间">
@@ -101,6 +101,16 @@ export default {
         selectCompanyId: '', // 所属租户
         egroup: '' // 所属小组
       },
+      listQuery1: {
+        currentPage: 1, // 当前页码
+        pageSize: 10, // 当前列表请求条数
+        startTime: '', // 开始时间
+        endtTime: '', // 结束时间
+        content: '', // 标签名称
+        labelIncs: [], // 标签ID
+        selectCompanyId: '', // 所属租户
+        egroup: '' // 所属小组
+      },
       group_list: [], // 所属小组list
       custom_list: [], // 所属租户list
       time_range: [],
@@ -136,25 +146,27 @@ export default {
 
     // 搜索
     topSearch() {
+      this.listQuery = JSON.parse(JSON.stringify(this.listQuery1))
       this.get_list()
     },
     // 重置
     reset() {
-      this.listQuery.content = ''
-      this.listQuery.startTime = ''
-      this.listQuery.endTime = ''
-      this.listQuery.selectCompanyId	= ''
-      this.listQuery.egroup = ''
-      this.listQuery.labelIncs = []
+      this.listQuery1.content = ''
+      this.listQuery1.startTime = ''
+      this.listQuery1.endTime = ''
+      this.listQuery1.selectCompanyId	= ''
+      this.listQuery1.egroup = ''
+      this.listQuery1.labelIncs = []
       this.time_range = []
+      this.listQuery = JSON.parse(JSON.stringify(this.listQuery1))
       this.get_list()
     },
 
     // 监听三组数据变化
     tenantsGroupsRolesVal(val) {
-      this.listQuery.selectCompanyId = val.companyIds
-      this.listQuery.egroup = val.egroupId
-      this.listQuery.roleId = val.roleId
+      this.listQuery1.selectCompanyId = val.companyIds
+      this.listQuery1.egroup = val.egroupId
+      this.listQuery1.roleId = val.roleId
       this.group = val.group
     },
 

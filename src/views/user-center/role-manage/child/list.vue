@@ -1,7 +1,7 @@
 <template>
   <div class="list-box">
     <div id="topSearch">
-      <el-input v-model="listQuery.rolename" placeholder="请输入角色名称" clearable @keyup.enter.native="topSearch">
+      <el-input v-model="listQuery1.rolename" placeholder="请输入角色名称" clearable @keyup.enter.native="topSearch">
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
       </el-input>
       <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">高级搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
@@ -10,7 +10,7 @@
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
               <el-form-item label="创建人">
-                <el-input v-model="listQuery.creater" placeholder="请输入创建人" clearable @keyup.enter.native="topSearch" />
+                <el-input v-model="listQuery1.creater" placeholder="请输入创建人" clearable @keyup.enter.native="topSearch" />
               </el-form-item>
               <tenants-groups-roles :isRenderGroup="false" :is-render-role="false" :is-reset="isReset" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" @resetVal="resetVal" />
               <el-form-item label="创建时间">
@@ -91,7 +91,7 @@
 </template>
 
 <script>
-  import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
+import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
 import { role_list, role_delete, deleteMultiRole } from '@/api/systemManage-roleManage.js'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { isCurrentEgroupManager, hasThisBtnPermission } from '@/utils/permission'
@@ -103,6 +103,15 @@ export default {
       isReset: false, // 是否重置三组
       listLoading: false,
       listQuery: {
+        currentPage: 1, // 当前页码
+        pageSize: 10, // 当前列表请求条数
+        rolename: '', // 角色名称
+        creater: '', // 创建人
+        startTime: '', // 开始时间
+        endTime: '', // 结束时间
+        selectCompanyId: '' // 所属租户
+      },
+      listQuery1: {
         currentPage: 1, // 当前页码
         pageSize: 10, // 当前列表请求条数
         rolename: '', // 角色名称
@@ -130,22 +139,24 @@ export default {
     },
     // 搜索
     topSearch() {
+      this.listQuery = JSON.parse(JSON.stringify(this.listQuery1))
       this.get_list()
     },
     // 重置
     reset() {
-      this.listQuery.rolename = ''
-      this.listQuery.creater = ''
-      this.listQuery.startTime = ''
-      this.listQuery.endTime = ''
+      this.listQuery1.rolename = ''
+      this.listQuery1.creater = ''
+      this.listQuery1.startTime = ''
+      this.listQuery1.endTime = ''
       this.time_range = []
-      this.listQuery.customname = ''
+      this.listQuery1.customname = ''
+      this.listQuery = JSON.parse(JSON.stringify(this.listQuery1))
       this.get_list()
     },
 
     // 监听三组数据变化
     tenantsGroupsRolesVal(val) {
-      this.listQuery.selectCompanyId = val.companyIds
+      this.listQuery1.selectCompanyId = val.companyIds
     },
     // 重置监听三组数据变化
     resetVal(val) {

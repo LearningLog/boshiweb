@@ -1,7 +1,7 @@
 <template>
   <div class="list-box">
     <div id="topSearch">
-      <el-input v-model="listQuery.lname" placeholder="请输入标签名称" clearable @keyup.enter.native="topSearch">
+      <el-input v-model="listQuery1.lname" placeholder="请输入标签名称" clearable @keyup.enter.native="topSearch">
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
       </el-input>
       <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">高级搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
@@ -10,7 +10,7 @@
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
               <el-form-item label="标签ID">
-                <el-input v-model="listQuery.linc" placeholder="请输入标签ID" clearable @keyup.enter.native="topSearch" />
+                <el-input v-model="listQuery1.linc" placeholder="请输入标签ID" clearable @keyup.enter.native="topSearch" />
               </el-form-item>
               <tenants-groups-roles :is-render-role="false" :is-reset="isReset" which-group="manageEgroupInfo" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" @resetVal="resetVal" />
               <el-form-item label="创建时间">
@@ -91,6 +91,16 @@ export default {
       isReset: false, // 是否重置三组
       visibleSelectGroup: false, // 是否弹出选择租户、小组
       listLoading: false,
+      listQuery1: {
+        currentPage: 1, // 当前页码
+        pageSize: 10, // 当前列表请求条数
+        createTimebegin: '', // 开始时间
+        createTimeend: '', // 结束时间
+        lname: '', // 标签名称
+        linc: '', // 标签ID
+        selectCompanyId: '', // 租户名称
+        egroup: '' // 所属小组
+      },
       listQuery: {
         currentPage: 1, // 当前页码
         pageSize: 10, // 当前列表请求条数
@@ -121,8 +131,8 @@ export default {
 
     // 监听三组数据变化
     tenantsGroupsRolesVal(val) {
-      this.listQuery.selectCompanyId = val.companyIds
-      this.listQuery.egroup = val.egroupId
+      this.listQuery1.selectCompanyId = val.companyIds
+      this.listQuery1.egroup = val.egroupId
     },
     // 重置监听三组数据变化
     resetVal(val) {
@@ -131,17 +141,19 @@ export default {
 
     // 搜索
     topSearch() {
+      this.listQuery = JSON.parse(JSON.stringify(this.listQuery1))
       this.get_list()
     },
     // 重置
     reset() {
-      this.listQuery.lname = ''
-      this.listQuery.linc = ''
-      this.listQuery.selectCompanyId = ''
-      this.listQuery.egroup = ''
+      this.listQuery1.lname = ''
+      this.listQuery1.linc = ''
+      this.listQuery1.selectCompanyId = ''
+      this.listQuery1.egroup = ''
       this.time_range = []
-      this.listQuery.createTimebegin = ''
-      this.listQuery.createTimeend = ''
+      this.listQuery1.createTimebegin = ''
+      this.listQuery1.createTimeend = ''
+      this.listQuery = JSON.parse(JSON.stringify(this.listQuery1))
       this.get_list()
     },
     // 获取标签列表

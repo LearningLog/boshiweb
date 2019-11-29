@@ -1,7 +1,7 @@
 <template>
   <div class="list-box">
     <div id="topSearch">
-      <el-input v-model="listQuery.groupName" placeholder="请输入分组名称" clearable @keyup.enter.native="topSearch">
+      <el-input v-model="listQuery1.groupName" placeholder="请输入分组名称" clearable @keyup.enter.native="topSearch">
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
       </el-input>
       <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">高级搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
@@ -10,7 +10,7 @@
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
               <el-form-item v-if="isSystemManage" label="所属租户">
-                <el-select v-model="listQuery.selectCompanyId" placeholder="请选择所属租户" clearable filterable @change="companyidChange">
+                <el-select v-model="listQuery1.selectCompanyId" placeholder="请选择所属租户" clearable filterable @change="companyidChange">
                   <el-option
                     v-for="item in custom_list"
                     :key="item._id"
@@ -21,12 +21,12 @@
               </el-form-item>
 
               <el-form-item label="创建人">
-                <el-select v-model="listQuery.userId" placeholder="请选择创建人" clearable filterable>
+                <el-select v-model="listQuery1.userId" placeholder="请选择创建人" clearable filterable>
                   <el-option v-for="item in alluserList" :key="item._id" :label="item.nickname" :value="item._id" />
                 </el-select>
               </el-form-item>
               <el-form-item label="负责人">
-                <el-select v-model="listQuery.manage_user_id" placeholder="请选择负责人" clearable filterable>
+                <el-select v-model="listQuery1.manage_user_id" placeholder="请选择负责人" clearable filterable>
                   <el-option v-for="item in alluserList" :key="item._id" :label="item.nickname" :value="item._id" />
                 </el-select>
               </el-form-item>
@@ -141,6 +141,17 @@ export default {
 
         selectCompanyId: this.$store.state.user.userSystemInfo.userInfo.groupId // 所属租户
       },
+      listQuery1: {
+        currentPage: 1, // 当前页码
+        pageSize: 10, // 当前列表请求条数
+        content: '', // 分组名称
+        manage_user_id: '', // 负责人
+        userId: '', // 创建人
+        startTime: '', // 开始时间
+        endTime: '', // 结束时间
+
+        selectCompanyId: this.$store.state.user.userSystemInfo.userInfo.groupId // 所属租户
+      },
       time_range: [],
       delCheckedList: [], // 选中的数据
       list: null, // 列表数据
@@ -188,17 +199,19 @@ export default {
     },
     // 搜索
     topSearch() {
+      this.listQuery = JSON.parse(JSON.stringify(this.listQuery1))
       this.get_list()
     },
     // 重置
     reset() {
-      this.listQuery.content = ''
-      this.listQuery.manage_user_id = ''
-      this.listQuery.userId = ''
-      this.listQuery.startTime = ''
-      this.listQuery.endTime = ''
+      this.listQuery1.content = ''
+      this.listQuery1.manage_user_id = ''
+      this.listQuery1.userId = ''
+      this.listQuery1.startTime = ''
+      this.listQuery1.endTime = ''
       this.time_range = []
-      this.listQuery.selectCompanyId = this.$store.state.user.userSystemInfo.userInfo.groupId
+      this.listQuery1.selectCompanyId = this.$store.state.user.userSystemInfo.userInfo.groupId
+      this.listQuery = JSON.parse(JSON.stringify(this.listQuery1))
       this.get_list()
     },
     // 获取分组列表

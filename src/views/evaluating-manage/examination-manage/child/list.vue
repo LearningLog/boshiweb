@@ -1,7 +1,7 @@
 <template>
   <div class="tenant-list-box">
     <div id="topSearch">
-      <el-input v-model="listQuery.content" placeholder="请输入考试名称" clearable @keyup.enter.native="topSearch">
+      <el-input v-model="listQuery1.content" placeholder="请输入考试名称" clearable @keyup.enter.native="topSearch">
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
       </el-input>
       <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">高级搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
@@ -12,7 +12,7 @@
               <tenants-groups-roles :is-render-role="false" :is-reset="isReset" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" @resetVal="resetVal" />
               <el-form-item label="考试状态">
                 <el-select
-                  v-model="listQuery.examStatus"
+                  v-model="listQuery1.examStatus"
                   placeholder="请选择考试状态"
                   clearable
                   filterable
@@ -116,6 +116,16 @@ export default {
         startTime: null, // 创建开始时间
         endTime: null // 创建结束时间
       },
+      listQuery1: { // 查询条件
+        currentPage: 1, // 当前页
+        pageSize: 10, // 当前页请求条数
+        content: '', // 考试名称
+        examStatus: null, // 考试状态
+        selectCompanyId: null, // 租户
+        egroup: null, // 小组
+        startTime: null, // 创建开始时间
+        endTime: null // 创建结束时间
+      },
       examstatusArray: [{ value: 1, name: '未开始' }, { value: 2, name: '考试中' }, { value: 3, name: '考试结束' }],
       time_range: [], // 创建时间
       list: [], // 表格数据
@@ -153,29 +163,31 @@ export default {
     // 搜索
     topSearch() {
       this.time_range = this.time_range || []
-      this.listQuery.startTime = this.time_range[0]
-      this.listQuery.endTime = this.time_range[1]
+      this.listQuery1.startTime = this.time_range[0]
+      this.listQuery1.endTime = this.time_range[1]
+      this.listQuery = JSON.parse(JSON.stringify(this.listQuery1))
       this.get_list()
     },
 
     // 重置
     reset() {
       this.isReset = true
-      this.listQuery.content = ''
-      this.listQuery.selectCompanyId = null
-      this.listQuery.egroup = null
-      this.listQuery.examStatus = null
+      this.listQuery1.content = ''
+      this.listQuery1.selectCompanyId = null
+      this.listQuery1.egroup = null
+      this.listQuery1.examStatus = null
       this.time_range = []
-      this.listQuery.startTime = ''
-      this.listQuery.endTime = ''
+      this.listQuery1.startTime = ''
+      this.listQuery1.endTime = ''
+      this.listQuery = JSON.parse(JSON.stringify(this.listQuery1))
       this.get_list()
     },
 
     // 监听三组数据变化
     tenantsGroupsRolesVal(val) {
-      this.listQuery.selectCompanyId = val.companyIds
-      this.listQuery.egroup = val.egroupId
-      this.listQuery.roleId = val.roleId
+      this.listQuery1.selectCompanyId = val.companyIds
+      this.listQuery1.egroup = val.egroupId
+      this.listQuery1.roleId = val.roleId
     },
     // 重置监听三组数据变化
     resetVal(val) {

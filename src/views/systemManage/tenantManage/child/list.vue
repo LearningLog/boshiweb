@@ -1,7 +1,7 @@
 <template>
   <div class="tenant-list-box">
     <div id="topSearch">
-      <el-input v-model="listQuery.customname" placeholder="请输入租户名称" clearable @keyup.enter.native="topSearch">
+      <el-input v-model="listQuery1.customname" placeholder="请输入租户名称" clearable @keyup.enter.native="topSearch">
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
       </el-input>
       <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">高级搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
@@ -10,7 +10,7 @@
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
               <el-form-item label="创建人">
-                <el-input v-model="listQuery.createUser" placeholder="请输入创建人" clearable @keyup.enter.native="topSearch" />
+                <el-input v-model="listQuery1.createUser" placeholder="请输入创建人" clearable @keyup.enter.native="topSearch" />
               </el-form-item>
               <el-form-item label="创建时间">
                 <el-date-picker
@@ -23,8 +23,8 @@
                 />
               </el-form-item>
               <el-form-item label="状态">
-                <el-radio v-model="listQuery.customStatus" label="1">生效</el-radio>
-                <el-radio v-model="listQuery.customStatus" label="0">失效</el-radio>
+                <el-radio v-model="listQuery1.customStatus" label="1">生效</el-radio>
+                <el-radio v-model="listQuery1.customStatus" label="0">失效</el-radio>
               </el-form-item>
             </el-form>
             <div id="searchPopoverBtn">
@@ -132,6 +132,15 @@ export default {
         endTime: null, // 创建结束时间
         customStatus: null // 状态
       },
+      listQuery1: { // 查询条件
+        currentPage: 1, // 当前页
+        pageSize: 10, // 当前页请求条数
+        customname: '', // 租户名称
+        createUser: null, // 创建人
+        startTime: null, // 创建开始时间
+        endTime: null, // 创建结束时间
+        customStatus: null // 状态
+      },
       time_range: [], // 创建时间
       list: [], // 表格数据
       listLoading: true, // 是否开启表格遮罩
@@ -163,18 +172,20 @@ export default {
     // 搜索
     topSearch() {
       this.time_range = this.time_range || []
-      this.listQuery.startTime = this.time_range[0]
-      this.listQuery.endTime = this.time_range[1]
+      this.listQuery1.startTime = this.time_range[0]
+      this.listQuery1.endTime = this.time_range[1]
+      this.listQuery = JSON.parse(JSON.stringify(this.listQuery1))
       this.get_list()
     },
     // 重置
     reset() {
-      this.listQuery.customname = ''
-      this.listQuery.createUser = ''
+      this.listQuery1.customname = ''
+      this.listQuery1.createUser = ''
       this.time_range = []
-      this.listQuery.startTime = ''
-      this.listQuery.endTime = ''
-      this.listQuery.customStatus = ''
+      this.listQuery1.startTime = ''
+      this.listQuery1.endTime = ''
+      this.listQuery1.customStatus = ''
+      this.listQuery = JSON.parse(JSON.stringify(this.listQuery1))
       this.get_list()
     },
     // 选中数据
