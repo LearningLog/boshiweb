@@ -1,7 +1,7 @@
 <template>
   <div class="list-box">
     <div id="topSearch">
-      <el-input v-model="listQuery.name" placeholder="请输入文件名称" clearable @keyup.enter.native="topSearch">
+      <el-input v-model="listQuery1.name" placeholder="请输入文件名称" clearable @keyup.enter.native="topSearch">
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
       </el-input>
       <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">高级搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
@@ -10,11 +10,11 @@
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
               <el-form-item label="创建人">
-                <el-input v-model="listQuery.creater" placeholder="请输入创建人" clearable @keyup.enter.native="topSearch" />
+                <el-input v-model="listQuery1.creater" placeholder="请输入创建人" clearable @keyup.enter.native="topSearch" />
               </el-form-item>
               <el-form-item label="创建时间">
                 <el-date-picker
-                  v-model="listQuery.time_range"
+                  v-model="listQuery1.time_range"
                   type="daterange"
                   clearable
                   range-separator="至"
@@ -24,7 +24,7 @@
                 />
               </el-form-item>
               <el-form-item label="状态">
-                <el-radio-group v-model="listQuery.enable_status" clearable>
+                <el-radio-group v-model="listQuery1.enable_status" clearable>
                   <el-radio :label="1">启用</el-radio>
                   <el-radio :label="2">停用</el-radio>
                 </el-radio-group>
@@ -88,6 +88,14 @@ export default {
         time_range: null,
         enable_status: ''
       },
+      listQuery1: {
+        currentPage: 1,
+        pageSize: 10,
+        name: '',
+        creater: '',
+        time_range: null,
+        enable_status: ''
+      },
       list: null,
       listLoading: false,
       total: 0,
@@ -102,14 +110,16 @@ export default {
   methods: {
     // 高级搜索
     topSearch() {
+      this.listQuery = JSON.parse(JSON.stringify(this.listQuery1))
       this.get_list()
     },
     // 重置搜索条件
     reset() {
-      this.listQuery.name = ''
-      this.listQuery.creater = ''
-      this.listQuery.time_range = null
-      this.listQuery.enable_status = ''
+      this.listQuery1.name = ''
+      this.listQuery1.creater = ''
+      this.listQuery1.time_range = null
+      this.listQuery1.enable_status = ''
+      this.listQuery = JSON.parse(JSON.stringify(this.listQuery1))
       this.get_list()
     },
     // 获取列表
