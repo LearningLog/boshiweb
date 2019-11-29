@@ -88,8 +88,7 @@
           <div>
             <el-button size="mini" :disabled="!hasThisBtnPermission('egroup-edit')" @click="go_edit_fn(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
             <el-button size="mini" :disabled="!hasThisBtnPermission('egroup-delete')" @click="delete_fn(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
-            <el-button size="mini" :disabled="!hasThisBtnPermission('egroup-skill')" @click="getTranstorInformation(scope.row)"><i class="iconfont iconfenpeijineng
-" />分配技能</el-button>
+            <el-button size="mini" :disabled="!hasThisBtnPermission('egroup-skill')" @click="getTranstorInformation(scope.row)"><i class="iconfont iconfenpeijineng" />分配技能</el-button>
           </div>
         </template>
       </el-table-column>
@@ -232,7 +231,7 @@ export default {
     },
     // 删除单个分组
     delete_fn(row) {
-      this.$confirm('确定要删除【' + row.groupName + '】吗？', '删除分组', {
+      this.$confirm('确定要删除【' + row.groupName + '】吗？若该分组已关联分组成员/知识库/课程/考试也会被删除', '删除分组', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

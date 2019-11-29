@@ -36,7 +36,13 @@
                   />
                 </el-select>
               </el-form-item>
-
+                <el-form-item label="技能ID">
+              <el-input v-model="listQuery.skillInc" placeholder="技能ID" clearable @keyup.enter.native="topSearch" />
+              </el-form-item>
+              <!-- </el-form-item>
+                <el-form-item label="技能名称">
+              <el-input v-model="listQuery.content" placeholder="技能名称" clearable @keyup.enter.native="topSearch" />
+              </el-form-item> -->
             </el-form>
             <div id="searchPopoverBtn">
               <el-button type="primary" @click="topSearch">搜索</el-button>
@@ -63,6 +69,7 @@
         width="55"
         :selectable="selectable"
       />
+      <el-table-column label="技能ID" min-width="100" align="center" show-overflow-tooltip prop="increase_id" />
       <el-table-column align="center" label="技能名称" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-link type="primary" @click="detail(scope.row)">{{ scope.row.skill_name }}</el-link>
@@ -110,7 +117,8 @@ export default {
         // egroup: '', // 分组
         // roleId: '', // 角色
         startTime: '', // 开始时间
-        endTime: '' // 结束时间
+        endTime: '', // 结束时间
+        skillInc:''//技能id
       },
       time_range: [], // 时间范围model
       delCheckedList: [], // 选中的数据
@@ -186,7 +194,7 @@ export default {
     },
     // 删除单个技能
     delete_fn(row) {
-      this.$confirm('确定要删除【' + row.skill_name + '】吗？', '删除技能', {
+      this.$confirm('确定要删除【' + row.skill_name + '】吗？已关联该技能的内容会取消关联该技能', '删除技能', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
