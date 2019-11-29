@@ -1,7 +1,7 @@
 <template>
   <div class="tenant-list-box">
     <div id="topSearch">
-      <el-input v-model="listQuery.content" placeholder="请输入试题名称" clearable @keyup.enter.native="topSearch">
+      <el-input v-model="listQuery1.content" placeholder="请输入试题名称" clearable @keyup.enter.native="topSearch">
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
       </el-input>
       <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">高级搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
@@ -164,6 +164,18 @@ export default {
         startTime: null, // 创建开始时间
         endTime: null // 创建结束时间
       },
+      listQuery1: { // 查询条件
+        currentPage: 1, // 当前页
+        pageSize: 10, // 当前页请求条数
+        content: '', // 试题名称
+        topic_label: null, // 试题标签
+        topic_skill: null, // 试题技能
+        topicType: null, // 试题类型
+        selectCompanyId: null, // 租户
+        egroup: null, // 小组
+        startTime: null, // 创建开始时间
+        endTime: null // 创建结束时间
+      },
       topic_label: [], // 试题标签
       topic_skill: [], // 试题技能
       topicType: [{ _id: 1, topicName: '单选' }, { _id: 2, topicName: '多选' }, { _id: 3, topicName: '判断' }],
@@ -224,23 +236,25 @@ export default {
     // 搜索
     topSearch() {
       this.time_range = this.time_range || []
-      this.listQuery.startTime = this.time_range[0]
-      this.listQuery.endTime = this.time_range[1]
+      this.listQuery1.startTime = this.time_range[0]
+      this.listQuery1.endTime = this.time_range[1]
+      this.listQuery = JSON.parse(JSON.stringify(this.listQuery1))
       this.get_list()
     },
 
     // 重置
     reset() {
       this.isReset = true
-      this.listQuery.content = ''
-      this.listQuery.topic_label = null
-      this.listQuery.topic_skill = null
-      this.listQuery.topicType = null
-      this.listQuery.selectCompanyId = null
-      this.listQuery.egroup = null
+      this.listQuery1.content = ''
+      this.listQuery1.topic_label = null
+      this.listQuery1.topic_skill = null
+      this.listQuery1.topicType = null
+      this.listQuery1.selectCompanyId = null
+      this.listQuery1.egroup = null
       this.time_range = []
-      this.listQuery.startTime = ''
-      this.listQuery.endTime = ''
+      this.listQuery1.startTime = ''
+      this.listQuery1.endTime = ''
+      this.listQuery = JSON.parse(JSON.stringify(this.listQuery1))
       this.get_list()
     },
 

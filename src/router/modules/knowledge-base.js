@@ -42,7 +42,7 @@ const knowledgeBase = {
       children: [
         {
           path: 'list',
-          name: 'grouplist',
+          name: 'groupbaselist',
           hidden: true,
           component: () => import('@/views/knowledge-base/group-base/child/list.vue'),
           meta: { title: '分组知识库列表', icon: '', activeMenu: '/knowledge-base/group-base' }

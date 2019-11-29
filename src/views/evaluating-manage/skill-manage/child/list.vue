@@ -1,7 +1,7 @@
 <template>
   <div class="list-box">
     <div id="topSearch">
-      <el-input v-model="listQuery.content" placeholder="请输入技能名称" clearable @keyup.enter.native="topSearch">
+      <el-input v-model="listQuery1.content" placeholder="请输入技能名称" clearable @keyup.enter.native="topSearch">
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
       </el-input>
       <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">高级搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
@@ -10,7 +10,7 @@
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
               <el-form-item label="技能ID">
-                <el-input v-model="listQuery.skillInc" placeholder="请输入技能ID" clearable @keyup.enter.native="topSearch" />
+                <el-input v-model="listQuery1.skillInc" placeholder="请输入技能ID" clearable @keyup.enter.native="topSearch" />
               </el-form-item>
               <el-form-item label="创建时间">
                 <el-date-picker
@@ -70,6 +70,14 @@ export default {
         startTime: '', // 开始时间
         endtTime: '' // 结束时间
       },
+      listQuery1: {
+        currentPage: 1, // 当前页码
+        pageSize: 10, // 当前列表请求条数
+        content: '', // 技能名称
+        skillInc: '', // 技能ID
+        startTime: '', // 开始时间
+        endtTime: '' // 结束时间
+      },
       time_range: [],
       list: null, // 列表数据
       total: 0, // 总条数
@@ -82,15 +90,17 @@ export default {
   methods: {
     // 搜索
     topSearch() {
+      this.listQuery = JSON.parse(JSON.stringify(this.listQuery1))
       this.get_list()
     },
     // 重置
     reset() {
-      this.listQuery.skillInc = ''
-      this.listQuery.content = ''
-      this.listQuery.startTime = ''
-      this.listQuery.endtTime = ''
+      this.listQuery1.skillInc = ''
+      this.listQuery1.content = ''
+      this.listQuery1.startTime = ''
+      this.listQuery1.endtTime = ''
       this.time_range = []
+      this.listQuery = JSON.parse(JSON.stringify(this.listQuery1))
       this.get_list()
     },
     // 获取技能列表

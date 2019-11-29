@@ -5,7 +5,7 @@
 * @remarks:
 */
 
-const TokenKey = 'boshi_token'
+const TokenKey = 'Authorization'
 
 export function getToken() {
   return localStorage.getItem(TokenKey)
