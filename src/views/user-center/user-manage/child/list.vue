@@ -78,13 +78,29 @@
             <el-button size="mini" :disabled="!hasThisBtnPermission('user-edit')" @click="go_edit_fn(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
             <el-button v-if="scope.row.userStatus === 1" size="mini" :disabled="!hasThisBtnPermission('user-status')" @click="enable(scope.row, 2)"><i class="iconfont iconshixiao" />失效</el-button>
             <el-button v-else size="mini" :disabled="!hasThisBtnPermission('user-status')" @click="enable(scope.row, 1)"><i class="iconfont iconshengxiao" />生效</el-button>
-            <el-button size="mini" :disabled="!hasThisBtnPermission('user-delete')" @click="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
+            <el-dropdown trigger="click">
+              <el-button size="mini">
+                <i class="iconfont icongengduo" />更多
+              </el-button>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item :disabled="!hasThisBtnPermission('user-delete')" @click.native="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-dropdown-item>
+                <el-dropdown-item :disabled="!hasThisBtnPermission('user-resetpassword')" @click.native="openResetPassword(scope.row)"><i class="iconfont iconzhongzhi" />重置密码</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
           </div>
           <div v-else>
             <el-button size="mini" :disabled="true"><i class="iconfont iconxiugai" />修改</el-button>
             <el-button v-if="scope.row.userStatus === 1" size="mini" :disabled="true"><i class="iconfont iconshixiao" />失效</el-button>
             <el-button v-else size="mini" :disabled="true"><i class="iconfont iconshengxiao" />生效</el-button>
-            <el-button size="mini" :disabled="true"><i class="iconfont iconshanchu" />删除</el-button>
+            <el-dropdown trigger="click">
+              <el-button size="mini">
+                <i class="iconfont icongengduo" />更多
+              </el-button>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item :disabled="true"><i class="iconfont iconshanchu" />删除</el-dropdown-item>
+                <el-dropdown-item :disabled="true"><i class="iconfont iconzhongzhi" />重置密码</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
           </div>
         </template>
       </el-table-column>
@@ -122,13 +138,13 @@
     </el-dialog>
     <el-dialog v-el-drag-dialog class="setRolesDialog" width="650px" title="分配小组" :visible.sync="setEgroupsDialogVisible" @close="closeSetRolesDialog">
       <el-transfer v-model="einc" class="setEgroups" :data="noList2" :titles="['未分配小组', '已分配小组']" :props="defaultProps2" @change="handleTransferChange2">
-         <!--<span slot-scope="{ option }">{{ option.label }}-->
-          <!--<span class="groupName">{{ option.groupName }}</span>-->
-          <!--<div class="fr eincs">-->
-            <!--<el-checkbox-group v-model="chargemanList">-->
-              <!--<el-checkbox :label="option.inc">组长</el-checkbox>-->
-            <!--</el-checkbox-group>-->
-          <!--</div>-->
+        <!--<span slot-scope="{ option }">{{ option.label }}-->
+        <!--<span class="groupName">{{ option.groupName }}</span>-->
+        <!--<div class="fr eincs">-->
+        <!--<el-checkbox-group v-model="chargemanList">-->
+        <!--<el-checkbox :label="option.inc">组长</el-checkbox>-->
+        <!--</el-checkbox-group>-->
+        <!--</div>-->
         <!--</span>-->
       </el-transfer>
       <div slot="footer" class="dialog-footer">
@@ -181,11 +197,43 @@
         />
       </el-table>
     </el-dialog>
+    <el-dialog v-el-drag-dialog class="setRolesDialog" width="650px" title="重置密码" :visible.sync="resetPasswordVisible" @close="closeResetPasswordDialog">
+      <el-form
+          ref="modifyPassword"
+          class="modifyPassword"
+          :model="user"
+          :rules="rules"
+          label-width="120px"
+      >
+        <el-form-item label="新密码" prop="password">
+          <el-input
+              v-model="user.password"
+              placeholder="请输入新密码"
+              type="password"
+              autocomplete="new-password"
+              clearable
+          />
+        </el-form-item>
+        <el-form-item label="再次输入密码" prop="secondconfirmpassword">
+          <el-input
+              v-model="user.secondconfirmpassword"
+              placeholder="再次输入密码"
+              type="password"
+              autocomplete="new-password"
+              clearable
+          />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="resetPassword">确定</el-button>
+        <el-button @click="resetPasswordVisible = false">取 消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getUserList, deleteUser, updateUserStatus, leadingIn, batchAssignRole, batchGroupsManage } from '@/api/userCenter-userManage'
+import { getUserList, deleteUser, updateUserStatus, leadingIn, batchAssignRole, batchGroupsManage, updatePassword } from '@/api/userCenter-userManage'
 import { getAllRole } from '@/api/systemManage-roleManage'
 import { getAllEmployeeGroup } from '@/api/userCenter-groupManage'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -195,11 +243,34 @@ import { getToken } from '@/utils/auth'
 import { isCurrentEgroupManager, hasThisBtnPermission } from '@/utils/permission'
 import { downloadFileByStream } from '@/utils/downloadFileByStream'
 import { downloadModel } from '@/api/file-download'
+import { regPwd } from '@/utils/validate'
 
 export default {
   components: { Pagination, TenantsGroupsRoles },
   directives: { elDragDialog },
   data() {
+    // 校验密码
+    var validatePassword = (rule, value, callback) => {
+      console.log(value)
+      if (!value && value !== 0) {
+        callback(new Error('请输入新密码'))
+      } else if (!regPwd(value)) {
+        callback(new Error('6 到 50 位字母和数字的组合'))
+      } else {
+        callback()
+      }
+    }
+    var validateSecondcon = (rule, value, callback) => {
+      if (!value && value !== 0) {
+        callback(new Error('请再次输入密码'))
+      } else if (!regPwd(value)) {
+        callback(new Error('6 到 50 位字母和数字的组合'))
+      } else if (this.user.password && value !== this.user.password) {
+        callback(new Error('两次密码输入不一致'))
+      } else {
+        callback()
+      }
+    }
     return {
       isReset: false, // 是否重置三组联动数据
       listLoading: false,
@@ -249,13 +320,29 @@ export default {
       checkedList: [], // 选中的数据
       list: null, // 列表数据
       total: 0, // 总条数
-      popoverVisible: false // 高级搜索是否展开
+      popoverVisible: false, // 高级搜索是否展开
+      resetPasswordVisible: false, // 是否打开重置密码
+      userInfo: {}, // 当前要修改的用户
+      user: {
+        _id: '', // 用户id
+        password: '', // 原密码
+        secondconfirmpassword: '' // 再次密码
+      },
+      rules: {
+        password: [
+          { required: true, validator: validatePassword, trigger: 'blur' },
+          { required: true, validator: validatePassword, trigger: 'change' }
+        ],
+        secondconfirmpassword: [
+          { required: true, validator: validateSecondcon, trigger: 'blur' },
+          { required: true, validator: validateSecondcon, trigger: 'change' }
+        ]
+      }
     }
   },
   computed: {
     // 判断当前是不是系统管理员 true：是；false：不是
     isSystemManage() {
-      console.log('this.$store.state.user.isSystemManage', this.$store.state.user.isSystemManage)
       return this.$store.state.user.isSystemManage
     }
   },
@@ -356,8 +443,8 @@ export default {
       }
     },
     downloadFile() {
-      downloadModel({params: {code: 'USER_IMPORT'}}).then(response => {
-        downloadFileByStream({file: response.data, fileName: '企业员工导入模版.xlsx'})
+      downloadModel({ params: { code: 'USER_IMPORT' }}).then(response => {
+        downloadFileByStream({ file: response.data, fileName: '企业员工导入模版.xlsx' })
       })
     },
     // 删除单个角色
@@ -461,7 +548,34 @@ export default {
         this.setEgroupsDialogVisible = false
         this.get_list()
       })
-    }
+    },
+
+    // 打卡重置密码
+    openResetPassword(row) {
+      this.userInfo = row
+      this.resetPasswordVisible = true
+    },
+
+    // 重置密码
+    resetPassword() {
+      this.$refs.modifyPassword.validate(valid => {
+        if (valid) {
+          updatePassword({ _id: this.userInfo._id, password: this.user.password }).then(res => {
+            this.$message.success('重置密码成功！')
+            this.resetPasswordVisible = false
+          })
+        }
+      })
+    },
+
+    // 关闭重置密码提弹出框，重置表单
+    closeResetPasswordDialog() {
+      this.userInfo = {}
+      this.user._id = ''
+      this.user.password = ''
+      this.user.secondconfirmpassword = ''
+      this.$refs.modifyPassword.resetFields()
+    },
   }
 }
 </script>

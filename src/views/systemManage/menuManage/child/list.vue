@@ -75,7 +75,7 @@
                 <i class="iconfont icongengduo" />更多
               </el-button>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native="upMenu(scope.row)"><i class="iconfont iconshangyi1" />上移</el-dropdown-item>
+                <el-dropdown-item @click.native="upMenu(scope.row)"><i class="iconfont iconshangyi" />上移</el-dropdown-item>
                 <el-dropdown-item @click.native="downMenu(scope.row)"><i class="iconfont iconxiayi" />下移</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
