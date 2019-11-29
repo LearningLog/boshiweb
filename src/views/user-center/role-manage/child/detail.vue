@@ -10,7 +10,7 @@
       <el-form-item class="" label="所属租户：">
         <span>{{ form.customname }}</span>
       </el-form-item>
-      <el-form-item label="角色类型：" prop="roleGroupId">
+      <el-form-item v-show="this.form.manageType === 3?false:true" label="角色类型：" prop="roleGroupId">
         <span>{{ form.manageTypeName }}</span>
       </el-form-item>
       <el-form-item label="角色授权：">
