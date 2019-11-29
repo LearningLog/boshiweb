@@ -196,7 +196,7 @@ const onlineClass = {
           component: () =>
             import('@/views/online-class/thematic-class/child/thematic-manage'),
           meta: {
-            title: '课堂管理',
+            title: '课堂标签',
             icon: '',
             activeMenu: '/online-class/thematic-class'
           }
