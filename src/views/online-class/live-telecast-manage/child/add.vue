@@ -306,6 +306,7 @@
     <select-file
       :visible.sync="visibleSelectFile"
       :is-upload="true"
+      :fileTypeList="fileTypeList"
       @checkedFile="checkedFile"
     />
     <AddLessonEvalLabels
@@ -370,6 +371,7 @@ export default {
       },
       range_time: [], // 上课时段
       visibleSelectFile: false, // 弹出选择文件
+      fileTypeList: ['ppt', 'word', 'xls', 'pdf'], // 查询的文件类型
       visible2: false, // 弹出选择标签
       currentLabels: [], // 标签obj
       headers: {

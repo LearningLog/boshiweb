@@ -82,7 +82,9 @@ export default {
   props: {
     fileTypeList: {
       type: Array,
-      default: null
+      default() {
+        return []
+      }
     },
     visible: {
       type: Boolean,
@@ -102,9 +104,9 @@ export default {
         currentPage: 1,
         pageSize: 15,
         fileName: '',
-        fileTypeList: this.fileTypeList || [],
+        fileTypeList: [],
         fileUseList: ['preview_pic', 'preview_file'],
-        file_status: 4,
+        fileStatusList: [4],
         fileIdList: []
       },
       list: [], // 列表
@@ -120,10 +122,14 @@ export default {
       timer: -1
     }
   },
+  beforeDestroy() {
+    clearInterval(this.timer)
+  },
   watch: {
     visible: function(val, val2) {
       if (val) {
         var that = this
+        this.listQuery.fileTypeList = this.fileTypeList
         this.listQuery.currentPage = 0
         this.list.length = 0
         this.selectFilVisible = true

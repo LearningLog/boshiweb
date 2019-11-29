@@ -58,7 +58,8 @@
           </div>
         </div>
       </div>
-      <div class="app-dataScreening-staffItem">
+<!--  （产品需求）考试员工数和考试合格率是同一个页面-->
+      <div class="app-dataScreening-staffItem" @click="testDetail">
         <div class="app-dataScreening-staffItem-decs">
           <span>考试合格率</span>
         </div>
@@ -106,6 +107,7 @@
         <!--学习榜列表-->
         <div v-show="listSort == 0">
           <el-table
+            :default-sort="{prop: 'studyTimeTotal', order: 'descending'}"
             :data="tableData"
             style="width: 100%"
             height="370"
@@ -168,6 +170,7 @@
         <!--课程发布榜列表-->
         <div v-show="listSort == 1">
           <el-table
+            :default-sort="{prop: 'publishTrainCount', order: 'descending'}"
             :data="courseTableData"
             style="width: 100%"
             height="370"
@@ -1186,7 +1189,7 @@ export default {
     },
     // 排行榜标签切换
     listActive(index) {
-
+      this.listSort = index
     },
 
     // 排行榜导出

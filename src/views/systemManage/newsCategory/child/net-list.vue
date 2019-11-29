@@ -93,7 +93,7 @@
     <!--修改网站弹窗-->
     <el-dialog
       v-el-drag-dialog
-      title="新增网站"
+      title="修改网站"
       :visible.sync="net_edit_flag"
       width="50%"
     >
@@ -203,10 +203,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        const param = {}
-        param.ids = []
-        param.ids.push(row._id)
-        net_delet(param).then(response => {
+        net_delet({ _id: row._id }).then(response => {
           this.$message.success(response.message)
           if ((this.list.length - 1) === 0) { // 如果当前页数据已删完，则去往上一页
             this.listQuery.currentPage -= 1
@@ -239,6 +236,8 @@ export default {
             this.$message.success('添加成功！')
             this.net_add_flag = false
             this.get_list()
+            this.net_add_form.website_desc = ''
+            this.net_add_form.website_name = ''
           })
         }
       })

@@ -48,8 +48,9 @@
         <el-input
           v-model="form.password"
           placeholder="请输入密码"
-          type="password"
-          autocomplete="new-password"
+          type="text"
+          autocomplete="off"
+          οnfοcus="this.type='password'"
           maxlength="50"
           clearable
         />

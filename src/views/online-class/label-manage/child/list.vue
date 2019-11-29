@@ -56,7 +56,7 @@
       </el-table-column>
       <el-table-column align="center" label="名称" min-width="120" show-overflow-tooltip>
         <template slot-scope="scope">
-          <el-link type="primary" @click="detail(scope.row)">{{ scope.row.customname }}</el-link>
+          <el-link type="primary" @click="detail(scope.row)">{{ scope.row.lname }}</el-link>
         </template>
       </el-table-column>
       <el-table-column label="描述" min-width="120" align="center" show-overflow-tooltip prop="ldesc" />
