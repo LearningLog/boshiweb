@@ -1,7 +1,7 @@
 <template>
   <div class="tenant-list-box">
     <div id="topSearch">
-      <el-input v-model="listQuery.cname" placeholder="请输入课程名称" clearable @keyup.enter.native="topSearch">
+      <el-input v-model="listQuery1.cname" placeholder="请输入课程名称" clearable @keyup.enter.native="topSearch">
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
       </el-input>
       <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">高级搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
@@ -10,7 +10,7 @@
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
               <el-form-item label="讲师">
-                <el-input v-model="listQuery.teacher" placeholder="请输入讲师" clearable @keyup.enter.native="topSearch" />
+                <el-input v-model="listQuery1.teacher" placeholder="请输入讲师" clearable @keyup.enter.native="topSearch" />
               </el-form-item>
               <tenants-groups-roles :is-render-role="false" :is-reset="isReset" which-group="manageEgroupInfo" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" @resetVal="resetVal" />
               <el-form-item label="开始时间">
@@ -50,7 +50,7 @@
               </el-form-item>
               <el-form-item label="创建人">
                 <el-select
-                  v-model="listQuery.createUser"
+                  v-model="listQuery1.createUser"
                   placeholder="请选择创建人"
                   clearable
                   filterable
@@ -188,6 +188,21 @@ export default {
         createTimeend: '', // 创建结束时间
         type: 1 // 1，直播课堂；2，点播课堂
       },
+      listQuery1: { // 查询条件
+        currentPage: 1, // 当前页
+        pageSize: 10, // 当前页请求条数
+        cname: '', // 课堂名称
+        createUser: '', // 创建人
+        selectCompanyId: '', // 租户
+        egroup: '', // 小组
+        labels: [], // 标签
+        teacher: '', // 讲师
+        startTime: '', // 开始时间
+        endTime: '', // 开始时间
+        createTimebegin: '', // 创建开始时间
+        createTimeend: '', // 创建结束时间
+        type: 1 // 1，直播课堂；2，点播课堂
+      },
       labels: null, // 标签
       start_time_range: [], // 开始时间
       time_range: [], // 创建时间
@@ -245,8 +260,8 @@ export default {
 
     // 监听三组数据变化
     tenantsGroupsRolesVal(val) {
-      this.listQuery.selectCompanyId = val.companyIds
-      this.listQuery.egroup = val.egroupId
+      this.listQuery1.selectCompanyId = val.companyIds
+      this.listQuery1.egroup = val.egroupId
       this.getCreater()
       this.getLablesList()
     },
@@ -257,26 +272,28 @@ export default {
 
     // 搜索
     topSearch() {
+      this.listQuery = JSON.parse(JSON.stringify(this.listQuery1))
       this.get_list()
     },
 
     // 重置
     reset() {
       this.isReset = true
-      this.listQuery.cname = ''
-      this.listQuery.createUser = ''
-      this.listQuery.labels = ''
+      this.listQuery1.cname = ''
+      this.listQuery1.createUser = ''
+      this.listQuery1.labels = ''
       this.labels = null
-      this.listQuery.createUser = ''
-      this.listQuery.teacher = ''
-      this.listQuery.selectCompanyId = ''
-      this.listQuery.egroup = ''
+      this.listQuery1.createUser = ''
+      this.listQuery1.teacher = ''
+      this.listQuery1.selectCompanyId = ''
+      this.listQuery1.egroup = ''
       this.start_time_range = []
       this.time_range = []
-      this.listQuery.startTime = ''
-      this.listQuery.endTime = ''
-      this.listQuery.createTimebegin = ''
-      this.listQuery.createTimeend = ''
+      this.listQuery1.startTime = ''
+      this.listQuery1.endTime = ''
+      this.listQuery1.createTimebegin = ''
+      this.listQuery1.createTimeend = ''
+      this.listQuery = JSON.parse(JSON.stringify(this.listQuery1))
       this.get_list()
     },
 
