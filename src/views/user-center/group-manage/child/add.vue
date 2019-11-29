@@ -9,7 +9,7 @@
       </el-form-item>
       <el-form-item v-if="isSystemManage" label="所属租户" prop="selectCompanyId">
         <el-select v-model="form.selectCompanyId" placeholder="请选择所属租户" clearable filterable @change="companyidChange">
-          <el-option v-for="item in custom_list" :key="item._id" :label="item.customname" :value="item._id"/>
+          <el-option v-for="item in custom_list" :key="item._id" :label="item.customname" :value="item._id" />
         </el-select>
       </el-form-item>
       <el-form-item label="分组负责人" prop="alluserList">

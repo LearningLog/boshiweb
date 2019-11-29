@@ -25,7 +25,7 @@
           <el-button slot="append" icon="el-icon-search" @click="search" />
         </el-input>
       </div>
-      <MiniPrograms></MiniPrograms>
+      <MiniPrograms />
       <help-center />
       <el-button @click="jumpOldVersion()">返回旧版</el-button>
       <user :style="customStyle" />

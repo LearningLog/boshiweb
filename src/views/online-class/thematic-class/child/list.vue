@@ -121,8 +121,10 @@
       <el-table-column align="center" label="创建时间" min-width="140" prop="c_time" show-overflow-tooltip />
       <el-table-column class-name="status-col" label="操作" width="260" align="center" fixed="right">
         <template slot-scope="scope">
-          <el-button size="mini" :disabled="!hasThisBtnPermission('lesson-manage', scope.row.egroup)" @click="manage(scope.row)"><i class="iconfont iconketangguanli
-" />课堂管理</el-button>
+          <el-button size="mini" :disabled="!hasThisBtnPermission('lesson-manage', scope.row.egroup)" @click="manage(scope.row)"><i
+            class="iconfont iconketangguanli
+"
+          />课堂管理</el-button>
           <el-button size="mini" :disabled="!hasThisBtnPermission('lesson-share', scope.row.egroup)" @click="share(scope.row, $event)"><i class="iconfont iconfenxiang1" />分享</el-button>
           <el-dropdown trigger="click">
             <el-button size="mini">

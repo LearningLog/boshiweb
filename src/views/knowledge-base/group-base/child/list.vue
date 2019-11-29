@@ -136,14 +136,14 @@
         </template>
 
       </el-table-column>
-      <el-table-column label="文件大小" min-width="100" align="center" show-overflow-tooltip prop="skill_desc" >
-         <template slot-scope="{row}">
+      <el-table-column label="文件大小" min-width="100" align="center" show-overflow-tooltip prop="skill_desc">
+        <template slot-scope="{row}">
           <div>
             {{ parseFileSize(row) }}
           </div>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="文件属性" min-width="140" show-overflow-tooltip prop="fileAttributeDesc" >
+      <el-table-column align="center" label="文件属性" min-width="140" show-overflow-tooltip prop="fileAttributeDesc">
         <template slot-scope="{row}">
           <div>
             {{ parseFileType(row) }}
@@ -475,19 +475,19 @@ export default {
       })
     },
     parseFileType(row) {
-      const fileTypeName=row.fileAttributeDesc==='dir'?'文件夹':'文件'
+      const fileTypeName = row.fileAttributeDesc === 'dir' ? '文件夹' : '文件'
       return fileTypeName
     },
     parseFileSize(row) {
-      if(!row.fileSize){
+      if (!row.fileSize) {
         return
       }
-      var bytes=row.fileSize
-      if (bytes === 0) return '0 B';
-      let k = 1024,
-      sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
-      i = Math.floor(Math.log(bytes) / Math.log(k));
-      return (bytes / Math.pow(k, i)). toFixed(2) + ' ' + sizes[i];
+      var bytes = row.fileSize
+      if (bytes === 0) return '0 B'
+      const k = 1024
+      const sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+      const i = Math.floor(Math.log(bytes) / Math.log(k))
+      return (bytes / Math.pow(k, i)).toFixed(2) + ' ' + sizes[i]
     },
     parseCreateUser(row) {
       return this.userInfoForList[row.userId].nickname
@@ -550,10 +550,10 @@ export default {
 
     enterFolder(row) {
       if (row.fileAttributeDesc === 'dir') {
-            // 每次点击的时候都回到第一页
+        // 每次点击的时候都回到第一页
       // 进文件夹的检索和文件别的input检索不共存
         this.listQuery.currentPage = 1
-        this.listQuery.keyword= ''
+        this.listQuery.keyword = ''
         this.pathQueryString += this.pathQueryString ? '/' + row.fileId + '|' + row.fileName : row.fileId + '|' + row.fileName
         this.$router.push({ path: '/knowledge-base/group-base/list', query: { path: this.pathQueryString, ownerId: this.listQuery.ownerId }})
       }
@@ -580,7 +580,6 @@ export default {
         this.pathQueryString = ''
         this.listQuery.parentId = this.listQuery.ownerId
       }
-  
 
       this.fileUploadPara.ownerId = this.listQuery.ownerId
       this.fileUploadPara.parentId = this.pathNavData.length > 0 ? this.pathNavData[this.pathNavData.length - 1].id : this.listQuery.ownerId
@@ -778,7 +777,7 @@ export default {
             type: 'success'
           })
         })
-         this.enterFloderByQueryPath()
+        this.enterFloderByQueryPath()
       }).catch(() => {})
     },
     deleteDirFileSelected(row) {
@@ -797,7 +796,7 @@ export default {
             type: 'success'
           })
         })
-         this.enterFloderByQueryPath()
+        this.enterFloderByQueryPath()
       }).catch(() => {})
     },
     // 创建文件夹

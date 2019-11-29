@@ -59,23 +59,6 @@ export default {
       default: 600
     }
   },
-  beforeDestroy() {
-    // 销毁video实例
-    if (this.fileTypeCode === 1 || this.fileType === 'video') {
-      setTimeout(function() {
-        var myPlayer = videojs('video_1')
-        myPlayer.dispose()
-        $('.vadioPlay').html('')
-      })
-    }
-    if (this.fileTypeCode === 2 || this.fileType === 'audio') {
-      setTimeout(function() {
-        var myPlayer = videojs('audio_1')
-        myPlayer.dispose()
-        $('.vadioPlay').html('')
-      })
-    }
-  },
   data() {
     return {
       filePreviewVisible: false,
@@ -152,6 +135,23 @@ export default {
           this.$emit('closePreview')
         }
       }
+    }
+  },
+  beforeDestroy() {
+    // 销毁video实例
+    if (this.fileTypeCode === 1 || this.fileType === 'video') {
+      setTimeout(function() {
+        var myPlayer = videojs('video_1')
+        myPlayer.dispose()
+        $('.vadioPlay').html('')
+      })
+    }
+    if (this.fileTypeCode === 2 || this.fileType === 'audio') {
+      setTimeout(function() {
+        var myPlayer = videojs('audio_1')
+        myPlayer.dispose()
+        $('.vadioPlay').html('')
+      })
     }
   },
   methods: {

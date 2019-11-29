@@ -37,31 +37,31 @@
                 :class="`file-${file.id}`"
               >
                 <li class="file-type" :icon="fileCategory(file.ext)">
-                  <svg class="icon" aria-hidden="true" v-if="fileCategory(file.ext) === 'image'">
+                  <svg v-if="fileCategory(file.ext) === 'image'" class="icon" aria-hidden="true">
                     <use xlink:href="#icontupian" />
                   </svg>
-                  <svg class="icon" aria-hidden="true" v-else-if="fileCategory(file.ext) === 'video'">
+                  <svg v-else-if="fileCategory(file.ext) === 'video'" class="icon" aria-hidden="true">
                     <use xlink:href="#iconvideo-" />
                   </svg>
-                  <svg class="icon" aria-hidden="true" v-else-if="fileCategory(file.ext) === 'audio'">
+                  <svg v-else-if="fileCategory(file.ext) === 'audio'" class="icon" aria-hidden="true">
                     <use xlink:href="#iconaudio" />
                   </svg>
-                  <svg class="icon" aria-hidden="true" v-else-if="fileCategory(file.ext) === 'text'">
+                  <svg v-else-if="fileCategory(file.ext) === 'text'" class="icon" aria-hidden="true">
                     <use xlink:href="#icontext" />
                   </svg>
-                  <svg class="icon" aria-hidden="true" v-else-if="fileCategory(file.ext) === 'excel'">
+                  <svg v-else-if="fileCategory(file.ext) === 'excel'" class="icon" aria-hidden="true">
                     <use xlink:href="#iconex" />
                   </svg>
-                  <svg class="icon" aria-hidden="true" v-else-if="fileCategory(file.ext) === 'ppt'">
+                  <svg v-else-if="fileCategory(file.ext) === 'ppt'" class="icon" aria-hidden="true">
                     <use xlink:href="#iconppt" />
                   </svg>
-                  <svg class="icon" aria-hidden="true" v-else-if="fileCategory(file.ext) === 'pdf'">
+                  <svg v-else-if="fileCategory(file.ext) === 'pdf'" class="icon" aria-hidden="true">
                     <use xlink:href="#iconpdf1" />
                   </svg>
-                  <svg class="icon" aria-hidden="true" v-else-if="fileCategory(file.ext) === 'compressed'">
+                  <svg v-else-if="fileCategory(file.ext) === 'compressed'" class="icon" aria-hidden="true">
                     <use xlink:href="#iconyasuobao" />
                   </svg>
-                  <svg class="icon" aria-hidden="true" v-else>
+                  <svg v-else class="icon" aria-hidden="true">
                     <use xlink:href="#iconyemian" />
                   </svg>
                 </li>
@@ -74,7 +74,7 @@
                   <li class="file-name singleLineOmission">{{ file.name }}</li>
                 </el-tooltip>
                 <li class="progress">
-                  <el-progress :percentage="progress[index]" :key="index" />
+                  <el-progress :key="index" :percentage="progress[index]" />
                 </li>
                 <li class="file-size">{{ fileSize(file.size) }}</li>
                 <!--<li class="file-status">上传中...</li>-->

@@ -314,8 +314,10 @@
             :class="{ activeSet: isActiveSet === 1 }"
             @click="active(1)"
           >
-            <i class="iconfont iconzhiboyuanshehzi
-" /><span>直播源设置</span>
+            <i
+              class="iconfont iconzhiboyuanshehzi
+"
+            /><span>直播源设置</span>
           </div>
           <div
             v-if="loginUser === chapter.user_id && chapter.type === 1"
@@ -344,8 +346,10 @@
             :class="{ activeSet: isActiveSet === 3 }"
             @click="active(3)"
           >
-            <i class="iconfont iconwendangguanli
-" />
+            <i
+              class="iconfont iconwendangguanli
+"
+            />
             <span>文档管理</span>
           </div>
           <div

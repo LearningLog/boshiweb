@@ -52,7 +52,7 @@
       </transition>
     </div>
     <div id="topBtn">
-      <el-button type="primary" v-if="hasThisBtnPermission('egroup-add')" @click="add"><i class="iconfont iconzengjia" />新增</el-button>
+      <el-button v-if="hasThisBtnPermission('egroup-add')" type="primary" @click="add"><i class="iconfont iconzengjia" />新增</el-button>
     </div>
     <el-table
       v-loading="listLoading"
@@ -150,7 +150,7 @@ export default {
         userId: '', // 创建人
         startTime: '', // 开始时间
         endTime: '', // 结束时间
-        
+
         selectCompanyId: '' // 所属租户
       },
       time_range: [],
