@@ -1,7 +1,7 @@
 <template>
   <div class="list-box">
     <div id="topSearch">
-      <el-input v-model="listQuery.permissionname" placeholder="请输入权限名称" clearable @keyup.enter.native="topSearch">
+      <el-input v-model="listQuery1.permissionname" placeholder="请输入权限名称" clearable @keyup.enter.native="topSearch">
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
       </el-input>
       <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">高级搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
@@ -10,14 +10,14 @@
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
               <el-form-item label="菜单模块">
-                <el-input v-model="listQuery.module" placeholder="请输入菜单模块" clearable @keyup.enter.native="topSearch" />
+                <el-input v-model="listQuery1.module" placeholder="请输入菜单模块" clearable @keyup.enter.native="topSearch" />
               </el-form-item>
               <el-form-item label="菜单">
-                <el-input v-model="listQuery.menu" placeholder="请输入菜单" clearable @keyup.enter.native="topSearch" />
+                <el-input v-model="listQuery1.menu" placeholder="请输入菜单" clearable @keyup.enter.native="topSearch" />
               </el-form-item>
               <el-form-item label="创建时间">
                 <el-date-picker
-                  v-model="listQuery.time_range"
+                  v-model="listQuery1.time_range"
                   type="daterange"
                   format="yyyy-MM-dd"
                   value-format="yyyy-MM-dd"
@@ -83,6 +83,14 @@ export default {
         currentPage: 1,
         pageSize: 10
       },
+      listQuery1: {
+        permissionname: '',
+        menu: '',
+        module: '',
+        time_range: null,
+        currentPage: 1,
+        pageSize: 10
+      },
       list: null,
       listLoading: false,
       total: 0,
@@ -96,14 +104,16 @@ export default {
   methods: {
     // 高级搜索
     topSearch() {
+      this.listQuery = JSON.parse(JSON.stringify(this.listQuery1))
       this.get_list()
     },
     // 重置搜索条件
     reset() {
-      this.listQuery.permissionname = ''
-      this.listQuery.menu = ''
-      this.listQuery.module = ''
-      this.listQuery.time_range = null
+      this.listQuery1.permissionname = ''
+      this.listQuery1.menu = ''
+      this.listQuery1.module = ''
+      this.listQuery1.time_range = null
+      this.listQuery = JSON.parse(JSON.stringify(this.listQuery1))
       this.get_list()
     },
     // 列表
