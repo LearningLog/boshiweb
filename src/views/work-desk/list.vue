@@ -19,7 +19,7 @@
                   />
                 </el-select>
               </el-form-item>
-              <el-form-item label="创建人">
+              <el-form-item v-show="showUser" label="创建人">
                 <el-select v-model="listQuery1.selectUserId" placeholder="请选择创建人" clearable filterable>
                   <el-option
                     v-for="item in user_list"
@@ -34,6 +34,7 @@
                   <el-option
                     v-for="item in fileSource_list"
                     :key="item.value"
+                    :label="item.name"
                     :value="item.value"
                   />
                 </el-select>
@@ -244,6 +245,7 @@ export default {
       selectNodes: [], // 选择的树的节点
       fileId: '', // 当前文件id
       showCustom: true, // 租户查询是否显示
+      showUser: true, // 是否显示用户
       timer: null// 定时任务
     }
   },
@@ -266,12 +268,18 @@ export default {
     this.get_list()
     this.isNeedRefrssh()
 
-    if (this.manageType !== 1) {
+    if (this.manageType === 1) {
+      this.showCustom = true
+      this.showUser = true
+      this.getCustomManageList()
+    } else if (this.manageType === 2) {
       this.showCustom = false
+      this.showUser = true
       this.listQuery.selectCompanyId = this.$store.state.user.userPermission.groupId
     } else {
-      this.getCustomManageList()
-      this.showCustom = true
+      this.showCustom = false
+      this.showUser = false
+      this.listQuery.selectCompanyId = this.$store.state.user.userPermission.groupId
     }
     this.findUserListByGroupId()
     store.dispatch('fileUpload/belongs', { data_type: 3 })
@@ -378,7 +386,7 @@ export default {
     },
     // 根据租户id查询用户列表
     findUserListByGroupId() {
-      findUserListByGroupId({ groupId: this.listQuery.selectCompanyId }).then(response => {
+      findUserListByGroupId({ groupId: this.listQuery1.selectCompanyId }).then(response => {
         this.user_list = response.data
       })
     },
