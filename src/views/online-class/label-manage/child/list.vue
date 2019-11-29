@@ -223,7 +223,7 @@ export default {
     // 批量删除
     batch_del_fn() {
       if (!this.delCheckedList.length) {
-        this.$message.warning('请选择角色！')
+        this.$message.warning('请选择标签！')
         return false
       }
       for (var i = 0; i < this.delCheckedList.length; i++) {
