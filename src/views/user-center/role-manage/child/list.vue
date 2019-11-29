@@ -9,10 +9,22 @@
         <el-row v-show="popoverVisible">
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
+              <tenants-groups-roles :is-render-group="false" :is-render-role="false" :is-reset="isReset" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" @resetVal="resetVal" />
               <el-form-item label="创建人">
-                <el-input v-model="listQuery1.creater" placeholder="请输入创建人" clearable @keyup.enter.native="topSearch" />
+                <el-select
+                  v-model="listQuery1.userId"
+                  placeholder="请选择创建人"
+                  clearable
+                  filterable
+                >
+                  <el-option
+                    v-for="item in createrList"
+                    :key="item._id"
+                    :label="item.nickname"
+                    :value="item._id"
+                  />
+                </el-select>
               </el-form-item>
-              <tenants-groups-roles :isRenderGroup="false" :is-render-role="false" :is-reset="isReset" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" @resetVal="resetVal" />
               <el-form-item label="创建时间">
                 <el-date-picker
                   v-model="time_range"
@@ -34,7 +46,7 @@
       </transition>
     </div>
     <div id="topBtn">
-      <el-button type="primary" v-if="hasThisBtnPermission('role-add')" @click="add"><i class="iconfont iconzengjia" />新增</el-button>
+      <el-button v-if="hasThisBtnPermission('role-add')" type="primary" @click="add"><i class="iconfont iconzengjia" />新增</el-button>
     </div>
     <el-table
       v-loading="listLoading"
@@ -72,13 +84,13 @@
             <el-button size="mini" :disabled="!hasThisBtnPermission('role-edit')" @click="go_edit_fn(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
             <el-button size="mini" :disabled="!hasThisBtnPermission('role-delete')" @click="delete_fn(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
             <el-button size="mini" :disabled="!hasThisBtnPermission('role-auth')" @click="authorize_fn(scope.row)"><i class="iconfont iconpingceguanli" />授权</el-button>
-            <el-button size="mini" v-if="isAdmin" @click="go_default_fn(scope.row)"><i class="iconfont icon-pass" />设置默认</el-button>
+            <el-button v-if="isAdmin" size="mini" @click="go_default_fn(scope.row)"><i class="iconfont icon-pass" />设置默认</el-button>
           </div>
           <div v-else>
             <el-button size="mini" :disabled="true"><i class="iconfont iconxiugai" />修改</el-button>
             <el-button size="mini" :disabled="true"><i class="iconfont iconshanchu" />删除</el-button>
             <el-button size="mini" :disabled="true"><i class="iconfont iconpingceguanli" />授权</el-button>
-            <el-button size="mini" v-if="isAdmin" :disabled="true"><i class="iconfont icon-pass" />设置默认</el-button>
+            <el-button v-if="isAdmin" size="mini" :disabled="true"><i class="iconfont icon-pass" />设置默认</el-button>
           </div>
         </template>
       </el-table-column>
@@ -95,6 +107,7 @@ import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
 import { role_list, role_delete, deleteMultiRole } from '@/api/systemManage-roleManage.js'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { isCurrentEgroupManager, hasThisBtnPermission } from '@/utils/permission'
+import { findUserListByGroupId } from '@/api/work-desk'
 
 export default {
   components: { Pagination, TenantsGroupsRoles },
@@ -106,7 +119,7 @@ export default {
         currentPage: 1, // 当前页码
         pageSize: 10, // 当前列表请求条数
         rolename: '', // 角色名称
-        creater: '', // 创建人
+        userId: '', // 创建人
         startTime: '', // 开始时间
         endTime: '', // 结束时间
         selectCompanyId: '' // 所属租户
@@ -115,7 +128,7 @@ export default {
         currentPage: 1, // 当前页码
         pageSize: 10, // 当前列表请求条数
         rolename: '', // 角色名称
-        creater: '', // 创建人
+        userId: '', // 创建人
         startTime: '', // 开始时间
         endTime: '', // 结束时间
         selectCompanyId: '' // 所属租户
@@ -125,12 +138,14 @@ export default {
       list: null, // 列表数据
       total: 0, // 总条数
       popoverVisible: false, // 高级搜索是否展开
-      isAdmin: false // 是否为 admin
+      isAdmin: false, // 是否为 admin
+      createrList: [] // 创建人
     }
   },
   created() {
     this.isAdmin = this.$store.state.user.userPermission.isAdmin
     this.get_list()
+    this.getCreater()
   },
   methods: {
     // 按钮权限
@@ -145,7 +160,7 @@ export default {
     // 重置
     reset() {
       this.listQuery1.rolename = ''
-      this.listQuery1.creater = ''
+      this.listQuery1.userId = ''
       this.listQuery1.startTime = ''
       this.listQuery1.endTime = ''
       this.time_range = []
@@ -157,6 +172,7 @@ export default {
     // 监听三组数据变化
     tenantsGroupsRolesVal(val) {
       this.listQuery1.selectCompanyId = val.companyIds
+      this.getCreater()
     },
     // 重置监听三组数据变化
     resetVal(val) {
@@ -175,6 +191,25 @@ export default {
         this.total = response.data.page.totalCount
       })
     },
+
+    // 获取创建人（实际就是用户）
+    getCreater() {
+      var psrams = {}
+      if (!this.$store.state.user.isSystemManage || this.listQuery1.selectCompanyId) {
+        psrams = { groupId: this.listQuery1.selectCompanyId || this.$store.state.user.userPermission.groupId }
+      }
+      findUserListByGroupId(psrams).then(res => {
+        this.createrList = res.data
+        var that = this
+        var has = this.createrList.find(function(item) {
+          return item._id === that.listQuery1.userId
+        })
+        if (!has) {
+          this.listQuery1.userId = ''
+        }
+      })
+    },
+
     selectable(row, index) {
       return row.auth
     },
