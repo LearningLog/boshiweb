@@ -3,7 +3,7 @@
     <div id="topSearch">
       <el-select
         v-if="isSystemManage"
-        v-model="listQuery.selectCompanyId"
+        v-model="listQuery1.selectCompanyId"
         placeholder="请选择所属租户"
         clearable
         filterable
@@ -16,9 +16,9 @@
           :value="item._id"
         />
       </el-select>
-      
+
       <el-select
-        v-model="listQuery.ownerId"
+        v-model="listQuery1.ownerId"
         placeholder="请选择所属小组"
         clearable
         filterable
@@ -32,8 +32,7 @@
         />
       </el-select>
 
-
-      <el-input v-model="listQuery.keyword" placeholder="请输入文件名称" clearable @keyup.enter.native="topSearch">
+      <el-input v-model="listQuery1.keyword" placeholder="请输入文件名称" clearable @keyup.enter.native="topSearch">
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
       </el-input>
       <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">按知识分类搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
@@ -249,10 +248,26 @@ export default {
       crateFolderDialogVisible: false,
       isReset: true, // 租户组件重置
       listLoading: false,
-      custom_list:[],//所属租户下拉
+      custom_list: [], // 所属租户下拉
       group_list: [], // 所属小组下拉列表
       navselctedCompanyName: '全部',
       listQuery: {
+        classifyNodeIds: [], // 分类节点id数组列表，二维数组
+        classifyTreeIds: [], // 分类节点树id数组列表
+        conditionParam: {},
+        currentPage: 1,
+        data_type: 2, // 数据类型 1企业知识库 2小组知识库
+        keyword: '', // 搜索关键词
+        ownerId: '', // 归属小组或租户id
+
+        pageSize: 10,
+        parentId: '',
+        regexConditionParam: [],
+        selectCompanyId: '', // 所属租户, // 企业/租户id
+        sortColumn: '',
+        sortOrder: ''
+      },
+      listQuery1: {
         classifyNodeIds: [], // 分类节点id数组列表，二维数组
         classifyTreeIds: [], // 分类节点树id数组列表
         conditionParam: {},
@@ -290,8 +305,8 @@ export default {
       fileUploadPara: {
         data_type: 2,
         ownerId: '',
-        parentId: '',
-        ownerId: ''
+        parentId: ''
+        // ownerId: ''
       },
       dataForTree: [{
         id: 1,
@@ -346,8 +361,8 @@ export default {
       return this.$store.state.user.isSystemManage
     }
     // uploadSuccess() {
-	  // 	return this.$store.state.user.isSystemManage
-	  // }
+    // 	return this.$store.state.user.isSystemManage
+    // }
   },
   watch: {
     createFileSuccessData(val) {
@@ -377,7 +392,7 @@ export default {
     this.getCompanyAllTreeFloorByName()// 知识分类啊啊
   },
   methods: {
-        // 获取所属租户list
+    // 获取所属租户list
     getCustomManageList() {
       getCustomManageList().then(res => {
         const allSelect = {
@@ -608,18 +623,18 @@ export default {
         }
       })
     },
-    companyChange(event){
-      const postData={selectCompanyId:event}
-    getUserEgroupInfo(postData).then(res => {
-      const allSelect = {
-        groupName: '全部',
-        inc: ''
-      }
-      res.data.egroupInfo.forEach((v, k, arr) => {
-        v.inc = v.inc + ''
+    companyChange(event) {
+      const postData = { selectCompanyId: event }
+      getUserEgroupInfo(postData).then(res => {
+        const allSelect = {
+          groupName: '全部',
+          inc: ''
+        }
+        res.data.egroupInfo.forEach((v, k, arr) => {
+          v.inc = v.inc + ''
+        })
+        this.group_list = [allSelect, ...res.data.egroupInfo]
       })
-      this.group_list = [allSelect, ...res.data.egroupInfo]
-    })
     },
     groupChange(val) {
       const selctedCompany = this.group_list.filter((v, k, arr) => {
@@ -635,6 +650,7 @@ export default {
     },
     // 搜索
     topSearch() {
+      this.listQuery = JSON.parse(JSON.stringify(this.listQuery1))
       this.enterFloderByQueryPath()
     },
     // 重置
