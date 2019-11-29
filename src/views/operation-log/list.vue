@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div id="topSearch">
-      <el-input v-model="listQuery.content" placeholder="请输入日志信息" clearable @keyup.enter.native="topSearch">
+      <el-input v-model="listQuery1.content" placeholder="请输入日志信息" clearable @keyup.enter.native="topSearch">
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
       </el-input>
       <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">高级搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
@@ -11,7 +11,7 @@
             <el-form ref="form" :model="listQuery" label-width="100px">
               <tenants-groups-roles :is-render-role="false" :is-reset="isReset" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" @resetVal="resetVal" />
               <el-form-item label="模块名称">
-                <el-select v-model="listQuery.egroup" placeholder="请选择模块" clearable filterable>
+                <el-select v-model="listQuery1.egroup" placeholder="请选择模块" clearable filterable>
                   <el-option
                     v-for="item in moduleList"
                     :key="item.value"
@@ -113,6 +113,15 @@ export default {
         module: null, // 模块标识
         egroup: [] // 小组id
       },
+      listQuery1: { // 查询条件
+        currentPage: 1, // 当前页
+        pageSize: 10, // 当前页请求条数
+        content: null, // 消息内容
+        noticeType: null, // 操作模块
+        selectCompanyId: null, // 租户id
+        module: null, // 模块标识
+        egroup: [] // 小组id
+      },
       total2: 0,
       listQuery2: { // 查询条件
         currentPage: 1, // 当前页
@@ -145,15 +154,17 @@ export default {
     },
     // 搜索
     topSearch() {
+      this.listQuery = JSON.parse(JSON.stringify(this.listQuery1))
       this.get_list()
     },
     // 重置
     reset() {
       this.isReset = true
-      this.listQuery.content = ''
-      this.listQuery.noticeType = ''
-      this.listQuery.egroup = ''
+      this.listQuery1.content = ''
+      this.listQuery1.noticeType = ''
+      this.listQuery1.egroup = ''
       this.selectCompanyId = ''
+      this.listQuery = JSON.parse(JSON.stringify(this.listQuery1))
       this.get_list()
     },
     // 操作人详情
@@ -171,8 +182,8 @@ export default {
     },
     // 监听三组数据变化
     tenantsGroupsRolesVal(val) {
-      this.listQuery.selectGroupId = val.companyIds
-      this.listQuery.egroup = val.egroupId
+      this.listQuery1.selectGroupId = val.companyIds
+      this.listQuery1.egroup = val.egroupId
     },
     // 监听三组数据变化
     resetVal() {
