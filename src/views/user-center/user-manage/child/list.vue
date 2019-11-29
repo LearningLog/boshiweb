@@ -1,7 +1,7 @@
 <template>
   <div class="list-box">
     <div id="topSearch">
-      <el-input v-model="listQuery.userName" placeholder="请输入用户名称" clearable @keyup.enter.native="topSearch">
+      <el-input v-model="listQuery1.userName" placeholder="请输入用户名称" clearable @keyup.enter.native="topSearch">
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
       </el-input>
       <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">高级搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
@@ -10,13 +10,13 @@
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
               <el-form-item label="用户昵称">
-                <el-input v-model="listQuery.nickName" placeholder="请输入用户昵称" clearable @keyup.enter.native="topSearch" />
+                <el-input v-model="listQuery1.nickName" placeholder="请输入用户昵称" clearable @keyup.enter.native="topSearch" />
               </el-form-item>
               <el-form-item label="手机号">
-                <el-input v-model="listQuery.phone" placeholder="请输入手机号" clearable @keyup.enter.native="topSearch" />
+                <el-input v-model="listQuery1.phone" placeholder="请输入手机号" clearable @keyup.enter.native="topSearch" />
               </el-form-item>
               <el-form-item label="用户状态">
-                <el-select v-model="listQuery.enableStatus" placeholder="请选择用户状态" clearable @keyup.enter.native="topSearch">
+                <el-select v-model="listQuery1.enableStatus" placeholder="请选择用户状态" clearable @keyup.enter.native="topSearch">
                   <el-option v-for="item in userStatus" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
@@ -234,6 +234,17 @@ export default {
         egroup: '', // 分组
         enableStatus: null // 用户状态
       },
+      listQuery1: {
+        currentPage: 1, // 当前页码
+        pageSize: 10, // 当前列表请求条数
+        userName: '', // 用户名称
+        selectCompanyId: '', // 企业名称
+        nickName: '', // 用户昵称,
+        phone: '', // 手机号,
+        roleId: '', // 角色
+        egroup: '', // 分组
+        enableStatus: null // 用户状态
+      },
       userStatus: [{ id: 1, name: '生效' }, { id: 2, name: '失效' }], // 用户状态
       checkedList: [], // 选中的数据
       list: null, // 列表数据
@@ -262,18 +273,21 @@ export default {
     },
     // 搜索
     topSearch() {
+      this.listQuery = JSON.parse(JSON.stringify(this.listQuery1))
+
       this.get_list()
     },
     // 重置
     reset() {
       this.isReset = true
-      this.listQuery.userName = ''
-      this.listQuery.selectCompanyId = ''
-      this.listQuery.nickName = ''
-      this.listQuery.phone = ''
-      this.listQuery.roleId = ''
-      this.listQuery.egroup = ''
-      this.listQuery.enableStatus = null
+      this.listQuery1.userName = ''
+      this.listQuery1.selectCompanyId = ''
+      this.listQuery1.nickName = ''
+      this.listQuery1.phone = ''
+      this.listQuery1.roleId = ''
+      this.listQuery1.egroup = ''
+      this.listQuery1.enableStatus = null
+      this.listQuery = JSON.parse(JSON.stringify(this.listQuery1))
       this.get_list()
     },
     // 获取用户列表
@@ -287,9 +301,9 @@ export default {
     },
     // 监听三组数据变化
     tenantsGroupsRolesVal(val) {
-      this.listQuery.selectCompanyId = val.companyIds
-      this.listQuery.egroup = val.egroupId
-      this.listQuery.roleId = val.roleId
+      this.listQuery1.selectCompanyId = val.companyIds
+      this.listQuery1.egroup = val.egroupId
+      this.listQuery1.roleId = val.roleId
     },
     // 监听三组数据变化
     resetVal() {
