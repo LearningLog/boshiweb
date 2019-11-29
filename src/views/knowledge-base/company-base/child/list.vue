@@ -16,30 +16,30 @@
           :value="item._id"
         />
       </el-select>
-      <el-input v-model="listQuery.keyword" placeholder="请输入文件名称" clearable @keyup.enter.native="topSearch">
+      <el-input v-model="listQuery1.keyword" placeholder="请输入文件名称" clearable @keyup.enter.native="topSearch">
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
       </el-input>
       <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">按知识分类搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
-        <transition name="fade-advanced-search">
-          <div v-show="popoverVisible" class="treeList">
-                  <div class="treeList1">
-              <!-- <p class="treeName pointer" :class="{ activeClassify: isActiveClassify(treeList1)}" @click="checkClassify(treeList1)">{{ treeList1.treeName }}</p> -->
-              <ul v-if="treeList1.floorList.length" class="">
-                <li v-for="(item, index) in treeList1.floorList" :key="treeList1.treeId + index" class="treeItem">
-                  <span v-for="item2 in item" :key="item2.nodeIdList.join()" class="classifyItem pointer" :class="{ activeClassify: isActiveClassify(item2) }" @click="checkClassify(item2)">{{ item2.nodeName }}</span>
-                </li>
-              </ul>
-            </div>
-            <div v-if="treeList2.floorList.length" class="treeList2">
-              <!-- <p class="treeName pointer" :class="{ activeClassify: isActiveClassify(treeList2)}" @click="checkClassify(treeList2)">{{ treeList2.treeName }}</p> -->
-              <ul v-if="treeList2.floorList.length" class="">
-                <li v-for="(item, index) in treeList2.floorList" :key="treeList2.treeId + index" class="treeItem">
-                  <span v-for="item2 in item" :key="item2.nodeIdList.join()" class="classifyItem pointer" :class="{ activeClassify: isActiveClassify(item2) }" @click="checkClassify(item2)">{{ item2.nodeName }}</span>
-                </li>
-              </ul>
-            </div>
+      <transition name="fade-advanced-search">
+        <div v-show="popoverVisible" class="treeList">
+          <div class="treeList1">
+            <!-- <p class="treeName pointer" :class="{ activeClassify: isActiveClassify(treeList1)}" @click="checkClassify(treeList1)">{{ treeList1.treeName }}</p> -->
+            <ul v-if="treeList1.floorList.length" class="">
+              <li v-for="(item, index) in treeList1.floorList" :key="treeList1.treeId + index" class="treeItem">
+                <span v-for="item2 in item" :key="item2.nodeIdList.join()" class="classifyItem pointer" :class="{ activeClassify: isActiveClassify(item2) }" @click="checkClassify(item2)">{{ item2.nodeName }}</span>
+              </li>
+            </ul>
           </div>
-        </transition>
+          <div v-if="treeList2.floorList.length" class="treeList2">
+            <!-- <p class="treeName pointer" :class="{ activeClassify: isActiveClassify(treeList2)}" @click="checkClassify(treeList2)">{{ treeList2.treeName }}</p> -->
+            <ul v-if="treeList2.floorList.length" class="">
+              <li v-for="(item, index) in treeList2.floorList" :key="treeList2.treeId + index" class="treeItem">
+                <span v-for="item2 in item" :key="item2.nodeIdList.join()" class="classifyItem pointer" :class="{ activeClassify: isActiveClassify(item2) }" @click="checkClassify(item2)">{{ item2.nodeName }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </transition>
     </div>
     <div id="topBtn">
       <el-dropdown trigger="click">
@@ -65,19 +65,19 @@
         <el-breadcrumb-item v-for="(item,index) in pathNavData" :key="index" @click.native="pathNavClick(item,index)">{{ item.name }}</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
-          <div class="classifyTags">
-        <el-tag
-          v-for="(item, index) in checkedClassifys"
-          :key="item.nodeIdList.join()"
-          closable
-          size="medium"
-          :disable-transitions="false"
-          type="success"
-          @close="handlePaperLabelDel(index)"
-        >
-          {{ item.nodeName }}
-        </el-tag>
-      </div>
+    <div class="classifyTags">
+      <el-tag
+        v-for="(item, index) in checkedClassifys"
+        :key="item.nodeIdList.join()"
+        closable
+        size="medium"
+        :disable-transitions="false"
+        type="success"
+        @close="handlePaperLabelDel(index)"
+      >
+        {{ item.nodeName }}
+      </el-tag>
+    </div>
     <el-table
       v-loading="listLoading"
       :data="list"
@@ -122,12 +122,12 @@
       </el-table-column>
       <el-table-column label="文件大小" min-width="100" align="center" show-overflow-tooltip prop="skill_desc" />
       <el-table-column align="center" label="文件属性" min-width="140" show-overflow-tooltip prop="fileAttributeDesc" />
-      <el-table-column align="center" label="创建人" show-overflow-tooltip prop="customname" >
-      <template  slot-scope="{row}">
-        <div>
-          {{ parseCreateUser(row) }}
-        </div>
-      </template>
+      <el-table-column align="center" label="创建人" show-overflow-tooltip prop="customname">
+        <template slot-scope="{row}">
+          <div>
+            {{ parseCreateUser(row) }}
+          </div>
+        </template>
       </el-table-column>
       <el-table-column align="center" label="创建时间" min-width="140" show-overflow-tooltip prop="createTimeStr" />
       <el-table-column class-name="status-col" label="操作" width="260px" align="center" fixed="right">
@@ -199,7 +199,7 @@
 <script>
 import store from '@/store'
 import { mapGetters } from 'vuex'
-import { getCustomManageList, listDirFile, getCompanyAllTree, classifyFiles, updateDir, deleteDirFile, createDirFile, shareFileToWorkDesk, getDownloadToken,getCompanyAllTreeFloorByName } from '@/api/knowledgeBase-company'
+import { getCustomManageList, listDirFile, getCompanyAllTree, classifyFiles, updateDir, deleteDirFile, createDirFile, shareFileToWorkDesk, getDownloadToken, getCompanyAllTreeFloorByName } from '@/api/knowledgeBase-company'
 import { getFileShowSize, parseTime } from '@/utils/index'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
@@ -218,7 +218,7 @@ export default {
         floorList: []
       },
       checkedClassifys: [], // 选中的分类
-      userInfoForList: {},//存储用户列表里面的信息用于列表里面的创建人
+      userInfoForList: {}, //  存储用户列表里面的信息用于列表里面的创建人
       // tree--start
       treeProps: {
         children: 'children',
@@ -235,6 +235,22 @@ export default {
       custom_list: [], // 所属租户下拉列表
       navselctedCompanyName: '全部',
       listQuery: {
+        classifyNodeIds: [], // 分类节点id数组列表，二维数组
+        classifyTreeIds: [], // 分类节点树id数组列表
+        conditionParam: {},
+        currentPage: 1,
+        data_type: 1, // 数据类型 1企业知识库 2小组知识库
+        keyword: '', // 搜索关键词
+        ownerId: '', // 归属小组或租户id
+
+        pageSize: 10,
+        parentId: '',
+        regexConditionParam: [],
+        selectCompanyId: '', // 企业/租户id
+        sortColumn: '',
+        sortOrder: ''
+      },
+      listQuery1: {
         classifyNodeIds: [], // 分类节点id数组列表，二维数组
         classifyTreeIds: [], // 分类节点树id数组列表
         conditionParam: {},
@@ -356,11 +372,11 @@ export default {
     this.enterFloderByQueryPath()
     this.getCompanyAllTree()// 知识分类树
 
-    this.getCompanyAllTreeFloorByName()//知识分类啊啊
+    this.getCompanyAllTreeFloorByName()// 知识分类啊啊
   },
   methods: {
     // ----------知识分类-----start------
-    //点击选择分类
+    // 点击选择分类
     checkClassify(classify) {
       if (classify.treeId) {
         classify.nodeIdList = [classify.treeId]
@@ -392,7 +408,7 @@ export default {
       this.listQuery.currentPage = 0
 
       this.$router.push({ path: '/knowledge-base/company-base/list', query: { path: '', selectCompanyId: this.listQuery.selectCompanyId }})
-       this.enterFloderByQueryPath()
+      this.enterFloderByQueryPath()
       // this.getKnowledgeSearchList()
     },
     // 根据 idList返回是否active
@@ -582,6 +598,7 @@ export default {
     },
     // 搜索
     topSearch() {
+      this.listQuery = JSON.parse(JSON.stringify(this.listQuery1))
       this.enterFloderByQueryPath()
     },
     // 重置
@@ -919,12 +936,9 @@ export default {
   cursor: pointer;
 }
 
-
 // 知识分类树
 
  @import "~@/styles/theme.scss";
-
-
 
   .loading,
   .noMore {
