@@ -202,7 +202,7 @@ export default {
 
     // 删除单个角色
     delete_fn(row) {
-      this.$confirm('确定要删除【' + row.groupName + '】吗？', '删除角色', {
+      this.$confirm('确定要删除【' + row.lname + '】吗？', '删除标签', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -233,7 +233,7 @@ export default {
           return false
         }
       }
-      this.$confirm('确定要删除选中的角色吗？', '批量删除角色', {
+      this.$confirm('确定要删除选中的标签吗？', '批量删除标签', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
