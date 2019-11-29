@@ -1,7 +1,7 @@
 <template>
   <div class="list-box">
     <div id="topSearch">
-      <el-input v-model="listQuery1.groupName" placeholder="请输入分组名称" clearable @keyup.enter.native="topSearch">
+      <el-input v-model="listQuery1.content" placeholder="请输入分组名称" clearable @keyup.enter.native="topSearch">
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
       </el-input>
       <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">高级搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
@@ -139,7 +139,8 @@ export default {
         startTime: '', // 开始时间
         endTime: '', // 结束时间
 
-        selectCompanyId: this.$store.state.user.userSystemInfo.userInfo.groupId // 所属租户
+        // selectCompanyId: this.$store.state.user.userSystemInfo.userInfo.groupId // 所属租户
+        selectCompanyId: '' // 所属租户
       },
       listQuery1: {
         currentPage: 1, // 当前页码
@@ -149,8 +150,8 @@ export default {
         userId: '', // 创建人
         startTime: '', // 开始时间
         endTime: '', // 结束时间
-
-        selectCompanyId: this.$store.state.user.userSystemInfo.userInfo.groupId // 所属租户
+        
+        selectCompanyId: '' // 所属租户
       },
       time_range: [],
       delCheckedList: [], // 选中的数据
