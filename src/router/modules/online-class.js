@@ -316,7 +316,7 @@ const onlineClass = {
       component: () => import('@/views/online-class/label-manage/index'),
       redirect: '/online-class/label-manage/list',
       meta: {
-        title: '标签管理',
+        title: '课堂管理',
         icon: '',
         activeMenu: '/online-class/label-manage'
       },
