@@ -122,7 +122,7 @@
       <el-table-column class-name="status-col" label="操作" width="220" align="center" fixed="right">
         <template slot-scope="scope">
           <el-button size="mini" :disabled="!hasThisBtnPermission('workdesk-download')" @click="download(scope.row)"><i class="iconfont iconxiazai" />下载</el-button>
-          <el-button size="mini" :disabled="getFileListData(scope.row.mainFileId).file_status !== 4 || !hasThisBtnPermission('workdesk-push')"><i class="iconfont iconfabu" />推送</el-button>
+          <el-button size="mini" :disabled="getFileListData(scope.row.mainFileId).file_status !== 4 || !hasThisBtnPermission('workdesk-push')" @click="pushToKnowledge(scope.row)"><i class="iconfont iconfabu" />推送</el-button>
           <el-button size="mini" :disabled="!hasThisBtnPermission('workdesk-delete')" @click="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
         </template>
       </el-table-column>
