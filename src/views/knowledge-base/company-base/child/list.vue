@@ -928,6 +928,14 @@ export default {
     },
     // 启动上传
     showUpload() {
+      if (!this.listQuery.selectCompanyId) {
+        this.$message({
+          message: '请先勾选租户',
+          type: 'warning'
+        })
+        return false
+      }
+
       store.dispatch('fileUpload/isVisibility', 1)
     },
     // 移动
