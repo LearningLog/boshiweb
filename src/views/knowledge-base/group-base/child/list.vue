@@ -18,7 +18,6 @@
       </el-select>
       
       <el-select
-        v-if="isSystemManage"
         v-model="listQuery.ownerId"
         placeholder="请选择所属小组"
         clearable
