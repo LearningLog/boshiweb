@@ -124,6 +124,7 @@
       >
         <el-button v-show="total>0" type="primary" plain><i class="iconfont iconshangchuan" />模板导入</el-button>
       </el-upload>
+      <el-button v-if="hasThisBtnPermission('role-delete')" v-show="total>0" type="danger" plain @click="batchDel"><i class="iconfont iconshanchu" />批量删除</el-button>
       <el-button v-show="total>0" v-if="hasThisBtnPermission('user-role')" type="primary" plain @click="assignRole"><i class="iconfont iconfenpeijuese" />分配角色</el-button>
       <el-button v-show="total>0" v-if="hasThisBtnPermission('user-manageegroup')" type="primary" plain @click="groupsManage"><i
         class="iconfont iconxiaozuguanli1"
@@ -251,7 +252,6 @@ export default {
   data() {
     // 校验密码
     var validatePassword = (rule, value, callback) => {
-      console.log(value)
       if (!value && value !== 0) {
         callback(new Error('请输入新密码'))
       } else if (!regPwd(value)) {
@@ -442,12 +442,14 @@ export default {
         })
       }
     },
+
     downloadFile() {
       downloadModel({ params: { code: 'USER_IMPORT' }}).then(response => {
         downloadFileByStream({ file: response.data, fileName: '企业员工导入模版.xlsx' })
       })
     },
-    // 删除单个角色
+
+    // 删除单个用户
     del(row) {
       this.$confirm('删除用户后，该用户下所有的数据都将被清除并且不可修复。请问是否继续进行删除操作？', '删除用户', {
         confirmButtonText: '确定',
@@ -463,6 +465,32 @@ export default {
         })
       }).catch(() => {})
     },
+
+    // 批量删除
+    batchDel() {
+      if (!this.checkedList.length) {
+        this.$message.warning('请选择用户！')
+        return false
+      }
+      this.$confirm('删除用户后，该用户下所有的数据都将被清除并且不可修复。请问是否继续进行删除操作？', '批量删除用户', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const _ids = []
+        this.checkedList.forEach(item => {
+          _ids.push(item._id)
+        })
+        deleteUser({ _ids: _ids }).then(response => {
+          this.$message.success('批量删除成功！')
+          if ((this.list.length - this.checkedList.length) === 0) { // 如果当前页数据已删完，则去往上一页
+            this.listQuery.currentPage -= 1
+          }
+          this.get_list()
+        })
+      }).catch(() => {})
+    },
+
     // 修改
     go_edit_fn(row) {
       this.$router.push({ path: '/user-center/user-manage/edit', query: { id: row._id }})
@@ -575,7 +603,7 @@ export default {
       this.user.password = ''
       this.user.secondconfirmpassword = ''
       this.$refs.modifyPassword.resetFields()
-    },
+    }
   }
 }
 </script>
