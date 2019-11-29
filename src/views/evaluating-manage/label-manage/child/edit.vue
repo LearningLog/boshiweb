@@ -75,7 +75,7 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           label_edit(this.form).then(response => {
-            this.$message.success('修改角色成功！')
+            this.$message.success('修改标签成功！')
             this.noLeaveprompt = true
             this.$router.push({ path: '/evaluating-manage/label-manage/detail', query: { id: this.id }})
           })
