@@ -268,7 +268,6 @@ export default {
               this.form.isChangeTuser = 'y'
               break
           }
-          debugger
           setTenant(this.form).then(response => {
             this.$message.success('设置成功！')
             this.noLeaveprompt = true

@@ -43,7 +43,7 @@ const mutations = {
     state.logo = logo
   },
   SET_LOGO_NAME: (state, logo_name) => {
-    state.logo_name = logo_name
+    state.logo_name = logo_name || defaultSettings.logo_name
   },
   SET_USER_SYSTEM_INFO: (state, userSystemInfo) => {
     state.userSystemInfo = userSystemInfo

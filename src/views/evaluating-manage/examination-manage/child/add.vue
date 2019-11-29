@@ -680,7 +680,7 @@
                 <el-button
                   type="primary"
                   plain
-                  @click="cancelEdit('form')"
+                  @click="editTopicDrawer = false"
                 >取消</el-button>
               </div>
             </div>
@@ -1528,12 +1528,6 @@ export default {
       this.editTopicDrawer = false
       this.getCount()
       this.$message.success('编辑试题成功！')
-    },
-
-    // 取消编辑
-    cancelEdit() {
-      this[this.topic0] = {}
-      this.editTopicDrawer = false
     },
 
     // 编辑试题关闭

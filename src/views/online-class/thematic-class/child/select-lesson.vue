@@ -62,6 +62,7 @@
         <template slot-scope="scope">
           <el-image
             class="thumbnail-online-class"
+            style="width: 150px; height: 86px;"
             :src="scope.row.cover_pic"
             fit="contain"
           />

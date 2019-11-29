@@ -237,7 +237,7 @@ export default {
       }).then(() => {
         const ids = []
         this.delCheckedList.forEach(item => {
-          debugger
+
           ids.push(item._id)
         })
         deleteMulti({ ids: ids }).then(response => {
