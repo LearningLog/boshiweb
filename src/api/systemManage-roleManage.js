@@ -9,7 +9,7 @@ import request from '@/utils/request'
 // 获取角色列表
 export function role_list(data) {
   return request({
-    url: '/system/roleV2/findRoleList',
+    url: '/system/roleV2/findRoleListV2',
     method: 'post',
     data
   })

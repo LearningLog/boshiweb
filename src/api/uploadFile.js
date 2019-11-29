@@ -12,7 +12,7 @@ import store from '@/store'
 
 // create an axios instance
 const service = axios.create({
-  timeout: 5000 // request timeout
+  timeout: 20 * 1000 // request timeout
 })
 
 service.interceptors.request.use(

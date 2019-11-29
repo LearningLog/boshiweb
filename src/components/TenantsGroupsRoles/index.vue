@@ -125,7 +125,7 @@ export default {
         case 1:
           return '100%'
         case 2:
-          return '49.7%'
+          return '49.6%'
         case 3:
           return '33%'
       }

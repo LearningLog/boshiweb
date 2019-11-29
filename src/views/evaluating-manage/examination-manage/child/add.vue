@@ -71,7 +71,7 @@
                 class="selectPaper"
                 type="primary"
                 @click="selectPaper"
-              ><i class="iconfont iconzuojiantou" />选择试卷</el-button>
+              ><i class="iconfont iconzengjia" />选择试卷</el-button>
               <span class="exampaper_name">{{ exampaper_name }}</span>
             </div>
           </transition>
@@ -1087,11 +1087,13 @@ export default {
     nextStep() {
       if (this.activeStep === 1) {
         var flag = false
-        this.$refs.form1.validate(valid => {
-          if (valid) {
-            flag = true
-          }
-        })
+        if (this.createType === '1') {
+          this.$refs.form1.validate(valid => {
+            if (valid) {
+              flag = true
+            }
+          })
+        }
         if (this.createType === '1' && !flag) {
           // this.$refs.examPaperName.focus()
           // this.$message.warning('请填写试卷名称！')

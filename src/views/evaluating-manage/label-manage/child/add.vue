@@ -5,7 +5,7 @@
         <el-input v-model="form.lname" placeholder="请输入标签名称" clearable />
       </el-form-item>
       <el-form-item label="标签描述">
-        <el-input v-model="form.ldesc" placeholder="请输入标签描述" clearable />
+        <el-input v-model="form.ldesc" type="textarea" placeholder="请输入标签描述" clearable />
       </el-form-item>
     </el-form>
     <div id="btnGroup">
