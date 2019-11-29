@@ -58,7 +58,8 @@
           </div>
         </div>
       </div>
-      <div class="app-dataScreening-staffItem">
+<!--  （产品需求）考试员工数和考试合格率是同一个页面-->
+      <div class="app-dataScreening-staffItem" @click="testDetail">
         <div class="app-dataScreening-staffItem-decs">
           <span>考试合格率</span>
         </div>
