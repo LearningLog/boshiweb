@@ -9,12 +9,7 @@
       </el-form-item>
       <el-form-item v-if="isSystemManage" label="所属租户" prop="selectCompanyId">
         <el-select v-model="form.selectCompanyId" placeholder="请选择所属租户" clearable filterable @change="companyidChange">
-          <el-option
-            v-for="item in custom_list"
-            :key="item._id"
-            :label="item.customname"
-            :value="item._id"
-          />
+          <el-option v-for="item in custom_list" :key="item._id" :label="item.customname" :value="item._id"/>
         </el-select>
       </el-form-item>
       <el-form-item label="分组负责人" prop="alluserList">
@@ -70,7 +65,7 @@ export default {
       form: {
         groupName: '', // 分组名称
         desc: '', // 分组描述
-        selectCompanyId: this.$store.state.user.userSystemInfo.userInfo.groupId, // 选择的租户
+        selectCompanyId: '', // 选择的租户
         groupManageUser: [], // 分组负责人
         groupUser: [], // 分组成员
         skillinfo: []// 分组技能
@@ -134,7 +129,6 @@ export default {
       }
       findUserListByGroupId(data).then(res => {
         this.alluserList = res.data
-        console.log('this.alluserList ', this.alluserList)
       })
     },
     // 获取所属租户list

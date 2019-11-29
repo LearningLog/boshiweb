@@ -3,7 +3,7 @@
     <div id="topSearch">
       <el-select
         v-if="isSystemManage"
-        v-model="listQuery1.selectCompanyId"
+        v-model="listQuery.selectCompanyId"
         placeholder="请选择所属租户"
         clearable
         filterable
@@ -16,7 +16,7 @@
           :value="item._id"
         />
       </el-select>
-      <el-input v-model="listQuery1.keyword" placeholder="请输入文件名称" clearable @keyup.enter.native="topSearch">
+      <el-input v-model="listQuery.keyword" placeholder="请输入文件名称" clearable @keyup.enter.native="topSearch">
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
       </el-input>
       <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">按知识分类搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
@@ -48,7 +48,7 @@
         </el-button>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item @click.native="deleteDirFileSelected"><i class="iconfont iconshanchu" />批量删除</el-dropdown-item>
-          <el-dropdown-item @click.native="moveFileSelected"><i class="iconfont iconshangyi1" />批量移动</el-dropdown-item>
+          <!-- <el-dropdown-item @click.native="moveFileSelected"><i class="iconfont iconshangyi1" />批量移动</el-dropdown-item> -->
           <el-dropdown-item @click.native="downloadFileSelected"><i class="iconfont iconxiazai" />批量下载</el-dropdown-item>
           <el-dropdown-item @click.native="shareFileToWorkDeskSlected"><i class="iconfont iconfenxiang1" />批量收藏</el-dropdown-item>
         </el-dropdown-menu>
@@ -120,8 +120,20 @@
         </template>
 
       </el-table-column>
-      <el-table-column label="文件大小" min-width="100" align="center" show-overflow-tooltip prop="skill_desc" />
-      <el-table-column align="center" label="文件属性" min-width="140" show-overflow-tooltip prop="fileAttributeDesc" />
+      <el-table-column label="文件大小" min-width="100" align="center" show-overflow-tooltip prop="skill_desc" >
+         <template slot-scope="{row}">
+          <div>
+            {{ parseFileSize(row) }}
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="文件属性" min-width="140" show-overflow-tooltip prop="fileAttributeDesc" >
+        <template slot-scope="{row}">
+          <div>
+            {{ parseFileType(row) }}
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="创建人" show-overflow-tooltip prop="customname">
         <template slot-scope="{row}">
           <div>
@@ -156,7 +168,7 @@
               <i class="iconfont icongengduo" />更多
             </el-button>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item @click.native="moveFile(scope.row)"><i class="iconfont " />移动</el-dropdown-item>
+              <!-- <el-dropdown-item @click.native="moveFile(scope.row)"><i class="iconfont " />移动</el-dropdown-item> -->
               <el-dropdown-item @click.native="deleteDirFile(scope.row)"><i class="iconfont iconshanchu" />删除</el-dropdown-item>
               <el-dropdown-item @click.native="shareFileToWorkDesk(scope.row)"><i class="iconfont iconfenxiang1" />收藏</el-dropdown-item>
             </el-dropdown-menu>
@@ -189,7 +201,7 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="createFolderConfirm('ruleForm')">确定</el-button>
-          <el-button @click="resetForm('ruleForm')">取消</el-button>
+          <el-button @click="crateFolderDialogVisible=false">取消</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -235,22 +247,6 @@ export default {
       custom_list: [], // 所属租户下拉列表
       navselctedCompanyName: '全部',
       listQuery: {
-        classifyNodeIds: [], // 分类节点id数组列表，二维数组
-        classifyTreeIds: [], // 分类节点树id数组列表
-        conditionParam: {},
-        currentPage: 1,
-        data_type: 1, // 数据类型 1企业知识库 2小组知识库
-        keyword: '', // 搜索关键词
-        ownerId: '', // 归属小组或租户id
-
-        pageSize: 10,
-        parentId: '',
-        regexConditionParam: [],
-        selectCompanyId: '', // 企业/租户id
-        sortColumn: '',
-        sortOrder: ''
-      },
-      listQuery1: {
         classifyNodeIds: [], // 分类节点id数组列表，二维数组
         classifyTreeIds: [], // 分类节点树id数组列表
         conditionParam: {},
@@ -368,6 +364,13 @@ export default {
   },
   created() {
     this.listQuery.selectCompanyId = this.$route.query.selectCompanyId
+
+    if(!this.$store.state.user.isSystemManage){
+      // 不是系统管理员进来之后
+    this.listQuery.parentId=  this.$store.state.user.userPermission.groupId
+    this.listQuery.selectCompanyId=  this.$store.state.user.userPermission.groupId
+    }
+
     this.getCustomManageList()// 租户
     this.enterFloderByQueryPath()
     this.getCompanyAllTree()// 知识分类树
@@ -445,6 +448,21 @@ export default {
     getFileShowSize(fileSize) {
       return getFileShowSize(fileSize)
     },
+    parseFileType(row) {
+      const fileTypeName=row.fileAttributeDesc==='dir'?'文件夹':'文件'
+      return fileTypeName
+    },
+    parseFileSize(row) {
+      if(!row.fileSize){
+        return
+      }
+      var bytes=row.fileSize
+      if (bytes === 0) return '0 B';
+      let k = 1024,
+      sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
+      i = Math.floor(Math.log(bytes) / Math.log(k));
+      return (bytes / Math.pow(k, i)). toFixed(2) + ' ' + sizes[i];
+    },
     parseCreateUser(row) {
       return this.userInfoForList[row.userId].nickname
     },
@@ -506,6 +524,9 @@ export default {
 
     enterFolder(row) {
       if (row.fileAttributeDesc === 'dir') {
+             // 进文件夹的检索和文件别的input检索不共存
+      this.listQuery.currentPage = 1
+      this.listQuery.keyword= ''
         this.pathQueryString += this.pathQueryString ? '/' + row.fileId + '|' + row.fileName : row.fileId + '|' + row.fileName
         this.$router.push({ path: '/knowledge-base/company-base/list', query: { path: this.pathQueryString, selectCompanyId: this.listQuery.selectCompanyId }})
       }
@@ -532,6 +553,10 @@ export default {
         this.pathQueryString = ''
         this.listQuery.parentId = ''
       }
+
+ 
+
+
       this.fileUploadPara.ownerId = this.listQuery.selectCompanyId
       this.fileUploadPara.parentId = this.pathNavData.length > 0 ? this.pathNavData[this.pathNavData.length - 1].id : this.listQuery.selectCompanyId
       this.fileUploadPara.selectCompanyId = this.listQuery.selectCompanyId
@@ -598,7 +623,6 @@ export default {
     },
     // 搜索
     topSearch() {
-      this.listQuery = JSON.parse(JSON.stringify(this.listQuery1))
       this.enterFloderByQueryPath()
     },
     // 重置
@@ -613,6 +637,7 @@ export default {
 
       // this.time_range = []// 时间范围
       // this.getDirList()
+
     },
     // 知识库列表
     async  getDirList() {
@@ -713,6 +738,7 @@ export default {
             type: 'success'
           })
         })
+        this.enterFloderByQueryPath()
       }).catch(() => {})
     },
     deleteDirFileSelected(row) {
@@ -731,6 +757,7 @@ export default {
             type: 'success'
           })
         })
+        this.enterFloderByQueryPath()
       }).catch(() => {})
     },
     // 创建文件夹
@@ -901,6 +928,14 @@ export default {
     },
     // 启动上传
     showUpload() {
+      if (!this.listQuery.selectCompanyId) {
+        this.$message({
+          message: '请先勾选租户',
+          type: 'warning'
+        })
+        return false
+      }
+
       store.dispatch('fileUpload/isVisibility', 1)
     },
     // 移动
