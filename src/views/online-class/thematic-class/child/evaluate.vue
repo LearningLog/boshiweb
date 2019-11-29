@@ -7,7 +7,7 @@
     >
       <el-row>
         <el-col :span="6">
-          <el-form-item label="课程名称：">
+          <el-form-item label="专题名称：">
             <span>{{ form.cname }}</span>
           </el-form-item>
         </el-col>
@@ -156,7 +156,7 @@ export default {
     del(row) {
       const ids = []
       ids.push(row._id)
-      this.$confirm('确定要删除【' + row.nick_name + '】吗？', '删除课程', {
+      this.$confirm('确定要删除吗？', '删除课程', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
