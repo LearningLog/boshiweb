@@ -429,7 +429,7 @@ export default {
 
     // 评价
     saveAppraise() {
-      this.appraiseForm.lesson_id = this.id
+      this.appraiseForm.lesson_id = this.thematicId
       this.appraiseForm.lesson_type = this.chapter.type === 1 ? 'online' : 'video'
       addOneAppraise(this.appraiseForm).then(res => {
         this.$message.success('评价成功！')

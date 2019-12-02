@@ -66,18 +66,6 @@ const onlineClass = {
           }
         },
         {
-          path: 'detail',
-          name: 'live-telecast-detail',
-          hidden: true,
-          component: () =>
-            import('@/views/online-class/live-telecast-manage/child/detail'),
-          meta: {
-            title: '课堂详情',
-            icon: '',
-            activeMenu: '/online-class/live-telecast-manage'
-          }
-        },
-        {
           path: 'evaluate',
           name: 'live-telecast-evaluate',
           hidden: true,
@@ -140,18 +128,6 @@ const onlineClass = {
           }
         },
         {
-          path: 'detail',
-          name: 'on-demand-detail',
-          hidden: true,
-          component: () =>
-            import('@/views/online-class/on-demand/child/detail'),
-          meta: {
-            title: '课堂详情',
-            icon: '',
-            activeMenu: '/online-class/on-demand'
-          }
-        },
-        {
           path: 'evaluate',
           name: 'on-demand-evaluate',
           hidden: true,
@@ -196,7 +172,7 @@ const onlineClass = {
           component: () =>
             import('@/views/online-class/thematic-class/child/thematic-manage'),
           meta: {
-            title: '课堂标签',
+            title: '课堂管理',
             icon: '',
             activeMenu: '/online-class/thematic-class'
           }
@@ -221,18 +197,6 @@ const onlineClass = {
             import('@/views/online-class/thematic-class/child/edit'),
           meta: {
             title: '修改专题',
-            icon: '',
-            activeMenu: '/online-class/thematic-class'
-          }
-        },
-        {
-          path: 'detail',
-          name: 'thematic-class-detail',
-          hidden: true,
-          component: () =>
-            import('@/views/online-class/thematic-class/child/detail'),
-          meta: {
-            title: '专题详情',
             icon: '',
             activeMenu: '/online-class/thematic-class'
           }
@@ -316,7 +280,7 @@ const onlineClass = {
       component: () => import('@/views/online-class/label-manage/index'),
       redirect: '/online-class/label-manage/list',
       meta: {
-        title: '课堂管理',
+        title: '课堂标签',
         icon: '',
         activeMenu: '/online-class/label-manage'
       },

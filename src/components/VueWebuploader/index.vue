@@ -516,5 +516,6 @@ export default {
 }
 #mainFileUpload > #header > .fr.icons span {
   padding: 0 1px;
+  border-radius: 2px;
 }
 </style>

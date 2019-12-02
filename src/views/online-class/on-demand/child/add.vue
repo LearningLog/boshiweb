@@ -739,7 +739,7 @@ export default {
 @import "~@/styles/theme.scss";
 
 .operator {
-  margin-top: 20px;
+  margin-top: 28px;
 }
 .chapterFile /deep/ .el-input {
   width: calc(100% - 80px);

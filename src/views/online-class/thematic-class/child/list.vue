@@ -86,25 +86,25 @@
         width="50"
         fixed
       />
-      <el-table-column align="center" label="专题封面" min-width="166">
+      <el-table-column align="center" label="专题封面" width="166">
         <template slot-scope="scope">
           <el-image
             class="thumbnail-online-class"
-            style="width: 150px; height: 86px;"
+            style="width: 120px; height: 69px;"
             :src="scope.row.cover_pic"
             fit="contain"
           />
         </template>
       </el-table-column>
-      <el-table-column align="center" label="专题名称" min-width="120" show-overflow-tooltip>
+      <el-table-column align="center" label="专题名称" min-width="147" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-link type="primary" @click="detail(scope.row)">{{ scope.row.lesson_name }}</el-link>
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="标签" min-width="100" align="center" prop="labelName" show-overflow-tooltip />
+      <el-table-column class-name="status-col" label="标签" min-width="120" align="center" prop="labelName" show-overflow-tooltip />
       <el-table-column class-name="status-col" label="课堂数" min-width="64" align="center" prop="chapter_count" show-overflow-tooltip />
       <!--<el-table-column class-name="status-col" label="开始时间" min-width="140" align="center" prop="s_time" />-->
-      <el-table-column class-name="status-col" label="专题评价" min-width="150" align="center" show-overflow-tooltip>
+      <el-table-column class-name="status-col" label="专题评价" width="150" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           <span class="starboxs" @click="rateDetail(scope.row)">
             <el-rate
@@ -119,7 +119,7 @@
         </template>
       </el-table-column>
       <el-table-column class-name="status-col" label="小组" min-width="120" align="center" prop="groupName" show-overflow-tooltip />
-      <el-table-column align="center" label="创建时间" min-width="140" prop="c_time" show-overflow-tooltip />
+      <el-table-column align="center" label="创建时间" width="140" prop="c_time" show-overflow-tooltip />
       <el-table-column class-name="status-col" label="操作" width="260" align="center" fixed="right">
         <template slot-scope="scope">
           <el-button size="mini" :disabled="!hasThisBtnPermission('lesson-manage', scope.row.egroup)" @click="manage(scope.row)"><i
