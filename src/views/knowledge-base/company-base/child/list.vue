@@ -149,11 +149,17 @@
               取消
             </el-button>
           </template>
-          <div style="text-align:left;" v-else @click="enterFolder(row)">
-
+          <div style="text-align:left;cursor:pointer;" v-else @click="enterFolder(row)">
+            <span  @click="preview(row)" v-if="row.fileAttributeDesc!=='dir'">
             <svg class="icon" aria-hidden="true" style="font-size:18px;">
               <use :xlink:href="parseTypeOfFile(row)" />
             </svg>
+            </span>
+            <span v-if="row.fileAttributeDesc==='dir'">
+            <svg class="icon" aria-hidden="true" style="font-size:18px;">
+              <use :xlink:href="parseTypeOfFile(row)" />
+            </svg>
+            </span>
             <!-- <i v-if="row.fileAttributeDesc==='dir'" class="iconfont iconwenjianjia" /> -->
           <span  @click="preview(row)" v-if="row.fileAttributeDesc!=='dir'"> {{ row.fileName }} </span>   
           <span  v-if="row.fileAttributeDesc==='dir'"> {{ row.fileName }} </span>   
@@ -265,6 +271,7 @@ export default {
   components: { Pagination, FilePreview },
   data() {
     return {
+      filePackage :{}, //存储后台返回url
       file_knowledge,
       isFilePreview: false, // 是否打开预览
       fileFormat: '', // 文件格式
@@ -434,10 +441,25 @@ export default {
   methods: {
     // 图片预览
     preview(row) {
-      this.fileUrl = row.fileUrl
-      this.fileTypeCode = row.fileTypeCode
-      this.fileFormat = row.fileFormat
-      this.fileName = row.fileName
+      console.log(row)
+      // this.filePackage[row.fileId].fileUrl
+      let previewData=''
+      this.fileUrl = this.filePackage[row.filePackageId].subFileList.forEach((v,k,arr)=>{
+       if(v.fileUse&&v.fileUse==='preview_file') {
+          previewData=v
+       }
+      })
+      if(previewData===''){
+         this.$message({
+          message: '该文件不能预览',
+          type: 'warning'
+        })
+        return 
+      }
+      this.fileUrl=previewData.fileUrl
+      this.fileTypeCode = previewData.fileTypeCode
+      this.fileFormat = previewData.fileFormat
+      this.fileName = previewData.fileName
       this.isFilePreview = true
     },
     // 监听预览
@@ -730,6 +752,8 @@ export default {
       const { data } = await listDirFile(this.listQuery)
       this.listLoading = false
       this.userInfoForList = data.userInfo
+
+      this.filePackage=data.filePackage
       this.list = data.page.list.map(v => {
         this.$set(v, 'edit', false) // https://vuejs.org/v2/guide/reactivity.html
         v.originalTitle = v.fileName //  will be used when user click the cancel botton
