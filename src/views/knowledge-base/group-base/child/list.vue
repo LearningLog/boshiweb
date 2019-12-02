@@ -227,7 +227,7 @@
 <script>
 import store from '@/store'
 import { mapGetters } from 'vuex'
-import { getCustomManageList, getUserEgroupInfo, listDirFile, getCompanyAllTree, classifyFiles, updateDir, deleteDirFile, createDirFile, shareFileToWorkDesk, getDownloadToken, getCompanyAllTreeFloorByName } from '@/api/knowledgeBase-group'
+import { getCustomManageList, getUserEgroupInfo, listDirFile, getCompanyAllTree, classifyFiles, updateDir, deleteDirFile, createDirFile, shareFileToWorkDesk, getDownloadToken, getCompanyAllTreeFloorByName } from '@/api/knowledge-base/group-base'
 import { getFileShowSize, parseTime } from '@/utils/index'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
