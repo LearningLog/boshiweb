@@ -19,10 +19,10 @@ const knowledgeBase = {
   children: [
     {
       path: 'company-base',
-      component: () => import('@/views/knowledge-base/user-manage/index'),
+      component: () => import('@/views/knowledge-base/company-base/index'),
       redirect: '/knowledge-base/company-base/list',
       name: 'company-base',
-      meta: { title: '企业知识库', icon: '', activeMenu: '/knowledge-base/user-manage' },
+      meta: { title: '企业知识库', icon: '', activeMenu: '/knowledge-base/company-base' },
       children: [
         {
           path: 'list',

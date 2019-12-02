@@ -1,44 +1,85 @@
 <template>
   <div class="list-box">
     <div id="topSearch">
-      <el-select
-        v-if="isSystemManage"
-        v-model="listQuery.selectCompanyId"
-        placeholder="请选择所属租户"
-        clearable
-        filterable
-        @change="companyChange($event)"
-      >
-        <el-option
-          v-for="item in custom_list"
-          :key="item._id"
-          :label="item.customname"
-          :value="item._id"
-        />
-      </el-select>
+
       <el-input v-model="listQuery.keyword" placeholder="请输入文件名称" clearable @keyup.enter.native="topSearch">
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
       </el-input>
-      <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">按知识分类搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
+      <span id="advancedSearchBtn" slot="reference" @click="classifyButtonFn()">按知识分类搜索<i v-show="!popoverVisible" class="el-icon-caret-bottom" /><i v-show="popoverVisible" class="el-icon-caret-top" /></span>
+      <span id="advancedSearchBtn" slot="reference" @click="advancedButtonFn()">高级搜索<i v-show="!advancedVisible" class="el-icon-caret-bottom" /><i v-show="advancedVisible" class="el-icon-caret-top" /></span>
       <transition name="fade-advanced-search">
-        <div v-show="popoverVisible" class="treeList">
-          <div class="treeList1">
-            <!-- <p class="treeName pointer" :class="{ activeClassify: isActiveClassify(treeList1)}" @click="checkClassify(treeList1)">{{ treeList1.treeName }}</p> -->
-            <ul v-if="treeList1.floorList.length" class="">
-              <li v-for="(item, index) in treeList1.floorList" :key="treeList1.treeId + index" class="treeItem">
-                <span v-for="item2 in item" :key="item2.nodeIdList.join()" class="classifyItem pointer" :class="{ activeClassify: isActiveClassify(item2) }" @click="checkClassify(item2)">{{ item2.nodeName }}</span>
-              </li>
-            </ul>
-          </div>
-          <div v-if="treeList2.floorList.length" class="treeList2">
-            <!-- <p class="treeName pointer" :class="{ activeClassify: isActiveClassify(treeList2)}" @click="checkClassify(treeList2)">{{ treeList2.treeName }}</p> -->
-            <ul v-if="treeList2.floorList.length" class="">
-              <li v-for="(item, index) in treeList2.floorList" :key="treeList2.treeId + index" class="treeItem">
-                <span v-for="item2 in item" :key="item2.nodeIdList.join()" class="classifyItem pointer" :class="{ activeClassify: isActiveClassify(item2) }" @click="checkClassify(item2)">{{ item2.nodeName }}</span>
-              </li>
-            </ul>
-          </div>
-        </div>
+        <el-row v-show="popoverVisible">
+          <el-card id="advancedSearchArea" shadow="never">
+            <div class="treeList">
+              <div class="treeList1">
+                <!-- <p class="treeName pointer" :class="{ activeClassify: isActiveClassify(treeList1)}" @click="checkClassify(treeList1)">{{ treeList1.treeName }}</p> -->
+                <ul v-if="treeList1.floorList.length" class="">
+                  <li v-for="(item, index) in treeList1.floorList" :key="treeList1.treeId + index" class="treeItem">
+                    <span v-for="item2 in item" :key="item2.nodeIdList.join()" class="classifyItem pointer" :class="{ activeClassify: isActiveClassify(item2) }" @click="checkClassify(item2)">{{ item2.nodeName }}</span>
+                  </li>
+                </ul>
+              </div>
+              <div v-if="treeList2.floorList.length" class="treeList2">
+                <!-- <p class="treeName pointer" :class="{ activeClassify: isActiveClassify(treeList2)}" @click="checkClassify(treeList2)">{{ treeList2.treeName }}</p> -->
+                <ul v-if="treeList2.floorList.length" class="">
+                  <li v-for="(item, index) in treeList2.floorList" :key="treeList2.treeId + index" class="treeItem">
+                    <span v-for="item2 in item" :key="item2.nodeIdList.join()" class="classifyItem pointer" :class="{ activeClassify: isActiveClassify(item2) }" @click="checkClassify(item2)">{{ item2.nodeName }}</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+          </el-card>
+        </el-row>
+      </transition>
+
+      <transition name="fade-advanced-search">
+        <el-row v-show="advancedVisible">
+          <el-card id="advancedSearchArea" shadow="never">
+            <el-form ref="form" :model="listQuery" label-width="100px">
+              <el-form-item label="所属租户">
+                <el-select
+                  v-if="isSystemManage"
+                  v-model="listQuery.selectCompanyId"
+                  placeholder="请选择所属租户"
+                  clearable
+                  filterable
+                  @change="companyChange($event)"
+                >
+                  <el-option
+                    v-for="item in custom_list"
+                    :key="item._id"
+                    :label="item.customname"
+                    :value="item._id"
+                  />
+                </el-select>
+              </el-form-item>
+
+              <el-form-item label="创建人">
+                <el-select v-model="listQuery.userId" placeholder="请选择创建人" clearable filterable>
+                  <el-option v-for="item in alluserList" :key="item._id" :label="item.nickname" :value="item._id" />
+                </el-select>
+              </el-form-item>
+
+              <el-form-item label="创建时间">
+                <el-date-picker
+                  v-model="time_range"
+                  type="daterange"
+                  clearable
+                  range-separator="至"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  value-format="yyyy-MM-dd"
+                />
+              </el-form-item>
+
+            </el-form>
+            <div id="searchPopoverBtn">
+              <el-button type="primary" @click="topSearch">搜索</el-button>
+              <el-button type="primary" plain @click="reset">重置</el-button>
+            </div>
+          </el-card>
+        </el-row>
       </transition>
     </div>
     <div id="topBtn">
@@ -92,11 +133,10 @@
         width="55"
         :selectable="selectable"
       />
-      <el-table-column align="center" label="文件名" show-overflow-tooltip min-width="200">
+      <el-table-column  label="文件名" show-overflow-tooltip min-width="200">
         <!-- <template slot-scope="scope">
           <el-link type="primary" @click="detail(scope.row)">{{ scope.row.fileName }}</el-link>
         </template> -->
-
         <template slot-scope="{row}">
           <template v-if="row.edit">
             <el-input v-model="row.fileName" class="edit-input" size="mini" @input="modifyFileNameChange(row,$event)" />
@@ -109,13 +149,14 @@
               取消
             </el-button>
           </template>
-          <div v-else @click="enterFolder(row)">
+          <div style="text-align:left;" v-else @click="enterFolder(row)">
 
             <svg class="icon" aria-hidden="true" style="font-size:18px;">
               <use :xlink:href="parseTypeOfFile(row)" />
             </svg>
             <!-- <i v-if="row.fileAttributeDesc==='dir'" class="iconfont iconwenjianjia" /> -->
-            {{ row.fileName }}
+          <span  @click="preview(row)" v-if="row.fileAttributeDesc!=='dir'"> {{ row.fileName }} </span>   
+          <span  v-if="row.fileAttributeDesc==='dir'"> {{ row.fileName }} </span>   
           </div>
         </template>
 
@@ -205,22 +246,32 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+    <FilePreview :is-file-preview="isFilePreview" :file-format="fileFormat" :file-type-code="fileTypeCode" :file-url="fileUrl" :title="fileName" @closePreview="closePreview" />
   </div>
 </template>
 
 <script>
 import store from '@/store'
 import { mapGetters } from 'vuex'
-import { getCustomManageList, listDirFile, getCompanyAllTree, classifyFiles, updateDir, deleteDirFile, createDirFile, shareFileToWorkDesk, getDownloadToken, getCompanyAllTreeFloorByName } from '@/api/knowledge-base/company-base'
-import { getFileShowSize, parseTime } from '@/utils/index'
+import { findUserListByGroupId, getCustomManageList, listDirFile, getCompanyAllTree, classifyFiles, updateDir, deleteDirFile, createDirFile, shareFileToWorkDesk, getDownloadToken, getCompanyAllTreeFloorByName } from '@/api/knowledge-base/company-base'
+import { getFileShowSize } from '@/utils/index'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
+import FilePreview from '@/components/FilePreview'
+import file_knowledge from '@/assets/images/file_knowledge.png'
 const $ = window.$
 export default {
   directives: { elDragDialog },
-  components: { Pagination },
+  components: { Pagination, FilePreview },
   data() {
     return {
+      file_knowledge,
+      isFilePreview: false, // 是否打开预览
+      fileFormat: '', // 文件格式
+      fileTypeCode: -1, // 文件类型
+      fileUrl: '', // 文件地址
+      fileName: '', // 文件名称（弹窗title）
+      alluserList: [],
       // 分类树
       // 知识树列表
       treeList1: {
@@ -266,7 +317,8 @@ export default {
       selectedRow: [], // 选中的数据
       list: null, // 列表数据
       total: 0, // 总条数
-      popoverVisible: false, // 高级搜索是否展开
+      popoverVisible: false, // 目录知识分类搜索是否展开
+      advancedVisible: false, // 高级搜索
       ruleForm: {
         name: '',
         desc: ''
@@ -376,9 +428,34 @@ export default {
     this.getCompanyAllTree()// 知识分类树
 
     this.getCompanyAllTreeFloorByName()// 知识分类啊啊
+
+    this.getAlluserList()// 创建人
   },
   methods: {
+    // 图片预览
+    preview(row) {
+      this.fileUrl = row.fileUrl
+      this.fileTypeCode = row.fileTypeCode
+      this.fileFormat = row.fileFormat
+      this.fileName = row.fileName
+      this.isFilePreview = true
+    },
+    // 监听预览
+    closePreview() {
+      this.isFilePreview = false
+      this.fileUrl = ''
+      this.fileTypeCode = -1
+      this.title = ''
+    },
     // ----------知识分类-----start------
+    classifyButtonFn() {
+      this.popoverVisible = !this.popoverVisible
+      this.advancedVisible = false
+    },
+    advancedButtonFn() {
+      this.popoverVisible = false
+      this.advancedVisible = !this.advancedVisible
+    },
     // 点击选择分类
     checkClassify(classify) {
       if (classify.treeId) {
@@ -607,6 +684,8 @@ export default {
       })
     },
     companyChange(val) {
+      this.getAlluserList() // 创建人联动
+
       const selctedCompany = this.custom_list.filter((v, k, arr) => {
         if (v._id === val) {
           return v
@@ -617,6 +696,17 @@ export default {
       this.pathNavData = []
       this.$router.push({ path: '/knowledge-base/company-base/list', query: { path: this.pathQueryString, selectCompanyId: this.listQuery.selectCompanyId }})
       this.enterFloderByQueryPath()
+    },
+
+    // 获取所有用户
+    getAlluserList() {
+      const data = {
+        groupId: this.listQuery.selectCompanyId
+      }
+      findUserListByGroupId(data).then(res => {
+        this.alluserList = res.data
+        console.log('this.alluserList ', this.alluserList)
+      })
     },
     // 搜索
     topSearch() {
@@ -638,6 +728,10 @@ export default {
     },
     // 知识库列表
     async  getDirList() {
+      this.time_range = this.time_range || []
+      this.listQuery.startTime = this.time_range[0]
+      this.listQuery.endTime = this.time_range[1]
+
       this.listLoading = true
       const { data } = await listDirFile(this.listQuery)
       console.log(data)
@@ -880,6 +974,13 @@ export default {
     },
     // 收藏
     shareFileToWorkDesk(row) {
+      if(row.fileAttributeDesc==='dir'){
+        this.$message({
+          message: '只有文件才可以收藏',
+          type: 'warning'
+        })
+        return 
+      }
       this.$confirm('确定要收藏到工作台吗？', '收藏到工作台', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
