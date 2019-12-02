@@ -37,7 +37,7 @@
         <div class="topSet">
           <div v-if="chapter.type === 1" v-show="isActiveSet === 1" class="activeSet1">
             <p class="tip">小提示：设置完成，点击开启直播按钮即可</p>
-            <div class="selectType">
+            <div class="selectType clearfix">
               <span
                 class="type1"
                 :class="{ activeSelect: isActiveSelect === 1 }"
@@ -328,18 +328,19 @@
             <i class="iconfont iconxiaozuguanli1" />
             <span>成员管理</span>
           </div>
-          <div v-if="chapter.type === 1" class="itemOperate pointer">
+          <div v-if="chapter.type === 1" class="itemOperate live">
             <el-button
               v-if="chapter.allow_broadcast === 1"
               class="open"
               @click="openLive"
-            >开始直播</el-button>
+              type="primary"
+            ><i class="iconfont iconkaishi"></i></el-button>
             <el-button
               v-else-if="chapter.allow_broadcast === 2"
               class="end"
               @click="endLive"
-            >结束直播</el-button>
-            <el-button v-else disabled>已结束</el-button>
+            ><i class="iconfont iconzhaobiaojieshu"></i></el-button>
+            <el-button class="over" v-else disabled><i class="iconfont iconzhaobiaojieshu"></i></el-button>
           </div>
           <div
             class="itemOperate pointer"
@@ -347,9 +348,7 @@
             @click="active(3)"
           >
             <i
-              class="iconfont iconwendangguanli
-"
-            />
+              class="iconfont iconwendangguanli"/>
             <span>文档管理</span>
           </div>
           <div
@@ -567,9 +566,9 @@ export default {
       findDetailInfoById({ id: this.id, isNeedValidateAuthCode: '2' }).then(
         res => {
           this.chapter = res.data.chapter
-	        if (this.chapter.type === 2) {
+          if (this.chapter.type === 2) {
             this.isActiveSet = 3
-	        } else {
+          } else {
             this.isActiveSet = 1
             $('.vjs-control-bar .vjs-reStart').hide()
           }
@@ -898,11 +897,11 @@ $border_color: #243752;
 
     > .bottomOperate {
       position: fixed;
-      z-index: 9999;
+      z-index: 2;
       bottom: 0;
       left: 0%;
       width: calc(100% - 385px);
-      height: 70px;
+      height: 80px;
       line-height: 60px;
       border-top: 1px solid rgba(255, 255, 255, 0.5);
       background-color: $lesson-detail-blue;
@@ -911,11 +910,13 @@ $border_color: #243752;
   .itemOperate {
     width: 110px;
     display: inline-block;
+    vertical-align: middle;
 
     > .iconfont {
       display: block;
       height: 20px;
       line-height: 40px;
+      font-size: 20px;
     }
     > span {
       display: inline-block;
@@ -924,11 +925,44 @@ $border_color: #243752;
     }
   }
 
-  .bottomOperate .open,
+  .bottomOperate .open {
+    width: 40px;
+    height: 40px;
+    color: #fff;
+    border-radius: 50%;
+    padding: 0;
+
+    .iconfont {
+      margin-left: 4px;
+      font-size: 24px;
+    }
+  }
+
   .bottomOperate .end {
     background-color: red;
-    color: #fff;
     border: red;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    padding: 0;
+
+    .iconfont {
+      margin-right: 0;
+      font-size: 24px;
+      color: #FFFFFF;
+    }
+  }
+
+  .bottomOperate .over {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    padding: 0;
+
+    .iconfont {
+      margin-right: 0;
+      font-size: 24px;
+    }
   }
   .open:hover {
     opacity: 0.9;
@@ -945,17 +979,24 @@ $border_color: #243752;
     height: 50px;
     line-height: 50px;
     text-align: center;
+    border-radius: 4px;
+    font-size: 0;
+    color: $themeColor;
   }
   .selectType > span {
     display: inline-block;
-    width: 33%;
-    background-color: #515151;
-    border-radius: 4px;
+    width: 33.33%;
     cursor: pointer;
+    border: 1px solid $themeColor;
+    border-left: none;
+    font-size: 16px;
+  }
+  .selectType > span:first-child {
+    border-left: 1px solid $themeColor;
   }
   .activeSelect {
-    background-color: #ffffff !important;
-    color: $themeColor;
+    background-color: $themeColor !important;
+    color: #FFFFFF;
   }
   .obs {
     color: $themeColor;

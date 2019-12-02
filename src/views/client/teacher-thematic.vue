@@ -328,18 +328,19 @@
             <i class="iconfont iconxiaozuguanli1" />
             <span>成员管理</span>
           </div>
-          <div v-if="chapter.type === 1" class="itemOperate pointer">
+          <div v-if="chapter.type === 1" class="itemOperate">
             <el-button
               v-if="chapter.allow_broadcast === 1"
               class="open"
               @click="openLive"
-            >开始直播</el-button>
+              type="primary"
+            ><i class="iconfont iconkaishi"></i></el-button>
             <el-button
               v-else-if="chapter.allow_broadcast === 2"
               class="end"
               @click="endLive"
-            >结束直播</el-button>
-            <el-button v-else disabled>已结束</el-button>
+            ><i class="iconfont iconzhaobiaojieshu"></i></el-button>
+            <el-button class="over" v-else disabled><i class="iconfont iconzhaobiaojieshu"></i></el-button>
           </div>
           <div
             class="itemOperate pointer"
@@ -960,45 +961,80 @@ export default {
 			background: $deep_color;
 		}
 
-		> .set {
-			width: calc(100% - 380px);
-			height: calc(100vh - 70px);
-			padding: 20px;
+    > .set {
+      width: calc(100% - 380px);
+      height: calc(100vh - 70px);
+      padding: 20px;
 
-			> .bottomOperate {
-				position: fixed;
-				z-index: 2;
-				bottom: 0;
-				left: 0%;
-				width: calc(100% - 385px);
-				height: 70px;
-				line-height: 60px;
-				border-top: 1px solid rgba(255, 255, 255, 0.5);
-				background-color: $lesson_detail_blue;
-			}
-		}
-		.itemOperate {
-			width: 110px;
-			display: inline-block;
+      > .bottomOperate {
+        position: fixed;
+        z-index: 2;
+        bottom: 0;
+        left: 0%;
+        width: calc(100% - 385px);
+        height: 80px;
+        line-height: 60px;
+        border-top: 1px solid rgba(255, 255, 255, 0.5);
+        background-color: $lesson-detail-blue;
+      }
+    }
+    .itemOperate {
+      width: 110px;
+      display: inline-block;
+      vertical-align: middle;
 
-			> .iconfont {
-				display: block;
-				height: 20px;
-				line-height: 40px;
-			}
-			> span {
-				display: inline-block;
-				height: 30px;
-				line-height: 40px;
-			}
-		}
+      > .iconfont {
+        display: block;
+        height: 20px;
+        line-height: 40px;
+        font-size: 20px;
+      }
+      > span {
+        display: inline-block;
+        height: 30px;
+        line-height: 40px;
+      }
+    }
 
-		.bottomOperate .open,
-		.bottomOperate .end {
-			background-color: red;
-			color: #fff;
-			border: red;
-		}
+    .bottomOperate .open {
+      width: 40px;
+      height: 40px;
+      color: #fff;
+      border-radius: 50%;
+      padding: 0;
+
+      .iconfont {
+        margin-left: 4px;
+        font-size: 24px;
+      }
+    }
+
+    .bottomOperate .end {
+      background-color: red;
+      border: red;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      padding: 0;
+
+      .iconfont {
+        margin-right: 0;
+        font-size: 24px;
+        color: #FFFFFF;
+      }
+    }
+
+    .bottomOperate .over {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      padding: 0;
+
+      .iconfont {
+        margin-right: 0;
+        font-size: 24px;
+      }
+    }
 		.open:hover {
 			opacity: 0.9;
 		}
@@ -1009,26 +1045,33 @@ export default {
 		.activeSet1 .tip {
 			margin-top: 0;
 		}
-		.selectType {
-			width: 100%;
-			height: 50px;
-			line-height: 50px;
-			text-align: center;
-		}
-		.selectType > span {
-			display: inline-block;
-			width: 33%;
-			background-color: #515151;
-			border-radius: 4px;
-			cursor: pointer;
-		}
-		.activeSelect {
-			background-color: #ffffff !important;
-			color: $themeColor;
-		}
-		.obs {
-			color: $themeColor;
-		}
+    .selectType {
+      width: 100%;
+      height: 50px;
+      line-height: 50px;
+      text-align: center;
+      border-radius: 4px;
+      font-size: 0;
+      color: $themeColor;
+    }
+    .selectType > span {
+      display: inline-block;
+      width: 33.33%;
+      cursor: pointer;
+      border: 1px solid $themeColor;
+      border-left: none;
+      font-size: 16px;
+    }
+    .selectType > span:first-child {
+      border-left: 1px solid $themeColor;
+    }
+    .activeSelect {
+      background-color: $themeColor !important;
+      color: #FFFFFF;
+    }
+    .obs {
+      color: $themeColor;
+    }
 		.parkingPosition {
 			width: 700px;
 			border: 1px solid #515151;
