@@ -23,7 +23,7 @@
             :expand-on-click-node="false"
             :check-on-click-node="true"
             node-key="_id"
-            :default-checked-keys="treecheckedKeys"
+            :default-checked-keys="permissionids"
             :props="defaultProps"
           >
             <span slot-scope="{ node, data }" class="custom-tree-node">
@@ -61,13 +61,11 @@ export default {
       manageType: 1, // 所属租户
       manageTypeList: [], // 管理类型
       menuTree: [], // 权限树
-      treecheckedKeys: [],
       defaultProps: {
         children: 'childs',
         label: 'menuname',
         id: '_id'
       },
-      menuids: [], // 菜单权限集合
       permissionids: [], // 功能权限集合
       rules: {
         manageType: [
@@ -102,7 +100,7 @@ export default {
         this.form.desc = role.desc
         this.form.manageType = role.manageType || 3
         this.manageType = role.manageType || 3
-
+        this.permissionids = role.permissionids || []
         this.dataIsChange = -1
         this.getManageType()
       })
@@ -125,16 +123,13 @@ export default {
     // 获取权限树数据
     getAllMenus() {
       getAllMenus({ _id: this.id }).then(res => {
-        this.getDefaultCheckedKeys(res.data)
         this.menuTree = res.data
+        this.getDefaultCheckedKeys(res.data)
       })
     },
     // 获取默认选中的节点
     getDefaultCheckedKeys(menuTree) {
       menuTree.forEach(item => {
-        if (item.select) {
-          this.treecheckedKeys.push(item._id)
-        }
         item.childs = item.childs || []
         item.permissions = item.permissions || []
         item.childs = item.childs.concat(item.permissions)
@@ -144,32 +139,18 @@ export default {
         }
       })
     },
-    // 获取 menuids 和 permissionids
-    getMenuidsAndPermissionids(checkedNodes) {
-      checkedNodes.forEach(item => {
-        if (item.type !== 'permission' && !item.ispush) {
-          this.menuids.push(item._id)
-          item.ispush = true
-        } else if (!item.ispush) {
-          this.permissionids.push(item._id)
-          item.ispush = true
-        }
-        if (item.childs.length) {
-          this.getMenuidsAndPermissionids(item.childs)
-        }
-      })
-    },
+
     // 保存
     save(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          const menuTree = this.$refs.menuTree.getCheckedNodes(false, true)
-          this.getMenuidsAndPermissionids(menuTree)
+          const checkedKeys = this.$refs.menuTree.getCheckedKeys()
+          const halfCheckedKeys = this.$refs.menuTree.getHalfCheckedKeys()
           const param = {
             _id: this.id,
             manageType: this.manageType,
-            menuids: this.menuids,
-            permissionids: this.permissionids
+            menuids: halfCheckedKeys,
+            permissionids: checkedKeys
           }
           setRoleAuthority(param).then(response => {
             this.$message.success('角色授权成功！')

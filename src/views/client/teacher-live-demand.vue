@@ -159,7 +159,7 @@
             </div>
           </div>
           <div
-            v-if="loginUser === chapter.user_id && chapter.type === 1"
+            v-if="(loginUser === chapter.user_id && chapter.type === 1) || (manageType <= 2)"
             v-show="isActiveSet === 2"
             class="activeSet2"
           >
@@ -321,7 +321,7 @@
             /><span>直播源设置</span>
           </div>
           <div
-            v-if="loginUser === chapter.user_id && chapter.type === 1"
+            v-if="(loginUser === chapter.user_id && chapter.type === 1) || (manageType <= 2)"
             class="itemOperate pointer"
             :class="{ activeSet: isActiveSet === 2 }"
             @click="active(2)"
@@ -436,6 +436,7 @@ export default {
         nickname: '' // 老师名称
       },
       loginUser: '', // 当前登录人
+      manageType: '', // 当前 管理权限
       live_info: [], // 直播信息
       videoSource1: 'noVideo.mp4', // 机位1 Source
       videoSource2: 'noVideo.mp4', // 机位2 Source
@@ -551,6 +552,7 @@ export default {
     const subPath = '#/client/student-live-demand?_id=' + this.id
     this.shareUrl = createFullUrl(subPath)
     this.loginUser = this.$store.state.user.userSystemInfo.userInfo._id
+    this.manageType = this.$store.state.user.userPermission.manageType
     this.findDetailInfoById()
     this.getComments()
   },

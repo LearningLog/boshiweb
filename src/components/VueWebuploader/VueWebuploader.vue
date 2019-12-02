@@ -1,4 +1,9 @@
-<!--文件分片断点续传底层组件-->
+<!--/**-->
+<!--* @Author: YanHuaKang-->
+<!--* @Date: 2019/11/21-->
+<!--* @Description: 文件分片断点续传底层组件-->
+<!--* @remarks:-->
+<!--*/-->
 <template>
   <div class="upload" />
 </template>
