@@ -11,6 +11,7 @@
           <div class="fr">
             <div class="pointer share">
               <el-popover
+                popper-class="sharePopover"
                 placement="bottom"
                 width="114"
                 height="120"
@@ -383,9 +384,7 @@ export default {
           title: '',
           thumbnailUrl: that.chapter.cover_pic,
           playType: 'video', // 可选值 视频：video 音频：audio
-          currentTime: function(val) {
-            console.log(val, '当前时间')
-          },
+          currentTime: function(val) {},
           shootingFlag: false,
           screenshotsCallback: function(val) { }
         })
@@ -408,13 +407,9 @@ export default {
           playType: 'video', // 可选值 视频：video 音频：audio
           timeFlag: false, // 只有为true时才会触发currentTime函数
           flvAudio: false,
-          currentTime: function(val) {
-            console.log(val, '当前时间')
-          },
+          currentTime: function(val) {},
           shootingFlag: false,
-          shootingCallback: function(val) {
-            console.log(val, '打点')
-          },
+          shootingCallback: function(val) {},
           screenshotsCallback: function(val) { }
         })
       })

@@ -457,29 +457,29 @@
               type="primary"
               plain
               @click="cancel()"
-            ><i class="addIcon iconfont iconcancel" />取消</el-button>
+            >取消</el-button>
             <el-button
               v-if="activeStep !== 1"
               type="primary"
               @click="forwardStep"
-            ><i class="addIcon iconfont iconzuojiantou" />上一步</el-button>
+            >上一步</el-button>
             <el-button
               v-if="activeStep !== 2"
               type="primary"
               @click="nextStep"
-            ><i class="addIcon iconfont iconyoujiantou" />下一步</el-button>
+            >下一步</el-button>
             <el-button
               v-if="activeStep === 2"
               v-no-more-click
               type="primary"
               @click="save('exam2')"
-            ><i class="addIcon iconfont iconbaocun" />保存</el-button>
+            >保存</el-button>
             <el-button
               v-if="activeStep === 2"
               v-no-more-click
               type="primary"
               @click="publish('exam2')"
-            ><i class="addIcon iconfont iconfabu" />保存并发布</el-button>
+            ><保存并发布</el-button>
           </div>
         </div>
       </div>
@@ -1388,6 +1388,7 @@ export default {
 .count .judge {
   margin-bottom: 20px;
   color: #999;
+  font-style: 14;
 }
 .tag {
   display: inline;

@@ -149,8 +149,8 @@ ul,li { padding:0;margin:0;list-style:none}
     vertical-align: middle;
 }
 .el-table /deep/ .thumbnail-online-class {
-    width: 150px;
-    height: 86px;
+    width: 120px;
+    height: 69px;
     border: 1px solid #e8e8e8;
     vertical-align: middle;
 }
@@ -158,4 +158,9 @@ ul,li { padding:0;margin:0;list-style:none}
 // 修改播放器按钮控制条的行高
 .vjs-button > .vjs-icon-placeholder:before {
     line-height: 2;
+}
+
+// 修改直播端分享弹出层样式
+.el-popover.sharePopover {
+    min-width: 114px!important;
 }

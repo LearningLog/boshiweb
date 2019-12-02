@@ -38,6 +38,7 @@
             <el-button
               type="text"
               size="mini"
+              v-if="data.floor !== 5"
               @click="() => createTheme(2, data)"
             >
               <span><i class="iconfont iconzengjia" /></span>
@@ -249,8 +250,12 @@ export default {
     createTheme(level, data) {
       this.level = level
       if (level === 2) {
+        if (data.floor === 5) {
+          this.$message.warning('层级已达最大值！')
+          return false
+        }
         this.theme.treeId = data.treeId
-        this.theme.parentId = data.parentId
+        this.theme.parentId = data.id
       }
       this.createTreeVisible = true
     },
@@ -307,7 +312,6 @@ export default {
 
     // 删除节点
     deleteNode(node, data) {
-      console.log(node)
       this.$confirm('确定要删除【' + data.title + '】吗？', '删除主题', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -329,11 +333,11 @@ export default {
     cancel() {
       this.createTreeVisible = false
       this.editTreeVisible = false
-      this.theme.treeId = ''
-      this.theme.parentId = ''
-      this.theme.nodeId = ''
-      this.theme.treeName = ''
-      this.theme.nodeName = ''
+      // this.theme.treeId = ''
+      // this.theme.parentId = ''
+      // this.theme.nodeId = ''
+      // this.theme.treeName = ''
+      // this.theme.nodeName = ''
       this.$refs.createTheme.resetFields()
       this.$refs.editTheme.resetFields()
     }

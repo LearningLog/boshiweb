@@ -337,9 +337,7 @@ export default {
       })
     },
     // 上传成功
-    handleSuccess(response, file, fileList) {
-      console.log(file)
-    },
+    handleSuccess(response, file, fileList) {},
     // 上传失败
     handleUploadError(response, file, fileList) {
       this.$message.error('上传文件失败！')
@@ -422,9 +420,7 @@ export default {
       })
     },
     // 图片加载情况
-    imgLoad(msg) {
-      console.log(msg)
-    },
+    imgLoad(msg) {},
     // 校验最大用户数为正整数
     intNum(val) {
       this.form.userCount = validIntNum(val)

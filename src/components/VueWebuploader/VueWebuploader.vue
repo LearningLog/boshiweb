@@ -1,4 +1,9 @@
-<!--文件分片断点续传底层组件-->
+<!--/**-->
+<!--* @Author: YanHuaKang-->
+<!--* @Date: 2019/11/21-->
+<!--* @Description: 文件分片断点续传底层组件-->
+<!--* @remarks:-->
+<!--*/-->
 <template>
   <div class="upload" />
 </template>
@@ -232,9 +237,9 @@ export default {
 
         that.uploader.makeThumb(file, function(error, ret) {
           if (error) {
-            console.log('预览错误，上传的不是图片吧？')
+            // console.log('预览错误，上传的不是图片吧？')
           } else {
-            console.log('预览成功 base64')
+            // console.log('预览成功 base64')
           }
         })
         that.$emit('fileChange', file)
@@ -255,7 +260,6 @@ export default {
       })
 
       this.uploader.on('uploadError', (file, reason) => {
-        console.error(reason)
         this.$emit('uploadError', file, reason)
       })
 
@@ -268,13 +272,10 @@ export default {
         } else {
           errorMessage = `上传出错！请检查后重新上传！错误代码${type}`
         }
-
-        console.error(errorMessage)
         this.$emit('error', errorMessage)
       })
 
       this.uploader.on('uploadComplete', (file, response) => {
-        console.log('uploadComplete')
         this.$emit('complete', file, response)
       })
     },

@@ -377,7 +377,6 @@ export default {
   data() {
     /* 自定义表单校验*/
     // var validateAmount = (rule, value, callback) => {
-    //   console.log('当前的选择小组数', value)
     // }
     return {
       customColor1: '#20C7B2',
@@ -462,9 +461,7 @@ export default {
     this.initCharts()
   },
   methods: {
-    checkedGroupList(value) {
-      console.log('6666666', this.form.type)
-    },
+    checkedGroupList(value) {},
     // 初始化日期选择器
     // 获取今日日期
     // 设置日期（）
@@ -556,13 +553,11 @@ export default {
     },
     // 监测日期选择器中的数据更改
     timeChange(value) {
-      console.log('日期更改', value)
       this.startTime = value[0]
       this.endTime = value[1]
       this.currentSort = -1
       var endTime = new Date(this.endTime).getTime() / 1000 - parseInt(new Date(this.startTime).getTime() / 1000)
       var timeDay = parseInt(endTime / 60 / 60 / 24)// 相差天数
-      console.log('相差的天数', timeDay)
       this.staffData.desc = timeDay + '天'
 
       this.initData(this.startTime, this.endTime)
@@ -614,7 +609,6 @@ export default {
         tempGroupId = [groupId]
       }
       getUserListTrainDataByTime({ groupIdList: tempGroupId, startTime: startTime, endTime: endTime }).then(response => {
-        console.log('学习排行榜的数据', response.data)
         this.tableData = []
         this.studyTimeTotalMax = 0
         this.studyTimePercentDayMax = 0
@@ -637,9 +631,6 @@ export default {
             this.studyTimePercentNumMax = tempArr[i].userData.averageTrainViewTime
           }
         }
-        console.log('学习总时长的最大值', this.studyTimeTotalMax)
-        console.log('平均每天学习时长的最大值', this.studyTimePercentDayMax)
-        console.log('平均每次时长的最大值', this.studyTimePercentNumMax)
         tempArr.forEach(function(currentValue, index, arr) {
           var tempObj = {}
           tempObj.name = currentValue.userName
@@ -698,7 +689,6 @@ export default {
     },
     // 排行榜的小组选择
     listSelectChange(value) {
-      console.log('排行榜小组选择数据', value)
       if (value === '全部' || value === '' || !value) {
         /* 查全部*/
         this.initUserListTrainDataByTimeData(null, this.startTime, this.endTime)
@@ -828,7 +818,6 @@ export default {
         tempId = [groupId]
       }
       getUserListCompareData({ groupIdList: tempId, startTime: startTime, endTime: endTime }).then(response => {
-        console.log('员工画像概览数据', response.data)
         var tempDataArr = response.data.dataList
         var porList = []
         var allTime = 0
@@ -846,7 +835,6 @@ export default {
         // 计算学习时长平均值
         var average_time = Math.ceil(allTime / (1000 * 60) / tempDataArr.length)
         this.porObj = { 'porList': porList, 'avgTime': average_time }
-        console.log(this.porObj)
         this.employeePortraitChartOptions(this.porObj)
       })
     },
@@ -869,7 +857,6 @@ export default {
     // 初始化员工活跃度数据
     initVisitUserCountGroupByTime(startTime, endTime) {
       getVisitUserCountGroupByTime({ startTime: startTime, endTime: endTime }).then(response => {
-        console.log('员工活跃度数据', response.data)
         var tempDataArr = response.data.visitTimeList
         this.actObj.dataTime = [tempDataArr[0].time]
         this.actObj.dataCount = [tempDataArr[0].count]
@@ -884,7 +871,6 @@ export default {
     },
     // 初始化员工活跃度
     employeeActivityChartOptions(actObj) {
-      console.log('55555555', actObj)
       var option = {
         toolbox: {
           feature: {
@@ -944,9 +930,7 @@ export default {
     // 初始化考试合格率和参考员工率数据
     initGroupListExamDataByTime(startTime, endTime) {
       getGroupListExamDataByTime({ startTime: startTime, endTime: endTime }).then(response => {
-        console.log('考试合格率和参考员工率数据', response.data)
-
-        if (response.data.groupList.length > 7) {
+       if (response.data.groupList.length > 7) {
           this.setWidthEcharts(response.data.groupList, 'employeeActivityExamQualified')
           this.setWidthEcharts(response.data.groupList, 'employeeActivityExamUserPercent')
         }
@@ -978,7 +962,6 @@ export default {
 
       option.series[0].color = '#fa6046'
       option.yAxis[0].name = '考试合格率'
-      console.log('3333333', option)
       this.employeeActivityExamQualifiedChart.setOption(option)
     },
     // 初始化参考员工率
@@ -1005,8 +988,6 @@ export default {
     // 初始化学习热度榜和发布课程榜（不传小组参数）
     initGroupListPublishTrainDataByTime2(startTime, endTime) {
       getGroupListPublishTrainDataByTime2({ startTime: startTime, endTime: endTime }).then(response => {
-        console.log('学习热度榜和发布课程榜数据', response.data)
-
         if (response.data.groupList.length > 7) {
           this.setWidthEcharts(response.data.groupList, 'employeeActivityTrainViewTime')
           this.setWidthEcharts(response.data.groupList, 'employeeActivityPublishTrainCount')
@@ -1076,7 +1057,6 @@ export default {
       }, this)
 
       getUserListCompareData({ startTime: this.startTime, endTime: this.endTime, selectEntityList: selectEntityList }).then(response => {
-        console.log('生成对比图数据', response.data)
         var comparisonData = response.data.dataList
         this.compareDataChart.clear()
         var allDataArray = []
@@ -1302,11 +1282,9 @@ export default {
 
     // 设置echart的宽度
     setWidthEcharts(data, id) {
-      console.log('考试合格率的宽度', data)
       var height = window.screen.width
       var oldWidth = height * 0.39
       var newWidth = oldWidth * Math.ceil(data.length / 7)
-      console.log('========', newWidth)
       document.getElementById(id).style.width = newWidth + 'px'
     }
   }
@@ -1434,14 +1412,18 @@ export default {
   }
   .app-dataScreening-listTags{
     padding:0 20px;
+    height: 40px;
   }
   .app-dataScreening-listTagsBox{
     border:1px solid #20C7B2;
   }
+  .app-dataScreening-listTagsBox clearfix{
+    height: 40px;
+  }
   .app-dataScreening-listTags-item{
     width: 50%;
-    height: 50px;
-    line-height: 50px;
+    height: 40px;
+    line-height: 40px;
     text-align: center;
     font-size: 16px;
     color: #20C7B2;
@@ -1450,6 +1432,7 @@ export default {
   .app-dataScreening-listTags-item.listTagsActive{
     background: #20C7B2;
     color: #fff;
+    height: 40px;
   }
   .app-dataScreening-listTable{
     padding:0 20px;
@@ -1578,5 +1561,7 @@ export default {
   .w45{
     width:45%;
   }
-
+  /deep/ .el-table .el-table__header thead tr th{
+    background-color: #ffffff;
+  }
 </style>

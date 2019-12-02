@@ -225,7 +225,6 @@ export default {
           }
           break
       }
-      console.log(this.topic.topic_option)
     },
 
     // 保存临时答题数据

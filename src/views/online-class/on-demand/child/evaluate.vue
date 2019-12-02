@@ -39,6 +39,15 @@
               score-template="{value}"
             />
           </el-form-item>
+          <el-form-item label="上课体验：">
+            <el-rate
+              v-model="form.generalData.experience_level"
+              disabled
+              show-score
+              text-color="#ff9900"
+              score-template="{value}"
+            />
+          </el-form-item>
         </el-col>
       </el-row>
     </el-form>
@@ -128,7 +137,6 @@ export default {
     // 获取标签list
     getLablesList() {
       label_evaluate({ lesson_id: this.listQuery.selectCompanyId, lesson_type: this.listQuery.type }).then(res => {
-        // console.log(res)
         this.form.generalData = res.data.generalData
         this.listQuery.currentPage = res.data.appraiseList.currentPage
         this.listQuery.pageSize = res.data.appraiseList.pageSize

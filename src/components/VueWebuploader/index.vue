@@ -1,4 +1,9 @@
-<!--文件分片断点续传UI组件-->
+<!--/**-->
+<!--* @Author: YanHuaKang-->
+<!--* @Date: 2019/11/21-->
+<!--* @Description: 文件分片断点续传UI组件-->
+<!--* @remarks:-->
+<!--*/-->
 <template>
   <transition :name="transitionName">
     <div id="mainFileUpload" :style="visibility">
@@ -516,5 +521,6 @@ export default {
 }
 #mainFileUpload > #header > .fr.icons span {
   padding: 0 1px;
+  border-radius: 2px;
 }
 </style>

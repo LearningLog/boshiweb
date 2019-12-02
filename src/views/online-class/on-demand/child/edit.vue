@@ -501,7 +501,6 @@ export default {
     // 选择文件
     checkVideoChange(val) {
       this.checkVideoList = val
-      console.log(this.checkVideoList)
     },
 
     // 确定
@@ -611,9 +610,7 @@ export default {
       })
     },
     // 上传成功
-    handleSuccess(response, file, fileList) {
-      console.log(file)
-    },
+    handleSuccess(response, file, fileList) {},
     // 上传失败
     handleUploadError(response, file, fileList) {
       this.$message.error('上传文件失败！')
@@ -630,7 +627,6 @@ export default {
     },
     // 处理文件移除
     handleRemove(file, fileList) {
-      console.log(file, fileList)
       this.form.cover_pic_id = ''
       this.form.cover_pic = ''
       $('.coverPic .el-upload--picture-card').show()
@@ -681,9 +677,7 @@ export default {
       })
     },
     // 图片加载情况
-    imgLoad(msg) {
-      console.log(msg)
-    },
+    imgLoad(msg) {},
 
     // 获取所有小组
     getEgroups() {
@@ -773,7 +767,7 @@ export default {
 <style lang="scss" scoped>
   @import "~@/styles/theme.scss";
   .operator {
-    margin-top: 20px;
+    margin-top: 28px;
   }
   .chapterFile /deep/ .el-input {
     width: calc(100% - 80px);

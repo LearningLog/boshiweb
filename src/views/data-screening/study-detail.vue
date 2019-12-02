@@ -547,13 +547,11 @@ export default {
 
     // 监测日期选择器中的数据更改
     timeChange(value) {
-      console.log('日期更改', value)
       this.startTime = value[0]
       this.endTime = value[1]
       this.currentSort = -1
       var endTime = new Date(this.endTime).getTime() / 1000 - parseInt(new Date(this.startTime).getTime() / 1000)
       var timeDay = parseInt(endTime / 60 / 60 / 24)// 相差天数
-      console.log('相差的天数', timeDay)
       this.staffData.desc = timeDay + '天'
       this.initData(this.selectedId, this.startTime, this.endTime)
     },
@@ -582,7 +580,6 @@ export default {
     },
     // 行点击事件
     clickRow(value) {
-      console.log('5555555', value)
       this.selectedId = value.groupId
       this.groupValue = value.groupName
       this.groupSelectChange(value.groupId)

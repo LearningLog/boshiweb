@@ -89,11 +89,11 @@
         width="50"
         fixed
       />
-      <el-table-column align="center" label="课堂封面" min-width="166">
+      <el-table-column align="center" label="课堂封面" width="147">
         <template slot-scope="scope">
           <el-image
             class="thumbnail-online-class"
-            style="width: 150px; height: 86px;"
+            style="width: 120px; height: 69px;"
             :src="scope.row.cover_pic"
             fit="contain"
           />
@@ -104,9 +104,9 @@
           <el-link type="primary" @click="detail(scope.row)">{{ scope.row.cname }}</el-link>
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="标签" min-width="100" align="center" prop="labelName" show-overflow-tooltip />
+      <el-table-column class-name="status-col" label="标签" min-width="120" align="center" prop="labelName" show-overflow-tooltip />
       <!--<el-table-column class-name="status-col" label="开始时间" min-width="140" align="center" prop="s_time" />-->
-      <el-table-column class-name="status-col" label="课程评价" min-width="150" align="center">
+      <el-table-column class-name="status-col" label="课程评价" width="150" align="center">
         <template slot-scope="scope">
           <span class="starboxs" @click="rateDetail(scope.row)">
             <el-rate
@@ -129,7 +129,7 @@
         </template>
       </el-table-column>
       <el-table-column align="center" label="创建人" min-width="90" prop="userNickName" show-overflow-tooltip />
-      <el-table-column align="center" label="创建时间" min-width="140" prop="c_time" show-overflow-tooltip />
+      <el-table-column align="center" label="创建时间" width="140" prop="c_time" show-overflow-tooltip />
       <el-table-column class-name="status-col" label="操作" width="230" align="center" fixed="right">
         <template slot-scope="scope">
           <el-button size="mini" :disabled="!hasThisBtnPermission('online-edit', scope.row.egroup)" @click="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>

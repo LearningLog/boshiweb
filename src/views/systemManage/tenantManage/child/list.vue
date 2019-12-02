@@ -57,7 +57,7 @@
           <el-link type="primary" @click="detail(scope.row)">{{ scope.row.customname }}</el-link>
         </template>
       </el-table-column>
-      <el-table-column label="Logo" min-width="90" align="center">
+      <el-table-column label="Logo" width="122" align="center">
         <template slot-scope="scope">
           <el-image
             v-if="scope.row.pcLogoFileUrl"

@@ -614,9 +614,7 @@ export default {
       })
     },
     // 上传成功
-    handleSuccess(response, file, fileList) {
-      console.log(file)
-    },
+    handleSuccess(response, file, fileList) {},
     // 上传失败
     handleUploadError(response, file, fileList) {
       this.$message.error('上传文件失败！')
@@ -633,7 +631,6 @@ export default {
     },
     // 处理文件移除
     handleRemove(file, fileList) {
-      console.log(file, fileList)
       this.form.cover_pic_id = ''
       this.form.cover_pic = ''
       $('.coverPic .el-upload--picture-card').show()
@@ -684,9 +681,7 @@ export default {
       })
     },
     // 图片加载情况
-    imgLoad(msg) {
-      console.log(msg)
-    },
+    imgLoad(msg) {},
 
     // 获取所有小组
     getEgroups() {
@@ -779,9 +774,7 @@ export default {
     },
 
     // 处理第三步小组和成员的变化
-    handleChangeMembers(val) {
-      console.log(val)
-    },
+    handleChangeMembers(val) {},
 
     // 发布
     publish() {
@@ -802,7 +795,6 @@ export default {
       }
       this.form.groupList = this.checkedGroupIds
       delete this.form.range_time
-      console.log(this.form)
       chapetr_add(this.form).then(response => {
         this.$message.success('新增课程成功！')
         this.noLeaveprompt = true
