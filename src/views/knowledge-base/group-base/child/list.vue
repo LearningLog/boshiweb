@@ -966,7 +966,7 @@ export default {
     },
     // 启动上传
     showUpload() {
-      if (!this.listQuery.ownerId) {
+      if (!this.selectedRow.length) {
         this.$message({
           message: '请先勾选小组',
           type: 'warning'

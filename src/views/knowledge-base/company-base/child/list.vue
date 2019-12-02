@@ -175,7 +175,6 @@
           </el-dropdown>
         </template>
       </el-table-column>
-
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="getDirList" />
     <el-dialog v-el-drag-dialog class="setInformationDialog" width="650px" height="650px" title="加入知识分类" :visible.sync="treeDialogVisible">
@@ -925,7 +924,7 @@ export default {
     },
     // 启动上传
     showUpload() {
-      if (!this.listQuery.selectCompanyId) {
+      if (!this.selectedRow.length) {
         this.$message({
           message: '请先勾选租户',
           type: 'warning'
