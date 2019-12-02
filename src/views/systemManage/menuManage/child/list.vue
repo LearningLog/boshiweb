@@ -89,7 +89,7 @@
 
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import { getAllMenuList, findMenuList, delMenu, moveMenu } from '@/api/systemManage-menuManage'
+import { getAllMenuList, findMenuList, delMenu, moveMenu } from '@/api/system-manage/menuManage'
 import { updateMenuRoute } from '@/utils/update-menu-router'
 import { hasThisBtnPermission } from '@/utils/permission.js'
 

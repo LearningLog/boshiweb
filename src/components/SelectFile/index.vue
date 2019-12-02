@@ -94,8 +94,8 @@
 
 <script>
 import elDragDialog from '@/directive/el-drag-dialog'
-import { getFileListManage } from '@/api/work-desk'
-import { deskAddFile } from '@/api/uploadFile'
+import { getFileListManage } from '@/api/work-desk/work-desk'
+import { deskAddFile } from '@/api/upload-file'
 import { getToken } from '@/utils/auth'
 import file_knowledge from '@/assets/images/file_knowledge.png'
 

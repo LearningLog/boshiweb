@@ -98,7 +98,7 @@
 </template>
 
 <script>
-import { getLabelList } from '@/api/onlineclass-label-manage'
+import { getLabelList } from '@/api/online-class/label-manage'
 import Pagination from '@/components/Pagination'
 import elDragDialog from '@/directive/el-drag-dialog'
 export default {

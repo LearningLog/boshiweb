@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import { getOneRole, get_role_manage_type, getAllMenus } from '@/api/systemManage-roleManage'
+import { getOneRole, get_role_manage_type, getAllMenus } from '@/api/user-center//roleManage'
 
 export default {
   data() {

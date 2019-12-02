@@ -123,9 +123,9 @@
 </template>
 
 <script>
-import { getCustomManageList, getAllRole } from '@/api/systemManage-roleManage'
-import { getAllEmployeeGroup } from '@/api/userCenter-groupManage'
-import { createUser } from '@/api/userCenter-userManage'
+import { getCustomManageList, getAllRole } from '@/api/user-center//roleManage'
+import { getAllEmployeeGroup } from '@/api/user-center/groupManage'
+import { createUser } from '@/api/user-center/userManage'
 import { validUserName, validPhone, validPassword } from '@/utils/validate'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 

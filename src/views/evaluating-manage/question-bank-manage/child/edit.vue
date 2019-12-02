@@ -328,7 +328,7 @@ import SelectFile from '@/components/SelectFile'
 import AddLabels from '@/components/AddEvalLabels'
 import AddSkills from '@/components/AddEvalSkills'
 import { getToken } from '@/utils/auth'
-import { topicDetil, topicEdit } from '@/api/question-bank-manage'
+import { topicDetil, topicEdit } from '@/api/evolution-manage/question-bank-manage'
 const $ = window.$
 
 export default {

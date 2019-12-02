@@ -231,9 +231,9 @@
 </template>
 
 <script>
-import { getUserList, deleteUser, updateUserStatus, leadingIn, batchAssignRole, batchGroupsManage, updatePassword } from '@/api/userCenter-userManage'
-import { getAllRole } from '@/api/systemManage-roleManage'
-import { getAllEmployeeGroup } from '@/api/userCenter-groupManage'
+import { getUserList, deleteUser, updateUserStatus, leadingIn, batchAssignRole, batchGroupsManage, updatePassword } from '@/api/user-center/userManage'
+import { getAllRole } from '@/api/user-center//roleManage'
+import { getAllEmployeeGroup } from '@/api/user-center/groupManage'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui

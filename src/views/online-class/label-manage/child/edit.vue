@@ -31,8 +31,8 @@
 </template>
 
 <script>
-import { getOneLabel, label_edit } from '@/api/onlineclass-label-manage.js'
-import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
+import { getOneLabel, label_edit } from '@/api/online-class/label-manage.js'
+import { getUserEgroupInfo } from '@/api/user-center/groupManage'
 export default {
   data() {
     return {

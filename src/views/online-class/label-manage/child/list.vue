@@ -78,7 +78,7 @@
 </template>
 
 <script>
-import { getLabelList, label_delete } from '@/api/onlineclass-label-manage.js'
+import { getLabelList, label_delete } from '@/api/online-class/label-manage.js'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
 import AddSelectGroup from '@/components/AddSelectGroup'

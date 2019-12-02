@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { getMenu } from '@/api/systemManage-menuManage'
+import { getMenu } from '@/api/system-manage/menuManage'
 
 export default {
   data() {

@@ -121,7 +121,7 @@
 import store from '@/store'
 import { mapGetters } from 'vuex'
 import VueWebuploader from '@/components/VueWebuploader/VueWebuploader.vue'
-import { deskAddFile, knowledgeCreateFile } from '@/api/uploadFile'
+import { deskAddFile, knowledgeCreateFile } from '@/api/upload-file'
 const WebUploader = window.WebUploader
 const $ = window.$
 export default {

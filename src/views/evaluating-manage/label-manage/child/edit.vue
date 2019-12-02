@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import { getOneLabel, label_edit } from '@/api/evaluatingManage-labelManage.js'
+import { getOneLabel, label_edit } from '@/api/evolution-manage/labelManage.js'
 export default {
   data() {
     return {

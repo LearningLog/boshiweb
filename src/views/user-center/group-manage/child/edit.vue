@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import { findUserListByGroupId, allskill, getItem, modifyItem, getCustomManageList } from '@/api/userCenter-groupManage'
+import { findUserListByGroupId, allskill, getItem, modifyItem, getCustomManageList } from '@/api/user-center/groupManage'
 
 export default {
   data() {

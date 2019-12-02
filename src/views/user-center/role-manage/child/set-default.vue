@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { getOneRole, updateDefaul, setDefaultRole } from '@/api/systemManage-roleManage'
+import { getOneRole, updateDefaul, setDefaultRole } from '@/api/user-center//roleManage'
 export default {
   data() {
     return {

@@ -98,7 +98,7 @@
 </template>
 
 <script>
-import { getLabelList } from '@/api/evaluatingManage-labelManage.js'
+import { getLabelList } from '@/api/evolution-manage/labelManage.js'
 import Pagination from '@/components/Pagination'
 import elDragDialog from '@/directive/el-drag-dialog'
 export default {

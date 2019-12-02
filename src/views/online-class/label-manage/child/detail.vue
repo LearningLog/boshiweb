@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { getOneLabel } from '@/api/onlineclass-label-manage.js'
+import { getOneLabel } from '@/api/online-class/label-manage.js'
 
 export default {
   data() {

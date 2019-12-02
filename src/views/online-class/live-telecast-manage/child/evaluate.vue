@@ -99,7 +99,7 @@
 import avatar1 from '@/assets/images/avatar.png'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { parseTime } from '@/utils/index'
-import { label_evaluate, delete_evaluate } from '@/api/onlineclass-label-manage'
+import { label_evaluate, delete_evaluate } from '@/api/online-class/label-manage'
 export default {
   name: 'Evaluate',
   components: { Pagination },

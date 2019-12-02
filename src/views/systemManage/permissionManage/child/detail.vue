@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { permission_det, permission_manage_type } from '@/api/systemManage-permissionManage.js'
+import { permission_det, permission_manage_type } from '@/api/system-manage/permissionManage.js'
 export default {
   data() {
     return {

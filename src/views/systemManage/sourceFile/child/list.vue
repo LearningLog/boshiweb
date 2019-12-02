@@ -74,7 +74,7 @@
 </template>
 
 <script>
-import { source_file_list, source_file_delet, source_file_status } from '@/api/systemManage-sourceFile.js'
+import { source_file_list, source_file_delet, source_file_status } from '@/api/system-manage/sourceFile.js'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 export default {
   components: { Pagination },

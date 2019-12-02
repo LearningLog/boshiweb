@@ -4,7 +4,7 @@
 </template>
 
 <script>
-import { fileUpload } from '@/api/uploadFile'
+import { fileUpload } from '@/api/upload-file'
 const qs = require('querystring')
 const md5 = window.md5
 const $ = window.$

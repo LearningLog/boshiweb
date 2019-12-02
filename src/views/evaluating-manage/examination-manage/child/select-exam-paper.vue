@@ -63,7 +63,7 @@
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
-import { evaluationPaperList } from '@/api/test-paper-manage'
+import { evaluationPaperList } from '@/api/evolution-manage/test-paper-manage'
 import store from '@/store'
 export default {
   components: { Pagination },

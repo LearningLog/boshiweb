@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import { getExamUserInfo } from '@/api/test-paper-manage'
+import { getExamUserInfo } from '@/api/evolution-manage/test-paper-manage'
 const $ = window.$
 export default {
   name: 'Examiners',

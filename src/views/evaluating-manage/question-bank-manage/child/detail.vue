@@ -25,7 +25,7 @@
 
 <script>
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
-import { topicDetil } from '@/api/question-bank-manage'
+import { topicDetil } from '@/api/evolution-manage/question-bank-manage'
 import { getOptionOrderByIndex } from '@/utils/index'
 
 export default {

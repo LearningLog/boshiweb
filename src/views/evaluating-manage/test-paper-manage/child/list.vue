@@ -85,9 +85,9 @@ import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
 import AddSelectGroup from '@/components/AddSelectGroup'
 import PublishExam from '@/components/PublishExam'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
-import { evaluationPaperList, delPaper, generateExportPaper, exportPaperOne, exportPaperMore, publish } from '@/api/test-paper-manage'
-import { skillAllList } from '@/api/userCenter-skillManage'
-import { labelAllList } from '@/api/evaluatingManage-labelManage'
+import { evaluationPaperList, delPaper, generateExportPaper, exportPaperOne, exportPaperMore, publish } from '@/api/evolution-manage/test-paper-manage'
+import { skillAllList } from '@/api/user-center/skillManage'
+import { labelAllList } from '@/api/evolution-manage/labelManage'
 import { isCurrentEgroupManager, hasThisBtnPermission } from '@/utils/permission'
 
 export default {

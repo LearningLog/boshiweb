@@ -95,9 +95,9 @@
 </template>
 
 <script>
-import { getCustomManageList } from '@/api/systemManage-roleManage'
+import { getCustomManageList } from '@/api/user-center//roleManage'
 
-import { skillManagerList, deleteItem, deleteMulti } from '@/api/userCenter-skillManage'
+import { skillManagerList, deleteItem, deleteMulti } from '@/api/user-center/skillManage'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 // import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
 import { isCurrentEgroupManager, hasThisBtnPermission } from '@/utils/permission'

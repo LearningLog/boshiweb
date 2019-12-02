@@ -216,10 +216,10 @@
 <script>
 import { VueCropper } from 'vue-cropper'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
-import { createThematicClass } from '@/api/thematic-class'
-import { uploadFile } from '@/api/uploadFile'
+import { createThematicClass } from '@/api/online-class/thematic-class'
+import { uploadFile } from '@/api/upload-file'
 import { getToken } from '@/utils/auth'
-import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
+import { getUserEgroupInfo } from '@/api/user-center/groupManage'
 import AddLessonEvalLabels from '@/components/AddLessonEvalLabels'
 const $ = window.$
 

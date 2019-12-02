@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import { getUserById } from '@/api/userCenter-userManage'
+import { getUserById } from '@/api/user-center/userManage'
 
 export default {
   data() {

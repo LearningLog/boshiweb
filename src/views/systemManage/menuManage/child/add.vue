@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { addMenu } from '@/api/systemManage-menuManage'
+import { addMenu } from '@/api/system-manage/menuManage'
 import { updateMenuRoute } from '@/utils/update-menu-router'
 
 export default {

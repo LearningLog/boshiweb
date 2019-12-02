@@ -79,7 +79,7 @@
 </template>
 
 <script>
-import { getLabelList, label_delete } from '@/api/evaluatingManage-labelManage.js'
+import { getLabelList, label_delete } from '@/api/evolution-manage/labelManage.js'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
 import AddSelectGroup from '@/components/AddSelectGroup'

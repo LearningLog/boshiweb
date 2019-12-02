@@ -139,9 +139,9 @@ import Pagination from '@/components/Pagination' // secondary package based on e
 import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
 import AddSelectGroup from '@/components/AddSelectGroup'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
-import { evaluationTopicList, delTopic } from '@/api/question-bank-manage'
-import { skillAllList } from '@/api/userCenter-skillManage'
-import { labelAllList } from '@/api/evaluatingManage-labelManage'
+import { evaluationTopicList, delTopic } from '@/api/evolution-manage/question-bank-manage'
+import { skillAllList } from '@/api/user-center/skillManage'
+import { labelAllList } from '@/api/evolution-manage/labelManage'
 import { isCurrentEgroupManager, hasThisBtnPermission } from '@/utils/permission'
 
 export default {

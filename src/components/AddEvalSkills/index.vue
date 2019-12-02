@@ -72,7 +72,7 @@
 </template>
 
 <script>
-import { skillManagerList } from '@/api/userCenter-skillManage'
+import { skillManagerList } from '@/api/user-center/skillManage'
 import Pagination from '@/components/Pagination'
 import elDragDialog from '@/directive/el-drag-dialog'
 export default {

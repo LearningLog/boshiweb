@@ -289,11 +289,11 @@
 <script>
 import { VueCropper } from 'vue-cropper'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
-import { getFileListManage } from '@/api/work-desk'
-import { chapetr_add } from '@/api/live-telecast-manage'
-import { uploadFile } from '@/api/uploadFile'
+import { getFileListManage } from '@/api/work-desk/work-desk'
+import { chapetr_add } from '@/api/online-class/live-telecast-manage'
+import { uploadFile } from '@/api/upload-file'
 import { getToken } from '@/utils/auth'
-import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
+import { getUserEgroupInfo } from '@/api/user-center/groupManage'
 import SelectFile from '@/components/SelectFile'
 import AddLessonEvalLabels from '@/components/AddLessonEvalLabels'
 import file_knowledge from '@/assets/images/file_knowledge.png'

@@ -155,7 +155,7 @@
 
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import { evaluationTopicList } from '@/api/question-bank-manage'
+import { evaluationTopicList } from '@/api/evolution-manage/question-bank-manage'
 import store from '@/store'
 
 export default {

@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import { getItem } from '@/api/userCenter-groupManage'
+import { getItem } from '@/api/user-center/groupManage'
 export default {
   data() {
     return {

@@ -62,7 +62,7 @@
 </template>
 
 <script>
-import { newscategory_list, newscategory_delet } from '@/api/systemManage-newsCategorry.js'
+import { newscategory_list, newscategory_delet } from '@/api/system-manage/newsCategorry.js'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 export default {
   components: { Pagination },

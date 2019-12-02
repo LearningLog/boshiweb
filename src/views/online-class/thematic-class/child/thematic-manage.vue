@@ -85,8 +85,8 @@
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import AddSelectGroup from '@/components/AddSelectGroup'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
-import { findChapterListForLesson, removeOneChapterInLesson } from '@/api/thematic-class'
-import { chapetr_del } from '@/api/live-telecast-manage'
+import { findChapterListForLesson, removeOneChapterInLesson } from '@/api/online-class/thematic-class'
+import { chapetr_del } from '@/api/online-class/live-telecast-manage'
 export default {
   components: { Pagination, AddSelectGroup },
   directives: { elDragDialog },

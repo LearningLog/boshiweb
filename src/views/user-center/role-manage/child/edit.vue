@@ -18,7 +18,7 @@
 
 <script>
 import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
-import { getOneRole, getCustomManageList, role_edit } from '@/api/systemManage-roleManage'
+import { getOneRole, getCustomManageList, role_edit } from '@/api/user-center//roleManage'
 export default {
   components: { TenantsGroupsRoles },
   data() {

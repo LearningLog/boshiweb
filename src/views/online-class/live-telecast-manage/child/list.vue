@@ -161,9 +161,9 @@ import Pagination from '@/components/Pagination' // secondary package based on e
 import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
 import AddSelectGroup from '@/components/AddSelectGroup'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
-import { chapetrList, chapetr_del } from '@/api/live-telecast-manage'
-import { findUserListByGroupId } from '@/api/work-desk'
-import { getLabelListNoPagination } from '@/api/onlineclass-label-manage'
+import { chapetrList, chapetr_del } from '@/api/online-class/live-telecast-manage'
+import { findUserListByGroupId } from '@/api/work-desk/work-desk'
+import { getLabelListNoPagination } from '@/api/online-class/label-manage'
 import { isCurrentEgroupManager, hasThisBtnPermission } from '@/utils/permission'
 
 export default {

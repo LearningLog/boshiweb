@@ -140,7 +140,7 @@ import Pagination from '@/components/Pagination' // secondary package based on e
 import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
 import AddSelectGroup from '@/components/AddSelectGroup'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
-import { getAutomaticList, delAuto, publish, stop } from '@/api/evolutionManage-automatic'
+import { getAutomaticList, delAuto, publish, stop } from '@/api/evolution-manage/automatic'
 import { isCurrentEgroupManager, hasThisBtnPermission } from '@/utils/permission'
 
 export default {

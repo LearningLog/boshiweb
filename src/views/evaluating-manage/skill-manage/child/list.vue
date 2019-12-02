@@ -55,7 +55,7 @@
 </template>
 
 <script>
-import { skillManagerList } from '@/api/userCenter-skillManage'
+import { skillManagerList } from '@/api/user-center/skillManage'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 export default {
   components: { Pagination },

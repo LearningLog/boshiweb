@@ -76,7 +76,7 @@
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
-import { getExaminationList } from '@/api/evolutionManage-examination'
+import { getExaminationList } from '@/api/evolution-manage/examination'
 export default {
   components: { Pagination, TenantsGroupsRoles },
   data() {

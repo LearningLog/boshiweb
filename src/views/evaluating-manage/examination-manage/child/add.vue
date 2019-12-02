@@ -751,7 +751,7 @@
   </div>
 </template>
 <script>
-import { publishExam, publishExam2 } from '@/api/evolutionManage-examination'
+import { publishExam, publishExam2 } from '@/api/evolution-manage/examination'
 import AddLabels from '@/components/AddEvalLabels'
 import AddSkills from '@/components/AddEvalSkills'
 import Examiners from '@/components/Examiners'

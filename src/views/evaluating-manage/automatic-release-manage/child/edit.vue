@@ -488,12 +488,12 @@
   </div>
 </template>
 <script>
-import { getTopicCount } from '@/api/test-paper-manage'
+import { getTopicCount } from '@/api/evolution-manage/test-paper-manage'
 import {
   getDetail,
   submit,
   saveThenPublish
-} from '@/api/evolutionManage-automatic'
+} from '@/api/evolution-manage/automatic'
 import AddLabels from '@/components/AddEvalLabels'
 import AddSkills from '@/components/AddEvalSkills'
 import Examiners from '@/components/Examiners'

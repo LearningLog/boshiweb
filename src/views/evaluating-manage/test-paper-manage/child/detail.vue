@@ -68,7 +68,7 @@
 </template>
 
 <script>
-import { paperDetail } from '@/api/test-paper-manage'
+import { paperDetail } from '@/api/evolution-manage/test-paper-manage'
 import { getOptionOrderByIndex } from '@/utils/index'
 export default {
   data() {

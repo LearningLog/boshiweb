@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import { getItem } from '@/api/userCenter-skillManage'
+import { getItem } from '@/api/user-center/skillManage'
 
 export default {
   data() {

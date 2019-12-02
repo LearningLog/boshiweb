@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import { getCustomManageList, role_add } from '@/api/systemManage-roleManage'
+import { getCustomManageList, role_add } from '@/api/user-center//roleManage'
 export default {
   data() {
     return {

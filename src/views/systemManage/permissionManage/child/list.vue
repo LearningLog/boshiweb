@@ -69,7 +69,7 @@
 </template>
 
 <script>
-import { permission_list, permission_delet } from '@/api/systemManage-permissionManage.js'
+import { permission_list, permission_delet } from '@/api/system-manage/permissionManage.js'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 export default {
   components: { Pagination },

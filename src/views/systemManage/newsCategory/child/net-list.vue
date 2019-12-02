@@ -116,7 +116,7 @@
 </template>
 
 <script>
-import { net_list, net_delet, net_add, net_edit } from '@/api/systemManage-newsCategorry.js'
+import { net_list, net_delet, net_add, net_edit } from '@/api/system-manage/newsCategorry.js'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 

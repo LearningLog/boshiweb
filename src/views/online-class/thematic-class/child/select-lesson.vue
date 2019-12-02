@@ -95,8 +95,8 @@
 
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import { chapetrList } from '@/api/live-telecast-manage'
-import { selectChaptersToLesson } from '@/api/thematic-class'
+import { chapetrList } from '@/api/online-class/live-telecast-manage'
+import { selectChaptersToLesson } from '@/api/online-class/thematic-class'
 export default {
   components: { Pagination },
   data() {

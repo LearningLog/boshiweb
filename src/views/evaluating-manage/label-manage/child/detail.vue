@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { getOneLabel } from '@/api/evaluatingManage-labelManage.js'
+import { getOneLabel } from '@/api/evolution-manage/labelManage.js'
 
 export default {
   data() {

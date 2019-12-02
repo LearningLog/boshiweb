@@ -344,7 +344,7 @@
 </template>
 
 <script>
-import { intelligence, getTopicCount } from '@/api/test-paper-manage'
+import { intelligence, getTopicCount } from '@/api/evolution-manage/test-paper-manage'
 import AddLabels from '@/components/AddEvalLabels'
 import AddSkills from '@/components/AddEvalSkills'
 import store from '@/store'

@@ -171,9 +171,9 @@
 <script>
 import store from '@/store'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import { getFileList, getFileListManage, findUserListByGroupId, del, getDownloadToken, pushToKnowledge } from '@/api/work-desk'
-import { getCustomManageList } from '@/api/systemManage-roleManage'
-import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
+import { getFileList, getFileListManage, findUserListByGroupId, del, getDownloadToken, pushToKnowledge } from '@/api/work-desk/work-desk'
+import { getCustomManageList } from '@/api/user-center//roleManage'
+import { getUserEgroupInfo } from '@/api/user-center/groupManage'
 import { getFileShowSize, parseTime } from '@/utils/index'
 import elDragDialog from '@/directive/el-drag-dialog'
 import FilePreview from '@/components/FilePreview'

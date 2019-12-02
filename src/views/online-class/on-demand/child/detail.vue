@@ -44,7 +44,7 @@
 
 <script>
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
-import { getOneTenant } from '@/api/systemManage-tenantManage'
+import { getOneTenant } from '@/api/system-manage/tenantManage'
 
 export default {
   directives: { elDragDialog },

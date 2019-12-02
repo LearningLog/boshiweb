@@ -26,8 +26,8 @@
 </template>
 
 <script>
-import { getCustomManageList } from '@/api/systemManage-roleManage'
-import { getItem, modifyItem } from '@/api/userCenter-skillManage'
+import { getCustomManageList } from '@/api/user-center//roleManage'
+import { getItem, modifyItem } from '@/api/user-center/skillManage'
 
 export default {
   data() {

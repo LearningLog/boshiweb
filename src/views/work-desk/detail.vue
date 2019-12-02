@@ -59,7 +59,7 @@
 import clip from '@/utils/clipboard'
 import { getFileShowSize, parseTime } from '@/utils/index'
 import file_knowledge from '@/assets/images/file_knowledge.png'
-import { findFileById } from '@/api/work-desk'
+import { findFileById } from '@/api/work-desk/work-desk'
 
 export default {
   data() {

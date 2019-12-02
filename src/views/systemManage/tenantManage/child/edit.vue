@@ -150,8 +150,8 @@
 import { validIntNum } from '@/utils/validate'
 import { VueCropper } from 'vue-cropper'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
-import { getOneTenant, editTenant } from '@/api/systemManage-tenantManage'
-import { uploadFile } from '@/api/uploadFile'
+import { getOneTenant, editTenant } from '@/api/system-manage/tenantManage'
+import { uploadFile } from '@/api/upload-file'
 import { getToken } from '@/utils/auth'
 const $ = window.$
 

@@ -323,11 +323,11 @@
 <script>
 import { VueCropper } from 'vue-cropper'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
-import { getOneChapter, chapetrUpdate } from '@/api/live-telecast-manage'
-import { uploadFile } from '@/api/uploadFile'
+import { getOneChapter, chapetrUpdate } from '@/api/online-class/live-telecast-manage'
+import { uploadFile } from '@/api/upload-file'
 import { getToken } from '@/utils/auth'
-import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
-import { getEgroupAndUserinfo } from '@/api/userCenter-userManage'
+import { getUserEgroupInfo } from '@/api/user-center/groupManage'
+import { getEgroupAndUserinfo } from '@/api/user-center/userManage'
 import SelectFile from '@/components/SelectFile'
 import AddLessonEvalLabels from '@/components/AddLessonEvalLabels'
 const $ = window.$

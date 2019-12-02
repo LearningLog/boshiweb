@@ -62,7 +62,7 @@
 </template>
 
 <script>
-import { permission_edit, permission_det, permission_menu, permission_manage_type } from '@/api/systemManage-permissionManage.js'
+import { permission_edit, permission_det, permission_menu, permission_manage_type } from '@/api/system-manage/permissionManage.js'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 
 export default {

@@ -645,7 +645,7 @@
 </template>
 
 <script>
-import { addTestPaper } from '@/api/test-paper-manage'
+import { addTestPaper } from '@/api/evolution-manage/test-paper-manage'
 import AddLabels from '@/components/AddEvalLabels'
 import AddSkills from '@/components/AddEvalSkills'
 import MdInput from '@/components/MDinput'

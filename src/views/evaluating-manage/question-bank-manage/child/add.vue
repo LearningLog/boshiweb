@@ -766,7 +766,7 @@ import SelectFile from '@/components/SelectFile'
 import AddLabels from '@/components/AddEvalLabels'
 import AddSkills from '@/components/AddEvalSkills'
 import { getToken } from '@/utils/auth'
-import { importTopics, addTopic } from '@/api/question-bank-manage'
+import { importTopics, addTopic } from '@/api/evolution-manage/question-bank-manage'
 import { getOptionOrderByIndex } from '@/utils/index'
 const $ = window.$
 

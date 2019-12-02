@@ -52,8 +52,8 @@
 </template>
 
 <script>
-import { getCustomManageList, getAllQueryRole } from '@/api/systemManage-roleManage'
-import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
+import { getCustomManageList, getAllQueryRole } from '@/api/user-center//roleManage'
+import { getUserEgroupInfo } from '@/api/user-center/groupManage'
 
 export default {
   name: 'TenantsGroupsRoles',

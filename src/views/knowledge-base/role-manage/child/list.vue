@@ -90,7 +90,7 @@
 </template>
 
 <script>
-import { role_list, role_delete, deleteMultiRole } from '@/api/systemManage-roleManage.js'
+import { role_list, role_delete, deleteMultiRole } from '@/api/user-center//roleManage.js'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 export default {
   components: { Pagination },

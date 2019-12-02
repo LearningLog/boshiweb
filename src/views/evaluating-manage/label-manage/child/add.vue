@@ -16,9 +16,9 @@
 </template>
 
 <script>
-import { label_add } from '@/api/evaluatingManage-labelManage.js'
-import { getCustomManageList } from '@/api/systemManage-roleManage'
-import { getUserEgroupInfo } from '@/api/userCenter-groupManage'
+import { label_add } from '@/api/evolution-manage/labelManage.js'
+import { getCustomManageList } from '@/api/user-center//roleManage'
+import { getUserEgroupInfo } from '@/api/user-center/groupManage'
 export default {
   data() {
     return {

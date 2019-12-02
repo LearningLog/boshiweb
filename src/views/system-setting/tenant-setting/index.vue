@@ -119,8 +119,8 @@
 import { validIntNum } from '@/utils/validate'
 import { VueCropper } from 'vue-cropper'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
-import { getTenant, setTenant } from '@/api/systemManage-tenantManage'
-import { uploadFile } from '@/api/uploadFile'
+import { getTenant, setTenant } from '@/api/system-manage/tenantManage'
+import { uploadFile } from '@/api/upload-file'
 import { getToken } from '@/utils/auth'
 import store from '@/store'
 const $ = window.$

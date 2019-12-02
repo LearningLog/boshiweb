@@ -62,6 +62,7 @@
           <el-image
             v-if="scope.row.pcLogoFileUrl"
             class="thumbnail"
+            style="width: 100px; height: 100px; vertical-align: middle;"
             :src="scope.row.pcLogoFileUrl"
             fit="contain"
           />
@@ -116,7 +117,7 @@
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
-import { getAllTenantList, delTenant, batchDelTenant, getInformationList, setInformation, setCustomStatus } from '@/api/systemManage-tenantManage'
+import { getAllTenantList, delTenant, batchDelTenant, getInformationList, setInformation, setCustomStatus } from '@/api/system-manage/tenantManage'
 export default {
   components: { Pagination },
   directives: { elDragDialog },

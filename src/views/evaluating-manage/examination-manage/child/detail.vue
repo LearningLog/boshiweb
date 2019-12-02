@@ -130,7 +130,7 @@
 </template>
 
 <script>
-import { answerInfo, userGrade, topicGrade, oneAnswerInfo } from '@/api/evolutionManage-examination'
+import { answerInfo, userGrade, topicGrade, oneAnswerInfo } from '@/api/evolution-manage/examination'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import { getOptionOrderByIndex } from '@/utils/index'
 export default {

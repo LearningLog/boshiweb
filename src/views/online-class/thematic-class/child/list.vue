@@ -155,9 +155,9 @@ import Pagination from '@/components/Pagination' // secondary package based on e
 import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
 import AddSelectGroup from '@/components/AddSelectGroup'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
-import { getThematicClassList, deletethematicClass } from '@/api/thematic-class'
-import { findUserListByGroupId } from '@/api/work-desk'
-import { getLabelListNoPagination } from '@/api/onlineclass-label-manage'
+import { getThematicClassList, deletethematicClass } from '@/api/online-class/thematic-class'
+import { findUserListByGroupId } from '@/api/work-desk/work-desk'
+import { getLabelListNoPagination } from '@/api/online-class/label-manage'
 import { isCurrentEgroupManager, hasThisBtnPermission } from '@/utils/permission'
 
 export default {

@@ -96,7 +96,7 @@ import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
 import AddSelectGroup from '@/components/AddSelectGroup'
 import PublishExam from '@/components/PublishExam'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
-import { getExaminationList, delExam, examDetail, examUpdate } from '@/api/evolutionManage-examination'
+import { getExaminationList, delExam, examDetail, examUpdate } from '@/api/evolution-manage/examination'
 import { isCurrentEgroupManager, hasThisBtnPermission } from '@/utils/permission'
 
 export default {
