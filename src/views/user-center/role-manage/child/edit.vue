@@ -7,16 +7,7 @@
       <el-form-item label="角色描述">
         <el-input v-model="form.desc" placeholder="请输入角色描述" clearable />
       </el-form-item>
-      <el-form-item label="所属租户" prop="roleGroupId">
-        <el-select v-model="form.roleGroupId" placeholder="请选择所属租户" clearable filterable>
-          <el-option
-            v-for="item in custom_list"
-            :key="item._id"
-            :label="item.customname"
-            :value="item._id"
-          />
-        </el-select>
-      </el-form-item>
+      <tenants-groups-roles :is-render-role="false" :is-render-group="false" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" />
     </el-form>
     <div id="btnGroup">
       <el-button v-no-more-click type="primary" @click="save('form')">保存</el-button>
@@ -26,8 +17,10 @@
 </template>
 
 <script>
+import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
 import { getOneRole, getCustomManageList, role_edit } from '@/api/systemManage-roleManage'
 export default {
+  components: { TenantsGroupsRoles },
   data() {
     return {
       dataIsChange: 0, // 计数器，据此判断表单是否已编辑
@@ -67,7 +60,6 @@ export default {
   created() {
     this.id = this.$route.query.id
     this.getInitData()
-    this.getCustomManageList()
   },
   methods: {
     // 获取初始数据
@@ -77,12 +69,12 @@ export default {
         this.dataIsChange = -1
       })
     },
-    // 获取所属租户list
-    getCustomManageList() {
-      getCustomManageList().then(res => {
-        this.custom_list = res.data
-      })
+
+    // 监听三组数据变化
+    tenantsGroupsRolesVal(val) {
+      this.form.roleGroupId = val.companyIds
     },
+
     // 保存
     save(formName) {
       this.$refs[formName].validate((valid) => {

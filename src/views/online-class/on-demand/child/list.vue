@@ -123,7 +123,7 @@
       <el-table-column class-name="status-col" label="操作" width="230" align="center" fixed="right">
         <template slot-scope="scope">
           <el-button size="mini" :disabled="!hasThisBtnPermission('video-edit', scope.row.egroup)" @click="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
-          <el-button size="mini" :disabled="!hasThisBtnPermission('video-delete', scope.row.egroup)" @click="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
+          <el-button size="mini" :disabled="!hasThisBtnPermission('video-delete', scope.row.egroup) || userId === scope.row.user_id || (isSystemManage && userGroupId === scope.row.groupId)" @click="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
           <el-dropdown trigger="click">
             <el-button size="mini">
               <i class="iconfont icongengduo" />更多
@@ -200,10 +200,16 @@ export default {
       lablesList: [], // 标签list
       listLoading: true, // 是否开启表格遮罩
       popoverVisible: false, // 是否开启高级搜索
-      checkedDelList: [] // 选择的list
+      checkedDelList: [], // 选择的list
+      userId: '', // 当前登录用户id
+      userGroupId: '', // 当前登录用户 租户id
+      isSystemManage: '' // 当前登录用户是否为租户管理员
     }
   },
   created() {
+    this.userId = this.$store.state.user.userSystemInfo.userInfo._id
+    this.userGroupId = this.$store.state.user.userSystemInfo.userInfo.groupId
+    this.isSystemManage = this.$store.state.user.isSystemManage
     this.get_list()
     this.getCreater()
     this.getLablesList()

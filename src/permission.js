@@ -13,7 +13,8 @@ const whiteList = ['/login'] // 免登录白名单
 router.beforeEach(async(to, from, next) => {
   // start progress bar
   NProgress.start()
-
+  // 隐藏上传组件
+  store.dispatch('fileUpload/isVisibility', 2)
   // set page title
   document.title = getPageTitle(to.meta.title)
 

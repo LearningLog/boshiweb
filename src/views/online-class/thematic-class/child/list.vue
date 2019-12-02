@@ -134,7 +134,7 @@
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item :disabled="!hasThisBtnPermission('lesson-detail', scope.row.egroup)" @click.native="detail(scope.row)"><i class="iconfont iconxiangqing" />专题详情</el-dropdown-item>
               <el-dropdown-item :disabled="!hasThisBtnPermission('lesson-edit', scope.row.egroup)" @click.native="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-dropdown-item>
-              <el-dropdown-item :disabled="!hasThisBtnPermission('lesson-delete', scope.row.egroup)" @click.native="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-dropdown-item>
+              <el-dropdown-item :disabled="!hasThisBtnPermission('lesson-delete', scope.row.egroup) || userId === scope.row.user_id || (isSystemManage && userGroupId === scope.row.groupId)" @click="del(scope.row)" @click.native="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </template>
@@ -202,10 +202,16 @@ export default {
       lablesList: [], // 标签list
       listLoading: true, // 是否开启表格遮罩
       popoverVisible: false, // 是否开启高级搜索
-      checkedDelList: [] // 选择的list
+      checkedDelList: [], // 选择的list
+      userId: '', // 当前登录用户id
+      userGroupId: '', // 当前登录用户 租户id
+      isSystemManage: '' // 当前登录用户是否为租户管理员
     }
   },
   created() {
+    this.userId = this.$store.state.user.userSystemInfo.userInfo._id
+    this.userGroupId = this.$store.state.user.userSystemInfo.userInfo.groupId
+    this.isSystemManage = this.$store.state.user.isSystemManage
     this.get_list()
     this.getCreater()
     this.getLablesList()
