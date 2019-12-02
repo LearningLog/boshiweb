@@ -1434,14 +1434,18 @@ export default {
   }
   .app-dataScreening-listTags{
     padding:0 20px;
+    height: 40px;
   }
   .app-dataScreening-listTagsBox{
     border:1px solid #20C7B2;
   }
+  .app-dataScreening-listTagsBox clearfix{
+    height: 40px;
+  }
   .app-dataScreening-listTags-item{
     width: 50%;
-    height: 50px;
-    line-height: 50px;
+    height: 40px;
+    line-height: 40px;
     text-align: center;
     font-size: 16px;
     color: #20C7B2;
@@ -1450,6 +1454,7 @@ export default {
   .app-dataScreening-listTags-item.listTagsActive{
     background: #20C7B2;
     color: #fff;
+    height: 40px;
   }
   .app-dataScreening-listTable{
     padding:0 20px;
@@ -1578,5 +1583,7 @@ export default {
   .w45{
     width:45%;
   }
-
+  /deep/ .el-table .el-table__header thead tr th{
+    background-color: #ffffff;
+  }
 </style>
