@@ -312,7 +312,6 @@ export default {
 
     // 删除节点
     deleteNode(node, data) {
-      console.log(node)
       this.$confirm('确定要删除【' + data.title + '】吗？', '删除主题', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',

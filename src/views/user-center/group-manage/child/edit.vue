@@ -147,7 +147,6 @@ export default {
       }
       findUserListByGroupId(data).then(res => {
         this.alluserList = res.data
-        console.log('this.alluserList ', this.alluserList)
       })
     },
     // 获取所属租户list

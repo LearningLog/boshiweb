@@ -497,9 +497,7 @@ export default {
           that.YZ_id = res.data
           that.show_first_fn()
         }
-      }).catch((res) => {
-        console.log(res)
-      })
+      }).catch((res) => {})
     },
 
     // 手机号第一次登录的弹窗
@@ -511,9 +509,7 @@ export default {
         type: 'warning'
       }).then(() => {
         that.first_sendsms_fn()
-      }).catch(() => {
-        console.log('取消激活')
-      })
+      }).catch(() => {})
     },
 
     // 手机号第一次登录的发送验证码
@@ -567,7 +563,6 @@ export default {
         param.sms_token = that.YZMDT.sms_token
         param.sms_code = that.first_sms
         validate_first_sms(param).then(res => {
-          console.log('验证成功！')
           that.login_fn()
           // that.$router.push({ path: this.redirect || '/' })
         }).catch(error => {
@@ -615,7 +610,6 @@ export default {
         }
         count--
       }, 1000)
-      console.log(that.forget_down)
     },
 
     // 重置密码登录
