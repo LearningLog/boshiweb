@@ -238,8 +238,27 @@
       <el-button type="primary" @click="classifySelectedConfirm">确定</el-button>
       <el-button @click="treeDialogVisible = false">取 消</el-button>
     </el-dialog>
-    <el-dialog v-el-drag-dialog class="createFolders" width="650px" title="创建文件夹" :visible.sync="crateFolderDialogVisible">
+    <el-dialog v-el-drag-dialog class="createFolders" width="650px" title="创建文件夹" :visible.sync="crateFolderDialogVisible" >
       <el-form ref="ruleForm" :model="ruleForm" :rules="rules" label-width="100px" class="demo-ruleForm">
+        <el-form-item label="所属租户" v-show="listQuery.selectCompanyId==''">
+          <el-select
+            v-if="isSystemManage"
+            v-model="listQuery.selectCompanyId"
+            placeholder="请选择所属租户"
+            clearable
+            filterable
+            @change="companyChange($event)"
+          >
+            <el-option
+              v-for="item in custom_list"
+              :key="item._id"
+              :label="item.customname"
+              :value="item._id"
+            />
+          </el-select>
+        </el-form-item>
+        
+
         <el-form-item label="目录名称" prop="name">
           <el-input v-model="ruleForm.name" />
         </el-form-item>
@@ -868,13 +887,13 @@ export default {
     },
     // 创建文件夹
     createFolder() {
-      if (!this.listQuery.selectCompanyId) {
-        this.$message({
-          message: '请先勾选租户',
-          type: 'warning'
-        })
-        return false
-      }
+      // if (!this.listQuery.selectCompanyId) {
+      //   this.$message({
+      //     message: '请先勾选租户',
+      //     type: 'warning'
+      //   })
+      //   return false
+      // }
       this.crateFolderDialogVisible = true
     },
     // 创建文件夹确认
