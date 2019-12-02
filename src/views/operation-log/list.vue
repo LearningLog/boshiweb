@@ -8,10 +8,10 @@
       <transition name="fade-advanced-search">
         <el-row v-show="popoverVisible">
           <el-card id="advancedSearchArea" shadow="never">
-            <el-form ref="form" :model="listQuery" label-width="100px">
+            <el-form ref="form" :model="listQuery1" label-width="100px">
               <tenants-groups-roles :is-render-role="false" :is-reset="isReset" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" @resetVal="resetVal" />
               <el-form-item label="模块名称">
-                <el-select v-model="listQuery1.egroup" placeholder="请选择模块" clearable filterable>
+                <el-select v-model="listQuery1.module" placeholder="请选择模块" clearable filterable>
                   <el-option
                     v-for="item in moduleList"
                     :key="item.value"
@@ -154,7 +154,13 @@ export default {
     },
     // 搜索
     topSearch() {
+      const egroup = this.listQuery1.egroup
       this.listQuery = JSON.parse(JSON.stringify(this.listQuery1))
+      this.listQuery.egroup = []
+      if (egroup) {
+        this.listQuery.egroup.push(this.listQuery1.egroup)
+      }
+
       this.get_list()
     },
     // 重置
