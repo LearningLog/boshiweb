@@ -148,11 +148,10 @@
         width="55"
         :selectable="selectable"
       />
-      <el-table-column align="left" label="文件名" show-overflow-tooltip min-width="200">
+   <el-table-column  label="文件名" show-overflow-tooltip min-width="200">
         <!-- <template slot-scope="scope">
           <el-link type="primary" @click="detail(scope.row)">{{ scope.row.fileName }}</el-link>
         </template> -->
-
         <template slot-scope="{row}">
           <template v-if="row.edit">
             <el-input v-model="row.fileName" class="edit-input" size="mini" @input="modifyFileNameChange(row,$event)" />
@@ -165,13 +164,20 @@
               取消
             </el-button>
           </template>
-          <div style="text-align:left;" v-else @click="enterFolder(row)">
-
+          <div style="text-align:left;cursor:pointer;" v-else @click="enterFolder(row)">
+            <span  @click="preview(row)" v-if="row.fileAttributeDesc!=='dir'">
             <svg class="icon" aria-hidden="true" style="font-size:18px;">
               <use :xlink:href="parseTypeOfFile(row)" />
             </svg>
+            </span>
+            <span v-if="row.fileAttributeDesc==='dir'">
+            <svg class="icon" aria-hidden="true" style="font-size:18px;">
+              <use :xlink:href="parseTypeOfFile(row)" />
+            </svg>
+            </span>
             <!-- <i v-if="row.fileAttributeDesc==='dir'" class="iconfont iconwenjianjia" /> -->
-            {{ row.fileName }}
+          <span  @click="preview(row)" v-if="row.fileAttributeDesc!=='dir'"> {{ row.fileName }} </span>   
+          <span  v-if="row.fileAttributeDesc==='dir'"> {{ row.fileName }} </span>   
           </div>
         </template>
 
