@@ -489,7 +489,7 @@ export default {
       param.password = pwd
       that.$store.dispatch('user/login', param).then((res) => {
         if (res.code === 0) {
-          let toPath = ('#' + (this.redirect || ' '))
+          let toPath = ('#' + (this.redirect || '/'))
           toPath = createFullUrl(toPath)
           window.location.href = toPath
         }

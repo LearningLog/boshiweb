@@ -12,15 +12,23 @@
       </div>
       <div class="sms echarts">
         <div class="smsPercent percent">
-          <span>{{ form.noticeTotalSms + form.codeTotalSms }}</span><span>/</span><span>{{ form.usedTotalSms }}</span>
+          <span>{{ form.usedTotalSms }}</span><span>/</span><span>{{ form.totalSms || '--' }}</span>
         </div>
         <div id="sms" class="item" />
       </div>
+    </div>
+    <div class="echartsDom">
       <div class="storageSpace echarts">
         <div class="storageSpacePercent percent">
-          <span>{{ getFileShowSizeToG(form.usedStorageSpace) }}</span><span>/</span><span>{{ getFileShowSizeToG(form.totalStorageSpace) }}</span>
+          <span>{{ getFileShowSizeToG(form.workDeskStorageSpace + form.enterpriseKnowledgeLibStorageSpace + form.groupKnowledgeLibStorageSpace + form.classroomStorageSpace + form.evaluationStorageSpace ) }}G</span>
         </div>
         <div id="storageSpace" class="item" />
+      </div>
+      <div class="storageSpace2 echarts">
+        <div class="storageSpacePercent percent">
+          <span>{{ getFileShowSizeToG(form.usedStorageSpace) }}</span><span>/</span><span>{{  form.totalStorageSpace ? getFileShowSizeToG(form.totalStorageSpace) : '--' }}</span>
+        </div>
+        <div id="storageSpace2" class="item" />
       </div>
     </div>
   </div>
@@ -47,11 +55,16 @@ export default {
   methods: {
     // 获取初始数据
     getInitData() {
-      getCustomResourceDetail({ _id: this.id }).then(response => {
+      getCustomResourceDetail({ _id: this.$store.state.user.userSystemInfo.userInfo.groupId }).then(response => {
         this.form = response.data
         this.form.startTime = response.data.startTime || ''
         this.form.endTime = response.data.endTime || ''
-        this.form.surplusSpace = response.data.totalStorageSpace - response.data.usedStorageSpace
+        this.form.surplusSpace = Math.abs(response.data.totalStorageSpace - response.data.usedStorageSpace)
+        this.form.workDeskStorageSpace = response.data.workDeskStorageSpace || 0
+        this.form.enterpriseKnowledgeLibStorageSpace = response.data.enterpriseKnowledgeLibStorageSpace || 0
+        this.form.groupKnowledgeLibStorageSpace = response.data.groupKnowledgeLibStorageSpace || 0
+        this.form.classroomStorageSpace = response.data.classroomStorageSpace || 0
+        this.form.evaluationStorageSpace = response.data.evaluationStorageSpace || 0
         this.initCharts()
       })
     },
@@ -59,8 +72,10 @@ export default {
       this.userCountChart = echarts.init(document.getElementById('userCount'))
       this.smsChart = echarts.init(document.getElementById('sms'))
       this.storageSpaceChart = echarts.init(document.getElementById('storageSpace'))
+      this.storageSpaceChart2 = echarts.init(document.getElementById('storageSpace2'))
       this.userCountChartOptions()
       this.smsChartOptions()
+      this.storageStatisticsChartOptions()
       this.storageSpaceChartOptions()
     },
     // 员工规模
@@ -88,7 +103,7 @@ export default {
             center: ['50%', '50%'],
             data: [
               { value: this.form.createdUserCount * 1, name: '已创建用户' },
-              { value: (this.form.totalUserCount * 1) - (this.form.createdUserCount * 1), name: '最大用户数' }
+              { value: this.form.totalUserCount ? ((this.form.totalUserCount * 1) - (this.form.createdUserCount * 1)) : 0, name: '最大用户数' }
             ],
             itemStyle: {
               emphasis: {
@@ -127,7 +142,7 @@ export default {
             data: [
               { value: (this.form.noticeTotalSms * 1), name: '通知类短信' },
               { value: (this.form.codeTotalSms * 1), name: '验证码短信' },
-              { value: (this.form.totalUserCount * 1) - (this.form.noticeTotalSms * 1) - (this.form.codeTotalSms * 1), name: '剩余短信' }
+              { value: this.form.totalSms ? ((this.form.totalUserCount * 1) - (this.form.usedTotalSms * 1)) : 0, name: '剩余短信' }
             ],
             itemStyle: {
               emphasis: {
@@ -140,12 +155,12 @@ export default {
         ]
       })
     },
-    // 存储空间
-    storageSpaceChartOptions() {
+    // 存储统计
+    storageStatisticsChartOptions() {
       this.storageSpaceChart.setOption({
-        color: ['#F96146', '#F9B346', '#469BFA', '#20C7B3', '#8F63DE', '#ccc'], // 环形图每块的颜色
+        color: ['#F96146', '#F9B346', '#469BFA', '#20C7B3', '#8F63DE'], // 环形图每块的颜色
         title: {
-          text: '存储空间（G）',
+          text: '存储统计（G）',
           x: 'left'
         },
         tooltip: {
@@ -156,13 +171,13 @@ export default {
           orient: 'horizontal',
           top: 'bottom',
           x: 'center',
-          data: ['个人工作台', '企业知识库', '小组知识库', '在线课堂', '评测管理', '剩余空间']
+          data: ['个人工作台', '企业知识库', '小组知识库', '在线课堂', '评测管理']
         },
         series: [
           {
             name: '访问来源',
             type: 'pie',
-            radius: ['36%', '56%'],
+            radius: '55%',
             center: ['50%', '50%'],
             avoidLabelOverlap: false,
             label: {
@@ -191,21 +206,70 @@ export default {
               { value: this.getFileShowSizeToG(this.form.enterpriseKnowledgeLibStorageSpace), name: '企业知识库' },
               { value: this.getFileShowSizeToG(this.form.groupKnowledgeLibStorageSpace), name: '小组知识库' },
               { value: this.getFileShowSizeToG(this.form.classroomStorageSpace), name: '在线课堂' },
-              { value: this.getFileShowSizeToG(this.form.evaluationStorageSpace), name: '评测管理' },
-              { value: this.getFileShowSizeToG(this.form.surplusSpace), name: '剩余空间' }
+              { value: this.getFileShowSizeToG(this.form.evaluationStorageSpace), name: '评测管理' }
             ]
           }
         ]
       })
     },
-    // 确定
-    confirm() {
-      this.$router.push({ path: '/enterpriseData/list' })
+    // 存储空间
+    storageSpaceChartOptions() {
+      this.storageSpaceChart2.setOption({
+        color: ['#20C7B3', '#ccc'], // 环形图每块的颜色
+        title: {
+          text: '存储空间（G）',
+          x: 'left'
+        },
+        tooltip: {
+          trigger: 'item',
+          formatter: '{a} <br/>{b}: {c} ({d}%)'
+        },
+        legend: {
+          orient: 'horizontal',
+          top: 'bottom',
+          x: 'center',
+          data: ['已使用空间', '剩余空间']
+        },
+        series: [
+          {
+            name: '访问来源',
+            type: 'pie',
+            radius: '55%',
+            center: ['50%', '50%'],
+            avoidLabelOverlap: false,
+            label: {
+              normal: {
+                show: true,
+                position: 'outside'
+              },
+              emphasis: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: 'rgba(0, 0, 0, 0.5)'
+              }
+            },
+            labelLine: {
+              normal: {
+                show: true,
+                length: 20,
+                length2: 20,
+                lineStyle: {
+                  color: '#333'
+                }
+              }
+            },
+            data: [
+              { value: this.getFileShowSizeToG(this.form.usedStorageSpace), name: '已使用空间' },
+              { value: this.form.totalStorageSpace ? this.getFileShowSizeToG(this.form.totalStorageSpace - this.form.usedStorageSpace) : 0, name: '剩余空间' }
+            ]
+          }
+        ]
+      })
     },
     parseTime(time, cFormat) {
       return parseTime(time, cFormat)
     },
-    // 获取存储空间大小，G
+    // 获取存储统计大小，G
     getFileShowSizeToG(fileSize) {
       if (fileSize) {
         var KLength = 1024
@@ -226,7 +290,6 @@ export default {
       }
     }
   }
-
 }
 </script>
 
@@ -247,13 +310,12 @@ export default {
     justify-content: space-between; /*元素两端对齐，中间等分；*/
 
     & .echarts {
+      display: inline-block;
       position: relative;
-      width: 32%;
+      width: 49%;
       height: 300px;
-      /*margin-right: 24px;*/
       box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
       padding: 10px;
-      /*box-sizing: content-box;*/
     }
 
     & .storageSpace {

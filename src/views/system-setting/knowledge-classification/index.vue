@@ -89,7 +89,7 @@
         <el-button
           type="primary"
           plain
-          @click="cancel"
+          @click="cancel1"
         >取消</el-button>
       </div>
     </el-dialog>
@@ -118,7 +118,7 @@
         <el-button
           type="primary"
           plain
-          @click="cancel"
+          @click="cancel2"
         >取消</el-button>
       </div>
     </el-dialog>
@@ -330,15 +330,13 @@ export default {
         .catch(() => {})
     },
 
-    cancel() {
+    cancel1() {
       this.createTreeVisible = false
-      this.editTreeVisible = false
-      // this.theme.treeId = ''
-      // this.theme.parentId = ''
-      // this.theme.nodeId = ''
-      // this.theme.treeName = ''
-      // this.theme.nodeName = ''
       this.$refs.createTheme.resetFields()
+    },
+
+    cancel2() {
+      this.editTreeVisible = false
       this.$refs.editTheme.resetFields()
     }
   }
