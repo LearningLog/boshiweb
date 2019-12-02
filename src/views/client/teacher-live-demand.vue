@@ -6,6 +6,7 @@
         <div class="fr">
           <div class="pointer share">
             <el-popover
+              popper-class="sharePopover"
               placement="bottom"
               width="114"
               height="120"
@@ -874,7 +875,7 @@ $border_color: #243752;
     margin: 0 20px;
   }
 }
-.share /deep/ .el-popover {
+/deep/ .sharePopover.el-popover {
   min-width: 114px !important;
 }
 

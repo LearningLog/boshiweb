@@ -11,6 +11,7 @@
           <div class="fr">
             <div class="pointer share">
               <el-popover
+                popper-class="sharePopover"
                 placement="bottom"
                 width="114"
                 height="120"

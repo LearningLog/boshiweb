@@ -159,3 +159,8 @@ ul,li { padding:0;margin:0;list-style:none}
 .vjs-button > .vjs-icon-placeholder:before {
     line-height: 2;
 }
+
+// 修改直播端分享弹出层样式
+.el-popover.sharePopover {
+    min-width: 114px!important;
+}
