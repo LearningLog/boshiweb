@@ -5,7 +5,14 @@
  * @remarks:
  */
 import request from '@/utils/request'
-
+// 获取用户下拉列表
+export function findUserListByGroupId(data) {
+  return request({
+    url: 'system/userV2/findUserListByGroupId',
+    method: 'post',
+    data
+  })
+}
 // 所属租户列表
 export function getCustomManageList() {
   return request({

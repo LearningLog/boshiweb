@@ -107,7 +107,7 @@
         width="55"
         :selectable="selectable"
       />
-      <el-table-column align="center" label="文件名" show-overflow-tooltip min-width="200">
+      <el-table-column align="left" label="文件名" show-overflow-tooltip min-width="200">
         <!-- <template slot-scope="scope">
           <el-link type="primary" @click="detail(scope.row)">{{ scope.row.fileName }}</el-link>
         </template> -->
@@ -124,7 +124,7 @@
               取消
             </el-button>
           </template>
-          <div v-else @click="enterFolder(row)">
+          <div style="text-align:left;" v-else @click="enterFolder(row)">
 
             <svg class="icon" aria-hidden="true" style="font-size:18px;">
               <use :xlink:href="parseTypeOfFile(row)" />
@@ -910,6 +910,13 @@ export default {
     },
     // 收藏
     shareFileToWorkDesk(row) {
+      if(row.fileAttributeDesc==='dir'){
+              this.$message({
+            message: '只有文件才可以收藏',
+            type: 'warning'
+          })
+        return 
+      }
       this.$confirm('确定要收藏到工作台吗？', '收藏到工作台', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -955,7 +962,7 @@ export default {
     },
     // 启动上传
     showUpload() {
-      if (!this.listQuery.selectCompanyId) {
+      if (!this.listQuery.ownerId) {
         this.$message({
           message: '请先勾选小组',
           type: 'warning'
