@@ -73,7 +73,6 @@
       <el-button type="primary" @click="classifySelected"><i class="iconfont iconzengjia" />加入知识分类</el-button>
       <el-button type="primary" @click="showUpload"><i class="iconfont iconzengjia" />上传资料</el-button>
     </div>
-
     <div class="pathNav">
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item v-if="pathNavData.length > 0" @click.native="goback()">返回上一级</el-breadcrumb-item>
@@ -207,7 +206,7 @@
       <el-button type="primary" @click="classifySelectedConfirm">确定</el-button>
       <el-button @click="treeDialogVisible = false">取 消</el-button>
     </el-dialog>
-    <el-dialog v-el-drag-dialog class="createFolders" width="650px"title="创建文件夹" :visible.sync="crateFolderDialogVisible">
+    <el-dialog v-el-drag-dialog class="createFolders" width="650px" title="创建文件夹" :visible.sync="crateFolderDialogVisible">
       <el-form ref="ruleForm" :model="ruleForm" :rules="rules" label-width="100px" class="demo-ruleForm">
         <el-form-item label="目录名称" prop="name">
           <el-input v-model="ruleForm.name" />
@@ -966,7 +965,7 @@ export default {
     },
     // 启动上传
     showUpload() {
-      if (!this.selectedRow.length) {
+      if (!this.listQuery.selectCompanyId) {
         this.$message({
           message: '请先勾选小组',
           type: 'warning'
