@@ -82,7 +82,7 @@ export default {
       } else if (oneValue instanceof Object) {
         type = 'object'
       } else {
-        console.log(key + ' -- noType :' + oneValue + ', typeof: ' + typeof (oneValue))
+        // console.log(key + ' -- noType :' + oneValue + ', typeof: ' + typeof (oneValue))
       }
       return type
     },

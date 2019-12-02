@@ -197,7 +197,6 @@ export default {
     }
   },
   created() {
-    console.log(this.$store.state.user.allEgroup)
     this.get_list()
     // this.get_topic_label_list()
     // this.get_topic_skill_list()

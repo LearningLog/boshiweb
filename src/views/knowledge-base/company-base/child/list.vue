@@ -557,16 +557,11 @@ export default {
       this.fileUploadPara.ownerId = this.listQuery.selectCompanyId
       this.fileUploadPara.parentId = this.pathNavData.length > 0 ? this.pathNavData[this.pathNavData.length - 1].id : this.listQuery.selectCompanyId
       this.fileUploadPara.selectCompanyId = this.listQuery.selectCompanyId
-
-      console.log('上传parentId', this.fileUploadPara.parentId)
       this.getDirList()
     },
 
     // 文件路径path--end
     modifyFileNameChange(row, val) {
-      console.log(row)
-      console.log(val)
-
       const reg = new RegExp('[\\\\/:*?\"<>|]')
       if (reg.test(val)) {
         row.fileName = row.originalTitle
@@ -583,7 +578,6 @@ export default {
         const dataForTree = res.data.treeList.map((v, k, arr) => {
           return v.node
         })
-        console.log(dataForTree)
         this.dataForTree = dataForTree
       })
     },
@@ -640,7 +634,6 @@ export default {
     async  getDirList() {
       this.listLoading = true
       const { data } = await listDirFile(this.listQuery)
-      console.log(data)
       this.listLoading = false
       this.userInfoForList = data.userInfo
       this.list = data.page.list.map(v => {
@@ -678,8 +671,6 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        console.log(this.selectedRow)
-        console.log(this.$refs.classifyTree.getCheckedNodes())
         const fileIds = this.selectedRow.map((v, k, arr) => {
           return v.fileId
         })
@@ -808,7 +799,6 @@ export default {
           // parentId: "5db82db59a301f2f0a77221a"
           // selectCompanyId: "5db82db59a301f2f0a77221a
         } else {
-          console.log('error submit!!')
           return false
         }
       })

@@ -1068,7 +1068,6 @@ export default {
       this.radio1 = option_id_time_stamp
       this[this.topic0].topic_option[index].correct_option = 1
       this[this.topic0].topic_option[index].check = true
-      console.log(this[this.topic0].topic_option)
     },
 
     // 题目选项多选

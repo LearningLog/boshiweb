@@ -174,7 +174,6 @@ export default {
     },
     // 点击裁剪，这一步是可以拿到处理后的地址
     finish(type) {
-      console.log('finish')
       // let _this = this
       const formData = new FormData()
       // 输出
@@ -211,9 +210,7 @@ export default {
       this.previews = data
     },
     // 图片加载情况
-    imgLoad(msg) {
-      console.log(msg)
-    }
+    imgLoad(msg) {}
   }
 }
 </script>

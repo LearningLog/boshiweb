@@ -143,8 +143,6 @@ export default {
     save() {
       const menuTree = this.$refs.menuTree.getCheckedNodes()
       this.getMenuidsAndPermissionids(menuTree)
-      console.log('menuids', this.menuids)
-      console.log('permissionids', this.permissionids)
       const param = {
         _id: this.id,
         manageType: this.manageType,
