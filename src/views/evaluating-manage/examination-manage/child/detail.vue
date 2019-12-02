@@ -50,8 +50,16 @@
           >
             <el-table-column align="center" label="员工" min-width="120" show-overflow-tooltip prop="nickname" />
             <el-table-column align="center" label="所属分组" min-width="100" show-overflow-tooltip prop="user_group" />
-            <el-table-column align="center" label="答题时间" min-width="140" show-overflow-tooltip prop="time_consuming" />
-            <el-table-column align="center" label="用时" min-width="140" show-overflow-tooltip prop="time_consuming" />
+            <el-table-column align="center" label="答题时间" min-width="140" show-overflow-tooltip prop="u_time">
+<!--              <template slot-scope="scope">-->
+<!--                {{ changTime(scope.row.u_time)}}-->
+<!--              </template>-->
+            </el-table-column>
+            <el-table-column align="center" label="用时" min-width="140" show-overflow-tooltip>
+              <template slot-scope="scope">
+                {{ changTime(scope.row. time_consuming)}}
+              </template>
+            </el-table-column>
             <el-table-column align="center" label="得分" min-width="60" show-overflow-tooltip prop="answer_score" />
             <el-table-column align="center" label="错误数" min-width="50" show-overflow-tooltip prop="error_sum" />
             <el-table-column class-name="status-col" label="操作" width="100" align="center" fixed="right">
@@ -135,6 +143,7 @@ import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import { getOptionOrderByIndex } from '@/utils/index'
 export default {
   directives: { elDragDialog },
+  filters: {},
   data() {
     return {
       answerInfodialog: false,
@@ -213,6 +222,13 @@ export default {
     // 确定
     confirm() {
       this.$router.push({ path: '/evaluating-manage/examination-manage/list' })
+    },
+    changTime(msTime) {
+      const time = msTime / 1000
+      const hour = Math.floor(time / 60 / 60) % 24
+      const minute = Math.floor(time / 60) % 60
+      const second = Math.floor(time) % 60
+      return `${hour}时${minute}分${second}秒`
     }
   }
 }
