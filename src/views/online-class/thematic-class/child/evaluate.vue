@@ -39,6 +39,15 @@
               score-template="{value}"
             />
           </el-form-item>
+          <el-form-item label="上课体验：">
+            <el-rate
+              v-model="form.generalData.experience_level"
+              disabled
+              show-score
+              text-color="#ff9900"
+              score-template="{value}"
+            />
+          </el-form-item>
         </el-col>
       </el-row>
     </el-form>

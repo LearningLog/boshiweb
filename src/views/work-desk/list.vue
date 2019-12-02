@@ -546,7 +546,7 @@ export default {
       console.log(this.selectNodes)
       const ownerId = this.selectNodes[0].id
       pushToKnowledge({ fileId: this.getFileListData(this.fileId)._id, ownerId: ownerId + '', parentId: ownerId + '', fileIdList: this.fileIdList }).then(() => {
-        this.$message.warning('推送成功！')
+        this.$message.success('推送成功！')
       })
       this.menu_tree_flag = false
     },
