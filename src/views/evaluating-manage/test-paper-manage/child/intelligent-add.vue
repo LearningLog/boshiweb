@@ -749,6 +749,7 @@ export default {
 .count .judge {
   margin-bottom: 20px;
   color: #999;
+  font-size: 14px;
 }
 .tag {
   display: inline;

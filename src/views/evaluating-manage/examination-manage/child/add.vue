@@ -793,7 +793,7 @@ export default {
     return {
       publishDialog: false, // 发布考试弹窗
       editTopicDrawer: false, // 编辑抽屉
-      dataIsChange: 0, // 计数器，据此判断表单是否已编辑
+      dataIsChange: -1, // 计数器，据此判断表单是否已编辑
       noLeaveprompt: false, // 表单提交后，设置为true，据此判断提交不再弹出离开提示
       activeStep: 1, // 当前激活步骤
       createType: '1', // 默认新创建试卷

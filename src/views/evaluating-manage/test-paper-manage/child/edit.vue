@@ -10,17 +10,17 @@
           v-no-more-click
           type="primary"
           @click="cancel0"
-        ><i class="addIcon iconfont iconcancel" />取消</el-button>
+        >取消</el-button>
         <el-button
           v-no-more-click
           type="primary"
           @click="publishTestPaper"
-        ><i class="addIcon iconfont iconfabu" />发布考试</el-button>
+        >发布考试</el-button>
         <el-button
           v-no-more-click
           type="primary"
           @click="saveTestPaper"
-        ><i class="addIcon iconfont iconbaocun" />保存考试</el-button>
+        >保存考试</el-button>
       </div>
     </div>
     <div>
@@ -1449,6 +1449,7 @@ export default {
   }
   #add-test-paper>.el-scrollbar {
     height: calc(100vh - 230px);
+    width: 100%;
   }
 
   /*==============================================================*/
