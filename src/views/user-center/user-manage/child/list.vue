@@ -65,7 +65,7 @@
           {{ scope.row.egroups }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="状态" min-width="60" show-overflow-tooltip>
+      <el-table-column align="center" label="状态" min-width="70" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-tag v-if="scope.row.userStatus === 1" type="success">生效</el-tag>
           <el-tag v-else type="danger">失效</el-tag>

@@ -61,14 +61,14 @@
         width="50"
         fixed
       />
-      <el-table-column align="center" label="考试名称" min-width="70" show-overflow-tooltip prop="exam_name" />
-      <el-table-column align="center" label="小组" min-width="40" show-overflow-tooltip prop="groupName" />
-      <el-table-column align="center" label="题目数" min-width="30" show-overflow-tooltip prop="topic_count" />
-      <el-table-column align="center" label="总分数" min-width="30" show-overflow-tooltip prop="score_count" />
-      <el-table-column align="center" label="及格分数" min-width="30" show-overflow-tooltip prop="passscore" />
-      <el-table-column align="center" label="开始时间" min-width="40" show-overflow-tooltip prop="begin_time" />
-      <el-table-column align="center" label="结束时间" min-width="40" show-overflow-tooltip prop="end_time" />
-      <el-table-column align="center" label="考试状态" min-width="40" show-overflow-tooltip prop="examstatus" />
+      <el-table-column align="center" label="考试名称" min-width="120" show-overflow-tooltip prop="exam_name" />
+      <el-table-column align="center" label="小组" min-width="120" show-overflow-tooltip prop="groupName" />
+      <el-table-column align="center" label="题目数" min-width="70" show-overflow-tooltip prop="topic_count" />
+      <el-table-column align="center" label="总分数" min-width="70" show-overflow-tooltip prop="score_count" />
+      <el-table-column align="center" label="及格分数" min-width="86" show-overflow-tooltip prop="passscore" />
+      <el-table-column align="center" label="开始时间" min-width="140" show-overflow-tooltip prop="begin_time" />
+      <el-table-column align="center" label="结束时间" min-width="140" show-overflow-tooltip prop="end_time" />
+      <el-table-column align="center" label="考试状态" min-width="90" show-overflow-tooltip prop="examstatus" />
 
       <el-table-column class-name="status-col" label="操作" width="250" align="center" fixed="right">
         <template slot-scope="scope">

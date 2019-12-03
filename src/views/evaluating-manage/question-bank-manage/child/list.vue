@@ -91,7 +91,7 @@
         width="50"
         fixed
       />
-      <el-table-column align="center" show-overflow-tooltip label="题型" min-width="40">
+      <el-table-column align="center" show-overflow-tooltip label="题型" min-width="70">
         <template slot-scope="scope">
           <span>{{ switchTopicTypeToName(scope.row.topic_type) }}</span>
         </template>
@@ -101,7 +101,7 @@
           <el-link type="primary" @click="detail(scope.row)">{{ scope.row.topic_content }}</el-link>
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="难度" min-width="40" align="center" show-overflow-tooltip>
+      <el-table-column class-name="status-col" label="难度" min-width="60" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           <span>{{ switchTopicLevelToName(scope.row.topic_level) }}</span>
         </template>
@@ -118,7 +118,7 @@
         </template>
       </el-table-column>
       <el-table-column align="center" label="创建时间" min-width="140" prop="c_time" show-overflow-tooltip />
-      <el-table-column align="center" label="引用次数" min-width="80" prop="quote_count" show-overflow-tooltip />
+      <el-table-column align="center" label="引用次数" min-width="84" prop="quote_count" show-overflow-tooltip />
       <el-table-column class-name="status-col" label="操作" width="160" align="center" fixed="right">
         <template slot-scope="scope">
           <el-button size="mini" :disabled="!hasThisBtnPermission('topic-edit', scope.row.egroup)" @click="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>

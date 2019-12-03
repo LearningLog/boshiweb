@@ -39,11 +39,11 @@
     >
       <el-table-column align="center" label="消息内容" min-width="250" show-overflow-tooltip prop="content" />
       <el-table-column label="操作类型" min-width="90" align="center" show-overflow-tooltip prop="noticeTypeDesc" />
-      <el-table-column class-name="status-col" label="操作模块" min-width="60" align="center" show-overflow-tooltip prop="moduleName" />
+      <el-table-column class-name="status-col" label="操作模块" min-width="86" align="center" show-overflow-tooltip prop="moduleName" />
       <el-table-column align="center" label="操作人" min-width="70" show-overflow-tooltip prop="userNickName" />
       <el-table-column align="center" label="小组" min-width="100" show-overflow-tooltip prop="groupNameDesc" />
       <el-table-column align="center" label="操作时间" min-width="140" show-overflow-tooltip prop="createTime" />
-      <el-table-column align="center" label="发送人数" min-width="50" show-overflow-tooltip>
+      <el-table-column align="center" label="发送人数" min-width="86" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-link type="primary" @click="operateDetail(scope.row)">{{ scope.row.successCount + scope.row.errorCount }}</el-link>
         </template>

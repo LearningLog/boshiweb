@@ -50,14 +50,10 @@
           >
             <el-table-column align="center" label="员工" min-width="120" show-overflow-tooltip prop="nickname" />
             <el-table-column align="center" label="所属分组" min-width="100" show-overflow-tooltip prop="user_group" />
-            <el-table-column align="center" label="答题时间" min-width="140" show-overflow-tooltip prop="u_time">
-<!--              <template slot-scope="scope">-->
-<!--                {{ changTime(scope.row.u_time)}}-->
-<!--              </template>-->
-            </el-table-column>
+            <el-table-column align="center" label="答题时间" min-width="140" show-overflow-tooltip prop="u_time" />
             <el-table-column align="center" label="用时" min-width="140" show-overflow-tooltip>
               <template slot-scope="scope">
-                {{ changTime(scope.row. time_consuming)}}
+                {{ changTime(scope.row. time_consuming) }}
               </template>
             </el-table-column>
             <el-table-column align="center" label="得分" min-width="60" show-overflow-tooltip prop="answer_score" />
@@ -223,6 +219,7 @@ export default {
     confirm() {
       this.$router.push({ path: '/evaluating-manage/examination-manage/list' })
     },
+    // 毫秒转化成时分秒
     changTime(msTime) {
       const time = msTime / 1000
       const hour = Math.floor(time / 60 / 60) % 24
