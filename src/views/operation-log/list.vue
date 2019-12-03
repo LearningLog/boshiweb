@@ -155,12 +155,11 @@ export default {
     // 搜索
     topSearch() {
       const egroup = this.listQuery1.egroup
-      this.listQuery = JSON.parse(JSON.stringify(this.listQuery1))
-      this.listQuery.egroup = []
+      this.listQuery1.egroup = []
       if (egroup) {
-        this.listQuery.egroup.push(this.listQuery1.egroup)
+        this.listQuery1.egroup.push(this.listQuery1.egroup)
       }
-
+      this.listQuery = JSON.parse(JSON.stringify(this.listQuery1))
       this.get_list()
     },
     // 重置

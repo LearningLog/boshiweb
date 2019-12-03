@@ -8,7 +8,7 @@
       <transition name="fade-advanced-search">
         <el-row v-show="popoverVisible">
           <el-card id="advancedSearchArea" shadow="never">
-            <el-form ref="form" :model="listQuery" label-width="100px">
+            <el-form ref="form" :model="listQuery1" label-width="100px">
               <tenants-groups-roles :is-render-role="false" :is-reset="isReset" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" @resetVal="resetVal" />
               <el-form-item label="考试状态">
                 <el-select
@@ -264,6 +264,7 @@ export default {
           this.$message.success('批量删除成功！')
           if ((this.list.length - this.checkedDelList.length) === 0) { // 如果当前页数据已删完，则去往上一页
             this.listQuery.currentPage -= 1
+            this.listQuery2.currentPage -= 1
           }
           this.get_list()
         })

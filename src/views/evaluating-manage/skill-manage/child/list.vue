@@ -8,7 +8,7 @@
       <transition name="fade-advanced-search">
         <el-row v-show="popoverVisible">
           <el-card id="advancedSearchArea" shadow="never">
-            <el-form ref="form" :model="listQuery" label-width="100px">
+            <el-form ref="form" :model="listQuery1" label-width="100px">
               <el-form-item label="技能ID">
                 <el-input v-model="listQuery1.skillInc" placeholder="请输入技能ID" clearable @keyup.enter.native="topSearch" />
               </el-form-item>
@@ -105,21 +105,13 @@ export default {
     },
     // 获取技能列表
     get_list() {
-      const that = this
-      const param = {}
-      param.content = that.listQuery.content ? that.listQuery.content : ''
-      param.skillInc = that.listQuery.skillInc ? that.listQuery.skillInc : ''
-      param.time_range = this.time_range || []
-      param.startTime = this.time_range[0]
-      param.endtTime = this.time_range[1]
-      param.currentPage = that.listQuery.currentPage ? that.listQuery.currentPage : 1
-      param.pageSize = that.listQuery.pageSize ? that.listQuery.pageSize : 10
+      this.listQuery.startTime = this.time_range[0]
+      this.listQuery.endtTime = this.time_range[1]
       this.listLoading = true
-      skillManagerList(param).then(res => {
+      skillManagerList(this.listQuery).then(res => {
         this.listLoading = false
-        that.list = res.data.page.list
-        that.total = res.data.page.totalCount
-        that.page_count = res.data.page.pageCount
+        this.list = res.data.page.list
+        this.total = res.data.page.totalCount
       }).catch(error => {
         console.log(error)
       })

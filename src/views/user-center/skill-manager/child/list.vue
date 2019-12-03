@@ -8,7 +8,7 @@
       <transition name="fade-advanced-search">
         <el-row v-show="popoverVisible">
           <el-card id="advancedSearchArea" shadow="never">
-            <el-form ref="form" :model="listQuery" label-width="100px">
+            <el-form ref="form" :model="listQuery1" label-width="100px">
               <el-form-item label="创建时间">
                 <el-date-picker
                   v-model="time_range"
@@ -37,12 +37,8 @@
                 </el-select>
               </el-form-item>
               <el-form-item label="技能ID">
-                <el-input v-model="listQuery.skillInc" placeholder="技能ID" clearable @keyup.enter.native="topSearch" />
+                <el-input v-model="listQuery1.skillInc" placeholder="技能ID" clearable @keyup.enter.native="topSearch" />
               </el-form-item>
-              <!-- </el-form-item>
-                <el-form-item label="技能名称">
-              <el-input v-model="listQuery.content" placeholder="技能名称" clearable @keyup.enter.native="topSearch" />
-              </el-form-item> -->
             </el-form>
             <div id="searchPopoverBtn">
               <el-button type="primary" @click="topSearch">搜索</el-button>

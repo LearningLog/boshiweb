@@ -8,7 +8,7 @@
       <transition name="fade-advanced-search">
         <el-row v-show="popoverVisible">
           <el-card id="advancedSearchArea" shadow="never">
-            <el-form ref="form" :model="listQuery" label-width="100px">
+            <el-form ref="form" :model="listQuery1" label-width="100px">
               <el-form-item label="标签ID">
                 <el-input v-model="listQuery1.linc" placeholder="请输入标签ID" clearable @keyup.enter.native="topSearch" />
               </el-form-item>

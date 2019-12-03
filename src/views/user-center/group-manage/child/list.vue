@@ -8,7 +8,7 @@
       <transition name="fade-advanced-search">
         <el-row v-show="popoverVisible">
           <el-card id="advancedSearchArea" shadow="never">
-            <el-form ref="form" :model="listQuery" label-width="100px">
+            <el-form ref="form" :model="listQuery1" label-width="100px">
               <el-form-item v-if="isSystemManage" label="所属租户">
                 <el-select v-model="listQuery1.selectCompanyId" placeholder="请选择所属租户" clearable filterable @change="companyidChange">
                   <el-option
@@ -183,7 +183,7 @@ export default {
     // 获取所有用户
     getAlluserList() {
       const data = {
-        groupId: this.listQuery.selectCompanyId
+        groupId: this.listQuery1.selectCompanyId
       }
       findUserListByGroupId(data).then(res => {
         this.alluserList = res.data

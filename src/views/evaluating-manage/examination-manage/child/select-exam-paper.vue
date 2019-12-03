@@ -1,14 +1,14 @@
 <template>
   <div class="tenant-list-box">
     <div id="topSearch">
-      <el-input v-model="listQuery.content" placeholder="请输入试卷名称" clearable @keyup.enter.native="topSearch">
+      <el-input v-model="listQuery1.content" placeholder="请输入试卷名称" clearable @keyup.enter.native="topSearch">
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
       </el-input>
       <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">高级搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
       <transition name="fade-advanced-search">
         <el-row v-show="popoverVisible">
           <el-card id="advancedSearchArea" shadow="never">
-            <el-form ref="form" :model="listQuery" label-width="100px">
+            <el-form ref="form" :model="listQuery1" label-width="100px">
               <el-form-item label="创建时间">
                 <el-date-picker
                   v-model="time_range"
@@ -80,6 +80,15 @@ export default {
         startTime: null, // 创建开始时间
         endTime: null // 创建结束时间
       },
+      listQuery1: { // 查询条件
+        currentPage: 1, // 当前页
+        pageSize: 10, // 当前页请求条数
+        content: '', // 试卷名称
+        selectCompanyId: null, // 租户
+        egroup: null, // 小组
+        startTime: null, // 创建开始时间
+        endTime: null // 创建结束时间
+      },
       time_range: [], // 创建时间
       list: [], // 表格数据
       listLoading: true, // 是否开启表格遮罩
@@ -114,22 +123,24 @@ export default {
     // 搜索
     topSearch() {
       this.time_range = this.time_range || []
-      this.listQuery.startTime = this.time_range[0]
-      this.listQuery.endTime = this.time_range[1]
+      this.listQuery1.startTime = this.time_range[0]
+      this.listQuery1.endTime = this.time_range[1]
+      this.listQuery = JSON.parse(JSON.stringify(this.listQuery1))
       this.get_list()
     },
 
     // 重置
     reset() {
-      this.listQuery.content = ''
-      this.listQuery.topic_label = null
-      this.listQuery.topic_skill = null
-      this.listQuery.topicType = null
-      this.listQuery.selectCompanyId = null
-      this.listQuery.egroup = null
+      this.listQuery1.content = ''
+      this.listQuery1.topic_label = null
+      this.listQuery1.topic_skill = null
+      this.listQuery1.topicType = null
+      this.listQuery1.selectCompanyId = null
+      this.listQuery1.egroup = null
       this.time_range = []
-      this.listQuery.startTime = ''
-      this.listQuery.endTime = ''
+      this.listQuery1.startTime = ''
+      this.listQuery1.endTime = ''
+      this.listQuery = JSON.parse(JSON.stringify(this.listQuery1))
       this.get_list()
     },
 

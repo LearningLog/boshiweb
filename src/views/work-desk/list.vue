@@ -8,7 +8,7 @@
       <transition name="fade-advanced-search">
         <el-row v-show="popoverVisible">
           <el-card id="advancedSearchArea" shadow="never">
-            <el-form ref="form" :model="listQuery" label-width="100px">
+            <el-form ref="form" :model="listQuery1" label-width="100px">
               <el-form-item v-show="showCustom" label="租户">
                 <el-select v-model="listQuery1.selectCompanyId" placeholder="请选择租户" clearable filterable @change="findUserListByGroupId()">
                   <el-option
@@ -283,10 +283,12 @@ export default {
       this.showCustom = false
       this.showUser = true
       this.listQuery.selectCompanyId = this.$store.state.user.userPermission.groupId
+      this.listQuery1.selectCompanyId = this.$store.state.user.userPermission.groupId
     } else {
       this.showCustom = false
       this.showUser = false
       this.listQuery.selectCompanyId = this.$store.state.user.userPermission.groupId
+      this.listQuery1.selectCompanyId = this.$store.state.user.userPermission.groupId
     }
     this.findUserListByGroupId()
     store.dispatch('fileUpload/belongs', { data_type: 3 })
@@ -319,9 +321,11 @@ export default {
     get_list() {
       if (this.fileStatus !== '') {
         this.listQuery.fileStatusList.push(this.fileStatus)
+        this.listQuery1.fileStatusList.push(this.fileStatus)
       }
       if (this.sourceSystem !== '') {
         this.listQuery.sourceSystemList.push(this.sourceSystem)
+        this.listQuery1.sourceSystemList.push(this.sourceSystem)
       }
       if (this.manageType === 3) {
         getFileList(this.listQuery).then(response => {

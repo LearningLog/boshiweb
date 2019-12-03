@@ -8,7 +8,7 @@
       <transition name="fade-advanced-search">
         <el-row v-show="popoverVisible">
           <el-card id="advancedSearchArea" shadow="never">
-            <el-form ref="form" :model="listQuery" label-width="100px">
+            <el-form ref="form" :model="listQuery1" label-width="100px">
               <tenants-groups-roles :is-render-role="false" :is-reset="isReset" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" @resetVal="resetVal" />
               <el-form-item label="创建时间">
                 <el-date-picker
@@ -86,8 +86,6 @@ import AddSelectGroup from '@/components/AddSelectGroup'
 import PublishExam from '@/components/PublishExam'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import { evaluationPaperList, delPaper, generateExportPaper, exportPaperOne, exportPaperMore, publish } from '@/api/evolution-manage/test-paper-manage'
-import { skillAllList } from '@/api/user-center/skillManage'
-import { labelAllList } from '@/api/evolution-manage/labelManage'
 import { isCurrentEgroupManager, hasThisBtnPermission } from '@/utils/permission'
 
 export default {
@@ -131,17 +129,9 @@ export default {
       egroup: '' // 系统管理员选择的小组id
     }
   },
-  watch: {
-    // 监听表单数据变化 暂时无用
-    'listQuery.selectCompanyId': function(curVal, oldVal) {
-      this.get_topic_label_list()
-      this.get_topic_skill_list()
-    }
-  },
+  watch: {},
   created() {
     this.get_list()
-    // this.get_topic_label_list()
-    // this.get_topic_skill_list()
   },
   methods: {
     // 按钮权限
@@ -159,18 +149,7 @@ export default {
         this.total = response.data.page.totalCount
       })
     },
-    // 获取标签list 暂时无用
-    get_topic_label_list() {
-      labelAllList({}).then(res => {
-        this.topic_label = res.data
-      })
-    },
-    // 获取技能list 暂时无用
-    get_topic_skill_list() {
-      skillAllList({}).then(res => {
-        this.topic_skill = res.data
-      })
-    },
+
     // 搜索
     topSearch() {
       this.time_range = this.time_range || []

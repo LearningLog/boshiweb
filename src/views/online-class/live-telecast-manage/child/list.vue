@@ -8,7 +8,7 @@
       <transition name="fade-advanced-search">
         <el-row v-show="popoverVisible">
           <el-card id="advancedSearchArea" shadow="never">
-            <el-form ref="form" :model="listQuery" label-width="100px">
+            <el-form ref="form" :model="listQuery1" label-width="100px">
               <el-form-item label="讲师">
                 <el-input v-model="listQuery1.teacher" placeholder="请输入讲师" clearable @keyup.enter.native="topSearch" />
               </el-form-item>
@@ -106,7 +106,7 @@
       </el-table-column>
       <el-table-column class-name="status-col" label="标签" min-width="120" align="center" prop="labelName" show-overflow-tooltip />
       <!--<el-table-column class-name="status-col" label="开始时间" min-width="140" align="center" prop="s_time" />-->
-      <el-table-column class-name="status-col" label="课程评价" width="150" align="center">
+      <el-table-column class-name="status-col" label="课程评价" width="160" align="center">
         <template slot-scope="scope">
           <span class="starboxs" @click="rateDetail(scope.row)">
             <el-rate
@@ -267,7 +267,7 @@ export default {
 
     // 获取标签list
     getLablesList() {
-      getLabelListNoPagination({ selectCompanyId: this.listQuery.selectCompanyId, egroup: this.listQuery.egroup }).then(res => {
+      getLabelListNoPagination({ selectCompanyId: this.listQuery1.selectCompanyId, egroup: this.listQuery1.egroup }).then(res => {
         this.lablesList = res.data
       })
     },
@@ -385,7 +385,7 @@ export default {
         chapetr_del({ _id: row._id }).then(response => {
           this.$message.success('删除成功！')
           if ((this.list.length - 1) === 0) { // 如果当前页数据已删完，则去往上一页
-            this.listQuery1.currentPage -= 1
+            this.listQuery.currentPage -= 1
           }
           this.get_list()
         })
@@ -417,7 +417,7 @@ export default {
         chapetr_del({ idList: _ids }).then(response => {
           this.$message.success('批量删除成功！')
           if ((this.list.length - this.checkedDelList.length) === 0) { // 如果当前页数据已删完，则去往上一页
-            this.listQuery1.currentPage -= 1
+            this.listQuery.currentPage -= 1
           }
           this.get_list()
         })

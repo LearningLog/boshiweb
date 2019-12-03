@@ -8,7 +8,7 @@
       <transition name="fade-advanced-search">
         <el-row v-show="popoverVisible">
           <el-card id="advancedSearchArea" shadow="never">
-            <el-form ref="form" :model="listQuery" label-width="100px">
+            <el-form ref="form" :model="listQuery1" label-width="100px">
               <tenants-groups-roles :is-render-role="false" :is-reset="isReset" which-group="manageEgroupInfo" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" @resetVal="resetVal" />
               <el-form-item label="开始时间">
                 <el-date-picker
@@ -103,7 +103,7 @@
       </el-table-column>
       <el-table-column class-name="status-col" label="标签" min-width="120" align="center" prop="labelName" show-overflow-tooltip />
       <!--<el-table-column class-name="status-col" label="开始时间" min-width="140" align="center" prop="s_time" />-->
-      <el-table-column class-name="status-col" label="课程评价" width="150" align="center" show-overflow-tooltip>
+      <el-table-column class-name="status-col" label="课程评价" width="160" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           <span class="starboxs" @click="rateDetail(scope.row)">
             <el-rate

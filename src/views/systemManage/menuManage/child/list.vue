@@ -15,7 +15,7 @@
         <transition name="fade-advanced-search">
           <el-row v-show="popoverVisible">
             <el-card id="advancedSearchArea" shadow="never">
-              <el-form ref="form" :model="listQuery" label-width="100px">
+              <el-form ref="form" :model="listQuery1" label-width="100px">
                 <el-form-item label="标识">
                   <el-input v-model="listQuery1.cmark" placeholder="请输入菜单标识" clearable @keyup.enter.native="topSearch" />
                 </el-form-item>
@@ -130,6 +130,7 @@ export default {
   created() {
     hasThisBtnPermission('egroup-delete')
     this.listQuery.pid = this.$store.state.menuManage.pid || 'firstMenu'
+    this.listQuery1.pid = this.$store.state.menuManage.pid || 'firstMenu'
     this.menuType = this.$store.state.menuManage.menuType
     this.getAllMenuList()
     this.getMenuList()
@@ -166,13 +167,14 @@ export default {
     },
     // 选中左侧菜单树节点的回调
     handleNodeClick(data) {
-      this.listQuery.currentPage = 1
-      this.listQuery.menuname = ''
-      this.listQuery.cmark = ''
-      this.listQuery.type = ''
-      this.listQuery.pid = data.id
+      this.listQuery1.currentPage = 1
+      this.listQuery1.menuname = ''
+      this.listQuery1.cmark = ''
+      this.listQuery1.type = ''
+      this.listQuery1.pid = data.id
       this.pid = data.id
       this.pname = data.label
+      this.listQuery = JSON.parse(JSON.stringify(this.listQuery1))
       this.getMenuList()
     },
     // 新增
@@ -299,7 +301,7 @@ export default {
     if (to.path.indexOf('/menuManage/') === -1) {
       this.$store.dispatch('menuManage/setMenuPid', 'firstMenu')
     } else {
-      this.$store.dispatch('menuManage/setMenuPid', this.listQuery.pid)
+      this.$store.dispatch('menuManage/setMenuPid', this.listQuery1.pid)
     }
     next()
   }

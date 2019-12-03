@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div id="topSearch">
-      <el-input v-model="listQuery.key" placeholder="请输入key" clearable @keyup.enter.native="topSearch" @change="topSearch">
+      <el-input v-model="listQuery1.key" placeholder="请输入key" clearable @keyup.enter.native="topSearch" @change="topSearch">
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
       </el-input>
       <span id="advancedSearchBtn" />
@@ -41,6 +41,11 @@ export default {
       popoverVisible: false, // 高级搜索是否显示
       total: 0, // 总条数
       listQuery: { // 查询条件
+        currentPage: 1, // 当前页
+        pageSize: 10, // 当前页请求条数
+        key: '' // key
+      },
+      listQuery1: { // 查询条件
         currentPage: 1, // 当前页
         pageSize: 10, // 当前页请求条数
         key: '' // key
@@ -88,6 +93,7 @@ export default {
     },
     // 搜索
     topSearch() {
+      this.listQuery = JSON.parse(JSON.stringify(this.listQuery1))
       if (this.listQuery.key) {
         var arr = []
         this.list.forEach(item => {

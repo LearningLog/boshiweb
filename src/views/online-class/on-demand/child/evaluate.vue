@@ -73,7 +73,7 @@
               />
             </el-col>
             <el-col :span="2">
-              <el-button size="mini" @click="del(item)"><i class="iconfont iconshanchu" />删除</el-button>
+              <el-button type="primary" plain @click="del(item)"><i class="iconfont iconshanchu" />删除</el-button>
             </el-col>
           </el-row>
           <el-row>

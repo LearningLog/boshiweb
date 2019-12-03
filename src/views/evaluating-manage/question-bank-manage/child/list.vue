@@ -8,53 +8,8 @@
       <transition name="fade-advanced-search">
         <el-row v-show="popoverVisible">
           <el-card id="advancedSearchArea" shadow="never">
-            <el-form ref="form" :model="listQuery" label-width="100px">
+            <el-form ref="form" :model="listQuery1" label-width="100px">
               <tenants-groups-roles :is-render-role="false" :is-reset="isReset" @tenantsGroupsRolesVal="tenantsGroupsRolesVal" @resetVal="resetVal" />
-              <!--<el-form-item label="试题标签">-->
-              <!--<el-select-->
-              <!--v-model="listQuery.topic_label"-->
-              <!--placeholder="请选择试题标签"-->
-              <!--clearable-->
-              <!--filterable-->
-              <!--&gt;-->
-              <!--<el-option-->
-              <!--v-for="item in topic_label"-->
-              <!--:key="item._id"-->
-              <!--:label="item.topicName"-->
-              <!--:value="item._id"-->
-              <!--/>-->
-              <!--</el-select>-->
-              <!--</el-form-item>-->
-              <!--<el-form-item label="试题技能">-->
-              <!--<el-select-->
-              <!--v-model="listQuery.topic_skill"-->
-              <!--placeholder="请选择试题技能"-->
-              <!--clearable-->
-              <!--filterable-->
-              <!--&gt;-->
-              <!--<el-option-->
-              <!--v-for="item in topic_skill"-->
-              <!--:key="item._id"-->
-              <!--:label="item.skill_name"-->
-              <!--:value="item._id"-->
-              <!--/>-->
-              <!--</el-select>-->
-              <!--</el-form-item>-->
-              <!--<el-form-item label="试题类型">-->
-              <!--<el-select-->
-              <!--v-model="listQuery.topicType"-->
-              <!--placeholder="请选择试题类型"-->
-              <!--clearable-->
-              <!--filterable-->
-              <!--&gt;-->
-              <!--<el-option-->
-              <!--v-for="item in topicType"-->
-              <!--:key="item._id"-->
-              <!--:label="item.typeName"-->
-              <!--:value="item._id"-->
-              <!--/>-->
-              <!--</el-select>-->
-              <!--</el-form-item>-->
               <el-form-item label="创建时间">
                 <el-date-picker
                   v-model="time_range"
@@ -140,8 +95,6 @@ import TenantsGroupsRoles from '@/components/TenantsGroupsRoles'
 import AddSelectGroup from '@/components/AddSelectGroup'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import { evaluationTopicList, delTopic } from '@/api/evolution-manage/question-bank-manage'
-import { skillAllList } from '@/api/user-center/skillManage'
-import { labelAllList } from '@/api/evolution-manage/labelManage'
 import { isCurrentEgroupManager, hasThisBtnPermission } from '@/utils/permission'
 
 export default {
@@ -189,17 +142,9 @@ export default {
       egroup: '' // 系统管理员选择的小组id
     }
   },
-  watch: {
-    // 监听表单数据变化 暂时无用
-    'listQuery.selectCompanyId': function(curVal, oldVal) {
-      this.get_topic_label_list()
-      this.get_topic_skill_list()
-    }
-  },
+  watch: {},
   created() {
     this.get_list()
-    // this.get_topic_label_list()
-    // this.get_topic_skill_list()
   },
   methods: {
     // 按钮权限
@@ -215,20 +160,6 @@ export default {
         this.listLoading = false
         this.list = response.data.page.list
         this.total = response.data.page.totalCount
-      })
-    },
-
-    // 获取标签list 暂时无用
-    get_topic_label_list() {
-      labelAllList({}).then(res => {
-        this.topic_label = res.data
-      })
-    },
-
-    // 获取技能list 暂时无用
-    get_topic_skill_list() {
-      skillAllList({}).then(res => {
-        this.topic_skill = res.data
       })
     },
 

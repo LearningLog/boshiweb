@@ -1,15 +1,14 @@
 <template>
   <div class="app-container">
     <div id="topSearch">
-      <el-input v-model="listQuery.customname" placeholder="请输入租户名称" clearable @keyup.enter.native="topSearch">
+      <el-input v-model="listQuery1.customname" placeholder="请输入租户名称" clearable @keyup.enter.native="topSearch">
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
       </el-input>
       <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">高级搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
       <transition name="fade-advanced-search">
         <el-row v-show="popoverVisible">
           <el-card id="advancedSearchArea" shadow="never">
-            <el-form ref="form" :model="listQuery" label-width="100px">
-
+            <el-form ref="form" :model="listQuery1" label-width="100px">
               <el-form-item label="创建时间">
                 <el-date-picker
                   v-model="time_range"
@@ -82,6 +81,13 @@ export default {
         startTime: null, // 操作模块
         endTime: null // 租户id
       },
+      listQuery1: { // 查询条件
+        currentPage: 1, // 当前页
+        pageSize: 10, // 当前页请求条数
+        customname: null, // 消息内容
+        startTime: null, // 操作模块
+        endTime: null // 租户id
+      },
       current_time: curent_time,
       time_range: [curent_time, curent_time],
       list: [], // 表格数据
@@ -104,17 +110,19 @@ export default {
     },
     // 重置
     reset() {
-      this.listQuery.customname = ''
+      this.listQuery1.customname = ''
       this.time_range = [this.current_time, this.current_time]
-      this.listQuery.startTime = this.time_range[0]
-      this.listQuery.endTime = this.time_range[1]
+      this.listQuery1.startTime = this.time_range[0]
+      this.listQuery1.endTime = this.time_range[1]
+      this.listQuery = JSON.parse(JSON.stringify(this.listQuery1))
       this.get_list()
     },
     // 搜索
     topSearch() {
       this.time_range = this.time_range || []
-      this.listQuery.startTime = this.time_range[0]
-      this.listQuery.endTime = this.time_range[1]
+      this.listQuery1.startTime = this.time_range[0]
+      this.listQuery1.endTime = this.time_range[1]
+      this.listQuery = JSON.parse(JSON.stringify(this.listQuery1))
       this.get_list()
     },
     getFileShowSize(fileSize) {
