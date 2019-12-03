@@ -56,7 +56,7 @@ service.interceptors.response.use(
     }
     if (error.response.data.code === 30000) {
       // to re-login
-      MessageBox.confirm('令牌已失效，请您重新登陆。', '退出登录', {
+      MessageBox.confirm('登录信息已过期,请尝试重新登录。', '退出登录', {
         confirmButtonText: '确认',
         cancelButtonText: '取消',
         type: 'warning'

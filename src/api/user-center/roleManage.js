@@ -114,7 +114,7 @@ export function setRoleAuthority(data) {
   })
 }
 // 角色默认列表
-export function setDefaultRole(data) {
+export function getDefaultRole(data) {
   return request({
     url: '/system/roleV2/getDefaultRole',
     method: 'post',

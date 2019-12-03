@@ -5,7 +5,7 @@
         <el-input v-model="form.rolename" :disabled="true" placeholder="请输入角色名称" clearable />
       </el-form-item>
       <el-form-item label="角色描述">
-        <el-input v-model="form.desc" :disabled="true" placeholder="请输入角色描述" clearable />
+        <el-input v-model="form.desc" :disabled="true" clearable />
       </el-form-item>
       <el-form-item label="是否默认">
         <el-radio-group v-model="form.defaultRole">
@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { getOneRole, updateDefaul, setDefaultRole } from '@/api/user-center//roleManage'
+import { getOneRole, updateDefaul, getDefaultRole } from '@/api/user-center/roleManage'
 export default {
   data() {
     return {
@@ -35,6 +35,7 @@ export default {
       noLeaveprompt: false, // 表单提交后，设置为true，据此判断提交不再弹出离开提示
       id: '', // 查询id
       form: {
+        _id: '',
         rolename: '', // 角色名称
         desc: '', // 角色描述
         defaultRole: '', // 是否默认
@@ -64,6 +65,7 @@ export default {
   },
   created() {
     this.id = this.$route.query.id
+    this.form._id = this.$route.query.id
     this.getInitData()
     this.getDefaultRole()
   },
@@ -71,19 +73,23 @@ export default {
     // 获取初始数据
     getInitData() {
       getOneRole({ _id: this.id }).then(response => {
-        this.form = response.data.role
-        if (!this.form.defaultRoleCode) {
-          this.form.defaultRoleCode = '4'
-        }
+        const { role } = response.data
+        this.form.rolename = role.rolename
+        this.form.desc = role.desc
+        this.form.defaultRole = role.defaultRole
+        this.form.defaultRoleCode = role.defaultRoleCode
         if (!this.form.defaultRole) {
           this.form.defaultRole = 2
+        }
+        if (!this.form.defaultRoleCode) {
+          this.form.defaultRoleCode = '4'
         }
         this.dataIsChange = -1
       })
     },
     // 获取默认角色类型
     getDefaultRole() {
-      setDefaultRole({}).then(response => {
+      getDefaultRole({}).then(response => {
         this.DefaultRoleList = response.data
       })
     },
