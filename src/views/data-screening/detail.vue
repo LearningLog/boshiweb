@@ -930,7 +930,7 @@ export default {
     // 初始化考试合格率和参考员工率数据
     initGroupListExamDataByTime(startTime, endTime) {
       getGroupListExamDataByTime({ startTime: startTime, endTime: endTime }).then(response => {
-       if (response.data.groupList.length > 7) {
+        if (response.data.groupList.length > 7) {
           this.setWidthEcharts(response.data.groupList, 'employeeActivityExamQualified')
           this.setWidthEcharts(response.data.groupList, 'employeeActivityExamUserPercent')
         }
@@ -1412,7 +1412,7 @@ export default {
   }
   .app-dataScreening-listTags{
     padding:0 20px;
-    height: 40px;
+    height: 42px;
   }
   .app-dataScreening-listTagsBox{
     border:1px solid #20C7B2;
