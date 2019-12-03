@@ -423,6 +423,7 @@ export default {
       logintype: 1, // 登录平台 pc端
       agree_check: true, // 同意协议否
       is_first: false, // 是否是手机号第一次登录
+      is_first_error: true, // 验证码是否正确
       YZ_id: '', // 手机号第一次登录返回的需验证数据
       first_down: '60s', // 倒计时
       first_sms: '', // 手机号第一次登录的验证码
@@ -473,16 +474,20 @@ export default {
       const pwd = that.password
       const agree_check = that.agree_check
       if (!agree_check) {
-        that.$message.error('请阅读并同意服务协议！')
-        return
+        that.$message.warning('请阅读并同意服务协议！')
+        return false
       }
       if (uname === '') {
-        that.$message.error('请输入用户名或手机号！')
-        return
+        that.$message.warning('请输入用户名或手机号！')
+        return false
       }
       if (pwd === '') {
-        that.$message.error('请输入密码！')
-        return
+        that.$message.warning('请输入密码！')
+        return false
+      }
+      if (this.is_first && this.is_first_error) {
+        that.$message.warning('验证码不正确！')
+        return false
       }
       const param = {}
       param.username = uname
@@ -563,6 +568,7 @@ export default {
         param.sms_token = that.YZMDT.sms_token
         param.sms_code = that.first_sms
         validate_first_sms(param).then(res => {
+          this.is_first_error = false
           that.login_fn()
           // that.$router.push({ path: this.redirect || '/' })
         }).catch(error => {
@@ -576,7 +582,7 @@ export default {
       const that = this
       const forget_phone = that.forget_phone
       if (!regPhone(forget_phone)) {
-        that.$message.error('请输入正确的手机号！')
+        that.$message.warning('请输入正确的手机号！')
         return
       }
       const param = {}
@@ -584,7 +590,7 @@ export default {
       param.type = 4
       forget_sendsms(param).then(res => {
         if (res.code === 10001) {
-          that.$message.error('该手机号不存在！')
+          that.$message.warning('该手机号不存在！')
         } else {
           that.forget_countdown()
           that.reset_pwd_sms.send_id = res.data._id
@@ -622,23 +628,23 @@ export default {
       const verifyparam = {}
       const verifiedDt = {}
       if (!regPhone(forget_phone)) {
-        that.$message.error('请输入正确的手机号！')
+        that.$message.warning('请输入正确的手机号！')
         return
       }
       if (forget_sms === '') {
-        that.$message.error('验证码不能为空！')
+        that.$message.warning('验证码不能为空！')
         return
       }
       if (new_pwd === '' || confirm_pwd === '') {
-        that.$message.error('密码不能为空！')
+        that.$message.warning('密码不能为空！')
         return
       }
       if (new_pwd !== confirm_pwd) {
-        that.$message.error('两次密码不一致！')
+        that.$message.warning('两次密码不一致！')
         return
       }
       if (!regPwd(new_pwd) || !regPwd(confirm_pwd)) {
-        that.$message.error('密码6-50位,数字+字母！')
+        that.$message.warning('密码6-50位,数字+字母！')
         return
       }
       verifyparam.sms_token = that.reset_pwd_sms.send_sms_token

@@ -83,17 +83,6 @@
       </transition>
     </div>
     <div id="topBtn">
-      <el-dropdown trigger="click">
-        <el-button type="primary">
-          批量操作<i class="el-icon-arrow-down el-icon--right" />
-        </el-button>
-        <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item @click.native="deleteDirFileSelected"><i class="iconfont iconshanchu" />批量删除</el-dropdown-item>
-          <!-- <el-dropdown-item @click.native="moveFileSelected"><i class="iconfont iconshangyi1" />批量移动</el-dropdown-item> -->
-          <el-dropdown-item @click.native="downloadFileSelected"><i class="iconfont iconxiazai" />批量下载</el-dropdown-item>
-          <el-dropdown-item @click.native="shareFileToWorkDeskSlected"><i class="iconfont iconfenxiang1" />批量收藏</el-dropdown-item>
-        </el-dropdown-menu>
-      </el-dropdown>
       <el-button type="primary" @click="createFolder"><i class="iconfont iconzengjia" />创建文件夹</el-button>
       <el-button type="primary" @click="classifySelected"><i class="iconfont iconzengjia" />加入知识分类</el-button>
       <el-button type="primary" @click="showUpload"><i class="iconfont iconzengjia" />上传资料</el-button>
@@ -133,7 +122,7 @@
         width="55"
         :selectable="selectable"
       />
-      <el-table-column  label="文件名" show-overflow-tooltip min-width="200">
+      <el-table-column label="文件名" show-overflow-tooltip min-width="200">
         <!-- <template slot-scope="scope">
           <el-link type="primary" @click="detail(scope.row)">{{ scope.row.fileName }}</el-link>
         </template> -->
@@ -149,20 +138,20 @@
               取消
             </el-button>
           </template>
-          <div style="text-align:left;cursor:pointer;" v-else @click="enterFolder(row)">
-            <span  @click="preview(row)" v-if="row.fileAttributeDesc!=='dir'">
-            <svg class="icon" aria-hidden="true" style="font-size:18px;">
-              <use :xlink:href="parseTypeOfFile(row)" />
-            </svg>
+          <div v-else style="text-align:left;cursor:pointer;" @click="enterFolder(row)">
+            <span v-if="row.fileAttributeDesc!=='dir'" @click="preview(row)">
+              <svg class="icon" aria-hidden="true" style="font-size:18px;">
+                <use :xlink:href="parseTypeOfFile(row)" />
+              </svg>
             </span>
             <span v-if="row.fileAttributeDesc==='dir'">
-            <svg class="icon" aria-hidden="true" style="font-size:18px;">
-              <use :xlink:href="parseTypeOfFile(row)" />
-            </svg>
+              <svg class="icon" aria-hidden="true" style="font-size:18px;">
+                <use :xlink:href="parseTypeOfFile(row)" />
+              </svg>
             </span>
             <!-- <i v-if="row.fileAttributeDesc==='dir'" class="iconfont iconwenjianjia" /> -->
-          <span  @click="preview(row)" v-if="row.fileAttributeDesc!=='dir'"> {{ row.fileName }} </span>   
-          <span  v-if="row.fileAttributeDesc==='dir'"> {{ row.fileName }} </span>   
+            <span v-if="row.fileAttributeDesc!=='dir'" @click="preview(row)"> {{ row.fileName }} </span>
+            <span v-if="row.fileAttributeDesc==='dir'"> {{ row.fileName }} </span>
           </div>
         </template>
 
@@ -189,7 +178,7 @@
         </template>
       </el-table-column>
       <el-table-column align="center" label="创建时间" min-width="140" show-overflow-tooltip prop="createTimeStr" />
-      <el-table-column class-name="status-col" label="操作" width="260px" align="center" fixed="right">
+      <el-table-column class-name="status-col" label="操作" width="250px" align="center" fixed="right">
         <template slot-scope="scope">
           <!-- <el-button size="mini" @click="edit(scope.row)" ><i class="iconfont iconxiugai" />重命名</el-button> -->
           <el-button
@@ -225,6 +214,12 @@
 
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="getDirList" />
+    <div id="bottomOperation">
+      <el-button v-show="total>0" type="danger" plain @click="deleteDirFileSelected"><i class="iconfont iconshanchu" />批量删除</el-button>
+      <!--<el-button v-show="total>0" type="primary" plain @click="moveFileSelected"><i class="iconfont iconfenpeijineng" />批量移动</el-button>-->
+      <el-button v-show="total>0" type="primary" plain @click="downloadFileSelected"><i class="iconfont iconxiazai" />批量下载</el-button>
+      <el-button v-show="total>0" type="primary" plain @click="shareFileToWorkDeskSlected"><i class="iconfont iconshoucang" />批量收藏</el-button>
+    </div>
     <el-dialog v-el-drag-dialog class="setInformationDialog" width="650px" height="650px" title="加入知识分类" :visible.sync="treeDialogVisible">
       <el-tree
         ref="classifyTree"
@@ -238,9 +233,9 @@
       <el-button type="primary" @click="classifySelectedConfirm">确定</el-button>
       <el-button @click="treeDialogVisible = false">取 消</el-button>
     </el-dialog>
-    <el-dialog v-el-drag-dialog class="createFolders" width="650px" title="创建文件夹" :visible.sync="crateFolderDialogVisible" >
+    <el-dialog v-el-drag-dialog class="createFolders" width="650px" title="创建文件夹" :visible.sync="crateFolderDialogVisible">
       <el-form ref="ruleForm" :model="ruleForm" :rules="rules" label-width="100px" class="demo-ruleForm">
-        <el-form-item label="所属租户" v-show="listQuery.selectCompanyId==''">
+        <el-form-item v-show="listQuery.selectCompanyId==''" label="所属租户">
           <el-select
             v-if="isSystemManage"
             v-model="listQuery.selectCompanyId"
@@ -257,7 +252,6 @@
             />
           </el-select>
         </el-form-item>
-        
 
         <el-form-item label="目录名称" prop="name">
           <el-input v-model="ruleForm.name" />
@@ -290,7 +284,7 @@ export default {
   components: { Pagination, FilePreview },
   data() {
     return {
-      filePackage :{}, //存储后台返回url
+      filePackage: {}, // 存储后台返回url
       file_knowledge,
       isFilePreview: false, // 是否打开预览
       fileFormat: '', // 文件格式
@@ -345,6 +339,7 @@ export default {
       total: 0, // 总条数
       popoverVisible: false, // 目录知识分类搜索是否展开
       advancedVisible: false, // 高级搜索
+      isSystemManage: false, // 是否租户管理员
       ruleForm: {
         name: '',
         desc: ''
@@ -352,10 +347,11 @@ export default {
       rules: {
         name: [
           { required: true, message: '请输入文件夹名称', trigger: 'blur' },
-          { min: 1, max: 12, message: '长度在 1 到 12 个字符', trigger: 'blur' }
+          { required: true, message: '请输入文件夹名称', trigger: 'change' }
         ],
         desc: [
-          { min: 2, max: 64, message: '长度在 2 到 64 个字符', trigger: 'blur' }
+          { min: 2, max: 64, message: '长度在 2 到 64 个字符', trigger: 'blur' },
+          { min: 2, max: 64, message: '长度在 2 到 64 个字符', trigger: 'change' }
         ]
       },
       currentFileId: '',
@@ -365,61 +361,59 @@ export default {
         parentId: '',
         selectCompanyId: ''
       },
-      dataForTree: [{
-        id: 1,
-        label: '一级 1',
-        children: [{
-          id: 4,
-          label: '二级 1-1',
+      dataForTree: [
+        {
+          id: 1,
+          label: '一级 1',
           children: [{
-            id: 9,
-            label: '三级 1-1-1'
+            id: 4,
+            label: '二级 1-1',
+            children: [{
+              id: 9,
+              label: '三级 1-1-1'
+            }, {
+              id: 10,
+              label: '三级 1-1-2'
+            }]
+          }]
+        }, {
+          id: 2,
+          label: '一级 2',
+          children: [{
+            id: 5,
+            label: '二级 2-1'
           }, {
-            id: 10,
-            label: '三级 1-1-2'
+            id: 6,
+            label: '二级 2-2'
+          }]
+        }, {
+          id: 3,
+          label: '一级 3',
+          children: [{
+            id: 7,
+            label: '二级 3-1'
+          }, {
+            id: 8,
+            label: '二级 3-2',
+            children: [{
+              id: 11,
+              label: '三级 3-2-1'
+            }, {
+              id: 12,
+              label: '三级 3-2-2'
+            }, {
+              id: 13,
+              label: '三级 3-2-3'
+            }]
           }]
         }]
-      }, {
-        id: 2,
-        label: '一级 2',
-        children: [{
-          id: 5,
-          label: '二级 2-1'
-        }, {
-          id: 6,
-          label: '二级 2-2'
-        }]
-      }, {
-        id: 3,
-        label: '一级 3',
-        children: [{
-          id: 7,
-          label: '二级 3-1'
-        }, {
-          id: 8,
-          label: '二级 3-2',
-          children: [{
-            id: 11,
-            label: '三级 3-2-1'
-          }, {
-            id: 12,
-            label: '三级 3-2-2'
-          }, {
-            id: 13,
-            label: '三级 3-2-3'
-          }]
-        }]
-      }]
     }
   },
   computed: {
-    ...mapGetters(['createFileSuccessData']),
-    isSystemManage() {
-      return this.$store.state.user.isSystemManage
-    }
+    ...mapGetters(['createFileSuccessData'])
     // uploadSuccess() {
-	  // 	return this.$store.state.user.isSystemManage
-	  // }
+    // 	return this.$store.state.user.isSystemManage
+    // }
   },
   watch: {
     createFileSuccessData(val) {
@@ -441,6 +435,7 @@ export default {
 
   },
   created() {
+    this.isSystemManage = this.$store.state.user.isSystemManage
     this.listQuery.selectCompanyId = this.$route.query.selectCompanyId
 
     if (!this.$store.state.user.isSystemManage) {
@@ -462,20 +457,20 @@ export default {
     preview(row) {
       console.log(row)
       // this.filePackage[row.fileId].fileUrl
-      let previewData=''
-      this.fileUrl = this.filePackage[row.filePackageId].subFileList.forEach((v,k,arr)=>{
-       if(v.fileUse&&v.fileUse==='preview_file') {
-          previewData=v
-       }
+      let previewData = ''
+      this.fileUrl = this.filePackage[row.filePackageId].subFileList.forEach((v, k, arr) => {
+        if (v.fileUse && v.fileUse === 'preview_file') {
+          previewData = v
+        }
       })
-      if(previewData===''){
-         this.$message({
-          message: '该文件不能预览',
+      if (previewData === '') {
+        this.$message({
+          message: '该文件不支持预览，请下载查看！',
           type: 'warning'
         })
-        return 
+        return
       }
-      this.fileUrl=previewData.fileUrl
+      this.fileUrl = previewData.fileUrl
       this.fileTypeCode = previewData.fileTypeCode
       this.fileFormat = previewData.fileFormat
       this.fileName = previewData.fileName
@@ -603,9 +598,9 @@ export default {
         } else if (row.fileType === 7) {
           return '#iconpdf1'
         } else if (row.fileType === 8) {
-          return '#iconwendangguanli'
+          return '#iconyemian'
         } else if (row.fileType === 9) {
-          return '#iconwendangguanli'
+          return '#iconyemian'
         } else if (row.fileType === 10) {
           return '#iconex'
         } else if (row.fileType === 11) {
@@ -685,7 +680,7 @@ export default {
         row.fileName = row.originalTitle
         row.edit = false
         this.$message({
-          message: '文件名不能包含【\\\/:*?\"<>|】这些非法字符,请重新命名!',
+          message: '文件名不能包含【\\\/:*?\"<>|】这些非法字符,请重新命名！',
           type: 'warning'
         })
         return
@@ -772,7 +767,7 @@ export default {
       this.listLoading = false
       this.userInfoForList = data.userInfo
 
-      this.filePackage=data.filePackage
+      this.filePackage = data.filePackage
       this.list = data.page.list.map(v => {
         this.$set(v, 'edit', false) // https://vuejs.org/v2/guide/reactivity.html
         v.originalTitle = v.fileName //  will be used when user click the cancel botton
@@ -796,7 +791,7 @@ export default {
     // 批量加入知识分类
     classifySelected() {
       if (!this.selectedRow.length) {
-        this.$message.warning('请勾选文件')
+        this.$message.warning('请选择文件！')
         return false
       } else {
         this.treeDialogVisible = true
@@ -819,7 +814,7 @@ export default {
           nodeIds
         }
         classifyFiles(postData).then(() => {
-          this.$message.success('加入知识分类成功')
+          this.$message.success('加入知识分类成功！')
           this.treeDialogVisible = false
         })
       }).catch(() => {})
@@ -834,7 +829,7 @@ export default {
       row.fileName = row.originalTitle
       row.edit = false
       this.$message({
-        message: '文件夹名称恢复到原来的名称',
+        message: '文件夹名称恢复到原来的名称！',
         type: 'warning'
       })
     },
@@ -844,7 +839,7 @@ export default {
         row.edit = false
         row.originalTitle = row.fileName
         this.$message({
-          message: '文件夹重命名成功',
+          message: '文件夹重命名成功！',
           type: 'success'
         })
       })
@@ -859,15 +854,22 @@ export default {
         const postId = { 'fileId': row.fileId }
         deleteDirFile(postId).then(() => {
           this.$message({
-            message: '删除文件成功',
+            message: '删除文件成功！',
             type: 'success'
           })
+          if ((this.list.length - 1) === 0) { // 如果当前页数据已删完，则去往上一页
+            this.listQuery.currentPage -= 1
+          }
         })
         this.enterFloderByQueryPath()
       }).catch(() => {})
     },
     deleteDirFileSelected(row) {
-      this.$confirm('确定要批量删除该文件吗？', '删除', {
+      if (!this.selectedRow.length) {
+        this.$message.warning('请选择文件！')
+        return false
+      }
+      this.$confirm('确定要批量删除选中的文件吗？', '删除', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -878,9 +880,12 @@ export default {
         const postId = { fileIdList }
         deleteDirFile(postId).then(() => {
           this.$message({
-            message: '删除文件成功',
+            message: '删除文件成功！',
             type: 'success'
           })
+          if ((this.list.length - this.checkedDelList.length) === 0) { // 如果当前页数据已删完，则去往上一页
+            this.listQuery.currentPage -= 1
+          }
         })
         this.enterFloderByQueryPath()
       }).catch(() => {})
@@ -889,7 +894,7 @@ export default {
     createFolder() {
       // if (!this.listQuery.selectCompanyId) {
       //   this.$message({
-      //     message: '请先勾选租户',
+      //     message: '请先选择租户',
       //     type: 'warning'
       //   })
       //   return false
@@ -917,7 +922,7 @@ export default {
           createDirFile(postData).then((res) => {
             if (res.code === 0) {
               this.$message({
-                message: '文件夹创建成功',
+                message: '文件夹创建成功！',
                 type: 'success'
               })
               this.enterFloderByQueryPath()
@@ -991,7 +996,7 @@ export default {
       }).then(response => {
         const token = response.data.token
         const size = this.getFileShowSize(response.data.size)
-        this.$confirm('文件约为' + size + '确定要下载吗', '批量下载', {
+        this.$confirm('文件约为' + size + '，确定要下载吗？', '批量下载', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -1007,12 +1012,12 @@ export default {
     },
     // 收藏
     shareFileToWorkDesk(row) {
-      if(row.fileAttributeDesc==='dir'){
+      if (row.fileAttributeDesc === 'dir') {
         this.$message({
-          message: '只有文件才可以收藏',
+          message: '只有文件才可以收藏！',
           type: 'warning'
         })
-        return 
+        return
       }
       this.$confirm('确定要收藏到工作台吗？', '收藏到工作台', {
         confirmButtonText: '确定',
@@ -1026,7 +1031,7 @@ export default {
         }
         shareFileToWorkDesk(postData).then(() => {
           this.$message({
-            message: '收藏到工作台成功',
+            message: '收藏到工作台成功！',
             type: 'success'
           })
         })
@@ -1034,7 +1039,7 @@ export default {
     },
     shareFileToWorkDeskSlected() {
       if (!this.selectedRow.length) {
-        this.$message.warning('请勾选文件')
+        this.$message.warning('请选择文件！')
         return false
       }
       this.$confirm('确定要将选中的文件收藏到工作台吗？', '收藏到工作台', {
@@ -1051,7 +1056,7 @@ export default {
         }
         shareFileToWorkDesk(postData).then(() => {
           this.$message({
-            message: '收藏到工作台成功',
+            message: '收藏到工作台成功！',
             type: 'success'
           })
         })
@@ -1061,7 +1066,7 @@ export default {
     showUpload() {
       if (!this.listQuery.selectCompanyId) {
         this.$message({
-          message: '请先勾选租户',
+          message: '请先选择租户！',
           type: 'warning'
         })
         return false
@@ -1075,17 +1080,19 @@ export default {
         this.$message.warning('请选择文件！')
         return false
       }
-      this.$message.warning('待开发')
+      this.$message.warning('待开发！')
     },
     moveFile() {
-      this.$message.warning('待开发')
+      this.$message.warning('待开发！')
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.edit-input {
+  @import "~@/styles/theme.scss";
+
+  .edit-input {
   padding-right: 100px;
 }
 .cancel-btn {
@@ -1103,8 +1110,6 @@ export default {
 }
 
 // 知识分类树
-
- @import "~@/styles/theme.scss";
 
   .loading,
   .noMore {

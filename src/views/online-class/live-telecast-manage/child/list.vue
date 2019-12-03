@@ -385,7 +385,7 @@ export default {
         chapetr_del({ _id: row._id }).then(response => {
           this.$message.success('删除成功！')
           if ((this.list.length - 1) === 0) { // 如果当前页数据已删完，则去往上一页
-            this.listQuery.currentPage -= 1
+            this.listQuery1.currentPage -= 1
           }
           this.get_list()
         })
@@ -417,7 +417,7 @@ export default {
         chapetr_del({ idList: _ids }).then(response => {
           this.$message.success('批量删除成功！')
           if ((this.list.length - this.checkedDelList.length) === 0) { // 如果当前页数据已删完，则去往上一页
-            this.listQuery.currentPage -= 1
+            this.listQuery1.currentPage -= 1
           }
           this.get_list()
         })

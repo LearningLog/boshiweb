@@ -325,7 +325,7 @@ export default {
     // 文件预览
     preview(item) {
       this.fileUrl = item.fileList[0].previewFileUrl
-      this.fileType = item.fileList[0].fileType
+      this.fileType = item.fileList[0].previewFile.fileType
       this.fileName = item.docTitle
       this.isFilePreview = true
     },

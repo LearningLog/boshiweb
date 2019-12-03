@@ -1,34 +1,36 @@
 <template>
-  <div class="navbar1">
-    <div class="logo">
-      <img :src="logo ? logo : logo1" class="sidebar-logo">
-      <h1 class="sidebar-title">{{ logo_name }} </h1>
-    </div>
-    <div class="left-menu">
-      <el-menu
-        :default-active="activeIndex"
-        class="el-nav-menu"
-        mode="horizontal"
-        background-color="#545c64"
-        text-color="#fff"
-        active-text-color="#ffd04b"
-        @select="handleSelect"
-      >
-        <el-menu-item index="/">知识门户</el-menu-item>
-        <!--<el-menu-item index="2">我的学习</el-menu-item>-->
-        <el-menu-item index="/backstageManage">后台管理</el-menu-item>
-      </el-menu>
-    </div>
-    <div class="right-menu">
-      <div class="search">
-        <el-input v-model="keyword" class="global-search" placeholder="请输入关键词" clearable @clear="search" @keyup.enter.native="search">
-          <el-button slot="append" icon="el-icon-search" @click="search" />
-        </el-input>
+  <div class="header">
+    <div class="navbar1">
+      <div class="logo">
+        <img :src="logo ? logo : logo1" class="sidebar-logo">
+        <h1 class="sidebar-title">{{ logo_name }} </h1>
       </div>
-      <MiniPrograms />
-      <help-center />
-      <el-button @click="jumpOldVersion()">返回旧版</el-button>
-      <user :style="customStyle" />
+      <div class="left-menu">
+        <el-menu
+            :default-active="activeIndex"
+            class="el-nav-menu"
+            mode="horizontal"
+            background-color="#545c64"
+            text-color="#fff"
+            active-text-color="#ffd04b"
+            @select="handleSelect"
+        >
+          <el-menu-item index="/">知识门户</el-menu-item>
+          <!--<el-menu-item index="2">我的学习</el-menu-item>-->
+          <el-menu-item index="/backstageManage">后台管理</el-menu-item>
+        </el-menu>
+      </div>
+      <div class="right-menu">
+        <div class="search">
+          <el-input v-model="keyword" class="global-search" placeholder="请输入关键词" clearable @clear="search" @keyup.enter.native="search">
+            <el-button slot="append" icon="el-icon-search" @click="search" />
+          </el-input>
+        </div>
+        <MiniPrograms />
+        <help-center />
+        <el-button @click="jumpOldVersion()">返回旧版</el-button>
+        <user :style="customStyle" />
+      </div>
     </div>
   </div>
 </template>
@@ -95,17 +97,21 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .header {
+    width: 100%;
+    background: #545c64;
+  }
 .navbar1 {
+  width: 1100px;
   height: 50px;
+  margin: 0 auto;
   overflow: hidden;
   position: relative;
-  background: #545c64;
   color: #fff;
   box-shadow: 0 1px 4px rgba(0,21,41,.08);
 
   & .logo {
     float: left;
-    margin-left: 30px;
 
     & .sidebar-logo {
       width: 32px;
@@ -168,6 +174,10 @@ export default {
           background: rgba(0, 0, 0, .025)
         }
       }
+    }
+
+    /deep/ .avatar-container {
+      margin-right: 0!important;
     }
   }
 }
