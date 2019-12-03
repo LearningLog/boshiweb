@@ -57,10 +57,10 @@
         </template>
       </el-table-column>
       <el-table-column align="center" label="小组" min-width="120" prop="groupName" show-overflow-tooltip />
-      <el-table-column align="center" label="题目数" min-width="50" show-overflow-tooltip prop="topic_count" />
-      <el-table-column align="center" label="总分数" min-width="50" show-overflow-tooltip prop="score_count" />
+      <el-table-column align="center" label="题目数" min-width="70" show-overflow-tooltip prop="topic_count" />
+      <el-table-column align="center" label="总分数" min-width="70" show-overflow-tooltip prop="score_count" />
       <el-table-column align="center" label="创建时间" min-width="140" prop="c_time" show-overflow-tooltip />
-      <el-table-column align="center" label="引用次数" min-width="50" prop="usedcount" show-overflow-tooltip />
+      <el-table-column align="center" label="引用次数" min-width="90" prop="usedcount" show-overflow-tooltip />
       <el-table-column class-name="status-col" label="操作" width="250" align="center" fixed="right">
         <template slot-scope="scope">
           <el-button size="mini" :disabled="!hasThisBtnPermission('exampaper-edit', scope.row.egroup)" @click="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>

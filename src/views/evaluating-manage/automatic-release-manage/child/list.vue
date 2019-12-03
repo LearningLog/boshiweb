@@ -83,13 +83,13 @@
           <span>{{ scope.row.revolution === 0?'--': scope.row.revolution }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="已发布场次" min-width="100" show-overflow-tooltip prop="total_count">
+      <el-table-column align="center" label="已发布场次" min-width="110" show-overflow-tooltip prop="total_count">
         <template slot-scope="scope">
           <el-link type="primary" @click="publicationsDetail(scope.row)">{{ scope.row.total_count }}</el-link>
         </template>
       </el-table-column>
       <el-table-column align="center" label="考核小组" min-width="90" show-overflow-tooltip prop="groupName" />
-      <el-table-column align="center" label="状态" min-width="60" show-overflow-tooltip>
+      <el-table-column align="center" label="状态" min-width="80" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-tag v-if="scope.row.auto_status === 1" type="warning">{{ scope.row.autoStatusDesc }}</el-tag>
           <el-tag v-if="scope.row.auto_status === 2" type="success">{{ scope.row.autoStatusDesc }}</el-tag>

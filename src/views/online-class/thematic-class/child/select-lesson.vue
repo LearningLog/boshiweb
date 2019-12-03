@@ -70,7 +70,7 @@
       </el-table-column>
       <el-table-column align="center" label="课堂名称" min-width="120" show-overflow-tooltip prop="cname" />
       <el-table-column class-name="status-col" label="标签" min-width="120" align="center" prop="labelName" show-overflow-tooltip />
-      <el-table-column class-name="status-col" label="课堂类型" min-width="64" align="center" prop="chapter_count" show-overflow-tooltip>
+      <el-table-column class-name="status-col" label="课堂类型" min-width="84" align="center" prop="chapter_count" show-overflow-tooltip>
         <template slot-scope="scope">
           <span v-if="scope.row.type === 1">直播课堂</span>
           <span v-else>点播课堂</span>

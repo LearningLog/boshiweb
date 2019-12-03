@@ -102,7 +102,7 @@
         </template>
       </el-table-column>
       <el-table-column class-name="status-col" label="标签" min-width="120" align="center" prop="labelName" show-overflow-tooltip />
-      <el-table-column class-name="status-col" label="课堂数" min-width="64" align="center" prop="chapter_count" show-overflow-tooltip />
+      <el-table-column class-name="status-col" label="课堂数" min-width="70" align="center" prop="chapter_count" show-overflow-tooltip />
       <!--<el-table-column class-name="status-col" label="开始时间" min-width="140" align="center" prop="s_time" />-->
       <el-table-column class-name="status-col" label="专题评价" width="150" align="center" show-overflow-tooltip>
         <template slot-scope="scope">

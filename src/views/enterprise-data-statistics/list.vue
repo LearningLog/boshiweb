@@ -43,20 +43,20 @@
           <span>{{ scope.row.createtime }}</span>
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="上次登录时间" min-width="100" align="center" show-overflow-tooltip>
+      <el-table-column class-name="status-col" label="上次登录时间" min-width="130" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           <span>{{ scope.row.lastLoginTime }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="套餐用户量" min-width="70" show-overflow-tooltip prop="userTotalCount" />
-      <el-table-column align="center" label="已创建用户数" min-width="80" show-overflow-tooltip prop="userCount" />
-      <el-table-column align="center" label="已使用存储量" min-width="80" show-overflow-tooltip>
+      <el-table-column align="center" label="套餐用户量" min-width="100" show-overflow-tooltip prop="userTotalCount" />
+      <el-table-column align="center" label="已创建用户数" min-width="110" show-overflow-tooltip prop="userCount" />
+      <el-table-column align="center" label="已使用存储量" min-width="110" show-overflow-tooltip>
         <template slot-scope="scope">
           <span>{{ getFileShowSize(scope.row.usedStorageSpace) }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="已发布课程数" min-width="70" show-overflow-tooltip prop="publishTrainCount" />
-      <el-table-column align="center" label="已发布考试数" min-width="70" show-overflow-tooltip prop="publishExamCount" />
+      <el-table-column align="center" label="已发布课程数" min-width="110" show-overflow-tooltip prop="publishTrainCount" />
+      <el-table-column align="center" label="已发布考试数" min-width="110" show-overflow-tooltip prop="publishExamCount" />
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="get_list" />
 

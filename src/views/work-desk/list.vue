@@ -88,7 +88,7 @@
           <span>{{ scope.$index + (listQuery.currentPage - 1) * listQuery.pageSize + 1 }} </span>
         </template>
       </el-table-column>
-      <el-table-column header-align="center" align="left" label="信息" min-width="240" show-overflow-tooltip>
+      <el-table-column header-align="center" align="left" label="信息" min-width="230" show-overflow-tooltip>
         <template slot-scope="scope">
           <div class="tab-message-box">
             <div class="pointer message-img" @click="preview(scope.row)">
@@ -107,14 +107,21 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="来源" min-width="90" show-overflow-tooltip prop="fileSourceName" />
-      <el-table-column align="center" label="创建人" min-width="90" show-overflow-tooltip>
+      <el-table-column align="center" label="来源" min-width="80" show-overflow-tooltip prop="fileSourceName" />
+      <el-table-column align="center" label="创建人" min-width="70" show-overflow-tooltip>
         <template slot-scope="scope">{{ getFileListData(scope.row.mainFileId).nickName }} </template>
       </el-table-column>
-      <el-table-column align="center" label="创建时间" min-width="140" show-overflow-tooltip>
+      <el-table-column align="center" label="创建时间" min-width="120" show-overflow-tooltip>
         <template slot-scope="scope">{{ parseTime(scope.row.createTimestamp) }} </template>
       </el-table-column>
-      <el-table-column align="center" label="文档状态" min-width="80" show-overflow-tooltip>
+      <el-table-column align="center" label="文档状态" min-width="90" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <el-tag v-if="getFileListData(scope.row.mainFileId).file_status === 3" type="danger">{{ getFileStatusDesc(getFileListData(scope.row.mainFileId).file_status) }}</el-tag>
+          <el-tag v-else-if="getFileListData(scope.row.mainFileId).file_status === 4" type="success">{{ getFileStatusDesc(getFileListData(scope.row.mainFileId).file_status) }}</el-tag>
+          <el-tag v-else type="warning">{{ getFileStatusDesc(getFileListData(scope.row.mainFileId).file_status) }}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="已推送至" min-width="160" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-tag v-if="getFileListData(scope.row.mainFileId).file_status === 3" type="danger">{{ getFileStatusDesc(getFileListData(scope.row.mainFileId).file_status) }}</el-tag>
           <el-tag v-else-if="getFileListData(scope.row.mainFileId).file_status === 4" type="success">{{ getFileStatusDesc(getFileListData(scope.row.mainFileId).file_status) }}</el-tag>

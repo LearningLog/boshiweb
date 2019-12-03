@@ -93,7 +93,6 @@ export default {
         try {
           val = JSON.parse(value)
         } catch (e) {
-          console.log('数据类型不正确')
         }
         if (Object.prototype.toString.call(val) !== '[object Array]') {
           callback(new Error('格式不正确，请输入数组类型值'))
@@ -105,7 +104,6 @@ export default {
         try {
           val2 = JSON.parse(value)
         } catch (e) {
-          console.log('数据类型不正确')
         }
         if (Object.prototype.toString.call(val2) !== '[object Object]') {
           callback(new Error('格式不正确，请输入对象类型值'))

@@ -83,7 +83,7 @@
         </template>
       </el-table-column>
       <el-table-column align="center" label="来源" min-width="80" show-overflow-tooltip prop="dataTypeName" />
-      <el-table-column align="center" label="成员人数" min-width="70" show-overflow-tooltip prop="usercount" />
+      <el-table-column align="center" label="成员人数" min-width="88" show-overflow-tooltip prop="usercount" />
       <el-table-column class-name="status-col" label="操作" width="250" align="center" fixed="right" show-overflow-tooltip>
         <template slot-scope="scope">
           <div>

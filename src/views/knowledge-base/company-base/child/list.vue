@@ -149,11 +149,17 @@
               取消
             </el-button>
           </template>
-          <div style="text-align:left;" v-else @click="enterFolder(row)">
-
+          <div style="text-align:left;cursor:pointer;" v-else @click="enterFolder(row)">
+            <span  @click="preview(row)" v-if="row.fileAttributeDesc!=='dir'">
             <svg class="icon" aria-hidden="true" style="font-size:18px;">
               <use :xlink:href="parseTypeOfFile(row)" />
             </svg>
+            </span>
+            <span v-if="row.fileAttributeDesc==='dir'">
+            <svg class="icon" aria-hidden="true" style="font-size:18px;">
+              <use :xlink:href="parseTypeOfFile(row)" />
+            </svg>
+            </span>
             <!-- <i v-if="row.fileAttributeDesc==='dir'" class="iconfont iconwenjianjia" /> -->
           <span  @click="preview(row)" v-if="row.fileAttributeDesc!=='dir'"> {{ row.fileName }} </span>   
           <span  v-if="row.fileAttributeDesc==='dir'"> {{ row.fileName }} </span>   
@@ -232,8 +238,27 @@
       <el-button type="primary" @click="classifySelectedConfirm">确定</el-button>
       <el-button @click="treeDialogVisible = false">取 消</el-button>
     </el-dialog>
-    <el-dialog v-el-drag-dialog class="createFolders" width="650px" title="创建文件夹" :visible.sync="crateFolderDialogVisible">
+    <el-dialog v-el-drag-dialog class="createFolders" width="650px" title="创建文件夹" :visible.sync="crateFolderDialogVisible" >
       <el-form ref="ruleForm" :model="ruleForm" :rules="rules" label-width="100px" class="demo-ruleForm">
+        <el-form-item label="所属租户" v-show="listQuery.selectCompanyId==''">
+          <el-select
+            v-if="isSystemManage"
+            v-model="listQuery.selectCompanyId"
+            placeholder="请选择所属租户"
+            clearable
+            filterable
+            @change="companyChange($event)"
+          >
+            <el-option
+              v-for="item in custom_list"
+              :key="item._id"
+              :label="item.customname"
+              :value="item._id"
+            />
+          </el-select>
+        </el-form-item>
+        
+
         <el-form-item label="目录名称" prop="name">
           <el-input v-model="ruleForm.name" />
         </el-form-item>
@@ -265,6 +290,7 @@ export default {
   components: { Pagination, FilePreview },
   data() {
     return {
+      filePackage :{}, //存储后台返回url
       file_knowledge,
       isFilePreview: false, // 是否打开预览
       fileFormat: '', // 文件格式
@@ -434,10 +460,25 @@ export default {
   methods: {
     // 图片预览
     preview(row) {
-      this.fileUrl = row.fileUrl
-      this.fileTypeCode = row.fileTypeCode
-      this.fileFormat = row.fileFormat
-      this.fileName = row.fileName
+      console.log(row)
+      // this.filePackage[row.fileId].fileUrl
+      let previewData=''
+      this.fileUrl = this.filePackage[row.filePackageId].subFileList.forEach((v,k,arr)=>{
+       if(v.fileUse&&v.fileUse==='preview_file') {
+          previewData=v
+       }
+      })
+      if(previewData===''){
+         this.$message({
+          message: '该文件不能预览',
+          type: 'warning'
+        })
+        return 
+      }
+      this.fileUrl=previewData.fileUrl
+      this.fileTypeCode = previewData.fileTypeCode
+      this.fileFormat = previewData.fileFormat
+      this.fileName = previewData.fileName
       this.isFilePreview = true
     },
     // 监听预览
@@ -730,6 +771,8 @@ export default {
       const { data } = await listDirFile(this.listQuery)
       this.listLoading = false
       this.userInfoForList = data.userInfo
+
+      this.filePackage=data.filePackage
       this.list = data.page.list.map(v => {
         this.$set(v, 'edit', false) // https://vuejs.org/v2/guide/reactivity.html
         v.originalTitle = v.fileName //  will be used when user click the cancel botton
@@ -844,13 +887,13 @@ export default {
     },
     // 创建文件夹
     createFolder() {
-      if (!this.listQuery.selectCompanyId) {
-        this.$message({
-          message: '请先勾选租户',
-          type: 'warning'
-        })
-        return false
-      }
+      // if (!this.listQuery.selectCompanyId) {
+      //   this.$message({
+      //     message: '请先勾选租户',
+      //     type: 'warning'
+      //   })
+      //   return false
+      // }
       this.crateFolderDialogVisible = true
     },
     // 创建文件夹确认
