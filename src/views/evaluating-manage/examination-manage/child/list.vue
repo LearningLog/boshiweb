@@ -279,7 +279,6 @@ export default {
     // 编辑
     edit(row) {
       examDetail({ _id: row._id }).then(res => {
-
         this.selectCompanyId = res.data.exam.groupId
         this.scoreCount = res.data.exam.score_count
         this.exam = res.data.exam

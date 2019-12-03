@@ -88,7 +88,7 @@
           <span>{{ scope.$index + (listQuery.currentPage - 1) * listQuery.pageSize + 1 }} </span>
         </template>
       </el-table-column>
-      <el-table-column header-align="center" align="left" label="信息" min-width="230" show-overflow-tooltip>
+      <el-table-column header-align="center" align="left" label="信息" min-width="240" show-overflow-tooltip>
         <template slot-scope="scope">
           <div class="tab-message-box">
             <div class="pointer message-img" @click="preview(scope.row)">
@@ -108,10 +108,10 @@
         </template>
       </el-table-column>
       <el-table-column align="center" label="来源" min-width="80" show-overflow-tooltip prop="fileSourceName" />
-      <el-table-column align="center" label="创建人" min-width="70" show-overflow-tooltip>
+      <el-table-column align="center" label="创建人" min-width="80" show-overflow-tooltip>
         <template slot-scope="scope">{{ getFileListData(scope.row.mainFileId).nickName }} </template>
       </el-table-column>
-      <el-table-column align="center" label="创建时间" min-width="120" show-overflow-tooltip>
+      <el-table-column align="center" label="创建时间" min-width="140" show-overflow-tooltip>
         <template slot-scope="scope">{{ parseTime(scope.row.createTimestamp) }} </template>
       </el-table-column>
       <el-table-column align="center" label="文档状态" min-width="90" show-overflow-tooltip>
@@ -121,12 +121,18 @@
           <el-tag v-else type="warning">{{ getFileStatusDesc(getFileListData(scope.row.mainFileId).file_status) }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="已推送至" min-width="160" show-overflow-tooltip>
+      <el-table-column align="center" label="已推送至" min-width="140">
         <template slot-scope="scope">
-          <el-tag v-if="getFileListData(scope.row.mainFileId).file_status === 3" type="danger">{{ getFileStatusDesc(getFileListData(scope.row.mainFileId).file_status) }}</el-tag>
-          <el-tag v-else-if="getFileListData(scope.row.mainFileId).file_status === 4" type="success">{{ getFileStatusDesc(getFileListData(scope.row.mainFileId).file_status) }}</el-tag>
-          <el-tag v-else type="warning">{{ getFileStatusDesc(getFileListData(scope.row.mainFileId).file_status) }}</el-tag>
-        </template>
+          <div v-if="!scope.row.push_record === null">
+            <div v-for="(item, index) in scope.row.push_record.join('、')" :key="index" class="pushState">
+              <span v-if="item.type === enterprise_knowledge_lib">企业知识库{{(item.title)}}</span>
+              <span v-if="item.type === group_knowledge_lib">小组知识库{{(item.title)}}</span>
+            </div>
+          </div>
+          <div v-else class="stopPushState">
+            <span>暂无推送</span>
+          </div>
+        </template>p
       </el-table-column>
       <el-table-column class-name="status-col" label="操作" width="220" align="center" fixed="right">
         <template slot-scope="scope">
@@ -559,6 +565,7 @@ export default {
         this.$message.success('推送成功！')
       })
       this.menu_tree_flag = false
+      this.get_list()
     },
     // 查看详情
     detail(row) {
@@ -574,6 +581,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+  @import "~@/styles/variables.scss";
   .tab-message-box {
     text-align: left;
   }
@@ -608,5 +616,16 @@ export default {
   }
   .menu_tree_box /deep/ .el-scrollbar {
     height: calc(60vh - 170px);
+  }
+  .pushState {
+    color: $black;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+  }
+  .stopPushState {
+    color: $yellow2;
   }
 </style>
