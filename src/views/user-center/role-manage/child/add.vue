@@ -107,4 +107,7 @@ export default {
   #btnGroup{
     padding-left: 120px;
   }
+  .tenantsGroupsRoles /deep/ .el-form-item__content {
+    width: 200px;
+  }
 </style>

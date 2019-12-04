@@ -377,7 +377,13 @@ export default {
     }
   },
   created() {
-    this.setDate(1)// 近一周
+    this.currentSort = sessionStorage.getItem('data-screening-currentSort') * 1
+    this.dateValue = JSON.parse(sessionStorage.getItem('data-screening-time'))
+    if (this.dateValue) {
+      this.timeChange(this.dateValue)
+    } else {
+      this.setDate(this.currentSort > -1 ? this.currentSort : 1)// 近一周
+    }
   },
   methods: {
     // 初始化日期选择器

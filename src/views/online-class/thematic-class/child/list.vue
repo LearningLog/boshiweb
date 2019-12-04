@@ -79,6 +79,7 @@
       border
       fit
       highlight-current-row
+      empty-text="暂无可用小组"
       @selection-change="handleSelectionChange"
     >
       <el-table-column
@@ -133,8 +134,8 @@
             </el-button>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item :disabled="!hasThisBtnPermission('lesson-detail', scope.row.egroup)" @click.native="detail(scope.row)"><i class="iconfont iconxiangqing" />专题详情</el-dropdown-item>
-              <el-dropdown-item :disabled="!hasThisBtnPermission('lesson-edit', scope.row.egroup)" @click.native="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-dropdown-item>
-              <el-dropdown-item :disabled="!hasThisBtnPermission('lesson-delete', scope.row.egroup) || userId === scope.row.user_id || (isSystemManage && userGroupId === scope.row.groupId)" @click="del(scope.row)" @click.native="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-dropdown-item>
+              <el-dropdown-item :disabled="!hasThisBtnPermission('lesson-edit', scope.row.egroup) || (userId !== scope.row.user_id)" @click.native="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-dropdown-item>
+              <el-dropdown-item :disabled="!hasThisBtnPermission('lesson-delete', scope.row.egroup) || (userId !== scope.row.user_id)" @click="del(scope.row)" @click.native="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </template>

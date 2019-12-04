@@ -318,7 +318,7 @@
       <el-button type="primary" plain @click="cancel('form')">取消</el-button>
     </div>
     <select-file :visible.sync="visible" :file-type-list="['pic']" @checkedFile="checkedFile" @visible="onvisible" />
-    <add-labels :visible2.sync="visible2" :current-labels.sync="currentLabels" @addLabels="getLabels" @visible2="onvisible2" />
+    <add-labels :visible2.sync="visible2" :egroup="egroup" :current-labels.sync="currentLabels" @addLabels="getLabels" @visible2="onvisible2" />
     <add-skills :visible3.sync="visible3" :current-skills.sync="currentSkills" @addSkills="getSkills" @visible3="onvisible3" />
   </div>
 </template>
@@ -504,6 +504,7 @@ export default {
         const { data } = res
         data.topic = data.topic || []
         this.topic_type = data.topic[0].topic_type
+        this.egroup = data.topic[0].egroup[0]
 
         data.topic[0].topic_option.forEach((item, index) => {
           item.option_id_time_stamp = new Date().getTime() + index

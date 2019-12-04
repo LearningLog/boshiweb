@@ -17,14 +17,15 @@ const $ = window.$
 export default {
   name: 'VueWebuploader',
   props: {
+    // 上传文件类型
     accept: {
-      type: Object,
+      type: String,
       default: null
     },
     // 上传地址
     url: {
-      type: String,
-      default: ''
+      required: true,
+      type: String
     },
     // 上传文件总大小, 默认为100G
     fileSizeLimit: {
@@ -43,8 +44,8 @@ export default {
     },
     // 上传时传给后端的参数，一般为token，key等
     formData: {
-      type: Object,
-      default: null
+      required: true,
+      type: Object
     },
     // 生成formData中文件的key，下面只是个例子，具体哪种形式和后端商议
     keyGenerator: {
@@ -61,8 +62,8 @@ export default {
     },
     // 上传按钮{Seletor|dom}
     uploadButton: {
-      type: String,
-      default: ''
+      required: true,
+      type: String
     },
     // 拖拽的容器{Selector}
     uploadDndButton: {
@@ -177,10 +178,13 @@ export default {
 
             fileUpload(qs.stringify(params), that.url).then(res => {
               const { data } = res
-              file.path = data.path
+              if (data.path) {
+                file.path = data.path
+                that.$emit('success', file, res)
+              }
               task.resolve()
-              that.uniqueFileNameMap.remove(file.id)
-              that.fileMd5MarkMap.remove(file.id)
+              that.uniqueFileNameMap.delete(file.id)
+              that.fileMd5MarkMap.delete(file.id)
             }).catch(err => {
               console.info(err)
             })
@@ -195,7 +199,8 @@ export default {
         pick: { // 指定选择文件的按钮容器，不指定则不创建按钮
           id: this.uploadButton, // {Seletor|dom} 指定选择文件的按钮容器，不指定则不创建按钮。注意 这里虽然写的是 id, 但是不是只支持 id, 还支持 class, 或者 dom 节点。
           multiple: this.multiple, // {Boolean} 是否开启同时选择多个文件能力。
-          label: '' // {String} 请采用 innerHTML 代替
+          label: '', // {String} 请采用 innerHTML 代替
+          innerHTML: '' // {String} 指定按钮文字。不指定时优先从指定的容器中看是否自带文字
         },
         dnd: this.uploadDndButton, // {Selector} [可选] [默认值：undefined] 指定Drag And Drop拖拽的容器，如果不指定，则不启动。
         disableWidgets: 'log', // {String, Array} [可选] [默认值：undefined] 默认所有 Uploader.register 了的 widget 都会被加载，如果禁用某一部分，请通过此 option 指定黑名单。
@@ -234,7 +239,6 @@ export default {
         that.uploader.sort(function(a, b) { return a.size - b.size })// 多文件同时加入时小文件优先上传
         var uniqueFileName = md5(file.name + file.size + file.type + that.formData.userId)// 文件唯一标识
         that.uniqueFileNameMap.set(file.id, uniqueFileName)
-
         that.uploader.makeThumb(file, function(error, ret) {
           if (error) {
             // console.log('预览错误，上传的不是图片吧？')
@@ -255,9 +259,7 @@ export default {
         this.$emit('progress', file, percentage)
       })
 
-      this.uploader.on('uploadSuccess', (file, response) => {
-        this.$emit('success', file, response)
-      })
+      this.uploader.on('uploadSuccess', (file, response) => {})
 
       this.uploader.on('uploadError', (file, reason) => {
         this.$emit('uploadError', file, reason)

@@ -14,7 +14,7 @@
               v-model="listQuery.content"
               placeholder="请输入标签名称"
               clearable
-              @keyup.enter.native="get_list"
+              @keyup.enter.native="search"
             />
           </el-form-item>
           <el-form-item label="创建时间" class="time_range">
@@ -30,7 +30,7 @@
           </el-form-item>
         </el-form>
         <div id="searchPopoverBtn">
-          <el-button type="primary" @click="get_list">搜索</el-button>
+          <el-button type="primary" @click="search">搜索</el-button>
           <el-button type="primary" @click="save">保存</el-button>
         </div>
       </div>
@@ -133,8 +133,8 @@ export default {
         startTime: '', // 开始时间
         endtTime: '', // 结束时间
         content: '', // 标签名称
-        selectCompanyId: this.selectCompanyId, // 所属租户
-        egroup: this.egroup // 所属小组
+        selectCompanyId: '', // 所属租户
+        egroup: '' // 所属小组
       },
       group_list: [], // 所属小组list
       custom_list: [], // 所属租户list
@@ -164,6 +164,8 @@ export default {
       this.time_range = this.time_range || []
       this.listQuery.startTime = this.time_range[0]
       this.listQuery.endtTime = this.time_range[1]
+      this.listQuery.selectCompanyId = this.selectCompanyId
+      this.listQuery.egroup = this.egroup * 1
       this.listLoading = true
       getLabelList(this.listQuery).then(response => {
         this.listLoading = false
@@ -185,6 +187,12 @@ export default {
         })
       })
     },
+    // 搜索
+    search() {
+      this.listQuery.currentPage = 1
+      this.get_list()
+    },
+
     // 选中数据
     select_fn(row) {
       this.checkedList = row
@@ -214,4 +222,7 @@ export default {
   float: left;
   margin-right: 6px;
 }
+  #topSearch .el-date-editor.el-range-editor.el-input__inner {
+    width: 350px!important;
+  }
 </style>

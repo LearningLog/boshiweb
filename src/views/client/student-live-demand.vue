@@ -44,13 +44,13 @@
       </el-header>
       <el-main class="main">
         <div class="fl set">
-          <div v-show="lessonStatus.onlive !== 2 && chapter.type === 1" class="noLive">
+          <div v-show="lessonStatus.onlive !== 2 && chapter.type === 1 && (lessonStatus.onlive !== 3 && lessonStatus.recordStatus !== 1)" class="noLive">
             <div>
               <img :src="noLiveImg" :alt="noLiveText">
               <p>{{ noLiveText }}</p>
             </div>
           </div>
-          <div v-show="lessonStatus.onlive === 2 || chapter.type === 2 || lessonStatus.recordStatus === 1" class="video-wapper">
+          <div v-show="lessonStatus.onlive === 2 || chapter.type === 2 || (lessonStatus.onlive === 3 && lessonStatus.recordStatus === 1)" class="video-wapper">
             <div id="livePlay1" class="video-item" />
             <div id="livePlay2" class="video-item" />
           </div>
@@ -260,6 +260,12 @@ export default {
         this.initVideo1()
         this.$ws.open(this.id)
       }
+    },
+
+    'chapter.record_status': function (val, old) {
+      if (val === 1 && this.lessonStatus.onlive === 3) {
+        this.findDetailInfoById()
+      }
     }
   },
   beforeDestroy() {
@@ -290,7 +296,7 @@ export default {
     this.getComments()
   },
   mounted() {
-    this.initVideo1()
+    // this.initVideo1()
     // this.initVideo2() // 机位2
     this.$ws.open(this.id)
     const comments = this.$refs.comments.wrap
@@ -303,17 +309,21 @@ export default {
         res => {
           this.chapter = res.data.chapter
           this.live_info = res.data.live_info || []
-          if (this.chapter.type === 1) {
+          if (this.chapter.allow_broadcast === 3 && this.chapter.record_status === 1) {
+            this.videoSource1 = this.live_info[0] ? this.live_info[0].recordUrl : 'noVideo.mp4'
+            this.videoSource2 = this.live_info[1] ? this.live_info[1].recordUrl : 'noVideo.mp4'
+          } else if (this.chapter.type === 1) {
             this.videoSource1 = this.live_info[0] ? this.live_info[0].cdnUrl : 'noVideo.mp4'
             this.videoSource2 = this.live_info[1] ? this.live_info[1].cdnUrl : 'noVideo.mp4'
           } else {
             this.videoSource1 = this.chapter.video_url || 'noVideo.mp4'
             this.videoSource2 = 'noVideo.mp4'
           }
-          if (this.chapter.type === 1) {
+          if (this.chapter.type === 1 && this.chapter.allow_broadcast !== 3 && this.chapter.record_status !== 1) {
             this.isAutoPlay = true
             $('.vjs-control-bar .vjs-reStart').hide()
           }
+          this.initVideo1()
           this.queryStatus()
           var that = this
           this.timer = setInterval(() => {

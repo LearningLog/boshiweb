@@ -48,9 +48,8 @@
         <el-input
           v-model="form.password"
           placeholder="请输入密码"
-          type="text"
-          autocomplete="off"
-          οnfοcus="this.type='password'"
+          type="password"
+          autocomplete="new-password"
           maxlength="50"
           clearable
         />
@@ -328,6 +327,8 @@ export default {
             }
           })
         })
+      } else {
+        this.egroups.length = 0
       }
     }
   },

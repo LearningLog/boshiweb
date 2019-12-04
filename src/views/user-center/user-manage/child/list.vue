@@ -35,6 +35,7 @@
     </div>
     <el-table
       v-loading="listLoading"
+      empty-text="暂无可用小组"
       :data="list"
       element-loading-text="Loading"
       border

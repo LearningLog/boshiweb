@@ -365,6 +365,8 @@ export default {
             }
           })
         })
+      } else {
+        this.egroups.length = 0
       }
     }
   },

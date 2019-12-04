@@ -20,9 +20,6 @@
       <el-form-item label="手机号：">
         <span>{{ form.phone }}</span>
       </el-form-item>
-      <el-form-item label="密码：">
-        <span>{{ form.password }}</span>
-      </el-form-item>
       <el-form-item label="用户状态：">
         <span>{{ form.userStatusName }}</span>
       </el-form-item>
@@ -33,13 +30,13 @@
         <span class="pre-wrap">{{ form.desc }}</span>
       </el-form-item>
       <el-form-item label="角色：">
-        <span>{{ form.rolename.join(',') }}</span>
+        <span class="rolename" v-for="role in roleList" :key="role._id">{{ role.rolename }}</span>
       </el-form-item>
       <el-form-item label="小组：">
-        <span>{{ form.egroups.join(',') }}</span>
+        <span class="groupName" v-for="group in groupList" :key="group.inc">{{ group.groupName }}</span>
       </el-form-item>
       <el-form-item label="管理小组：">
-        <span>{{ form.incName.join(',') }}</span>
+        <span class="groupName" v-for="group in groupList" :key="group.inc"><span v-if="group.manage">{{ group.groupName }}</span></span>
       </el-form-item>
     </el-form>
     <div id="btnGroup">
@@ -67,9 +64,8 @@ export default {
         userStatusName: '', // 状态
         email: '', // 邮箱
         desc: '', // 描述
-        rolename: [], // 角色名称集合
-        egroups: [], // 所属分组名称
-        incName: [] // 管理小组名称
+        roleList: [], // 角色集合
+        groupList: [] // 所属分组
       }
     }
   },
@@ -85,15 +81,8 @@ export default {
         this.form.rolename = []
         this.form.egroups = []
         this.form.incName = []
-        res.data.user.roleList.forEach(item => {
-          this.form.rolename.push(item.rolename)
-        })
-        res.data.user.groupList.forEach(item => {
-          this.form.egroups.push(item.groupName)
-          if (item.manage) {
-            this.form.incName.push(item.groupName)
-          }
-        })
+        this.roleList = res.data.user.roleList || []
+        this.groupList = res.data.user.groupList || []
       })
     },
     // 确定
@@ -107,5 +96,9 @@ export default {
 <style lang="scss" scoped>
   #btnGroup {
     padding-left: 120px;
+  }
+  .rolename, .groupName {
+    display: inline-block;
+    margin-right: 20px;
   }
 </style>

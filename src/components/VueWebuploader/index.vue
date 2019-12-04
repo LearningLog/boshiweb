@@ -173,9 +173,6 @@ export default {
     }
   },
   computed: {
-    uploader() {
-      return this.$refs.uploader
-    },
     ...mapGetters(['visibility', 'isMinimality', 'belongs'])
   },
   watch: {},
@@ -272,11 +269,11 @@ export default {
 
     // 开始
     resume(file) {
-      this.uploader.upload(file)
+      this.$refs.uploader.upload(file)
     },
     // 暂停
     stop(file) {
-      this.uploader.stop(file)
+      this.$refs.uploader.stop(file)
     },
 
     // 移除
@@ -288,9 +285,9 @@ export default {
       })
         .then(() => {
           // 取消并中断文件上传
-          this.uploader.cancelFile(file)
+          this.$refs.uploader.cancelFile(file)
           // 在队列中移除文件
-          this.uploader.removeFile(file, true)
+          this.$refs.uploader.removeFile(file, true)
 
           // 在ui上移除
           const index = this.fileList.findIndex(ele => ele.id === file.id)
@@ -315,8 +312,8 @@ export default {
               index++
             ) {
               var file = that.fileList[index]
-              that.uploader.cancelFile(file)
-              that.uploader.removeFile(file, true)
+              that.$refs.uploader.cancelFile(file)
+              that.$refs.uploader.removeFile(file, true)
               that.fileList.splice(index--, 1)
             }
           })

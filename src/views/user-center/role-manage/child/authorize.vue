@@ -23,7 +23,7 @@
             :expand-on-click-node="false"
             :check-on-click-node="true"
             node-key="_id"
-            :default-checked-keys="permissionids"
+            :default-checked-keys="treecheckedKeys"
             :props="defaultProps"
           >
             <span slot-scope="{ node, data }" class="custom-tree-node">
@@ -61,11 +61,13 @@ export default {
       manageType: 1, // 所属租户
       manageTypeList: [], // 管理类型
       menuTree: [], // 权限树
+      treecheckedKeys: [],
       defaultProps: {
         children: 'childs',
         label: 'menuname',
         id: '_id'
       },
+      menuids: [], // 菜单权限集合
       permissionids: [], // 功能权限集合
       rules: {
         manageType: [
@@ -123,13 +125,16 @@ export default {
     // 获取权限树数据
     getAllMenus() {
       getAllMenus({ _id: this.id }).then(res => {
-        this.menuTree = res.data
         this.getDefaultCheckedKeys(res.data)
+        this.menuTree = res.data
       })
     },
     // 获取默认选中的节点
     getDefaultCheckedKeys(menuTree) {
       menuTree.forEach(item => {
+        if (item.select) {
+          this.treecheckedKeys.push(item._id)
+        }
         item.childs = item.childs || []
         item.permissions = item.permissions || []
         item.childs = item.childs.concat(item.permissions)
@@ -140,17 +145,28 @@ export default {
       })
     },
 
+    // 获取 menuids 和 permissionids
+    getMenuidsAndPermissionids(checkedNodes) {
+      checkedNodes.forEach(item => {
+        if (item.type === 'permission') { // type === 'permission' 标识该节点为按钮
+          this.permissionids.push(item._id)
+        } else {
+          this.menuids.push(item._id)
+        }
+      })
+    },
+
     // 保存
     save(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          const checkedKeys = this.$refs.menuTree.getCheckedKeys()
-          const halfCheckedKeys = this.$refs.menuTree.getHalfCheckedKeys()
+          const menuTree = this.$refs.menuTree.getCheckedNodes(false, true)
+          this.getMenuidsAndPermissionids(JSON.parse(JSON.stringify(menuTree)))
           const param = {
             _id: this.id,
             manageType: this.manageType,
-            menuids: halfCheckedKeys,
-            permissionids: checkedKeys
+            menuids: this.menuids,
+            permissionids: this.permissionids
           }
           setRoleAuthority(param).then(response => {
             this.$message.success('角色授权成功！')

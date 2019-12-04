@@ -124,7 +124,8 @@ export default {
         // egroup: '', // 分组
         // roleId: '', // 角色
         startTime: '', // 开始时间
-        endTime: '' // 结束时间
+        endTime: '', // 结束时间
+        skillInc: ''// 技能id
       },
       time_range: [], // 时间范围model
       delCheckedList: [], // 选中的数据

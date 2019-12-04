@@ -18,67 +18,73 @@
     </div>
     <!--员工数据面板-->
     <div class="app-dataScreening-item app-dataScreening-staffWrapper clearfix">
-      <div class="app-dataScreening-staffItem" @click="studyDetail">
-        <div class="app-dataScreening-staffItem-decs">
-          <span>学习员工数</span>
-        </div>
-        <div class="app-dataScreening-staffItem-info">
-          <div class="app-dataScreening-staffItem-info-detail">
-            <div class="app-dataScreening-staffItem-info-number">
-              <b>{{ staffData.trainUserCount }}</b>人
+      <el-tooltip class="item" effect="dark" content="点击查看详情" placement="top">
+        <div class="app-dataScreening-staffItem" @click="studyDetail">
+          <div class="app-dataScreening-staffItem-decs">
+            <span>学习员工数</span>
+          </div>
+          <div class="app-dataScreening-staffItem-info">
+            <div class="app-dataScreening-staffItem-info-detail">
+              <div class="app-dataScreening-staffItem-info-number">
+                <b>{{ staffData.trainUserCount }}</b>人
+              </div>
+              <p>
+                <span class="time-range">{{ startTime }} - {{ endTime }}</span>
+                <span class="blank">|</span>
+                <span class="time-desc">当前是{{ staffData.desc }}的数据</span>
+              </p>
             </div>
-            <p>
-              <span class="time-range">{{ startTime }} - {{ endTime }}</span>
-              <span class="blank">|</span>
-              <span class="time-desc">当前是{{ staffData.desc }}的数据</span>
-            </p>
-          </div>
-          <div class="app-dataScreening-staffItem-info-img">
-            <img src="@/assets/images/data-screening/learning_staff.jpg" alt="">
-          </div>
-        </div>
-      </div>
-      <div class="app-dataScreening-staffItem" @click="testDetail">
-        <div class="app-dataScreening-staffItem-decs">
-          <span>考试员工数</span>
-        </div>
-        <div class="app-dataScreening-staffItem-info">
-          <div class="app-dataScreening-staffItem-info-detail">
-            <div class="app-dataScreening-staffItem-info-number">
-              <b>{{ staffData.examUserCount }}</b>人
+            <div class="app-dataScreening-staffItem-info-img">
+              <img src="@/assets/images/data-screening/learning_staff.jpg" alt="">
             </div>
-            <p>
-              <span class="time-range">{{ startTime }} - {{ endTime }}</span>
-              <span class="blank">|</span>
-              <span class="time-desc">当前是{{ staffData.desc }}的数据</span>
-            </p>
-          </div>
-          <div class="app-dataScreening-staffItem-info-img">
-            <img src="@/assets/images/data-screening/examination_staff.jpg" alt="">
           </div>
         </div>
-      </div>
-      <!--  （产品需求）考试员工数和考试合格率是同一个页面-->
-      <div class="app-dataScreening-staffItem" @click="testDetail">
-        <div class="app-dataScreening-staffItem-decs">
-          <span>考试合格率</span>
-        </div>
-        <div class="app-dataScreening-staffItem-info">
-          <div class="app-dataScreening-staffItem-info-detail">
-            <div class="app-dataScreening-staffItem-info-number">
-              <b>{{ staffData.examQualified }}</b>%
+      </el-tooltip>
+      <el-tooltip class="item" effect="dark" content="点击查看详情" placement="top">
+        <div class="app-dataScreening-staffItem" @click="testDetail">
+          <div class="app-dataScreening-staffItem-decs">
+            <span>考试员工数</span>
+          </div>
+          <div class="app-dataScreening-staffItem-info">
+            <div class="app-dataScreening-staffItem-info-detail">
+              <div class="app-dataScreening-staffItem-info-number">
+                <b>{{ staffData.examUserCount }}</b>人
+              </div>
+              <p>
+                <span class="time-range">{{ startTime }} - {{ endTime }}</span>
+                <span class="blank">|</span>
+                <span class="time-desc">当前是{{ staffData.desc }}的数据</span>
+              </p>
             </div>
-            <p>
-              <span class="time-range">{{ startTime }} - {{ endTime }}</span>
-              <span class="blank">|</span>
-              <span class="time-desc">当前是{{ staffData.desc }}的数据</span>
-            </p>
-          </div>
-          <div class="app-dataScreening-staffItem-info-img">
-            <img src="@/assets/images/data-screening/examination_pass.jpg" alt="">
+            <div class="app-dataScreening-staffItem-info-img">
+              <img src="@/assets/images/data-screening/examination_staff.jpg" alt="">
+            </div>
           </div>
         </div>
-      </div>
+      </el-tooltip>
+      <el-tooltip class="item" effect="dark" content="点击查看详情" placement="top">
+        <!--  （产品需求）考试员工数和考试合格率是同一个页面-->
+        <div class="app-dataScreening-staffItem" @click="testDetail">
+          <div class="app-dataScreening-staffItem-decs">
+            <span>考试合格率</span>
+          </div>
+          <div class="app-dataScreening-staffItem-info">
+            <div class="app-dataScreening-staffItem-info-detail">
+              <div class="app-dataScreening-staffItem-info-number">
+                <b>{{ staffData.examQualified }}</b>%
+              </div>
+              <p>
+                <span class="time-range">{{ startTime }} - {{ endTime }}</span>
+                <span class="blank">|</span>
+                <span class="time-desc">当前是{{ staffData.desc }}的数据</span>
+              </p>
+            </div>
+            <div class="app-dataScreening-staffItem-info-img">
+              <img src="@/assets/images/data-screening/examination_pass.jpg" alt="">
+            </div>
+          </div>
+        </div>
+      </el-tooltip>
     </div>
     <!--排行榜面板-->
     <div class="app-dataScreening-item app-dataScreening-listWrapper">
@@ -133,9 +139,9 @@
             >
               <template slot-scope="scope">
                 <div style="width:70%;display: inline-block">
-                  <el-progress :text-inside="true" :stroke-width="20" :percentage="scope.row.progress1" :show-text="false" :color="customColor1" />
+                  <el-progress :text-inside="true" :stroke-width="10" :percentage="scope.row.progress1" :show-text="false" :color="customColor1" />
                 </div>
-                <div style="width:20%;display: inline-block;line-height: 26px;text-align: left; vertical-align:text-bottom">{{ scope.row.studyTimeTotal }}</div>
+                <div style="width:20%;display: inline-block;line-height: 26px;text-align: left; vertical-align:baseline;">{{ scope.row.studyTimeTotal }}</div>
               </template>
             </el-table-column>
             <el-table-column
@@ -146,9 +152,9 @@
             >
               <template slot-scope="scope">
                 <div style="width:70%;display: inline-block">
-                  <el-progress :text-inside="true" :stroke-width="20" :percentage="scope.row.progress2" :show-text="false" :color="customColor2" />
+                  <el-progress :text-inside="true" :stroke-width="10" :percentage="scope.row.progress2" :show-text="false" :color="customColor2" />
                 </div>
-                <div style="width:20%;display: inline-block;line-height: 26px;text-align: left;vertical-align: text-bottom">{{ scope.row.studyTimePercentDay }}</div>
+                <div style="width:20%;display: inline-block;line-height: 26px;text-align: left;vertical-align: baseline;">{{ scope.row.studyTimePercentDay }}</div>
               </template>
             </el-table-column>
             <el-table-column
@@ -159,9 +165,9 @@
             >
               <template slot-scope="scope">
                 <div style="width:70%;display: inline-block">
-                  <el-progress :text-inside="true" :stroke-width="20" :percentage="scope.row.progress3" :show-text="false" :color="customColor3" />
+                  <el-progress :text-inside="true" :stroke-width="10" :percentage="scope.row.progress3" :show-text="false" :color="customColor3" />
                 </div>
-                <div style="width:20%;display: inline-block;line-height: 26px;text-align: left;vertical-align: text-bottom">{{ scope.row.studyTimePercentNum }}</div>
+                <div style="width:20%;display: inline-block;line-height: 26px;text-align: left;vertical-align: baseline;">{{ scope.row.studyTimePercentNum }}</div>
               </template>
             </el-table-column>
 
@@ -191,9 +197,9 @@
             >
               <template slot-scope="scope">
                 <div style="width:70%;display: inline-block">
-                  <el-progress :text-inside="true" :stroke-width="20" :percentage="scope.row.progress1" :show-text="false" />
+                  <el-progress :text-inside="true" :stroke-width="10" :percentage="scope.row.progress1" :show-text="false" />
                 </div>
-                <div style="width:20%;display: inline-block;line-height: 26px;text-align: left;vertical-align: text-bottom">{{ scope.row.publishTrainCount }}</div>
+                <div style="width:20%;display: inline-block;line-height: 26px;text-align: left;vertical-align: baseline;">{{ scope.row.publishTrainCount }}</div>
               </template>
             </el-table-column>
             <el-table-column
@@ -204,9 +210,9 @@
             >
               <template slot-scope="scope">
                 <div style="width:70%;display: inline-block">
-                  <el-progress :text-inside="true" :stroke-width="20" :percentage="scope.row.trainUserPercent" :show-text="false" />
+                  <el-progress :text-inside="true" :stroke-width="10" :percentage="scope.row.trainUserPercent" :show-text="false" />
                 </div>
-                <div style="width:20%;display: inline-block;line-height: 26px;text-align: left;vertical-align: text-bottom">{{ scope.row.trainUserPercent }}</div>
+                <div style="width:20%;display: inline-block;line-height: 26px;text-align: left;vertical-align: baseline;">{{ scope.row.trainUserPercent }}</div>
               </template>
             </el-table-column>
             <el-table-column
@@ -217,9 +223,9 @@
             >
               <template slot-scope="scope">
                 <div style="width:70%;display: inline-block">
-                  <el-progress :text-inside="true" :stroke-width="20" :percentage="scope.row.progress2" :show-text="false" />
+                  <el-progress :text-inside="true" :stroke-width="10" :percentage="scope.row.progress2" :show-text="false" />
                 </div>
-                <div style="width:20%;display: inline-block;line-height: 26px;text-align: left;vertical-align: text-bottom">{{ scope.row.userAverageTrainViewCount }}</div>
+                <div style="width:20%;display: inline-block;line-height: 26px;text-align: left;vertical-align: baseline;">{{ scope.row.userAverageTrainViewCount }}</div>
               </template>
             </el-table-column>
           </el-table>
@@ -456,6 +462,8 @@ export default {
   },
   created() {
     this.setDate(1)// 近一周
+    sessionStorage.removeItem('data-screening-time')
+    sessionStorage.setItem('data-screening-currentSort', 1)
   },
   mounted() {
     this.initCharts()
@@ -559,7 +567,8 @@ export default {
       var endTime = new Date(this.endTime).getTime() / 1000 - parseInt(new Date(this.startTime).getTime() / 1000)
       var timeDay = parseInt(endTime / 60 / 60 / 24)// 相差天数
       this.staffData.desc = timeDay + '天'
-
+      sessionStorage.setItem('data-screening-currentSort', -1)
+      sessionStorage.setItem('data-screening-time', JSON.stringify(value))
       this.initData(this.startTime, this.endTime)
     },
 
@@ -1165,6 +1174,7 @@ export default {
     // 时间搜索标签切换
     active(index) {
       this.currentSort = index
+      sessionStorage.setItem('data-screening-currentSort', index)
       this.setDate(index)
     },
     // 排行榜标签切换
@@ -1402,7 +1412,7 @@ export default {
   .app-dataScreening-head-title{
     height:60px;
     line-height: 60px;
-    margin-right: 40px;
+    margin-right: 30px;
     font-size: 18px;
   }
   .app-dataScreening-export{

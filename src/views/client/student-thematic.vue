@@ -44,13 +44,13 @@
       </el-header>
       <el-main class="main">
         <div class="fl set">
-          <div v-show="lessonStatus.onlive !== 2 && chapter.type === 1" class="noLive">
+          <div v-show="lessonStatus.onlive !== 2 && chapter.type === 1 && (lessonStatus.onlive !== 3 && lessonStatus.recordStatus !== 1)" class="noLive">
             <div>
               <img :src="noLiveImg" :alt="noLiveText">
               <p>{{ noLiveText }}</p>
             </div>
           </div>
-          <div v-show="lessonStatus.onlive === 2 || chapter.type === 2 || lessonStatus.recordStatus === 1" class="video-wapper">
+          <div v-show="lessonStatus.onlive === 2 || chapter.type === 2 || lessonStatus.recordStatus === 1 || (lessonStatus.onlive === 3 && lessonStatus.recordStatus === 1)" class="video-wapper">
             <div id="livePlay1" class="video-item" />
             <div id="livePlay2" class="video-item" />
           </div>
@@ -185,6 +185,7 @@ export default {
       lessonOrcommentActive: 1, // 右侧目录和讨论切换
       cataloguesItemActive: 0, // 右侧目录切换
       lessonList: [], // 专题课堂数据
+      lessonInfo: {}, // 专题课堂数据
       thematicId: '', // 专题课堂id
       id: '', // 课程id
       chapter: {
@@ -245,7 +246,7 @@ export default {
     id: function(curVal, oldVal) {
       this.commentsList.length = 0
       this.$ws.close()
-      this.$ws.open(this.id)
+      // this.$ws.open(this.id)
       clearInterval(this.timer)
       this.findDetailInfoById()
       this.getComments()
@@ -264,6 +265,7 @@ export default {
 
     // 监听 chapter._id 变化, 更新播放器
     'chapter._id': function(curVal, oldVal) {
+      debugger
       $('#livePlay1').dispose({ id: 'myVideo1' })
       this.initVideo1()
     },
@@ -304,7 +306,7 @@ export default {
       } else {
         this.shotOffLoading = false
         this.initVideo1()
-        this.$ws.open(this.id)
+        // this.$ws.open(this.id)
       }
     },
 
@@ -353,6 +355,7 @@ export default {
     findLessonDetailById() {
       findLessonDetailById({ id: this.thematicId }).then(res => {
         this.lessonList = res.data.chaptersInfo || []
+        this.lessonInfo = res.data.lessonInfo || []
         this.cataloguesItemActive = this.lessonList.length - 1
         this.id = this.lessonList.length ? this.lessonList[this.lessonList.length - 1]._id : ''
         this.listQuery.cid = this.id
@@ -375,13 +378,18 @@ export default {
           })
 
           if (this.chapter.type === 1) {
-            this.videoSource1 = this.live_info[0] ? this.live_info[0].cdnUrl : 'noVideo.mp4'
-            this.videoSource2 = this.live_info[1] ? this.live_info[1].cdnUrl : 'noVideo.mp4'
+            if (this.chapter.allow_broadcast === 3 && this.chapter.record_status === 1) {
+              this.videoSource1 = this.live_info[0] ? this.live_info[0].recordUrl : 'noVideo.mp4'
+              this.videoSource2 = this.live_info[1] ? this.live_info[1].recordUrl : 'noVideo.mp4'
+            } else {
+              this.videoSource1 = this.live_info[0] ? this.live_info[0].cdnUrl : 'noVideo.mp4'
+              this.videoSource2 = this.live_info[1] ? this.live_info[1].cdnUrl : 'noVideo.mp4'
+            }
           } else {
             this.videoSource1 = this.chapter.video_url || 'noVideo.mp4'
             this.videoSource2 = 'noVideo.mp4'
           }
-          if (this.chapter.type === 1) {
+          if (this.chapter.type === 1 && this.chapter.allow_broadcast !== 3 && this.chapter.record_status !== 1) {
             this.isAutoPlay = true
             $('.vjs-control-bar .vjs-reStart').hide()
           } else {
@@ -418,7 +426,7 @@ export default {
 
     // 评价， 查询标签
     appraise() {
-      if (this.chapter.isAppraise) {
+      if (this.lessonInfo.isAppraise) {
         findLabel().then(res => {
           this.lableList = res.data
           this.appraiseVisible = true
@@ -431,7 +439,7 @@ export default {
     // 评价
     saveAppraise() {
       this.appraiseForm.lesson_id = this.thematicId
-      this.appraiseForm.lesson_type = this.chapter.type === 1 ? 'online' : 'video'
+      this.appraiseForm.lesson_type = 'lesson'
       addOneAppraise(this.appraiseForm).then(res => {
         this.$message.success('评价成功！')
         this.appraiseVisible = false

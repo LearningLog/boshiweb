@@ -39,6 +39,7 @@
       border
       fit
       highlight-current-row
+      empty-text="暂无可用小组"
       @selection-change="handleSelectionChange"
     >
       <el-table-column

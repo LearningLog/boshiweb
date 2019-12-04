@@ -14,7 +14,7 @@
               v-model="listQuery.content"
               placeholder="请输入技能名称"
               clearable
-              @keyup.enter.native="get_list"
+              @keyup.enter.native="search"
             />
           </el-form-item>
           <el-form-item label="创建时间">
@@ -30,7 +30,7 @@
           </el-form-item>
         </el-form>
         <div id="searchPopoverBtn">
-          <el-button type="primary" @click="get_list">搜索</el-button>
+          <el-button type="primary" @click="search">搜索</el-button>
           <el-button type="primary" @click="save">保存</el-button>
         </div>
       </div>
@@ -103,7 +103,7 @@ export default {
         content: '', // 技能名称
         startTime: '', // 开始时间
         endtTime: '', // 结束时间
-        selectCompanyId: this.selectCompanyId // 所属租户
+        selectCompanyId: '' // 所属租户
       },
       group_list: [], // 所属小组list
       custom_list: [], // 所属租户list
@@ -125,10 +125,11 @@ export default {
     get_list() {
       this.listQuery.startTime = this.time_range[0]
       this.listQuery.endtTime = this.time_range[1]
+      this.listQuery.selectCompanyId = this.selectCompanyId
       this.listLoading = true
       skillManagerList(this.listQuery).then(res => {
         this.listLoading = false
-        this.list = res.data.page.list
+        this.list = res.data.page.list || []
         this.total = res.data.page.totalCount
         this.selectSkillsVisible = true
         this.$nextTick(() => {
@@ -147,6 +148,12 @@ export default {
       }).catch(error => {
         console.log(error)
       })
+    },
+
+    // 搜索
+    search() {
+      this.listQuery.currentPage = 1
+      this.get_list()
     },
 
     // 选中数据
@@ -178,4 +185,7 @@ export default {
   float: left;
   margin-right: 6px;
 }
+  #topSearch .el-date-editor.el-range-editor.el-input__inner {
+    width: 350px!important;
+  }
 </style>
