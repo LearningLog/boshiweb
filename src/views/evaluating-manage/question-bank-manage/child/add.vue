@@ -507,7 +507,6 @@
                       </div>
                       <i class="el-icon-circle-plus-outline" @click="addSkills" />
                     </el-form-item>
-                    <el-checkbox v-model="saveSet" class="saveSet">保存设置（分值、难度、标签、技能）</el-checkbox>
                   </el-form>
                   <el-button v-no-more-click class="saveTopic" type="primary" @click="saveTopic">添加题目</el-button>
                 </div>
@@ -630,7 +629,6 @@
                       </div>
                       <i class="el-icon-circle-plus-outline" @click="addSkills" />
                     </el-form-item>
-                    <el-checkbox v-model="saveSet" class="saveSet">保存设置（分值、难度、标签、技能）</el-checkbox>
                   </el-form>
                   <el-button v-no-more-click class="saveTopic" type="primary" @click="saveTopic">添加题目</el-button>
                 </div>
@@ -715,7 +713,6 @@
                       </div>
                       <i class="el-icon-circle-plus-outline" @click="addSkills" />
                     </el-form-item>
-                    <el-checkbox v-model="saveSet" class="saveSet">保存设置（分值、难度、标签、技能）</el-checkbox>
                   </el-form>
                   <el-button v-no-more-click class="saveTopic" type="primary" @click="saveTopic">添加题目</el-button>
                 </div>
