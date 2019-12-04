@@ -97,7 +97,7 @@ export default {
         currentPage: 1, // 当前页码
         pageSize: 10, // 当前列表请求条数
         startTime: '', // 开始时间
-        endtTime: '', // 结束时间
+        endTime: '', // 结束时间
         content: '', // 标签名称
         labelIncs: [], // 标签ID
         selectCompanyId: '', // 所属租户
@@ -107,7 +107,7 @@ export default {
         currentPage: 1, // 当前页码
         pageSize: 10, // 当前列表请求条数
         startTime: '', // 开始时间
-        endtTime: '', // 结束时间
+        endTime: '', // 结束时间
         content: '', // 标签名称
         labelIncs: [], // 标签ID
         selectCompanyId: '', // 所属租户
@@ -137,7 +137,7 @@ export default {
     get_list() {
       this.time_range = this.time_range || []
       this.listQuery.startTime = this.time_range[0]
-      this.listQuery.endtTime = this.time_range[1]
+      this.listQuery.endTime = this.time_range[1]
       this.listLoading = true
       getLabelList(this.listQuery).then(response => {
         this.listLoading = false

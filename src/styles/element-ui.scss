@@ -195,3 +195,8 @@
   cursor: not-allowed;
   pointer-events: auto;
 }
+
+// 修改 el-checkbox disabled color
+.el-checkbox__input.is-disabled + span.el-checkbox__label {
+  color: #606266;
+}

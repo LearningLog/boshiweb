@@ -219,6 +219,8 @@ export default {
 
     // 上传成功
     onSuccess(file, response) {
+      $('.el-progress-bar__inner').eq(this.uploadIndex).width('100%')
+      $('.el-progress__text').eq(this.uploadIndex).text('100%')
       console.log('file', file)
       console.log('response', response)
       this.uploadIndex++
