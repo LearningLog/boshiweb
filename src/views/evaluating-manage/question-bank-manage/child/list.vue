@@ -191,10 +191,9 @@ export default {
 
     // 监听三组数据变化
     tenantsGroupsRolesVal(val) {
-      this.listQuery.selectCompanyId = val.companyIds
-      this.listQuery.egroup = val.egroupId
-      this.listQuery.roleId = val.roleId
-      this.group = val.group
+      this.listQuery1.selectCompanyId = val.companyIds
+      this.listQuery1.egroup = val.egroupId
+      this.listQuery1.roleId = val.roleId
     },
 
     // 重置监听三组数据变化

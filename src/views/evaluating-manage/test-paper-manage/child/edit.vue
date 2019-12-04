@@ -1358,6 +1358,7 @@ export default {
         return false
       }
       this.testPaper.topic_count = this.testPaper.topic_info.length
+      this.testPaper.score_count = 0
       this.testPaper.topic_info.forEach(item => {
         this.testPaper.score_count += item.topic_score * 1
       })

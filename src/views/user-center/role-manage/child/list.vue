@@ -1,7 +1,7 @@
 <template>
   <div class="list-box">
     <div id="topSearch">
-      <el-input v-model="listQuery1.rolename" placeholder="请输入角色名称" clearable @keyup.enter.native="topSearch">
+      <el-input v-model="listQuery1.content" placeholder="请输入角色名称" clearable @keyup.enter.native="topSearch">
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
       </el-input>
       <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">高级搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
@@ -119,7 +119,7 @@ export default {
       listQuery: {
         currentPage: 1, // 当前页码
         pageSize: 10, // 当前列表请求条数
-        rolename: '', // 角色名称
+        content: '', // 角色名称
         userId: '', // 创建人
         startTime: '', // 开始时间
         endTime: '', // 结束时间
@@ -128,7 +128,7 @@ export default {
       listQuery1: {
         currentPage: 1, // 当前页码
         pageSize: 10, // 当前列表请求条数
-        rolename: '', // 角色名称
+        content: '', // 角色名称
         userId: '', // 创建人
         startTime: '', // 开始时间
         endTime: '', // 结束时间
@@ -160,7 +160,7 @@ export default {
     },
     // 重置
     reset() {
-      this.listQuery1.rolename = ''
+      this.listQuery1.content = ''
       this.listQuery1.userId = ''
       this.listQuery1.startTime = ''
       this.listQuery1.endTime = ''

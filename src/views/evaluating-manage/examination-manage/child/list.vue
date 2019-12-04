@@ -223,7 +223,19 @@ export default {
 
     // 单个删除
     del(row) {
-      this.$confirm('确定要删除【' + row.exam_name + '】吗？', '删除考试', {
+      let text = ''
+      switch (row.exam_status) {
+        case 1:
+          text = `确定要删除【${row.exam_name}】吗？`
+          break
+        case 2:
+          text = '考试正在进行，确定要删除吗？'
+          break
+        case 3:
+          text = '删除后考试信息同步清空，确定要删除吗？'
+          break
+      }
+      this.$confirm(text, '删除考试', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
