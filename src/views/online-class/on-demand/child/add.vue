@@ -812,7 +812,7 @@ export default {
 }
 
 .step2 /deep/ .el-scrollbar {
-  height: calc(100vh - 350px);
+  height: calc(100vh - 375px);
 }
 
 /deep/ .el-cascader-menu:last-child {
