@@ -20,7 +20,7 @@
           v-no-more-click
           type="primary"
           @click="saveTestPaper"
-        >保存考试</el-button>
+        >保存试卷</el-button>
       </div>
     </div>
     <div>

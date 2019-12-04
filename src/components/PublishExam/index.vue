@@ -24,11 +24,11 @@
         <el-form-item label="考试时间" prop="time_range">
           <el-date-picker
             v-model="paparForm.time_range"
-            type="daterange"
+            type="datetimerange"
             range-separator="至"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            value-format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd HH:mm:ss"
           />
         </el-form-item>
         <el-form-item label="及格分数" prop="passscore">

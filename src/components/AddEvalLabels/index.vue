@@ -131,7 +131,7 @@ export default {
         currentPage: 1, // 当前页码
         pageSize: 10, // 当前列表请求条数
         startTime: '', // 开始时间
-        endtTime: '', // 结束时间
+        endTime: '', // 结束时间
         content: '', // 标签名称
         selectCompanyId: '', // 所属租户
         egroup: '' // 所属小组
@@ -163,7 +163,7 @@ export default {
     get_list() {
       this.time_range = this.time_range || []
       this.listQuery.startTime = this.time_range[0]
-      this.listQuery.endtTime = this.time_range[1]
+      this.listQuery.endTime = this.time_range[1]
       this.listQuery.selectCompanyId = this.selectCompanyId
       this.listQuery.egroup = this.egroup * 1
       this.listLoading = true
@@ -178,7 +178,7 @@ export default {
             var item1 = this.currentLabels[i]
             for (var j = 0, len2 = this.list.length; j < len2; j++) {
               var item2 = this.list[j]
-              if (item1._id === item2._id && this.visible2) {
+              if ((item1._id === item2._id || item1.linc === item2.linc) && this.visible2) {
                 this.$refs.multipleTable.toggleRowSelection(this.list[j], true)
                 break
               }
