@@ -259,7 +259,11 @@ export default {
       fileId: '', // 当前文件id
       showCustom: true, // 租户查询是否显示
       showUser: true, // 是否显示用户
-      timer: null// 定时任务
+      timer: null,// 定时任务
+      listQuery2: { // 加载推送菜单
+        currentPage: 1, // 当前页
+        pageSize: 30 // 当前页请求条
+      }
     }
   },
   beforeDestroy() {

@@ -7,8 +7,8 @@
       style="margin-top: 20px"
     >
       <el-step title="第一步：创建试卷" />
-      <el-step title="第二部：添加试卷" />
-      <el-step title="第三部：发布考试" />
+      <el-step title="第二步：添加试卷" />
+      <el-step title="第三步：发布考试" />
     </el-steps>
     <div class="clearfix">
       <div class="operator fr">
@@ -179,7 +179,6 @@
                   >
                     <el-checkbox
                       v-model="item2.correct_option === 1 ? true : false"
-                      :title="item2.option_content"
                       disabled
                     >{{ getOptionOrderByIndex(index2)
                     }}{{ item2.option_content }}</el-checkbox>
@@ -196,6 +195,7 @@
           direction="rtl"
           size="50%"
           :before-close="handleCloseEditTopicDrawer"
+          :close="handleCloseEditTopicDrawer"
         >
           <el-scrollbar wrap-class="scrollbar-wrapper">
             <div class="form-edit">
@@ -677,11 +677,11 @@
                   type="primary"
                   @click="saveTopic"
                 >保存</el-button>
-                <el-button
-                  type="primary"
-                  plain
-                  @click="editTopicDrawer = false"
-                >取消</el-button>
+                <!--<el-button-->
+                  <!--type="primary"-->
+                  <!--plain-->
+                  <!--@click="editTopicDrawer = false"-->
+                <!--&gt;取消</el-button>-->
               </div>
             </div>
           </el-scrollbar>
@@ -723,11 +723,11 @@
           <el-form-item label="考试时间" prop="time_range">
             <el-date-picker
               v-model="exam.time_range"
-              type="daterange"
+              type="datetimerange"
               range-separator="至"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
-              value-format="yyyy-MM-dd"
+              value-format="yyyy-MM-dd HH:mm:ss"
             />
           </el-form-item>
           <el-form-item label="及格分数" prop="passscore">
@@ -794,6 +794,7 @@ export default {
       publishDialog: false, // 发布考试弹窗
       editTopicDrawer: false, // 编辑抽屉
       dataIsChange: -1, // 计数器，据此判断表单是否已编辑
+      dataIsChange1: 0, // 计数器，据此判断表单是否已编辑
       noLeaveprompt: false, // 表单提交后，设置为true，据此判断提交不再弹出离开提示
       activeStep: 1, // 当前激活步骤
       createType: '1', // 默认新创建试卷
@@ -1023,6 +1024,30 @@ export default {
         }
       },
       deep: true // 深层次监听
+    },
+    topic1: {
+      handler(val) {
+        if (val) {
+          this.dataIsChange1++
+        }
+      },
+      deep: true // 深层次监听
+    },
+    topic2: {
+      handler(val) {
+        if (val) {
+          this.dataIsChange1++
+        }
+      },
+      deep: true // 深层次监听
+    },
+    topic3: {
+      handler(val) {
+        if (val) {
+          this.dataIsChange1++
+        }
+      },
+      deep: true // 深层次监听
     }
   },
   created() {
@@ -1231,10 +1256,20 @@ export default {
       this.currentLabels = []
       this.currentSkills = []
       for (var key in topic.labels) {
-        this.currentLabels.push(topic.labels[key])
+        let label = {}
+        label = {
+          linc: key * 1,
+          lname: topic.labels[key]
+        }
+        this.currentLabels.push(label)
       }
       for (var key2 in topic.skills) {
-        this.currentSkills.push(topic.skills[key2])
+        let skill = {}
+        skill = {
+          increase_id: key2 * 1,
+          skill_name: topic.skills[key2]
+        }
+        this.currentSkills.push(skill)
       }
       // this.currentLabels = topic.labels || []
       // this.currentSkills = topic.skills || []
@@ -1249,6 +1284,7 @@ export default {
           this.topic3 = topic
           break
       }
+      this.dataIsChange1 = -1
     },
 
     // 用于生成uuid
@@ -1532,15 +1568,19 @@ export default {
 
     // 编辑试题关闭
     handleCloseEditTopicDrawer(done) {
-      this.$confirm('当前试题尚未保存，确认关闭？', '关闭', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-        .then(() => {
-          done()
+      if (this.dataIsChange1) {
+        this.$confirm('当前试题尚未保存，确认关闭？', '关闭', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
         })
-        .catch(() => {})
+          .then(() => {
+            done()
+          })
+          .catch(() => {})
+      } else {
+        done()
+      }
     },
 
     cancel0() {
@@ -1578,13 +1618,13 @@ export default {
           delete this.exam.time_range
 
           var obj = {}
-          this.targetUser.forEach(item => {
-            if (!obj[item[0]]) {
-              obj[item[0]] = [item[1]]
+          for (var key in this.targetUser) {
+            if (!obj[key]) {
+              obj[key] = this.targetUser[key]
             } else {
-              obj[item[0]].push(item[1])
+              obj[key].push(this.targetUser[key][0])
             }
-          })
+          }
           this.exam.targetUser = obj
           this.exam.exampaper_src = 1
           this.exam.operatetype = 'publish'
@@ -1789,6 +1829,7 @@ export default {
 }
 #add-test-paper > .el-scrollbar {
   height: calc(100vh - 230px);
+  width: 100%;
 }
 
 /*==============================================================*/

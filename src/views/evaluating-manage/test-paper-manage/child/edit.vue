@@ -20,7 +20,7 @@
           v-no-more-click
           type="primary"
           @click="saveTestPaper"
-        >保存考试</el-button>
+        >保存试卷</el-button>
       </div>
     </div>
     <div>
@@ -130,6 +130,7 @@
       direction="rtl"
       size="50%"
       :before-close="handleCloseEditTopicDrawer"
+      :close="handleCloseEditTopicDrawer"
     >
       <el-scrollbar wrap-class="scrollbar-wrapper">
         <div class="form-edit">
@@ -599,11 +600,11 @@
               type="primary"
               @click="saveTopic"
             >保存</el-button>
-            <el-button
-              type="primary"
-              plain
-              @click="editTopicDrawer = false"
-            >取消</el-button>
+            <!--<el-button-->
+              <!--type="primary"-->
+              <!--plain-->
+              <!--@click="editTopicDrawer = false"-->
+            <!--&gt;取消</el-button>-->
           </div>
         </div>
       </el-scrollbar>
@@ -658,6 +659,7 @@ export default {
       publishDialog: false, // 发布考试弹窗
       editTopicDrawer: false, // 编辑抽屉
       dataIsChange: 0, // 计数器，据此判断表单是否已编辑
+      dataIsChange1: 0, // 计数器，据此判断表单是否已编辑
       noLeaveprompt: false, // 表单提交后，设置为true，据此判断提交不再弹出离开提示
       testPaper: {
         topic_count: 0, // 总题数
@@ -802,6 +804,30 @@ export default {
       handler(val) {
         if (val) {
           this.dataIsChange++
+        }
+      },
+      deep: true // 深层次监听
+    },
+    topic1: {
+      handler(val) {
+        if (val) {
+          this.dataIsChange1++
+        }
+      },
+      deep: true // 深层次监听
+    },
+    topic2: {
+      handler(val) {
+        if (val) {
+          this.dataIsChange1++
+        }
+      },
+      deep: true // 深层次监听
+    },
+    topic3: {
+      handler(val) {
+        if (val) {
+          this.dataIsChange1++
         }
       },
       deep: true // 深层次监听
@@ -955,10 +981,20 @@ export default {
       this.currentLabels = []
       this.currentSkills = []
       for (var key in topic.labels) {
-        this.currentLabels.push(topic.labels[key])
+        let label = {}
+        label = {
+          linc: key * 1,
+          lname: topic.labels[key]
+        }
+        this.currentLabels.push(label)
       }
       for (var key2 in topic.skills) {
-        this.currentSkills.push(topic.skills[key2])
+        let skill = {}
+        skill = {
+          increase_id: key2 * 1,
+          skill_name: topic.skills[key2]
+        }
+        this.currentSkills.push(skill)
       }
       // this.currentLabels = topic.labels || []
       // this.currentSkills = topic.skills || []
@@ -973,6 +1009,7 @@ export default {
           this.topic3 = topic
           break
       }
+      this.dataIsChange1 = -1
     },
 
     // 用于生成uuid
@@ -1249,15 +1286,19 @@ export default {
 
     // 编辑试题关闭
     handleCloseEditTopicDrawer(done) {
-      this.$confirm('当前试题尚未保存，确认关闭？', '关闭', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-        .then(() => {
-          done()
+      if (this.dataIsChange1) {
+        this.$confirm('当前试题尚未保存，确认关闭？', '关闭', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
         })
-        .catch(() => {})
+          .then(() => {
+            done()
+          })
+          .catch(() => {})
+      } else {
+        done()
+      }
     },
 
     cancel0() {

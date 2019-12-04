@@ -102,7 +102,7 @@ export default {
         pageSize: 10, // 当前列表请求条数
         content: '', // 技能名称
         startTime: '', // 开始时间
-        endtTime: '', // 结束时间
+        endTime: '', // 结束时间
         selectCompanyId: '' // 所属租户
       },
       group_list: [], // 所属小组list
@@ -124,7 +124,7 @@ export default {
     // 获取技能列表
     get_list() {
       this.listQuery.startTime = this.time_range[0]
-      this.listQuery.endtTime = this.time_range[1]
+      this.listQuery.endTime = this.time_range[1]
       this.listQuery.selectCompanyId = this.selectCompanyId
       this.listLoading = true
       skillManagerList(this.listQuery).then(res => {
@@ -138,7 +138,7 @@ export default {
             var item1 = this.currentSkills[i]
             for (var j = 0, len2 = this.list.length; j < len2; j++) {
               var item2 = this.list[j]
-              if (item1._id === item2._id && this.visible3) {
+              if ((item1._id === item2._id || item1.increase_id === item2.increase_id) && this.visible3) {
                 this.$refs.multipleTable.toggleRowSelection(this.list[j], true)
                 break
               }

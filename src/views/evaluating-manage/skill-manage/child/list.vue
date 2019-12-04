@@ -68,7 +68,7 @@ export default {
         content: '', // 技能名称
         skillInc: '', // 技能ID
         startTime: '', // 开始时间
-        endtTime: '' // 结束时间
+        endTime: '' // 结束时间
       },
       listQuery1: {
         currentPage: 1, // 当前页码
@@ -76,7 +76,7 @@ export default {
         content: '', // 技能名称
         skillInc: '', // 技能ID
         startTime: '', // 开始时间
-        endtTime: '' // 结束时间
+        endTime: '' // 结束时间
       },
       time_range: [],
       list: null, // 列表数据
@@ -98,7 +98,7 @@ export default {
       this.listQuery1.skillInc = ''
       this.listQuery1.content = ''
       this.listQuery1.startTime = ''
-      this.listQuery1.endtTime = ''
+      this.listQuery1.endTime = ''
       this.time_range = []
       this.listQuery = JSON.parse(JSON.stringify(this.listQuery1))
       this.get_list()
@@ -106,7 +106,7 @@ export default {
     // 获取技能列表
     get_list() {
       this.listQuery.startTime = this.time_range[0]
-      this.listQuery.endtTime = this.time_range[1]
+      this.listQuery.endTime = this.time_range[1]
       this.listLoading = true
       skillManagerList(this.listQuery).then(res => {
         this.listLoading = false

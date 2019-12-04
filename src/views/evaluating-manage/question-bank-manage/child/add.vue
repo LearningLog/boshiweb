@@ -507,7 +507,6 @@
                       </div>
                       <i class="el-icon-circle-plus-outline" @click="addSkills" />
                     </el-form-item>
-                    <el-checkbox v-model="saveSet" class="saveSet">保存设置（分值、难度、标签、技能）</el-checkbox>
                   </el-form>
                   <el-button v-no-more-click class="saveTopic" type="primary" @click="saveTopic">添加题目</el-button>
                 </div>
@@ -630,7 +629,6 @@
                       </div>
                       <i class="el-icon-circle-plus-outline" @click="addSkills" />
                     </el-form-item>
-                    <el-checkbox v-model="saveSet" class="saveSet">保存设置（分值、难度、标签、技能）</el-checkbox>
                   </el-form>
                   <el-button v-no-more-click class="saveTopic" type="primary" @click="saveTopic">添加题目</el-button>
                 </div>
@@ -715,7 +713,6 @@
                       </div>
                       <i class="el-icon-circle-plus-outline" @click="addSkills" />
                     </el-form-item>
-                    <el-checkbox v-model="saveSet" class="saveSet">保存设置（分值、难度、标签、技能）</el-checkbox>
                   </el-form>
                   <el-button v-no-more-click class="saveTopic" type="primary" @click="saveTopic">添加题目</el-button>
                 </div>
@@ -766,7 +763,8 @@ import SelectFile from '@/components/SelectFile'
 import AddLabels from '@/components/AddEvalLabels'
 import AddSkills from '@/components/AddEvalSkills'
 import { getToken } from '@/utils/auth'
-import { importTopics, addTopic } from '@/api/evolution-manage/question-bank-manage'
+import { importTopics, addTopic, getCacheTopicFromServiceInterface, saveCacheTopicToServiceInterface, clearServiceCacheTopicInterface, deleteOneCacheTopicFromServiceInterface } from '@/api/evolution-manage/question-bank-manage'
+
 import { getOptionOrderByIndex } from '@/utils/index'
 const $ = window.$
 
@@ -780,6 +778,7 @@ export default {
     return {
       selectCompanyId: '', // 租户
       egroup: '', // 小组
+      tempCacheVersion:'vue',//试题缓存版本
       headers: {
         Authorization: getToken() // 图片上传 header
       },
@@ -1663,7 +1662,72 @@ export default {
     } else {
       next()
     }
+  },
+
+
+  //从服务器获取缓存的试题
+  getCacheTopicFromService:function(){
+    var egroup = this.egroup;
+    var tempCacheVersion = this.tempCacheVersion;
+    var jsons = JSON.stringify({egroup:egroup,version:tempCacheVersion,selectCompanyId:this.selectCompanyId});
+
+    var cacheTopics = [];
+    //ajax请求列表数据
+    var data = getCacheTopicFromServiceInterface(jsons);
+    if (data.code != undefined && 0 == data.code && data.data){
+      $.each(data.data,function(i,cacheTopic){
+        var topic_data = cacheTopic.topic_data;
+        var topic = JSON.parse(topic_data);
+        cacheTopics.push(topic);
+      })
+    }
+    return cacheTopics;
+  },
+
+//保存缓存试题到服务器
+  saveCacheTopicToService:function(topic){
+    var cacheTempId = null;
+    if(!('cacheTempId' in topic)){
+      cacheTempId = this.guid();
+      topic.cacheTempId = cacheTempId;
+    }else{
+      cacheTempId =  topic.cacheTempId;
+    }
+
+    var egroup = this.egroup;
+    var tempCacheVersion = that.tempCacheVersion;
+    var jsons = JSON.stringify({egroup:egroup,version:tempCacheVersion,topic_code:cacheTempId,topic_data:JSON.stringify(topic),selectCompanyId:this.selectCompanyId});
+
+    setTimeout(function(){
+      saveCacheTopicToServiceInterface(jsons);
+    },500);
+  },
+
+//清除服务端缓存的试题
+  clearServiceCacheTopic:function(){
+    var egroup = this.egroup
+    var tempCacheVersion = that.tempCacheVersion;
+    var jsons = JSON.stringify({egroup:egroup,version:tempCacheVersion,selectCompanyId:this.selectCompanyId});
+    setTimeout(function(){
+      clearServiceCacheTopicInterface(jsons);
+    },500);
+
+  },
+//从服务器删除某一题缓存
+  deleteOneCacheTopicFromService:function(topic){
+    var cacheTempId = null;
+    if(!('cacheTempId' in topic)){
+      return;
+    }
+    cacheTempId = topic.cacheTempId;
+    var egroup = this.egroup;
+    var tempCacheVersion = that.tempCacheVersion;
+    var jsons = JSON.stringify({egroup:egroup,version:tempCacheVersion,topic_code:cacheTempId,selectCompanyId:this.selectCompanyId});
+    setTimeout(function(){
+      deleteOneCacheTopicFromServiceInterface(jsons)
+    },500);
   }
+
 }
 </script>
 
