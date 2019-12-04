@@ -90,7 +90,7 @@
         </template>
       </el-table-column>
       <el-table-column align="center" label="考核小组" min-width="90" show-overflow-tooltip prop="groupName" />
-      <el-table-column align="center" label="状态" min-width="80" show-overflow-tooltip>
+      <el-table-column align="center" label="状态" min-width="70" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-tag v-if="scope.row.auto_status === 1" type="warning">{{ scope.row.autoStatusDesc }}</el-tag>
           <el-tag v-if="scope.row.auto_status === 2" type="success">{{ scope.row.autoStatusDesc }}</el-tag>
