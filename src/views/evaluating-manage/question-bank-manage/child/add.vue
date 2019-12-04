@@ -766,13 +766,7 @@ import SelectFile from '@/components/SelectFile'
 import AddLabels from '@/components/AddEvalLabels'
 import AddSkills from '@/components/AddEvalSkills'
 import { getToken } from '@/utils/auth'
-import { importTopics, addTopic } from '@/api/evolution-manage/question-bank-manage'
-
-import { importTopics, getCacheTopicFromServiceInterface } from '@/api/evolution-manage/question-bank-manage'
-import { importTopics, saveCacheTopicToServiceInterface } from '@/api/evolution-manage/question-bank-manage'
-import { importTopics, clearServiceCacheTopicInterface } from '@/api/evolution-manage/question-bank-manage'
-import { importTopics, deleteOneCacheTopicFromServiceInterface } from '@/api/evolution-manage/question-bank-manage'
-
+import { importTopics, addTopic, getCacheTopicFromServiceInterface, saveCacheTopicToServiceInterface, clearServiceCacheTopicInterface, deleteOneCacheTopicFromServiceInterface } from '@/api/evolution-manage/question-bank-manage'
 
 import { getOptionOrderByIndex } from '@/utils/index'
 const $ = window.$
@@ -1736,9 +1730,6 @@ export default {
       deleteOneCacheTopicFromServiceInterface(jsons)
     },500);
   }
-
-
-
 
 }
 </script>
