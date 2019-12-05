@@ -422,15 +422,18 @@
                 @keyup.native="intNum(exam.pass_score)"
               />
             </el-form-item>
+            <el-form-item label="试题乱序">
+              <el-radio-group v-model="exam.topic_unrest">
+                <el-radio :label="1">是</el-radio>
+                <el-radio :label="0">否</el-radio>
+              </el-radio-group>
+            </el-form-item>
             <el-form-item label="考试人员" prop="memer">
               <el-input v-show="false" v-model="exam.memer" />
               <Examiners
                 :select-company-id="exam.selectCompanyId"
                 @examiners="getExaminers"
               />
-            </el-form-item>
-            <el-form-item label="考试类型">
-              <el-checkbox v-model="exam.topic_unrest">试题乱序</el-checkbox>
             </el-form-item>
           </el-form>
         </div>

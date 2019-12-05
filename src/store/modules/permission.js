@@ -37,34 +37,7 @@ export function filterAsyncRoutes(routes, responseRoutes) {
     })
   })
 
-  // for (let i = 0, len = responseRoutes.length; i < len; i++) {
-  //   const item = responseRoutes[i]
-  //   for (let j = 0, len = routes.length; j < len; j++) {
-  //     const tmp = routes[j]
-  //     if (flag) {
-  //       homePath += tmp.path + '/'
-  //     }
-  //     if (item.path === tmp.path) {
-  //       if (item.children && item.children.length > 0) {
-  //         tmp.children = filterAsyncRoutes(tmp.children, item.children)
-  //       } else if (homePath.indexOf(tmp.path) > -1) {
-  //         flag = false
-  //         homePath = homePath.slice(0, homePath.length - 1)
-  //       }
-  //       res.push(tmp)
-  //     }
-  //   }
-  // }
-
   return res
-}
-
-export function getCurrentSystem(path) {
-  if (path) {
-    const pathArr = path.split('/')
-    return pathArr[1]
-  }
-  return []
 }
 
 const state = {
@@ -96,6 +69,10 @@ const mutations = {
   CLEAR_ROUTER: (state) => {
     state.addRoutes = []
     state.routes = []
+    state.homePath = ''
+    homePath = ''
+    homePaths = ''
+    flag = true
   },
 
   // 系统设置的所有按钮code
@@ -128,6 +105,7 @@ const actions = {
       const accessedRoutes = await filterAsyncRoutes(asyncRoutes, responseRoutes)
       accessedRoutes.push({ path: '*', redirect: '/404', hidden: true })
       commit('SET_ROUTES', accessedRoutes)
+      console.log(homePaths)
       commit('SET_HOME_PATH', homePaths)
       resolve(accessedRoutes)
     })

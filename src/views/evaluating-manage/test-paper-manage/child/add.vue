@@ -1277,8 +1277,8 @@ export default {
     // 监听发布考试
     publishExam(val) {
       this.testPaper.operatetype = 'publish'
-      $.extend(true, val, this.testPaper)
-      addTestPaper(val).then(res => {
+      $.extend(true, this.testPaper, val)
+      addTestPaper(this.testPaper).then(res => {
         this.noLeaveprompt = true
         store.dispatch('testPaper/temporaryStorageTestPaper', {})
         store.dispatch('testPaper/temporaryStorageTopics', [])

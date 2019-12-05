@@ -738,6 +738,12 @@
               @keyup.native="intNum(exam.passscore)"
             />
           </el-form-item>
+          <el-form-item label="试题乱序">
+            <el-radio-group v-model="exam.topic_disorder">
+              <el-radio :label="1">是</el-radio>
+              <el-radio :label="0">否</el-radio>
+            </el-radio-group>
+          </el-form-item>
           <el-form-item label="考试人员" prop="memer">
             <el-input v-show="false" v-model="exam.memer" />
             <Examiners

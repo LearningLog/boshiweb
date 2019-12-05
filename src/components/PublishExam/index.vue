@@ -39,6 +39,12 @@
             @keyup.native="intNum(paparForm.passscore)"
           />
         </el-form-item>
+        <el-form-item label="试题乱序">
+          <el-radio-group v-model="paparForm.topic_disorder">
+            <el-radio :label="1">是</el-radio>
+            <el-radio :label="0">否</el-radio>
+          </el-radio-group>
+        </el-form-item>
         <el-form-item label="考试人员" prop="memer">
           <el-input v-show="false" v-model="paparForm.memer" />
           <Examiners
@@ -120,7 +126,7 @@ export default {
         passscore: '', // 及格分数
         egroup: '', // 小组
         targetUser: '', // 考试人员
-        topic_disorder: '', // 是否题号乱序
+        topic_disorder: 0, // 是否题号乱序
         memer: '' // 校验用的，无实际意义
       },
       targetUser: [], // 未处理的考试人员

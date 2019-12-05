@@ -1320,8 +1320,8 @@ export default {
     // 监听发布考试
     publishExam(val) {
       this.testPaper.operatetype = 'publish'
-      $.extend(true, val, this.testPaper)
-      testPaperUpdata(val).then(res => {
+      $.extend(true, this.testPaper, val)
+      testPaperUpdata(this.testPaper).then(res => {
         this.noLeaveprompt = true
         store.dispatch('testPaper/temporaryStorageTestPaper', {})
         store.dispatch('testPaper/temporaryStorageTopics', [])
