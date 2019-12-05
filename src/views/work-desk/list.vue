@@ -123,16 +123,15 @@
       </el-table-column>
       <el-table-column align="center" label="已推送至" min-width="140">
         <template slot-scope="scope">
-          <div v-if="!scope.row.push_record === null">
-            <div v-for="(item, index) in scope.row.push_record.join('、')" :key="index" class="pushState">
-              <span v-if="item.type === enterprise_knowledge_lib">企业知识库{{(item.title)}}</span>
-              <span v-if="item.type === group_knowledge_lib">小组知识库{{(item.title)}}</span>
+          <div v-if="!(getFileListData(scope.row.mainFileId) === null || getFileListData(scope.row.mainFileId).length === 0)">
+            <div class="pushState">
+              <span>{{getFilePushRecord(getFileListData(scope.row.mainFileId))}}</span>
             </div>
           </div>
           <div v-else class="stopPushState">
             <span>暂无推送</span>
           </div>
-        </template>p
+        </template>
       </el-table-column>
       <el-table-column class-name="status-col" label="操作" width="220" align="center" fixed="right">
         <template slot-scope="scope">
@@ -423,6 +422,40 @@ export default {
     // 换取文件状态
     getFileStatusDesc(fils_status) {
       return this.file_status[fils_status]
+    },
+    //获取推送记录
+    getFilePushRecord(workDeskFile){
+      var defaultDesc = '暂无推送';
+      if(!(workDeskFile)){
+        return defaultDesc
+      }
+
+      var pushRecord = workDeskFile.push_record
+      if(!(pushRecord && pushRecord.length > 0)){
+        return defaultDesc
+      }
+
+      var groupArr = [];
+      var companyArr = [];
+      var str=''
+      pushRecord.forEach((v, k, arr) => {
+        if (v.type === 'enterprise_knowledge_lib') {
+          companyArr.push('企业知识库')
+        } else if (v.type === 'group_knowledge_lib') {
+          groupArr.push(v.title)
+        }
+      })
+
+      var titles = [];
+      if(companyArr.length > 0){
+        titles.push("企业知识库")
+      }
+      if(groupArr.length > 0){
+        titles.push("小组知识库（"+groupArr.join('、')+"）")
+      }
+
+      var title = titles.join('，')
+      return title
     },
     // 批量删除
     batchDel() {
