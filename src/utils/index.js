@@ -109,11 +109,6 @@ export function param2Obj(url) {
   )
 }
 
-// 翻页序号
-export function getSerialNum(index, currentPage, pageSize) {
-  return ((index + 1) + (currentPage - 1)) * pageSize
-}
-
 /** 获取存储空间大小
  * @param fileSize
  */
