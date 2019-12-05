@@ -132,12 +132,6 @@
       </transition>
     </div>
     <div id="topBtn">
-      <el-dropdown trigger="click">
-        <el-button type="primary">
-          批量操作
-          <i class="el-icon-arrow-down el-icon--right" />
-        </el-button>
-      </el-dropdown>
       <el-button type="primary" @click="createFolder">
         <i class="iconfont iconzengjia" />创建文件夹
       </el-button>
@@ -1060,7 +1054,7 @@ export default {
             nodeIds
           }
           classifyFiles(postData).then(() => {
-            this.$message.success('加入知识分类成功')
+            this.$message.success('加入知识分类成功！')
             this.treeDialogVisible = false
           })
         })
@@ -1079,7 +1073,7 @@ export default {
       row.fileName = row.originalTitle
       row.edit = false
       this.$message({
-        message: '文件夹名称恢复到原来的名称',
+        message: '文件夹名称恢复到原来的名称！',
         type: 'warning'
       })
     },
@@ -1089,7 +1083,7 @@ export default {
         row.edit = false
         row.originalTitle = row.fileName
         this.$message({
-          message: '文件夹重命名成功',
+          message: '文件夹重命名成功！',
           type: 'success'
         })
       })
@@ -1105,11 +1099,11 @@ export default {
           const postId = { fileId: row.fileId }
           deleteDirFile(postId).then(() => {
             this.$message({
-              message: '删除文件成功',
+              message: '删除文件成功！',
               type: 'success'
             })
+            this.enterFloderByQueryPath()
           })
-          this.enterFloderByQueryPath()
         })
         .catch(() => {})
     },
@@ -1126,11 +1120,14 @@ export default {
           const postId = { fileIdList }
           deleteDirFile(postId).then(() => {
             this.$message({
-              message: '删除文件成功',
+              message: '删除文件成功！',
               type: 'success'
             })
+            if ((this.list.length - this.selectedRow.length) === 0) { // 如果当前页数据已删完，则去往上一页
+              this.listQuery.currentPage -= 1
+            }
+            this.enterFloderByQueryPath()
           })
-          this.enterFloderByQueryPath()
         })
         .catch(() => {})
     },
@@ -1158,7 +1155,7 @@ export default {
           createDirFile(postData).then(res => {
             if (res.code === 0) {
               this.$message({
-                message: '文件夹创建成功',
+                message: '文件夹创建成功！',
                 type: 'success'
               })
               this.enterFloderByQueryPath()
@@ -1258,7 +1255,7 @@ export default {
     shareFileToWorkDesk(row) {
       if (row.fileAttributeDesc === 'dir') {
         this.$message({
-          message: '只有文件才可以收藏',
+          message: '只有文件才可以收藏！',
           type: 'warning'
         })
         return
@@ -1276,7 +1273,7 @@ export default {
           }
           shareFileToWorkDesk(postData).then(() => {
             this.$message({
-              message: '收藏到工作台成功',
+              message: '收藏到工作台成功！',
               type: 'success'
             })
           })
@@ -1285,7 +1282,7 @@ export default {
     },
     shareFileToWorkDeskSlected() {
       if (!this.selectedRow.length) {
-        this.$message.warning('请勾选文件')
+        this.$message.warning('请勾选文件！')
         return false
       }
       this.$confirm('确定要将选中的文件收藏到工作台吗？', '收藏到工作台', {
@@ -1303,7 +1300,7 @@ export default {
           }
           shareFileToWorkDesk(postData).then(() => {
             this.$message({
-              message: '收藏到工作台成功',
+              message: '收藏到工作台成功！',
               type: 'success'
             })
           })
@@ -1314,7 +1311,7 @@ export default {
     showUpload() {
       if (!this.listQuery.ownerId) {
         this.$message({
-          message: '请先勾选小组',
+          message: '请先勾选小组！',
           type: 'warning'
         })
         return false
