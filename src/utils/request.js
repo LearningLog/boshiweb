@@ -9,6 +9,7 @@ import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
+let lock = false
 
 // create an axios instance
 const service = axios.create({
@@ -72,8 +73,45 @@ service.interceptors.response.use(
         duration: 5 * 1000
       })
 
+      if (!lock) {
+        // 29999: 非法token;  30000: Token 过期;
+        if (res.code === 29999) {
+          lock = true
+          // to re-login
+          MessageBox.confirm('您尚未登陆，请登录。', '退出登录', {
+            confirmButtonText: '确认',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            store.dispatch('user/resetToken').then(() => {
+              location.reload()
+            })
+          })
+        }
+        if (res.code === 30000) {
+          lock = true
+          // to re-login
+          MessageBox.confirm('登录信息已过期,请尝试重新登录。', '退出登录', {
+            confirmButtonText: '确认',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            store.dispatch('user/resetToken').then(() => {
+              location.reload()
+            })
+          })
+        }
+      }
+      return Promise.reject(new Error(res.message || 'Error'))
+    } else {
+      return res
+    }
+  },
+  error => {
+    if (!lock) {
       // 29999: 非法token;  30000: Token 过期;
-      if (res.code === 29999) {
+      if (error.response.data.code === 29999) {
+        lock = true
         // to re-login
         MessageBox.confirm('您尚未登陆，请登录。', '退出登录', {
           confirmButtonText: '确认',
@@ -85,7 +123,8 @@ service.interceptors.response.use(
           })
         })
       }
-      if (res.code === 30000) {
+      if (error.response.data.code === 30000) {
+        lock = true
         // to re-login
         MessageBox.confirm('登录信息已过期,请尝试重新登录。', '退出登录', {
           confirmButtonText: '确认',
@@ -97,36 +136,6 @@ service.interceptors.response.use(
           })
         })
       }
-      return Promise.reject(new Error(res.message || 'Error'))
-    } else {
-      return res
-    }
-  },
-  error => {
-    // 29999: 非法token;  30000: Token 过期;
-    if (error.response.data.code === 29999) {
-      // to re-login
-      MessageBox.confirm('您尚未登陆，请登录。', '退出登录', {
-        confirmButtonText: '确认',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        store.dispatch('user/resetToken').then(() => {
-          location.reload()
-        })
-      })
-    }
-    if (error.response.data.code === 30000) {
-      // to re-login
-      MessageBox.confirm('登录信息已过期,请尝试重新登录。', '退出登录', {
-        confirmButtonText: '确认',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        store.dispatch('user/resetToken').then(() => {
-          location.reload()
-        })
-      })
     }
     return Promise.reject(error)
   }

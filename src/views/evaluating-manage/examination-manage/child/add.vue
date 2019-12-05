@@ -1613,6 +1613,7 @@ export default {
     publish(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
+          this.exam.time_range = this.exam.time_range || []
           this.exam.begin_time = this.exam.time_range[0]
           this.exam.end_time = this.exam.time_range[1]
           delete this.exam.time_range

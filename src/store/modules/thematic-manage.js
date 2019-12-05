@@ -6,7 +6,7 @@
 */
 
 const state = {
-  lessons: sessionStorage.getItem('lessons') ? JSON.parse(sessionStorage.getItem('lessons')) : {}, // 已选择的课程
+  lessons: sessionStorage.getItem('lessons') ? JSON.parse(sessionStorage.getItem('lessons')) : {} // 已选择的课程
 }
 
 const mutations = {

@@ -79,7 +79,6 @@
       border
       fit
       highlight-current-row
-      empty-text="暂无可用小组"
       @selection-change="handleSelectionChange"
     >
       <el-table-column
@@ -226,6 +225,7 @@ export default {
     get_list() {
       this.listLoading = true
       this.time_range = this.time_range || []
+      this.start_time_range = this.start_time_range || []
       this.listQuery.startTime = this.start_time_range[0]
       this.listQuery.endTime = this.start_time_range[1]
       this.listQuery.createTimebegin = this.time_range[0]

@@ -105,6 +105,7 @@ export default {
     },
     // 获取技能列表
     get_list() {
+      this.time_range = this.time_range || []
       this.listQuery.startTime = this.time_range[0]
       this.listQuery.endTime = this.time_range[1]
       this.listLoading = true

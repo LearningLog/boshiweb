@@ -21,7 +21,6 @@
             <el-date-picker
               v-model="time_range"
               type="daterange"
-              clearable
               range-separator="至"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
@@ -123,6 +122,7 @@ export default {
   methods: {
     // 获取技能列表
     get_list() {
+      this.time_range = this.time_range || []
       this.listQuery.startTime = this.time_range[0]
       this.listQuery.endTime = this.time_range[1]
       this.listQuery.selectCompanyId = this.selectCompanyId
@@ -152,6 +152,7 @@ export default {
 
     // 搜索
     search() {
+      this.time_range = this.time_range || []
       this.listQuery.currentPage = 1
       this.get_list()
     },

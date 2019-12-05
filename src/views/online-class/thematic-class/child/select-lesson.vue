@@ -50,7 +50,6 @@
       border
       fit
       highlight-current-row
-      empty-text="暂无可用小组"
       @select-all="selectAll"
       @select="handleselectRow"
     >

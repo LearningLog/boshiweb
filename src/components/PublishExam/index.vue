@@ -220,6 +220,7 @@ export default {
     publish(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
+          this.paparForm.time_range = this.paparForm.time_range || []
           this.paparForm.begin_time = this.paparForm.time_range[0]
           this.paparForm.end_time = this.paparForm.time_range[1]
           delete this.paparForm.time_range

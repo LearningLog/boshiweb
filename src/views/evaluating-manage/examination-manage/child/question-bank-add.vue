@@ -203,6 +203,7 @@ export default {
     // 获取初始化数据
     get_list() {
       this.listLoading = true
+      this.time_range = this.time_range || []
       this.listQuery.startTime = this.time_range[0]
       this.listQuery.endTime = this.time_range[1]
       evaluationTopicList(this.listQuery).then(response => {

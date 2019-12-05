@@ -173,7 +173,7 @@
           </el-radio-group>
         </el-form-item>
         <!--发布到小组-->
-        <div v-if="this.form.publish_type === 1">
+        <div v-if="form.publish_type === 1">
           <el-checkbox
             v-model="checkAll"
             :indeterminate="isIndeterminate"

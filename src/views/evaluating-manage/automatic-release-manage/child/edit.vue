@@ -1354,6 +1354,7 @@ export default {
           this.$refs.daterange.focus()
           return false
         } else {
+          this.time_range = this.time_range || []
           this.exam.start_time = this.time_range[0]
           this.exam.end_time = this.time_range[1]
         }

@@ -212,7 +212,7 @@
                 <div style="width:70%;display: inline-block">
                   <el-progress :text-inside="true" :stroke-width="10" :percentage="scope.row.trainUserPercent" :show-text="false" />
                 </div>
-                <div style="width:20%;display: inline-block;line-height: 26px;text-align: left;vertical-align: baseline;">{{ scope.row.trainUserPercent }}</div>
+                <div style="width:20%;display: inline-block;line-height: 26px;text-align: left;vertical-align: baseline;">{{ scope.row.trainUserPercent }}%</div>
               </template>
             </el-table-column>
             <el-table-column
@@ -374,7 +374,6 @@
       </div>
     </div>
   </div>
-
 </template>
 <script>
 import { getTrainUserCount, getExamUserCount, getExamQualified, getAllEmployeeGroup, getUserListTrainDataByTime, getGroupListPublishTrainDataByTime, getUserListCompareData, getVisitUserCountGroupByTime, getGroupListExamDataByTime, getGroupListPublishTrainDataByTime2, getToken } from '@/api/data-screening/data-screening'
@@ -651,8 +650,8 @@ export default {
           tempObj.progress2 = parseInt(tempObj.studyTimePercentDay / (Math.ceil(this.studyTimePercentDayMax / 1000 / 60)) * 100)
           tempObj.progress3 = parseInt(tempObj.studyTimePercentNum / (Math.ceil(this.studyTimePercentNumMax / 1000 / 60)) * 100)
           tempObj.progress1 = !tempObj.progress1 ? 0 : tempObj.progress1
-          tempObj.progress2 = !tempObj.progress1 ? 0 : tempObj.progress2
-          tempObj.progress3 = !tempObj.progress1 ? 0 : tempObj.progress3
+          tempObj.progress2 = !tempObj.progress2 ? 0 : tempObj.progress2
+          tempObj.progress3 = !tempObj.progress3 ? 0 : tempObj.progress3
 
           this.tableData.push(tempObj)
         }, this)

@@ -11,16 +11,16 @@
         <el-dropdown-item>
           {{ this.$store.state.user.userSystemInfo.userInfo.nickname }}
         </el-dropdown-item>
-        <el-dropdown-item>
-          <span @click="modifyPasswordVisible = true">修改密码</span>
+        <el-dropdown-item @click.native="modifyPasswordVisible = true">
+          <span>修改密码</span>
         </el-dropdown-item>
         <router-link to="/">
           <el-dropdown-item>
             Home
           </el-dropdown-item>
         </router-link>
-        <el-dropdown-item divided>
-          <span style="display:block;" @click="logout">退出</span>
+        <el-dropdown-item divided @click.native="logout">
+          <span>退出</span>
         </el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
