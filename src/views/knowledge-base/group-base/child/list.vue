@@ -24,7 +24,6 @@
           <el-card id="advancedSearchArea" shadow="never">
             <div class="treeList">
               <div class="treeList1">
-                <!-- <p class="treeName pointer" :class="{ activeClassify: isActiveClassify(treeList1)}" @click="checkClassify(treeList1)">{{ treeList1.treeName }}</p> -->
                 <ul v-if="treeList1.floorList.length" class>
                   <li
                     v-for="(item, index) in treeList1.floorList"
@@ -42,7 +41,6 @@
                 </ul>
               </div>
               <div v-if="treeList2.floorList.length" class="treeList2">
-                <!-- <p class="treeName pointer" :class="{ activeClassify: isActiveClassify(treeList2)}" @click="checkClassify(treeList2)">{{ treeList2.treeName }}</p> -->
                 <ul v-if="treeList2.floorList.length" class>
                   <li
                     v-for="(item, index) in treeList2.floorList"
@@ -68,9 +66,8 @@
         <el-row v-show="advancedVisible">
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
-              <el-form-item label="所属租户">
+              <el-form-item v-if="isSystemManage" label="所属租户">
                 <el-select
-                  v-if="isSystemManage"
                   v-model="listQuery.selectCompanyId"
                   placeholder="请选择所属租户"
                   clearable
@@ -140,18 +137,6 @@
           批量操作
           <i class="el-icon-arrow-down el-icon--right" />
         </el-button>
-        <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item @click.native="deleteDirFileSelected">
-            <i class="iconfont iconshanchu" />批量删除
-          </el-dropdown-item>
-          <!-- <el-dropdown-item @click.native="moveFileSelected"><i class="iconfont iconshangyi1" />批量移动</el-dropdown-item> -->
-          <el-dropdown-item @click.native="downloadFileSelected">
-            <i class="iconfont iconxiazai" />批量下载
-          </el-dropdown-item>
-          <el-dropdown-item @click.native="shareFileToWorkDeskSlected">
-            <i class="iconfont iconfenxiang1" />批量收藏
-          </el-dropdown-item>
-        </el-dropdown-menu>
       </el-dropdown>
       <el-button type="primary" @click="createFolder">
         <i class="iconfont iconzengjia" />创建文件夹
@@ -300,7 +285,7 @@
                 <i class="iconfont iconshanchu" />删除
               </el-dropdown-item>
               <el-dropdown-item @click.native="shareFileToWorkDesk(scope.row)">
-                <i class="iconfont iconfenxiang1" />收藏
+                <i class="iconfont iconshoucang" />收藏
               </el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
@@ -314,6 +299,12 @@
       :limit.sync="listQuery.pageSize"
       @pagination="getDirList"
     />
+    <div id="bottomOperation">
+      <el-button v-show="total>0" type="danger" plain @click="deleteDirFileSelected"><i class="iconfont iconshanchu" />批量删除</el-button>
+      <!--<el-button v-show="total>0" type="primary" plain @click="moveFileSelected"><i class="iconfont iconfenpeijineng" />批量移动</el-button>-->
+      <el-button v-show="total>0" type="primary" plain @click="downloadFileSelected"><i class="iconfont iconxiazai" />批量下载</el-button>
+      <el-button v-show="total>0" type="primary" plain @click="shareFileToWorkDeskSlected"><i class="iconfont iconshoucang" />批量收藏</el-button>
+    </div>
     <el-dialog
       v-el-drag-dialog
       class="setInformationDialog"
@@ -348,9 +339,8 @@
         label-width="100px"
         class="demo-ruleForm"
       >
-        <el-form-item label="所属租户">
+        <el-form-item v-if="isSystemManage" v-show="!listQuery.ownerId" label="所属租户">
           <el-select
-            v-if="isSystemManage"
             v-model="listQuery.selectCompanyId"
             placeholder="请选择所属租户"
             clearable
@@ -365,8 +355,7 @@
             />
           </el-select>
         </el-form-item>
-
-        <el-form-item label="所属小组">
+        <el-form-item v-show="!listQuery.ownerId" label="所属小组">
           <el-select
             v-model="listQuery.ownerId"
             placeholder="请选择所属小组"
@@ -711,6 +700,16 @@ export default {
     // ----------知识分类-----start------
     // 点击选择分类
     checkClassify(classify) {
+      // 选择分类1.清空高级搜索2.清空进入文件夹搜索
+      this.listQuery.currentPage = 1
+      this.listQuery.keyword = ''// 关键字
+      this.listQuery.userId = ''// 用户id
+      this.time_range = []// 创建时间
+
+      // 清空文件夹点击今入搜索
+      this.pathQueryString = ''
+      this.$router.push({ path: '/knowledge-base/group-base/list', query: { path: this.pathQueryString, ownerId: this.listQuery.ownerId }})
+
       if (classify.treeId) {
         classify.nodeIdList = [classify.treeId]
         classify.nodeName = classify.treeName
@@ -866,10 +865,16 @@ export default {
 
     enterFolder(row) {
       if (row.fileAttributeDesc === 'dir') {
-        // 每次点击的时候都回到第一页
-        // 进文件夹的检索和文件别的input检索不共存
+        // 1.进文件夹的检索和文件别的input检索不共存
+        // 2.进文件夹的检索与知识分类搜索不共存
         this.listQuery.currentPage = 1
-        this.listQuery.keyword = ''
+        this.listQuery.keyword = ''// 关键字
+        this.listQuery.userId = ''// 用户id
+        this.time_range = []// 创建时间
+
+        this.checkedClassifys = [] // 选中的分类展示数据
+        this.listQuery.classifyNodeIds = []// 给后台发送的选择分类id数据
+
         this.pathQueryString += this.pathQueryString
           ? '/' + row.fileId + '|' + row.fileName
           : row.fileId + '|' + row.fileName
@@ -974,6 +979,14 @@ export default {
     },
     // 搜索
     topSearch() {
+      // 1.高级搜索在根目录下搜索 --清空点击进入文件夹搜索
+      // 2.高级搜索分类搜索置空
+      this.pathQueryString = ''
+      this.$router.push({ path: '/knowledge-base/group-base/list', query: { path: this.pathQueryString, ownerId: this.listQuery.ownerId }})
+
+      this.checkedClassifys = [] // 选中的分类
+      this.listQuery.classifyNodeIds = []// 给后台
+
       this.enterFloderByQueryPath()
     },
     // 重置
