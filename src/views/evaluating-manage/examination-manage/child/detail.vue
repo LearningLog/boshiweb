@@ -38,6 +38,9 @@
       </div>
     </div>
     <div class="detailTable">
+      <div id="topBtn">
+        <el-button type="primary" @click="export_"><i class="iconfont iconpilianngdaochu" />导出</el-button>
+      </div>
       <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
         <el-tab-pane label="成绩统计" name="mark">
           <el-table
@@ -50,7 +53,7 @@
           >
             <el-table-column align="center" label="员工" min-width="120" show-overflow-tooltip prop="nickname" />
             <el-table-column align="center" label="所属分组" min-width="100" show-overflow-tooltip prop="user_group" />
-            <el-table-column align="center" label="答题时间" min-width="140" show-overflow-tooltip prop="u_time" />
+            <el-table-column align="center" label="交卷时间" min-width="140" show-overflow-tooltip prop="u_time" />
             <el-table-column align="center" label="用时" min-width="140" show-overflow-tooltip>
               <template slot-scope="scope">
                 {{ changTime(scope.row. time_consuming) }}
@@ -134,9 +137,9 @@
 </template>
 
 <script>
-import { answerInfo, userGrade, topicGrade, oneAnswerInfo } from '@/api/evolution-manage/examination'
+import { answerInfo, userGrade, topicGrade, oneAnswerInfo, exportExamResult } from '@/api/evolution-manage/examination'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
-import { getOptionOrderByIndex } from '@/utils/index'
+import { getOptionOrderByIndex, parseTime } from '@/utils/index'
 export default {
   directives: { elDragDialog },
   filters: {},
@@ -188,6 +191,29 @@ export default {
       })
     },
 
+    // 导出
+    export_() {
+      exportExamResult({ _id: this.id }).then(res => {
+        const headers = res.headers
+        const contentDisposition = headers['content-disposition'].replace(/["|']/g, '')
+        // const matched = /filename=(.*)/g.exec(contentDisposition)
+        // const filename = decodeURI(matched[1])
+        const filename = contentDisposition.split(';')[1].split('=')[1] + '_' + parseTime(new Date(), '{y}-{m}-{d}') + '.xlsx'
+        const blob = res.data
+        const reader = new FileReader()
+        reader.readAsDataURL(blob)
+        reader.onload = (e) => {
+          // 创建a标签，插入到文档中并click，最后移除
+          const a = document.createElement('a')
+          a.download = filename
+          a.href = e.target.result
+          document.body.appendChild(a)
+          a.click()
+          document.body.removeChild(a)
+        }
+      })
+    },
+
     // 切换
     handleClick(val) {
       if (val === 'mark') {
@@ -219,6 +245,7 @@ export default {
     confirm() {
       this.$router.push({ path: '/evaluating-manage/examination-manage/list' })
     },
+
     // 毫秒转化成时分秒
     changTime(msTime) {
       const time = msTime / 1000
@@ -258,7 +285,14 @@ export default {
     padding-top: 18px;
   }
   .detailTable {
+    position: relative;
     margin-top: 18px;
+  }
+  #topBtn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 2;
   }
   .el-scrollbar {
     height: 50vh;

@@ -128,8 +128,8 @@
               <span>{{ getFilePushRecord(getFileListData(scope.row.mainFileId)) }}</span>
             </div>
           </div>
-          <div v-else class="stopPushState">
-            <span>暂无推送</span>
+          <div v-else>
+            <span class="stopPushState">暂无推送</span>
           </div>
         </template>
       </el-table-column>
@@ -436,7 +436,6 @@ export default {
 
       var groupArr = []
       var companyArr = []
-      var str = ''
       pushRecord.forEach((v, k, arr) => {
         if (v.type === 'enterprise_knowledge_lib') {
           companyArr.push('企业知识库')
@@ -795,7 +794,6 @@ export default {
     height: calc(60vh - 170px);
   }
   .pushState {
-    color: $black;
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;

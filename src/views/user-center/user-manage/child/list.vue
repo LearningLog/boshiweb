@@ -403,7 +403,7 @@ export default {
     handleUploadSuccess(data) {
       leadingIn({ fileId: data.data.fileId, url: data.data.saveHttpPath }).then(res => {
         if (res.data.importStatus) {
-          this.$message.success('模板导入' + res.data.data.length + '条！')
+          this.$message.success('成功导入' + res.data.data + '个用户！')
           this.get_list()
         } else {
           this.$message.error('模板导入失败！')
