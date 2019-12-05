@@ -79,7 +79,7 @@
                   <li class="file-name singleLineOmission">{{ file.name }}</li>
                 </el-tooltip>
                 <li class="progress">
-                  <el-progress :key="index" :percentage="progress[index]" />
+                  <el-progress :key="index" :percentage="progress[file.id]" :color="customColors" />
                 </li>
                 <li class="file-size">{{ fileSize(file.size) }}</li>
                 <!--<li class="file-status">上传中...</li>-->
@@ -128,7 +128,6 @@ import { mapGetters } from 'vuex'
 import VueWebuploader from '@/components/VueWebuploader/VueWebuploader.vue'
 import { deskAddFile, knowledgeCreateFile } from '@/api/upload-file'
 const WebUploader = window.WebUploader
-const $ = window.$
 export default {
   name: 'FileUploader',
   components: {
@@ -168,8 +167,7 @@ export default {
         { color: '#1989fa', percentage: 80 },
         { color: '#20c7b3', percentage: 100 }
       ],
-      progress: [], // 进度
-      uploadIndex: 0 // 当前上传的文件下标
+      progress: {} // 进度
     }
   },
   computed: {
@@ -197,8 +195,9 @@ export default {
     // 上传变化
     fileChange(file) {
       if (!file.size) return
+      file.progress = 10
       this.fileList.push(file)
-      this.progress[this.uploadIndex] = 0
+      this.$set(this.progress, file.id, 0)
       const sourceUid = file.source.uid // 文件上传文件唯一id
       const belongs = {
         data_type: this.belongs.data_type,
@@ -207,34 +206,29 @@ export default {
         selectCompanyId: this.belongs.selectCompanyId
       }
       this.fileQueued.set(sourceUid, belongs)
-      console.log('fileChange', file)
     },
 
     // 上传进度
     onProgress(file, percent) {
-      this.progress[this.uploadIndex] = (Math.ceil(percent * 100 * 100) / 100)
-      $('.el-progress-bar__inner').eq(this.uploadIndex).width(this.progress[this.uploadIndex] + '%')
-      $('.el-progress__text').eq(this.uploadIndex).text(this.progress[this.uploadIndex] + '%')
+      const progress = (Math.ceil(percent * 100 * 100) / 100)
+      this.$set(this.progress, file.id, progress)
     },
 
     // 上传成功
     onSuccess(file, response) {
-      $('.el-progress-bar__inner').eq(this.uploadIndex).width('100%')
-      $('.el-progress__text').eq(this.uploadIndex).text('100%')
-      console.log('file', file)
-      console.log('response', response)
-      this.uploadIndex++
-      console.log('上传成功', file)
-      console.log(this.belongs)
-      console.log('file.path', file.path)
+      // console.log('file', file)
+      // console.log('response', response)
+      // console.log('上传成功', file)
+      // console.log(this.belongs)
+      // console.log('file.path', file.path)
       file.path = file.path || ''
       const fileId = file.path.split('ZmlsZUlk=')[1]
       const sourceUid = file.source.uid // 文件上传文件唯一id
       var currentFile = this.fileQueued.get(sourceUid)
-      console.log('sourceUid', sourceUid)
-      console.log('currentFile', currentFile)
-      console.log('this.fileQueued', this.fileQueued)
-      console.log('fileId', fileId)
+      // console.log('sourceUid', sourceUid)
+      // console.log('currentFile', currentFile)
+      // console.log('this.fileQueued', this.fileQueued)
+      // console.log('fileId', fileId)
       if (currentFile.data_type === 3) {
         const params = {
           fileFormat: file.ext,
@@ -262,7 +256,7 @@ export default {
           fileId: fileId
         }
         knowledgeCreateFile(params).then(res => {
-          console.log(res)
+          // console.log(res)
           this.$message.success('上传成功！')
           store.dispatch('fileUpload/createFileSuccess', res.data)
         })

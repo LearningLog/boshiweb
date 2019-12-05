@@ -48,7 +48,7 @@
       </div>
       <div v-if="(type !== 4 && total) || (type === 4 && total2)">
         <el-scrollbar class="fileList" wrap-class="scrollbar-wrapper">
-          <el-backtop bottom="100" right="50" target=".fileList .el-scrollbar__wrap"></el-backtop>
+          <el-backtop :bottom="100" :right="50" target=".fileList .el-scrollbar__wrap"></el-backtop>
           <div v-if="type !== 4">
             <ul
               v-infinite-scroll="getKnowledgeSearchList2"

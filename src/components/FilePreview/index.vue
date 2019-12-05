@@ -69,22 +69,22 @@ export default {
     fileTypeCode: function(val, val2) {
       if (this.fileType) return false
       if (val !== 3 && val !== 1 && val !== 2 && val !== 7 && this.isFilePreview) {
-        this.$message.error('该文件不支持预览，请下载查看！')
+        this.$message.warning('该文件不支持预览，请下载查看！')
         this.$emit('closePreview')
         return false
       }
       if (val === 1 && this.fileFormat !== 'mp4') {
-        this.$message.error('该文件不支持预览，请下载查看！')
+        this.$message.warning('该文件不支持预览，请下载查看！')
         this.$emit('closePreview')
         return false
       }
       if (val === 2 && this.fileFormat !== 'mp3') {
-        this.$message.error('该文件不支持预览，请下载查看！')
+        this.$message.warning('该文件不支持预览，请下载查看！')
         this.$emit('closePreview')
         return false
       }
       if (val === 7 && this.fileFormat !== 'pdf') {
-        this.$message.error('该文件不支持预览，请下载查看！')
+        this.$message.warning('该文件不支持预览，请下载查看！')
         this.$emit('closePreview')
         return false
       }
@@ -111,7 +111,7 @@ export default {
     },
     fileType: function(val, val2) { // video，audio，pic，pdf
       if (val !== 'video' && val !== 'audio' && val !== 'pic' && val !== 'pdf' && this.isFilePreview) {
-        this.$message.error('该文件不支持预览，请下载查看！')
+        this.$message.warning('该文件不支持预览，请下载查看！')
         this.$emit('closePreview')
         return false
       }

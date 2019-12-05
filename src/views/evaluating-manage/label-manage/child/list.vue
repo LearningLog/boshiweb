@@ -51,7 +51,7 @@
       />
       <el-table-column label="序号" width="60" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
-          <span>{{ scope.$index + (listQuery.currentPage - 1) * listQuery.pageSize + 1 }} </span>
+          <span>{{ scope.$index + ((listQuery.currentPage || 1) - 1) * listQuery.pageSize + 1 }} </span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="名称" min-width="120" show-overflow-tooltip>

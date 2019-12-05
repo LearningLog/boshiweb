@@ -40,7 +40,6 @@ const mutations = {
   },
   DESK_ADD_DILE_SUCCESS: (state, data) => {
     state.deskAddFileSuccessData = data
-    console.log('state.deskAddFileSuccessData', state.deskAddFileSuccessData)
   },
   CREAT_FILE_SUCCESS: (state, data) => {
     state.createFileSuccessData = data

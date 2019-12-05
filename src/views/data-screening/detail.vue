@@ -1134,12 +1134,12 @@ export default {
             inverse: true,
             data: data.nameArray,
             axisLabel: {
-              formatter: function(value) {
-                if (value.length > 5) {
-                  value = value.substring(0, 5) + '\n' + value.substring(5)
-                }
-                return value
-              },
+              // formatter: function(value) {
+              //   if (value.length > 5) {
+              //     value = value.substring(0, 5) + '\n' + value.substring(5)
+              //   }
+              //   return value
+              // },
               margin: 20
             }
           },

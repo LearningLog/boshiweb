@@ -263,7 +263,27 @@ export default {
           return false
         }
       }
-      this.$confirm('确定要删除选中的考试吗？', '批量删除考试', {
+
+      var text = ''
+
+      var has2 = this.checkedDelList.find(function(item) {
+        return item.exam_status === 2
+      })
+      if (has2) {
+        text = '存在正在进行中的考试，确定要删除吗？'
+      } else {
+        var has3 = this.checkedDelList.find(function(item) {
+          return item.exam_status === 3
+        })
+
+        if (has3) {
+          text = '删除后考试信息将同步清空，确定要删除吗？'
+        } else {
+          text = '确定要删除选中的考试吗？'
+        }
+      }
+
+      this.$confirm(text, '批量删除考试', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
