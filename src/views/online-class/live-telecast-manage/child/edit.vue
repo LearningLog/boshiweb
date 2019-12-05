@@ -28,6 +28,7 @@
         @click="publish('form')"
       ><i class="addIcon iconfont iconfabu" />发布</el-button>
     </div>
+    <!--    第一步-->
     <div v-if="active === 1" class="info">
       <div class="step">
         <h5>基本信息：</h5>
@@ -150,12 +151,12 @@
         </el-form-item>
       </el-form>
     </div>
-
+    <!--第二步-->
     <div v-if="active === 2" class="info step2">
+      <!-- tittle-->
       <div class="step">
         <h5 class="required">请选择小组：</h5>
       </div>
-
       <el-form
         ref="form3"
         class="form"
@@ -164,27 +165,47 @@
         :status-icon="true"
         label-width="120px"
       >
-        <el-checkbox
-          v-model="checkAll"
-          :indeterminate="isIndeterminate"
-          @change="handleCheckAllChange"
-        >全部小组</el-checkbox>
-        <el-scrollbar wrap-class="scrollbar-wrapper">
-          <el-checkbox-group
-            v-model="checkedGroupIds"
-            @change="handleCheckedGroupChange"
-          >
-            <el-checkbox
-              v-for="(inc, index) in group_inc_list"
-              :key="inc"
-              style="margin: 15px 0;display:block"
-              :label="inc"
-            >{{ group_groupName_list[index] }}</el-checkbox>
-          </el-checkbox-group>
-        </el-scrollbar>
+        <!--请选择个人或者小组-->
+        <el-form-item class="required" label="发布方式" prop="sendSms">
+          <el-radio-group v-model="form.publish_type">
+            <el-radio :label="1">发布到小组</el-radio>
+            <el-radio :label="2">发布到个人</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <!--发布到小组-->
+        <div v-if="this.form.publish_type === 1">
+          <el-checkbox
+            v-model="checkAll"
+            :indeterminate="isIndeterminate"
+            @change="handleCheckAllChange"
+          >全部小组</el-checkbox>
+          <el-scrollbar wrap-class="scrollbar-wrapper">
+            <el-checkbox-group
+              v-model="checkedGroupIds"
+              @change="handleCheckedGroupChange"
+            >
+              <el-checkbox
+                v-for="(inc, index) in group_inc_list"
+                :key="inc"
+                style="margin: 15px 0;display:block"
+                :label="inc"
+              >{{ group_groupName_list[index] }}</el-checkbox>
+            </el-checkbox-group>
+          </el-scrollbar>
+        </div>
+        <div v-else>
+          <el-form-item v-show="informationTypeList.length" label="通知人员" class="informationMember">
+            <div class="examiners">
+              <div>
+                <span class="group">选择小组</span><span class="member">选择人员</span>
+              </div>
+              <el-cascader-panel v-model="groupsAndMembers" :options="list3" :props="props1" @change="handleChange" />
+            </div>
+          </el-form-item>
+        </div>
       </el-form>
     </div>
-
+    <!--第三步-->
     <div v-if="active === 3" class="info">
       <div class="step">
         <h5>课程通知：</h5>
@@ -203,7 +224,6 @@
             <el-radio :label="0">关闭</el-radio>
           </el-radio-group>
         </el-form-item>
-
         <div v-show="form.sendSms1">
           <el-form-item label="短信通知设置" class="informationType">
             <el-checkbox-group v-model="informationTypeList">
@@ -233,7 +253,6 @@
         </div>
       </el-form>
     </div>
-
     <!-- vueCropper 剪裁图片实现-->
     <el-dialog
       v-el-drag-dialog
@@ -302,7 +321,6 @@
     >
       <img width="100%" :src="logoUrl" alt="">
     </el-dialog>
-
     <select-file
       :visible.sync="visibleSelectFile"
       :is-upload="true"
@@ -330,6 +348,7 @@ import { getUserEgroupInfo } from '@/api/user-center/groupManage'
 import { getEgroupAndUserinfo } from '@/api/user-center/userManage'
 import SelectFile from '@/components/SelectFile'
 import AddLessonEvalLabels from '@/components/AddLessonEvalLabels'
+import { getExamUserInfo } from '@/api/evolution-manage/test-paper-manage'
 const $ = window.$
 
 export default {
@@ -366,7 +385,8 @@ export default {
         timeBefore: 10, // 课程开始前
         groupList: [], // 发布组集合
         userList: [], // 发布用户集合
-        type: 1 // 类型（1直播  2点播）
+        type: 1, // 类型（1直播  2点播）
+        publish_type: 1 // 小组或者个人的判断类型，默认为 1
       },
       egroup: [], // 小组
       range_time: [], // 上课时段
@@ -451,6 +471,7 @@ export default {
 
       list: [],
       list2: [],
+      list3: [],
       groupsAndMembers: [],
       props: {
         multiple: true,
@@ -458,7 +479,12 @@ export default {
         label: 'name',
         children: 'userinfo'
       },
-
+      props1: {
+        multiple: true,
+        value: 'id',
+        label: 'name',
+        children: 'userinfo'
+      },
       rules: {
         cname: [
           {
@@ -511,6 +537,7 @@ export default {
   created() {
     this.form._id = this.$route.query._id
     this.getChapterDetail()
+    this.get_list()
   },
   methods: {
     // 获取直播详情
@@ -557,7 +584,6 @@ export default {
         this.getEgroups()
       })
     },
-
     // 下一步
     nextStep() {
       if (this.active === 1) {
@@ -583,26 +609,23 @@ export default {
           this.active++
           this.getCheckedGroups()
         }
+        this.get_list()
         this.getEgroupAndUserinfo()
       }
     },
-
     // 上一步
     forwardStep() {
       this.active--
     },
-
     // 获取s_time，e_time
     handleTimeChange(val) {
       this.form.s_time = val[0]
       this.form.e_time = val[1]
     },
-
     // 选择课件
     selectFile() {
       this.visibleSelectFile = true
     },
-
     // 监听选择文件组件返回数据
     checkedFile(val) {
       this.form.chapter_file = val.fileUrl
@@ -610,7 +633,6 @@ export default {
       this.form.chapter_masterId = val.mainFileId
       this.visibleSelectFile = false
     },
-
     // 添加标签
     addLabels() {
       this.visible2 = true
@@ -627,12 +649,10 @@ export default {
     handleLabelDel(index) {
       this.currentLabels.splice(index, 1)
     },
-
     // 上传路径
     uploadUrl() {
       return process.env.VUE_APP_BASE_API + 'system/file/upload/'
     },
-
     // 上传按钮   限制图片大小
     changeUpload(file, fileList) {
       const suffixs = ['.png', '.jpg', '.gif', '.jepg', '.jpeg']
@@ -726,8 +746,45 @@ export default {
     },
     // 图片加载情况
     imgLoad(msg) {},
-
-    // 获取所有小组
+    // 全选
+    handleCheckAllChange(val) {
+      this.checkedGroupIds = val ? this.group_inc_list : []
+      this.isIndeterminate = false
+    },
+    // 单选
+    handleCheckedGroupChange(value) {
+      const checkedCount = value.length
+      this.checkAll = checkedCount === this.group_list.length
+      this.isIndeterminate =
+          checkedCount > 0 && checkedCount < this.group_list.length
+    },
+    // 获取第二步选择小组
+    getCheckedGroups() {
+      this.checkedGroups.length = 0
+      this.checkedGroupIds.forEach(item => {
+        this.checkedGroups.push(this.groupIncs[item])
+      })
+    },
+    // 获取小组和人员列表(发布到个人）
+    get_list() {
+      getExamUserInfo({ selectCompanyId: this.selectCompanyId }).then(
+        response => {
+          this.list = response.data.groupList
+          this.list.forEach((item, index) => {
+            item.name = item.groupName
+            item.id = item.inc
+            if (item.userinfo) {
+              item.userinfo.forEach(item2 => {
+                item2.name = item2.nickname
+                item2.id = item2._id
+              })
+            }
+          })
+          this.list3 = this.list
+        }
+      )
+    },
+    // 获取所有小组（发布到小组）
     getEgroups() {
       getUserEgroupInfo({ selectCompanyId: this.selectCompanyId }).then(
         response => {
@@ -752,29 +809,32 @@ export default {
         }
       )
     },
-
-    // 全选
-    handleCheckAllChange(val) {
-      this.checkedGroupIds = val ? this.group_inc_list : []
-      this.isIndeterminate = false
-    },
-
-    // 单选
-    handleCheckedGroupChange(value) {
-      const checkedCount = value.length
-      this.checkAll = checkedCount === this.group_list.length
-      this.isIndeterminate =
-          checkedCount > 0 && checkedCount < this.group_list.length
-    },
-
-    // 获取第二步选择小组
-    getCheckedGroups() {
-      this.checkedGroups.length = 0
-      this.checkedGroupIds.forEach(item => {
-        this.checkedGroups.push(this.groupIncs[item])
+    // 处理第三步小组和成员的变化
+    handleChangeMembers(val) {
+      var obj = {}
+      val.forEach(item => {
+        if (!obj[item[0]]) {
+          obj[item[0]] = [item[1]]
+        } else {
+          obj[item[0]].push(item[1])
+        }
       })
+      this.form.target_user = obj
     },
-
+    // 处理第三步小组和成员的变化
+    handleChange(val) {
+      var obj = {}
+      this.checkedGroupIds.length = 0
+      val.forEach(item => {
+        if (!obj[item[0]]) {
+          obj[item[0]] = [item[1]]
+        } else {
+          obj[item[0]].push(item[1])
+        }
+        this.checkedGroupIds.push(item[0])
+      })
+      this.form.target_user = obj
+    },
     // 根据小组获取小组成员（用户）
     getEgroupAndUserinfo() {
       this.list.length = 0
@@ -795,32 +855,31 @@ export default {
           }
         })
         this.list2 = this.list
-
-        // 此两处的循环为了回显第三步的小组和成员
-        var userList = []
-        this.list2.forEach(item => {
-          item.userinfo = item.userinfo || []
-          item.userinfo.forEach(item2 => {
-            item2.pinc = item.inc
-            userList.push(item2)
+        if (this.form.publish_type === 1) {
+          // 此两处的循环为了回显第三步的小组和成员
+          var userList = []
+          this.list2.forEach(item => {
+            item.userinfo = item.userinfo || []
+            item.userinfo.forEach(item2 => {
+              item2.pinc = item.inc
+              userList.push(item2)
+            })
           })
-        })
-        // 此两处的循环为了回显第三步的小组和成员
-        this.groupsAndMembers.length = 0
-        this.form.userList.forEach(item => {
-          userList.forEach(item2 => {
-            if (item === item2._id) {
-              this.groupsAndMembers.push([item2.pinc, item2._id])
-            }
+          // 此两处的循环为了回显第三步的小组和成员
+          this.groupsAndMembers.length = 0
+          this.form.userList.forEach(item => {
+            userList.forEach(item2 => {
+              if (item === item2._id) {
+                this.groupsAndMembers.push([item2.pinc, item2._id])
+              }
+            })
           })
-        })
-
+        }
         this.$nextTick(() => {
           $('.examiners /deep/ .el-cascader-menu:first-child li:first-child').click()
         })
       })
     },
-
     // 根据第二步选择的小组删除第三步之前选择的小组数据
     // 然后获取小组和成员
     step3RemoveGroupsByStep2() {
@@ -842,12 +901,6 @@ export default {
       })
       this.form.userList = [...new Set(userList)]
     },
-
-    // 处理第三步小组和成员的变化
-    handleChangeMembers(val) {
-
-    },
-
     // 发布
     publish() {
       this.step3RemoveGroupsByStep2()
@@ -981,7 +1034,7 @@ export default {
   }
 
   .step2 /deep/ .el-scrollbar {
-    height: calc(100vh - 350px);
+    height: calc(100vh - 375px);
   }
 
   /deep/ .el-cascader-menu:last-child {
