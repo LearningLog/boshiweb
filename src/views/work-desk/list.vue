@@ -159,7 +159,7 @@
         <el-scrollbar wrap-class="scrollbar-wrapper">
           <el-tree
             ref="tree"
-            :data="treeData"
+
             :props="defaultProps"
             :load="loadPushTreeSubNode"
             show-checkbox
@@ -168,9 +168,9 @@
             :check-strictly="true"
             :expand-on-click-node="false"
             :check-on-click-node="true"
-            default-expand-all
+
             highlight-current
-            @check-change="menu_tree_check_fn"
+
             @node-click="pushTreeNodeClick"
           />
         </el-scrollbar>
@@ -202,7 +202,8 @@ export default {
   components: { Pagination, FilePreview },
   data() {
     return {
-      file_knowledge,
+      knowledgeFilePageSize:3,//推送时加载知识库文件夹页大小
+      userCompanyId:'',
       isFilePreview: false, // 是否打开预览
       fileFormat: '', // 文件格式
       fileTypeCode: -1, // 文件类型
@@ -285,7 +286,7 @@ export default {
   },
   created() {
     this.manageType = this.$store.state.user.userPermission.manageType
-
+    this.userCompanyId = this.$store.state.user.userPermission.groupId
     this.get_list()
     this.isNeedRefrssh()
 
@@ -534,8 +535,9 @@ export default {
     // 初始化推送菜单树的数据
     initializeTreeData(val) {
       const companyTree = { label: '企业知识库', id: val, type: 'company', ownerId:val, parentId:val,path:'企业知识库' }
-      const groupTree = { label: '小组知识库', id: 'allEgroup', type: 'egroup' }
-      getUserEgroupInfo({ selectCompanyId: val }).then(response => {
+      const groupTree = { label: '小组知识库', id: 'allEgroup', type: 'egroup',companyId:val }
+      this.treeData = [companyTree, groupTree]
+      /*getUserEgroupInfo({ selectCompanyId: val }).then(response => {
         const groupList = response.data.egroupInfo
         const groupNames = []
         for (let i = 0; i < groupList.length; i++) {
@@ -546,12 +548,28 @@ export default {
         }
         groupTree.children = groupNames
         this.treeData = [companyTree, groupTree]
-      })
+      })*/
     },
 
     //加载节点子节点
     loadPushTreeSubNode(node,resolve){
+      if(node.level == 0){
+        //加载根节点
+        var companyId = this.userCompanyId
+        const companyTree = { label: '企业知识库', id: companyId, type: 'company', ownerId:companyId, parentId:companyId,path:'企业知识库' }
+        const groupTree = { label: '小组知识库', id: 'allEgroup', type: 'egroup',companyId:companyId ,disabled:true}
+        return resolve([companyTree, groupTree])
+      }
+      var that = this
       var nodeData = node.data;
+      if(nodeData.type === 'egroup'){
+        //如果是小组知识库节点
+        setTimeout(function(){
+          that.appendGroupToTree(node,nodeData.companyId)
+        },500)
+        return resolve([])
+      }
+
 
       var currentPage = 1
       var pageSize = this.knowledgeFilePageSize || 10
@@ -559,21 +577,23 @@ export default {
       var parentId = nodeData.id
 
       var requestData = {"ownerId":ownerId,"parentId":parentId,"pageSize":pageSize,"currentPage":currentPage,"fileType":"dir"}
-      var that = this
-      knowledgeFileList(requestData).then(response => {
-        var page = response.data.page
-        var fileList = page.list
-        var currentPage = page.currentPage
-        var totalPage = page.pageCount
 
-        var loadMoreData = {label: '点击加载更多', id:parentId+"_more" , type: 'dir', ownerId:ownerId,parentId:parentId}
+      setTimeout(function(){
+        knowledgeFileList(requestData).then(response => {
+          var page = response.data.page
+          var fileList = page.list
+          var currentPage = page.currentPage
+          var totalPage = page.pageCount
 
-        that.appendDirectoryToTree(node,fileList)
-        if(currentPage < totalPage){
-          that.appendLoadMoreNodeToTree(node,loadMoreData)
-        }
+          var loadMoreData = {label: '点击加载更多', id:parentId+"_more" , type: 'dir', ownerId:ownerId,parentId:parentId,currentPage:1,pageSize:pageSize,leaf:true,loadMore:true,disabled:true}
+
+          that.appendDirectoryToTree(node,fileList)
+          if(currentPage < totalPage){
+            that.appendLoadMoreNodeToTree(node,loadMoreData)
+          }
+        })
       })
-
+      return resolve([])
     },
 
     //节点被点击后触发方法
@@ -603,6 +623,7 @@ export default {
 
         that.appendDirectoryToTree(parentNode,fileList)
         if(currentPage < totalPage){
+          debugger
           loadMoreData.currentPage = loadMoreData.currentPage + 1
           that.appendLoadMoreNodeToTree(parentNode,loadMoreData)
         }
@@ -610,6 +631,22 @@ export default {
 
     },
 
+    //加载小组到树
+    appendGroupToTree(parentNode,selectCompanyId){
+      var that = this
+      getUserEgroupInfo({ selectCompanyId: selectCompanyId }).then(response => {
+        const groupList = response.data.egroupInfo
+
+        for (let i = 0; i < groupList.length; i++) {
+          var groupName = groupList[i].groupName
+          var groupInc = groupList[i].inc + ''
+
+          var groupNodeData = { label: groupName, id: groupInc,ownerId:groupInc,path:groupName }
+          that.$refs.tree.append(groupNodeData,parentNode)
+        }
+      })
+
+    },
     //添加文件夹到树，parentNode是要添加子节点的父节点
     appendDirectoryToTree(parentNode,dirList){
       if(!(dirList && dirList.length > 0)){
@@ -619,7 +656,6 @@ export default {
       var parentNodeData = parentNode.data
       var parentPath = parentNodeData.path
 
-      var subNodeDataList = []
       for(let i = 0;i < dirList.length; i++){
         var dir = dirList[i]
         var fileName = dir.fileName
@@ -656,12 +692,24 @@ export default {
     },
     // 开始推送
     save_menu() {
-      if (this.selectNodes.length === 0) {
+      var selectNodes = this.$refs.tree.getCheckedNodes();
+      if (selectNodes.length === 0) {
         this.$message.warning('请选择推送路径！')
         return
       }
-      const ownerId = this.selectNodes[0].id
-      pushToKnowledge({ fileId: this.getFileListData(this.fileId)._id, ownerId: ownerId + '', parentId: ownerId + '', fileIdList: this.fileIdList }).then(() => {
+
+      var knowledgeLibFileList = []
+      var path = ''
+      for(let i=0;i<selectNodes.length;i++){
+        var selectNode = selectNodes[i]
+
+        var ownerId = selectNode.ownerId
+        var parentId = selectNode.id
+        path = selectNode.path
+        knowledgeLibFileList.push({ownerId:ownerId,parentId:parentId})
+      }
+
+      pushToMultiKnowledge({ fileId: this.getFileListData(this.fileId)._id, knowledgeLibFileList:knowledgeLibFileList, fileIdList: this.fileIdList }).then(() => {
         this.$message.success('推送成功！')
       })
       this.menu_tree_flag = false
