@@ -161,7 +161,9 @@
             ref="tree"
             :data="treeData"
             :props="defaultProps"
+            :load="loadPushTreeSubNode"
             show-checkbox
+            lazy
             node-key="id"
             :check-strictly="true"
             :expand-on-click-node="false"
@@ -169,6 +171,7 @@
             default-expand-all
             highlight-current
             @check-change="menu_tree_check_fn"
+            @node-click="pushTreeNodeClick"
           />
         </el-scrollbar>
       </div>
@@ -184,7 +187,7 @@
 <script>
 import store from '@/store'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import { getFileList, getFileListManage, findUserListByGroupId, del, getDownloadToken, pushToKnowledge } from '@/api/work-desk/work-desk'
+import { getFileList, getFileListManage, findUserListByGroupId, del, getDownloadToken, pushToKnowledg, pushToMultiKnowledge, knowledgeFileList} from '@/api/work-desk/work-desk'
 import { getCustomManageList } from '@/api/user-center//roleManage'
 import { getUserEgroupInfo } from '@/api/user-center/groupManage'
 import { getFileShowSize, parseTime } from '@/utils/index'
@@ -253,7 +256,8 @@ export default {
       fileIdList: [], // 文件id数组
       defaultProps: {
         label: 'label',
-        children: 'children'
+        children: 'children',
+        isLeaf: 'leaf'
       },
       selectNodes: [], // 选择的树的节点
       fileId: '', // 当前文件id
@@ -529,18 +533,110 @@ export default {
     },
     // 初始化推送菜单树的数据
     initializeTreeData(val) {
-      const companyTree = { label: '企业知识库', id: val, type: 'company' }
+      const companyTree = { label: '企业知识库', id: val, type: 'company', ownerId:val, parentId:val,path:'企业知识库' }
       const groupTree = { label: '小组知识库', id: 'allEgroup', type: 'egroup' }
       getUserEgroupInfo({ selectCompanyId: val }).then(response => {
         const groupList = response.data.egroupInfo
         const groupNames = []
         for (let i = 0; i < groupList.length; i++) {
-          groupNames.push({ label: groupList[i].groupName, id: groupList[i].inc })
+          var groupName = groupList[i].groupName
+          var groupInc = groupList[i].inc
+
+          groupNames.push({ label: groupName, id: groupInc,ownerId:groupInc,parentId:groupInc,path:groupName })
         }
         groupTree.children = groupNames
         this.treeData = [companyTree, groupTree]
       })
     },
+
+    //加载节点子节点
+    loadPushTreeSubNode(node,resolve){
+      var nodeData = node.data;
+
+      var currentPage = 1
+      var pageSize = this.knowledgeFilePageSize || 10
+      var ownerId = nodeData.ownerId
+      var parentId = nodeData.id
+
+      var requestData = {"ownerId":ownerId,"parentId":parentId,"pageSize":pageSize,"currentPage":currentPage,"fileType":"dir"}
+      var that = this
+      knowledgeFileList(requestData).then(response => {
+        var page = response.data.page
+        var fileList = page.list
+        var currentPage = page.currentPage
+        var totalPage = page.pageCount
+
+        var loadMoreData = {label: '点击加载更多', id:parentId+"_more" , type: 'dir', ownerId:ownerId,parentId:parentId}
+
+        that.appendDirectoryToTree(node,fileList)
+        if(currentPage < totalPage){
+          that.appendLoadMoreNodeToTree(node,loadMoreData)
+        }
+      })
+
+    },
+
+    //节点被点击后触发方法
+    pushTreeNodeClick(nodeData,node,tree){
+      if(!('loadMore' in nodeData)){
+        //不是加载更多节点被点击则直接返回
+        return
+      }
+
+      var currentPage = nodeData.currentPage || 1
+      var pageSize = this.knowledgeFilePageSize || 10
+      var ownerId = nodeData.ownerId
+      var parentId = nodeData.parentId
+
+      var requestData = {"ownerId":ownerId,"parentId":parentId,"pageSize":pageSize,"currentPage":currentPage,"fileType":"dir"}
+      var that = this
+      knowledgeFileList(requestData).then(response => {
+        var page = response.data.page
+        var fileList = page.list
+        var currentPage = page.currentPage
+        var totalPage = page.pageCount
+
+        var loadMoreData = node.data
+        var parentNode = node.parent
+        //删除加载更多节点
+        that.$refs.tree.remove(node)
+
+        that.appendDirectoryToTree(parentNode,fileList)
+        if(currentPage < totalPage){
+          loadMoreData.currentPage = loadMoreData.currentPage + 1
+          that.appendLoadMoreNodeToTree(parentNode,loadMoreData)
+        }
+      })
+
+    },
+
+    //添加文件夹到树，parentNode是要添加子节点的父节点
+    appendDirectoryToTree(parentNode,dirList){
+      if(!(dirList && dirList.length > 0)){
+        return
+      }
+
+      var parentNodeData = parentNode.data
+      var parentPath = parentNodeData.path
+
+      var subNodeDataList = []
+      for(let i = 0;i < dirList.length; i++){
+        var dir = dirList[i]
+        var fileName = dir.fileName
+        var filePath = parentPath+'/'+fileName
+        var ownerId = dir.ownerId
+        var id = dir.fileId
+
+        var subNodeData = {label: fileName, id: id, type: 'dir', ownerId:ownerId,path:filePath}
+        this.$refs.append(subNodeData, parentNode)
+      }
+    },
+
+    //添加加载更多节点到树
+    appendLoadMoreNodeToTree(parentNode,nodeData){
+      this.$refs.append(nodeData, parentNode)
+    },
+
     // 选择菜单 单选
     menu_tree_check_fn(data, checked, indeterminate) {
       if (data.type === 'egroup') {
