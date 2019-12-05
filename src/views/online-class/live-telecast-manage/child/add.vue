@@ -152,7 +152,7 @@
         </el-form-item>
       </el-form>
     </div>
-
+    <!--    第二步-->
     <div v-if="active === 2" class="info step2">
       <div class="step">
         <h5 class="required">请选择小组：</h5>
@@ -177,8 +177,7 @@
           <el-checkbox
             v-model="checkAll"
             :indeterminate="isIndeterminate"
-            @change="handleCheckAllChange"
-          >全部小组</el-checkbox>
+            @change="handleCheckAllChange">全部小组</el-checkbox>
           <el-scrollbar wrap-class="scrollbar-wrapper">
             <el-checkbox-group
               v-model="checkedGroupIds"
@@ -206,6 +205,7 @@
         </div>
       </el-form>
     </div>
+    <!--    第三步-->
     <div v-if="active === 3" class="info">
       <div class="step">
         <h5>课程通知：</h5>

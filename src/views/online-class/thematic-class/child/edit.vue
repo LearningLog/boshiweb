@@ -547,7 +547,7 @@ export default {
     },
     // 获取小组和人员列表
     get_list() {
-      getExamUserInfo({ selectCompanyId: this.selectCompanyId }).then(
+      getExamUserInfo({ selectCompanyId: this.selectCompanyId}).then(
         response => {
           this.list = response.data.groupList
           console.log('获取小组和人员列表', this.list)
