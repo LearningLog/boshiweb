@@ -58,38 +58,38 @@ export function topicEdit(data) {
   })
 }
 
-//从服务器获取缓存的试题
+// 从服务器获取缓存的试题
 export function getCacheTopicFromServiceInterface(data) {
   return request({
-    url:'evaluation/topic/findTopicTempV2',
-    method:'post',
+    url: 'evaluation/topic/findTopicTempV2',
+    method: 'post',
     data
   })
 }
 
-//保存缓存试题到服务器
+// 保存缓存试题到服务器
 export function saveCacheTopicToServiceInterface(data) {
   return request({
-    url:'evaluation/topic/findTopicTempV2',
-    method:'post',
+    url: 'evaluation/topic/addTopicTempV2',
+    method: 'post',
     data
   })
 }
 
-//清除服务端缓存的试题
+// 清除服务端缓存的试题
 export function clearServiceCacheTopicInterface(data) {
   return request({
-    url:'evaluation/topic/deleteTopicTempV2',
-    method:'post',
+    url: 'evaluation/topic/deleteTopicTempV2',
+    method: 'post',
     data
   })
 }
 
-//从服务器删除某一题缓存
+// 从服务器删除某一题缓存
 export function deleteOneCacheTopicFromServiceInterface(data) {
   return request({
-    url:'evaluation/topic/deleteTopicTempByIdV2',
-    method:'post',
+    url: 'evaluation/topic/deleteTopicTempByIdV2',
+    method: 'post',
     data
   })
 }

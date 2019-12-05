@@ -778,7 +778,7 @@ export default {
     return {
       selectCompanyId: '', // 租户
       egroup: '', // 小组
-      tempCacheVersion:'vue',//试题缓存版本
+      tempCacheVersion: 'vue', // 试题缓存版本
       headers: {
         Authorization: getToken() // 图片上传 header
       },
@@ -940,6 +940,7 @@ export default {
   created() {
     this.egroup = this.$route.query.egroup
     this.selectCompanyId = this.$route.query.selectCompanyId
+    this.getCacheTopicFromService()
   },
   methods: {
     // 用于生成uuid
@@ -1275,6 +1276,9 @@ export default {
         this[this.topic0].id = this.guid() // 设置题id
         this.topics.push($.extend(true, {}, this[this.topic0]))
       }
+
+      console.log(this[this.topic0])
+      this.saveCacheTopicToService(this[this.topic0])
       // ===begin===
 
       // 保存设置
@@ -1386,6 +1390,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        this.deleteOneCacheTopicFromService(this.topics[index])
         this.topics.splice(index, 1)
         this.$message.success('删除成功！')
       }).catch(() => {
@@ -1641,9 +1646,77 @@ export default {
 
       addTopic(params).then(res => {
         this.noLeaveprompt = true
+        this.clearServiceCacheTopic()
         this.$message.success('保存试题成功！')
         this.$router.push({ path: '/evaluating-manage/question-bank-manage/list' })
       })
+    },
+
+    // 从服务器获取缓存的试题
+    getCacheTopicFromService() {
+      var egroup = this.egroup
+      var tempCacheVersion = this.tempCacheVersion
+      var jsons = { egroup: egroup, version: tempCacheVersion, selectCompanyId: this.selectCompanyId }
+
+      var cacheTopics = []
+      // ajax请求列表数据
+      getCacheTopicFromServiceInterface(jsons).then(response => {
+        if (response.data != null && response.data.length > 0) {
+          $.each(response.data, function(i, cacheTopic) {
+            var topic_data = cacheTopic.topic_data
+            var topic = JSON.parse(topic_data)
+            if (topic && topic != null) {
+              cacheTopics.push(topic)
+            }
+          })
+        }
+        if (cacheTopics.length > 0) {
+          this.topics = cacheTopics
+        }
+        console.log(this.topics)
+      })
+    },
+    // 保存缓存试题到服务器
+    saveCacheTopicToService(topic) {
+      var cacheTempId = null
+      if (!('cacheTempId' in topic)) {
+        cacheTempId = this.guid()
+        topic.cacheTempId = cacheTempId
+      } else {
+        cacheTempId = topic.cacheTempId
+      }
+
+      var egroup = this.egroup
+      var tempCacheVersion = this.tempCacheVersion
+      var jsons = { egroup: egroup, version: tempCacheVersion, topic_code: cacheTempId, topic_data: JSON.stringify(topic), selectCompanyId: this.selectCompanyId }
+
+      setTimeout(function() {
+        saveCacheTopicToServiceInterface(jsons)
+      }, 500)
+    },
+
+    // 清除服务端缓存的试题
+    clearServiceCacheTopic() {
+      var egroup = this.egroup
+      var tempCacheVersion = this.tempCacheVersion
+      var jsons = { egroup: egroup, version: tempCacheVersion, selectCompanyId: this.selectCompanyId }
+      setTimeout(function() {
+        clearServiceCacheTopicInterface(jsons)
+      }, 500)
+    },
+    // 从服务器删除某一题缓存
+    deleteOneCacheTopicFromService(topic) {
+      var cacheTempId = null
+      if (!('cacheTempId' in topic)) {
+        return
+      }
+      cacheTempId = topic.cacheTempId
+      var egroup = this.egroup
+      var tempCacheVersion = this.tempCacheVersion
+      var jsons = { egroup: egroup, version: tempCacheVersion, topic_code: cacheTempId, selectCompanyId: this.selectCompanyId }
+      setTimeout(function() {
+        deleteOneCacheTopicFromServiceInterface(jsons)
+      }, 500)
     }
   },
   beforeRouteLeave(to, from, next) {
@@ -1662,72 +1735,7 @@ export default {
     } else {
       next()
     }
-  },
-
-
-  //从服务器获取缓存的试题
-  getCacheTopicFromService:function(){
-    var egroup = this.egroup;
-    var tempCacheVersion = this.tempCacheVersion;
-    var jsons = JSON.stringify({egroup:egroup,version:tempCacheVersion,selectCompanyId:this.selectCompanyId});
-
-    var cacheTopics = [];
-    //ajax请求列表数据
-    var data = getCacheTopicFromServiceInterface(jsons);
-    if (data.code != undefined && 0 == data.code && data.data){
-      $.each(data.data,function(i,cacheTopic){
-        var topic_data = cacheTopic.topic_data;
-        var topic = JSON.parse(topic_data);
-        cacheTopics.push(topic);
-      })
-    }
-    return cacheTopics;
-  },
-
-//保存缓存试题到服务器
-  saveCacheTopicToService:function(topic){
-    var cacheTempId = null;
-    if(!('cacheTempId' in topic)){
-      cacheTempId = this.guid();
-      topic.cacheTempId = cacheTempId;
-    }else{
-      cacheTempId =  topic.cacheTempId;
-    }
-
-    var egroup = this.egroup;
-    var tempCacheVersion = that.tempCacheVersion;
-    var jsons = JSON.stringify({egroup:egroup,version:tempCacheVersion,topic_code:cacheTempId,topic_data:JSON.stringify(topic),selectCompanyId:this.selectCompanyId});
-
-    setTimeout(function(){
-      saveCacheTopicToServiceInterface(jsons);
-    },500);
-  },
-
-//清除服务端缓存的试题
-  clearServiceCacheTopic:function(){
-    var egroup = this.egroup
-    var tempCacheVersion = that.tempCacheVersion;
-    var jsons = JSON.stringify({egroup:egroup,version:tempCacheVersion,selectCompanyId:this.selectCompanyId});
-    setTimeout(function(){
-      clearServiceCacheTopicInterface(jsons);
-    },500);
-
-  },
-//从服务器删除某一题缓存
-  deleteOneCacheTopicFromService:function(topic){
-    var cacheTempId = null;
-    if(!('cacheTempId' in topic)){
-      return;
-    }
-    cacheTempId = topic.cacheTempId;
-    var egroup = this.egroup;
-    var tempCacheVersion = that.tempCacheVersion;
-    var jsons = JSON.stringify({egroup:egroup,version:tempCacheVersion,topic_code:cacheTempId,selectCompanyId:this.selectCompanyId});
-    setTimeout(function(){
-      deleteOneCacheTopicFromServiceInterface(jsons)
-    },500);
   }
-
 }
 </script>
 
