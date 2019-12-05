@@ -200,7 +200,7 @@ export default {
   data() {
     return {
       file_knowledge,
-      knowledgeFilePageSize: 3, // 推送时加载知识库文件夹页大小
+      knowledgeFilePageSize: 30, // 推送时加载知识库文件夹页大小
       userCompanyId: '',
       isFilePreview: false, // 是否打开预览
       fileFormat: '', // 文件格式
@@ -597,7 +597,7 @@ export default {
         // 如果是小组知识库节点
         setTimeout(function() {
           that.appendGroupToTree(node, nodeData.companyId)
-        }, 500)
+        })
         return resolve([])
       }
 
@@ -615,7 +615,7 @@ export default {
           var currentPage = page.currentPage
           var totalPage = page.pageCount
 
-          var loadMoreData = { label: '点击加载更多', id: parentId + '_more', type: 'dir', ownerId: ownerId, parentId: parentId, currentPage: 1, pageSize: pageSize, leaf: true, loadMore: true, disabled: true }
+          var loadMoreData = { label: '点击加载更多', id: parentId + '_more', type: 'dir', ownerId: ownerId, parentId: parentId, currentPage: 2, pageSize: pageSize, leaf: true, loadMore: true, disabled: true }
 
           that.appendDirectoryToTree(node, fileList)
           if (currentPage < totalPage) {
@@ -653,7 +653,6 @@ export default {
 
         that.appendDirectoryToTree(parentNode, fileList)
         if (currentPage < totalPage) {
-          debugger
           loadMoreData.currentPage = loadMoreData.currentPage + 1
           that.appendLoadMoreNodeToTree(parentNode, loadMoreData)
         }
@@ -720,6 +719,7 @@ export default {
     },
     // 开始推送
     save_menu() {
+
       var selectNodes = this.$refs.tree.getCheckedNodes()
       if (selectNodes.length === 0) {
         this.$message.warning('请选择推送路径！')
@@ -737,11 +737,19 @@ export default {
         knowledgeLibFileList.push({ ownerId: ownerId, parentId: parentId })
       }
 
-      pushToMultiKnowledge({ fileId: this.getFileListData(this.fileId)._id, knowledgeLibFileList: knowledgeLibFileList, fileIdList: this.fileIdList }).then(() => {
+      var fileId = null
+      var fileIdList = this.fileIdList
+
+      if(!(fileIdList && fileIdList.length > 0) && this.fileId){
+        fileId = this.getFileListData(this.fileId)._id
+      }
+
+      pushToMultiKnowledge({ fileId: fileId, knowledgeLibFileList: knowledgeLibFileList, fileIdList: fileIdList }).then(() => {
         this.$message.success('推送成功！')
+        this.menu_tree_flag = false
+        this.get_list()
       })
-      this.menu_tree_flag = false
-      this.get_list()
+
     },
     // 查看详情
     detail(row) {
