@@ -1,17 +1,17 @@
 <template>
   <div class="tenant-list-box">
     <div id="topSearch">
-      <el-input v-model="listQuery.cname" placeholder="请输入课程名称" clearable @keyup.enter.native="topSearch">
+      <el-input v-model="listQuery1.cname" placeholder="请输入课程名称" clearable @keyup.enter.native="topSearch">
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
       </el-input>
       <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">高级搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
       <transition name="fade-advanced-search">
         <el-row v-show="popoverVisible">
           <el-card id="advancedSearchArea" shadow="never">
-            <el-form ref="form" :model="listQuery" label-width="100px">
+            <el-form ref="form" :model="listQuery1" label-width="100px">
               <el-form-item label="课程类型">
                 <el-select
-                  v-model="listQuery.type"
+                  v-model="listQuery1.type"
                   placeholder="请选择课程类型"
                   clearable
                   filterable
@@ -87,6 +87,8 @@ import AddSelectGroup from '@/components/AddSelectGroup'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import { findChapterListForLesson, removeOneChapterInLesson } from '@/api/online-class/thematic-class'
 import { chapetr_del } from '@/api/online-class/live-telecast-manage'
+import store from '@/store'
+
 export default {
   components: { Pagination, AddSelectGroup },
   directives: { elDragDialog },
@@ -95,6 +97,15 @@ export default {
       visibleSelectGroup: false, // 是否弹出选择租户、小组
       total: 0, // 总条数
       listQuery: { // 查询条件
+        currentPage: 1, // 当前页
+        pageSize: 10, // 当前页请求条数
+        lesson_id: '', // 专题id
+        type: null, // 课堂类型
+        cname: '', // 课堂名称
+        startTime: '', // 开始时间
+        endTime: '' // 开始时间
+      },
+      listQuery1: { // 查询条件
         currentPage: 1, // 当前页
         pageSize: 10, // 当前页请求条数
         lesson_id: '', // 专题id
@@ -114,6 +125,8 @@ export default {
   created() {
     this.listQuery.lesson_id = this.$route.query._id
     this.listQuery.selectCompanyId = this.$route.query.selectCompanyId
+    this.listQuery1.lesson_id = this.$route.query._id
+    this.listQuery1.selectCompanyId = this.$route.query.selectCompanyId
     this.get_list()
   },
   methods: {
@@ -137,12 +150,18 @@ export default {
 
     // 重置
     reset() {
-      this.listQuery.cname = ''
-      this.listQuery.type = ''
+      this.listQuery1.cname = ''
+      this.listQuery1.type = ''
       this.time_range.length = 0
-      this.listQuery.startTime = ''
-      this.listQuery.endTime = ''
+      this.listQuery1.startTime = ''
+      this.listQuery1.endTime = ''
+      this.listQuery = JSON.parse(JSON.stringify(this.listQuery1))
       this.get_list()
+    },
+
+    // 暂存当前试卷数据
+    temporaryStorage() {
+      store.dispatch('thematicManage/temporaryStorageLessons', this.list)
     },
 
     // 新增
@@ -173,6 +192,7 @@ export default {
 
     // 选择已有课堂
     selectLesson() {
+      this.temporaryStorage()
       this.$router.push({ path: '/online-class/thematic-class/select-lesson', query: { lesson_id: this.listQuery.lesson_id, selectCompanyId: this.selectCompanyId }})
     },
 

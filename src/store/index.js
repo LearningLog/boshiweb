@@ -11,6 +11,7 @@ import examinationManage from './modules/examination-manage'
 import fileUpload from './modules/file-upload'
 import realTimeMessage from './modules/real-time-message'
 import door from './modules/door'
+import thematicManage from './modules/thematic-manage'
 
 Vue.use(Vuex)
 
@@ -25,7 +26,8 @@ const store = new Vuex.Store({
     examinationManage,
     fileUpload,
     realTimeMessage,
-    door
+    door,
+    thematicManage
   },
   getters
 })
