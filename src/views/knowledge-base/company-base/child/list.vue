@@ -12,7 +12,6 @@
           <el-card id="advancedSearchArea" shadow="never">
             <div class="treeList">
               <div class="treeList1">
-                <!-- <p class="treeName pointer" :class="{ activeClassify: isActiveClassify(treeList1)}" @click="checkClassify(treeList1)">{{ treeList1.treeName }}</p> -->
                 <ul v-if="treeList1.floorList.length" class="">
                   <li v-for="(item, index) in treeList1.floorList" :key="treeList1.treeId + index" class="treeItem">
                     <span v-for="item2 in item" :key="item2.nodeIdList.join()" class="classifyItem pointer" :class="{ activeClassify: isActiveClassify(item2) }" @click="checkClassify(item2)">{{ item2.nodeName }}</span>
@@ -20,7 +19,6 @@
                 </ul>
               </div>
               <div v-if="treeList2.floorList.length" class="treeList2">
-                <!-- <p class="treeName pointer" :class="{ activeClassify: isActiveClassify(treeList2)}" @click="checkClassify(treeList2)">{{ treeList2.treeName }}</p> -->
                 <ul v-if="treeList2.floorList.length" class="">
                   <li v-for="(item, index) in treeList2.floorList" :key="treeList2.treeId + index" class="treeItem">
                     <span v-for="item2 in item" :key="item2.nodeIdList.join()" class="classifyItem pointer" :class="{ activeClassify: isActiveClassify(item2) }" @click="checkClassify(item2)">{{ item2.nodeName }}</span>
@@ -37,9 +35,8 @@
         <el-row v-show="advancedVisible">
           <el-card id="advancedSearchArea" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
-              <el-form-item label="所属租户">
+              <el-form-item v-if="isSystemManage" label="所属租户">
                 <el-select
-                  v-if="isSystemManage"
                   v-model="listQuery.selectCompanyId"
                   placeholder="请选择所属租户"
                   clearable
@@ -206,7 +203,7 @@
             <el-dropdown-menu slot="dropdown">
               <!-- <el-dropdown-item @click.native="moveFile(scope.row)"><i class="iconfont " />移动</el-dropdown-item> -->
               <el-dropdown-item @click.native="deleteDirFile(scope.row)"><i class="iconfont iconshanchu" />删除</el-dropdown-item>
-              <el-dropdown-item @click.native="shareFileToWorkDesk(scope.row)"><i class="iconfont iconfenxiang1" />收藏</el-dropdown-item>
+              <el-dropdown-item @click.native="shareFileToWorkDesk(scope.row)"><i class="iconfont iconshoucang" />收藏</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </template>
@@ -235,9 +232,8 @@
     </el-dialog>
     <el-dialog v-el-drag-dialog class="createFolders" width="650px" title="创建文件夹" :visible.sync="crateFolderDialogVisible">
       <el-form ref="ruleForm" :model="ruleForm" :rules="rules" label-width="100px" class="demo-ruleForm">
-        <el-form-item v-show="listQuery.selectCompanyId==''" label="所属租户">
+        <el-form-item v-show="!listQuery.selectCompanyId" v-if="isSystemManage" label="所属租户">
           <el-select
-            v-if="isSystemManage"
             v-model="listQuery.selectCompanyId"
             placeholder="请选择所属租户"
             clearable
@@ -437,7 +433,7 @@ export default {
   created() {
     this.isSystemManage = this.$store.state.user.isSystemManage
     this.listQuery.selectCompanyId = this.$route.query.selectCompanyId
-
+    console.log(this.$store.state.user)
     if (!this.$store.state.user.isSystemManage) {
       // 不是系统管理员进来之后
       this.listQuery.parentId = this.$store.state.user.userPermission.groupId
@@ -494,6 +490,16 @@ export default {
     },
     // 点击选择分类
     checkClassify(classify) {
+      // 选择分类1.清空高级搜索2.清空今入文件夹
+      this.listQuery.currentPage = 1
+      this.listQuery.keyword = ''// 关键字
+      this.listQuery.userId = ''// 用户id
+      this.time_range = []// 创建时间
+
+      // 清空文件夹点击今入搜索
+      this.pathQueryString = ''
+      this.$router.push({ path: '/knowledge-base/company-base/list', query: { path: this.pathQueryString, selectCompanyId: this.listQuery.selectCompanyId }})
+
       if (classify.treeId) {
         classify.nodeIdList = [classify.treeId]
         classify.nodeName = classify.treeName
@@ -637,9 +643,16 @@ export default {
 
     enterFolder(row) {
       if (row.fileAttributeDesc === 'dir') {
-        // 进文件夹的检索和文件别的input检索不共存
+        // 1.进文件夹的检索和文件别的input检索不共存
+        // 2.进文件夹的检索与知识分类搜索不共存
         this.listQuery.currentPage = 1
-        this.listQuery.keyword = ''
+        this.listQuery.keyword = ''// 关键字
+        this.listQuery.userId = ''// 用户id
+        this.time_range = []// 创建时间
+
+        this.checkedClassifys = [] // 选中的分类展示数据
+        this.listQuery.classifyNodeIds = []// 给后台发送的选择分类id数据
+
         this.pathQueryString += this.pathQueryString ? '/' + row.fileId + '|' + row.fileName : row.fileId + '|' + row.fileName
         this.$router.push({ path: '/knowledge-base/company-base/list', query: { path: this.pathQueryString, selectCompanyId: this.listQuery.selectCompanyId }})
       }
@@ -740,6 +753,14 @@ export default {
     },
     // 搜索
     topSearch() {
+      // 1.高级搜索在根目录下搜索 --清空点击进入文件夹搜索
+      // 2.高级搜索分类搜索置空
+      this.pathQueryString = ''
+      this.$router.push({ path: '/knowledge-base/company-base/list', query: { path: this.pathQueryString, selectCompanyId: this.listQuery.selectCompanyId }})
+
+      this.checkedClassifys = [] // 选中的分类
+      this.listQuery.classifyNodeIds = []// 给后台
+
       this.enterFloderByQueryPath()
     },
     // 重置

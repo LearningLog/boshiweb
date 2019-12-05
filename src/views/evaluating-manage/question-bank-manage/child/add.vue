@@ -1422,11 +1422,16 @@ export default {
         const reader = new FileReader()
         reader.readAsDataURL(blob)
         reader.onload = (e) => {
-          debugger
-          const elemIF = document.createElement('iframe')
+          /* const elemIF = document.createElement('iframe')
           elemIF.src = e.target.result
           elemIF.style.display = 'none'
-          document.body.appendChild(elemIF)
+          document.body.appendChild(elemIF)*/
+          const a = document.createElement('a')
+          a.href = e.target.result
+          a.download = '博识-试题模板.xlsx'
+          document.body.appendChild(a)
+          a.click()
+          document.body.removeChild(a)
         }
       })
     },
