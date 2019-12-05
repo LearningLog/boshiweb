@@ -68,3 +68,21 @@ export function pushToKnowledge(data) {
     data
   })
 }
+
+//推送至多个知识库
+export function  pushToMultiKnowledge(data) {
+  return request({
+    url:'/workDeskPushFile/pushFileToMultiKnowledgeLib',
+    method:'post',
+    data
+  })
+}
+
+//知识库文件列表
+export function knowledgeFileList(data){
+  return request({
+    url:'/knowledgeDirFile/listDirFile',
+    method:'post',
+    data
+  })
+}
