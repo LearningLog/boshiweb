@@ -628,13 +628,13 @@ export default {
         var id = dir.fileId
 
         var subNodeData = {label: fileName, id: id, type: 'dir', ownerId:ownerId,path:filePath}
-        this.$refs.append(subNodeData, parentNode)
+        this.$refs.tree.append(subNodeData, parentNode)
       }
     },
 
     //添加加载更多节点到树
     appendLoadMoreNodeToTree(parentNode,nodeData){
-      this.$refs.append(nodeData, parentNode)
+      this.$refs.tree.append(nodeData, parentNode)
     },
 
     // 选择菜单 单选
