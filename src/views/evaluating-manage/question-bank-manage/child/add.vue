@@ -763,7 +763,7 @@ import SelectFile from '@/components/SelectFile'
 import AddLabels from '@/components/AddEvalLabels'
 import AddSkills from '@/components/AddEvalSkills'
 import { getToken } from '@/utils/auth'
-import { importTopics, addTopic, getCacheTopicFromServiceInterface, saveCacheTopicToServiceInterface, clearServiceCacheTopicInterface, deleteOneCacheTopicFromServiceInterface } from '@/api/evolution-manage/question-bank-manage'
+import { importTopics, addTopic, getCacheTopicFromServiceInterface, saveCacheTopicToServiceInterface, clearServiceCacheTopicInterface, deleteOneCacheTopicFromServiceInterface, exportExcelModel } from '@/api/evolution-manage/question-bank-manage'
 
 import { getOptionOrderByIndex } from '@/utils/index'
 const $ = window.$
@@ -1399,7 +1399,7 @@ export default {
     },
 
     // 下载试题模板
-    downTemplete() {
+    /* downTemplete() {
       var url = this.$store.state.user.applicationInfo.EXAM_TOPIC_IMPORT_TEMPLATE_URL
       if (url) {
         this.templeteExcelUrl = url
@@ -1414,8 +1414,22 @@ export default {
       } else {
         this.$message.error('批量导入模板暂不能使用，请使用手动增加试题！')
       }
+    },*/
+    // 下载试题模板
+    downTemplete() {
+      exportExcelModel({ code: 'TOPIC_IMPORT' }).then(response => {
+        const blob = response.data
+        const reader = new FileReader()
+        reader.readAsDataURL(blob)
+        reader.onload = (e) => {
+          debugger
+          const elemIF = document.createElement('iframe')
+          elemIF.src = e.target.result
+          elemIF.style.display = 'none'
+          document.body.appendChild(elemIF)
+        }
+      })
     },
-
     // 上传excel之前
     beforeExcelUpload(file) {
       const suffixs = ['.xls', '.xlsx']
@@ -1746,7 +1760,7 @@ export default {
     position: absolute;
     right: 0;
     top: 0;
-    z-index: 99;
+    z-index: 2;
 
     > /deep/ p, .addTopic {
       display: inline-block;
