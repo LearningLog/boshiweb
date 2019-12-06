@@ -478,8 +478,6 @@ export default {
       list: [],
       list2: [],
       list3: [],
-      list2_: [],
-      list3_: [],
       step2GroupsAndMembers: [],
       groupsAndMembers: [],
       props: {
@@ -769,7 +767,6 @@ export default {
             }
           })
           this.list3 = this.list
-          this.list3_ = JSON.parse(JSON.stringify(this.list3))
           this.$nextTick(() => {
             $('.pushNumber /deep/ .el-cascader-menu:first-child li:first-child').click()
           })
@@ -845,7 +842,6 @@ export default {
           }
         }
         this.list2 = this.list
-        this.list2_ = JSON.parse(JSON.stringify(this.list2))
         this.$nextTick(() => {
           $('.examiners /deep/ .el-cascader-menu:first-child li:first-child').click()
         })
