@@ -158,7 +158,6 @@ export default {
 
         this.$nextTick(() => {
           var chapterList = []
-          console.log('this.selectObj', this.selectObj)
           for (var key in this.selectObj) {
             chapterList.push(this.selectObj[key])
           }

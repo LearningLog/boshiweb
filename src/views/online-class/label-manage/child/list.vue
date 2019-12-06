@@ -153,6 +153,7 @@ export default {
       this.time_range = []
       this.listQuery1.createTimebegin = ''
       this.listQuery1.createTimeend = ''
+      this.isReset = true
       this.listQuery = JSON.parse(JSON.stringify(this.listQuery1))
       this.get_list()
     },

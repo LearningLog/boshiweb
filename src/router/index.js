@@ -197,7 +197,7 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/work-desk/list',
     name: 'work-desk',
-    meta: { title: '工作台', icon: 'iconglobal' },
+    meta: { title: '工作台', icon: 'icongongzuotai' },
     children: [
       {
         path: 'list',

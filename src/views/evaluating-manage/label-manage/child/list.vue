@@ -160,6 +160,7 @@ export default {
       this.listQuery1.labelIncs = []
       this.time_range = []
       this.listQuery = JSON.parse(JSON.stringify(this.listQuery1))
+      this.isReset = true
       this.get_list()
     },
 
@@ -205,7 +206,7 @@ export default {
 
     // 删除单个角色
     delete_fn(row) {
-      this.$confirm('确定要删除【' + row.userNickName + '】吗？', '删除角色', {
+      this.$confirm('确定要删除【' + row.lname + '】吗？', '删除标签', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -232,11 +233,11 @@ export default {
       for (var i = 0; i < this.delCheckedList.length; i++) {
         var item = this.delCheckedList[i]
         if (!this.hasThisBtnPermission('evaluation-label-delete', item.egroup)) {
-          this.$message.warning(`您没有的【${item.topic_content}】的管理权限！`)
+          this.$message.warning(`您没有的【${item.lname}】的管理权限！`)
           return false
         }
       }
-      this.$confirm('确定要删除选中的角色吗？', '批量删除角色', {
+      this.$confirm('确定要删除选中的标签吗？', '批量删除标签', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

@@ -121,16 +121,9 @@
           <el-tag v-else type="warning">{{ getFileStatusDesc(getFileListData(scope.row.mainFileId).file_status) }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="已推送至" min-width="140">
+      <el-table-column align="center" label="已推送至" min-width="140" show-overflow-tooltip>
         <template slot-scope="scope">
-          <div v-if="!(getFileListData(scope.row.mainFileId) === null || getFileListData(scope.row.mainFileId).length === 0)">
-            <div class="pushState">
-              <span>{{ getFilePushRecord(getFileListData(scope.row.mainFileId)) }}</span>
-            </div>
-          </div>
-          <div v-else>
-            <span class="stopPushState">暂无推送</span>
-          </div>
+          <span :class="{ stopPushState: !getFilePushRecord(getFileListData(scope.row.mainFileId)) }">{{ getFilePushRecord(getFileListData(scope.row.mainFileId)) || '暂未推送'}}</span>
         </template>
       </el-table-column>
       <el-table-column class-name="status-col" label="操作" width="220" align="center" fixed="right">
@@ -454,7 +447,7 @@ export default {
     },
     // 获取推送记录
     getFilePushRecord(workDeskFile) {
-      var defaultDesc = '暂无推送'
+      var defaultDesc = ''
       if (!(workDeskFile)) {
         return defaultDesc
       }
@@ -829,13 +822,6 @@ export default {
   }
   .menu_tree_box /deep/ .el-scrollbar {
     height: calc(60vh - 170px);
-  }
-  .pushState {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
   }
   .stopPushState {
     color: $yellow2;

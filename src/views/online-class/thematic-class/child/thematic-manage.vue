@@ -161,7 +161,7 @@ export default {
 
     // 暂存当前试卷数据
     temporaryStorage() {
-      store.dispatch('thematicManage/temporaryStorageLessons', this.list)
+      store.dispatch('thematicManage/temporaryStorageLessons', this.list || [])
     },
 
     // 新增
