@@ -123,7 +123,7 @@
       </el-table-column>
       <el-table-column align="center" label="已推送至" min-width="140" show-overflow-tooltip>
         <template slot-scope="scope">
-          <span :class="{ stopPushState: !getFilePushRecord(getFileListData(scope.row.mainFileId)) }">{{ getFilePushRecord(getFileListData(scope.row.mainFileId)) || '暂未推送'}}</span>
+          <span :class="{ stopPushState: !getFilePushRecord(getFileListData(scope.row.mainFileId)) }">{{ getFilePushRecord(getFileListData(scope.row.mainFileId)) || '暂未推送' }}</span>
         </template>
       </el-table-column>
       <el-table-column class-name="status-col" label="操作" width="220" align="center" fixed="right">
@@ -247,6 +247,7 @@ export default {
       menu_tree_flag: false, // 是否显示树
       treeData: [], // 推送的知识库菜单
       fileIdList: [], // 文件id数组
+      fileNameList: [], // 选中的文件名数组
       defaultProps: {
         label: 'label',
         children: 'children',
@@ -569,7 +570,9 @@ export default {
     },
     // 推送至知识库
     pushToKnowledge(row) {
+      this.fileIdList = []
       this.fileId = row.mainFileId
+      this.fileName = row.fileName
       const groupId = this.getFileListData(row.mainFileId).groupId
       this.initializeTreeData(groupId)
       this.menu_tree_flag = true
@@ -580,9 +583,12 @@ export default {
         this.$message.warning('请选择文件！')
         return false
       }
+      this.fileId = ''
       this.fileIdList = []
+      this.fileNameList = []
       this.checkedDelList.forEach(item => {
         this.fileIdList.push(this.getFileListData(item.mainFileId)._id)
+        this.fileNameList.push(item.fileName)
       })
       this.initializeTreeData(this.selectCompanyId)
       this.menu_tree_flag = true
@@ -762,15 +768,27 @@ export default {
 
       var fileId = null
       var fileIdList = this.fileIdList
-
+      var fileName = ''
       if (!(fileIdList && fileIdList.length > 0) && this.fileId) {
         fileId = this.getFileListData(this.fileId)._id
+        fileName = this.fileName
+      } else {
+        fileName = this.fileNameList[0] + ' 等' + this.fileIdList.length + '个文件'
       }
-
-      pushToMultiKnowledge({ fileId: fileId, knowledgeLibFileList: knowledgeLibFileList, fileIdList: fileIdList }).then(() => {
-        this.$message.success('推送成功！')
-        this.menu_tree_flag = false
-        this.get_list()
+      this.$confirm('确定要推送文件【' + fileName + '】到【' + path + '】吗？', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        pushToMultiKnowledge({
+          fileId: fileId,
+          knowledgeLibFileList: knowledgeLibFileList,
+          fileIdList: fileIdList
+        }).then(() => {
+          this.$message.success('推送成功！')
+          this.menu_tree_flag = false
+          this.get_list()
+        })
       })
     },
     // 查看详情
