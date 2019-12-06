@@ -132,13 +132,13 @@
       </transition>
     </div>
     <div id="topBtn">
-      <el-button type="primary" @click="createFolder">
+      <el-button v-if="hasThisBtnPermission('knowledge-egroup-createdir')" type="primary" @click="createFolder">
         <i class="iconfont iconzengjia" />创建文件夹
       </el-button>
-      <el-button type="primary" @click="classifySelected">
+      <el-button v-if="hasThisBtnPermission('knowledge-egroup-classify')" type="primary" @click="classifySelected">
         <i class="iconfont iconzengjia" />加入知识分类
       </el-button>
-      <el-button type="primary" @click="showUpload">
+      <el-button v-if="hasThisBtnPermission('knowledge-egroup-upload')" type="primary" @click="showUpload">
         <i class="iconfont iconshangchuan" />上传资料
       </el-button>
     </div>
@@ -261,12 +261,13 @@
           >确定</el-button>
           <el-button
             v-else
+            :disabled="!hasThisBtnPermission('knowledge-egroup-rename', scope.row.ownerId)"
             size="mini"
             icon="iconfont iconxiugai"
             @click="scope.row.edit=!scope.row.edit"
           >重命名</el-button>
 
-          <el-button size="mini" @click="download(scope.row)">
+          <el-button :disabled="!hasThisBtnPermission('knowledge-egroup-download', scope.row.ownerId)" size="mini" @click="download(scope.row)">
             <i class="iconfont iconxiazai" />下载
           </el-button>
           <el-dropdown trigger="click">
@@ -274,11 +275,11 @@
               <i class="iconfont icongengduo" />更多
             </el-button>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item @click.native="moveFile(scope.row)"><i class="iconfont iconyidong" />移动</el-dropdown-item>
+              <el-dropdown-item :disabled="!hasThisBtnPermission('knowledge-egroup-delete', scope.row.ownerId)" @click.native="moveFile(scope.row)"><i class="iconfont iconyidong" />移动</el-dropdown-item>
               <el-dropdown-item @click.native="deleteDirFile(scope.row)">
                 <i class="iconfont iconshanchu" />删除
               </el-dropdown-item>
-              <el-dropdown-item disabled @click.native="shareFileToWorkDesk(scope.row)">
+              <el-dropdown-item :disabled="!hasThisBtnPermission('knowledge-egroup-collect', scope.row.ownerId)" @click.native="shareFileToWorkDesk(scope.row)">
                 <i class="iconfont iconshoucang" />收藏
               </el-dropdown-item>
             </el-dropdown-menu>
@@ -385,7 +386,7 @@
       </el-form>
     </el-dialog>
 
-<el-dialog
+    <el-dialog
       v-el-drag-dialog
       title="移动"
       :visible.sync="menu_tree_flag"
@@ -440,7 +441,7 @@ import Pagination from '@/components/Pagination' // secondary package based on e
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import FilePreview from '@/components/FilePreview'
 import file_knowledge from '@/assets/images/file_knowledge.png'
-
+import { isCurrentEgroupManager, hasThisBtnPermission } from '@/utils/permission'
 const $ = window.$
 export default {
   directives: { elDragDialog },
@@ -454,7 +455,7 @@ export default {
         children: 'children',
         isLeaf: 'leaf'
       },
-      fileidListToMove:[],
+      fileidListToMove: [],
       filePackage: {}, // 存储后台返回url
       file_knowledge,
       isFilePreview: false, // 是否打开预览
@@ -638,6 +639,10 @@ export default {
     this.getAlluserList() // 创建人联动
   },
   methods: {
+    // 按钮权限
+    hasThisBtnPermission(code, egroup, rowUserId) {
+      return hasThisBtnPermission(code, isCurrentEgroupManager(egroup), rowUserId)
+    },
     // 图片预览
     preview(row) {
       console.log(row)
@@ -652,7 +657,7 @@ export default {
       )
       if (previewData === '') {
         this.$message({
-          message: '该文件不能预览',
+          message: '该文件不支持预览，请下载查看！',
           type: 'warning'
         })
         return
@@ -968,7 +973,7 @@ export default {
         row.fileName = row.originalTitle
         row.edit = false
         this.$message({
-          message: '文件名不能包含【\\/:*?"<>|】这些非法字符,请重新命名!',
+          message: '文件名不能包含【\\/:*?"<>|】这些非法字符,请重新命名！',
           type: 'warning'
         })
         return
@@ -1039,13 +1044,13 @@ export default {
     // 重置
     reset() {
       this.time_range = []// 时间范围
-      this.listQuery.userId =''
-      this.listQuery.selectCompanyId =''
-      this.listQuery.ownerId =''
+      this.listQuery.userId = ''
+      this.listQuery.selectCompanyId = ''
+      this.listQuery.ownerId = ''
       this.pathQueryString = ''
       this.pathNavData = []
-      this.navselctedCompanyName='全部'
-      
+      this.navselctedCompanyName = '全部'
+
       this.$router.push({
         path: '/knowledge-base/group-base/list',
         query: { path: this.pathQueryString, ownerId: this.listQuery.ownerId }
@@ -1087,7 +1092,7 @@ export default {
     // 批量加入知识分类
     classifySelected() {
       if (!this.selectedRow.length) {
-        this.$message.warning('请勾选文件')
+        this.$message.warning('请选择文件！')
         return false
       } else {
         this.treeDialogVisible = true
@@ -1171,6 +1176,15 @@ export default {
         this.$message.warning('请选择文件！')
         return false
       }
+
+      for (var i = 0; i < this.selectedRow.length; i++) {
+        var item = this.selectedRow[i]
+        if (!this.hasThisBtnPermission('knowledge-egroup-delete', item.ownerId)) {
+          this.$message.warning(`您没有的【${item.fileName}】的管理权限！`)
+          return false
+        }
+      }
+
       this.$confirm('确定要批量删除该文件吗？', '删除', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -1286,6 +1300,14 @@ export default {
         this.$message.warning('请选择文件！')
         return false
       }
+
+      for (var i = 0; i < this.selectedRow.length; i++) {
+        var item = this.selectedRow[i]
+        if (!this.hasThisBtnPermission('knowledge-egroup-download', item.ownerId)) {
+          this.$message.warning(`您没有的【${item.fileName}】的管理权限！`)
+          return false
+        }
+      }
       const fileIdList = []
       this.selectedRow.forEach(item => {
         fileIdList.push(item.fileId)
@@ -1296,7 +1318,7 @@ export default {
       }).then(response => {
         const token = response.data.token
         const size = this.getFileShowSize(response.data.size)
-        this.$confirm('文件约为' + size + '确定要下载吗', '批量下载', {
+        this.$confirm('文件约为' + size + '确定要下载吗？', '批量下载', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -1353,8 +1375,16 @@ export default {
     },
     shareFileToWorkDeskSlected() {
       if (!this.selectedRow.length) {
-        this.$message.warning('请勾选文件！')
+        this.$message.warning('请选择文件！')
         return false
+      }
+
+      for (var i = 0; i < this.selectedRow.length; i++) {
+        var item = this.selectedRow[i]
+        if (!this.hasThisBtnPermission('knowledge-egroup-collect', item.ownerId)) {
+          this.$message.warning(`您没有的【${item.fileName}】的管理权限！`)
+          return false
+        }
       }
       this.$confirm('确定要将选中的文件收藏到工作台吗？', '收藏到工作台', {
         confirmButtonText: '确定',
@@ -1382,23 +1412,31 @@ export default {
     showUpload() {
       if (!this.listQuery.ownerId) {
         this.$message({
-          message: '请先勾选小组！',
+          message: '请先选择小组！',
           type: 'warning'
         })
         return false
       }
       store.dispatch('fileUpload/isVisibility', 1)
     },
- // ============================================移动===start=======================================
+    // ============================================移动===start=======================================
     // 移动
     moveFileSelected() {
       if (!this.selectedRow.length) {
         this.$message.warning('请选择文件！')
         return false
       }
+
+      for (var i = 0; i < this.selectedRow.length; i++) {
+        var item = this.selectedRow[i]
+        if (!this.hasThisBtnPermission('knowledge-egroup-move', item.ownerId)) {
+          this.$message.warning(`您没有的【${item.fileName}】的管理权限！`)
+          return false
+        }
+      }
       this.fileidListToMove = []
       console.log(this.selectedRow)
-      this.selectedRow.forEach( (v,k,arr)=>{
+      this.selectedRow.forEach((v, k, arr) => {
         this.fileidListToMove.push(v.fileId)
       })
       this.menu_tree_flag = true
@@ -1408,21 +1446,21 @@ export default {
       this.fileidListToMove = [row.fileId]
       this.menu_tree_flag = true
     },
-    moveTreeConfirm(){
+    moveTreeConfirm() {
       var selectNodes = this.$refs.tree.getCheckedNodes()
-        console.log(selectNodes)
+      console.log(selectNodes)
       if (selectNodes.length === 0) {
         this.$message.success('请选择移动到的文件夹！')
         return
       }
-      let parmData={
-        fileIdList:  this.fileidListToMove,
+      const parmData = {
+        fileIdList: this.fileidListToMove,
         parentId: selectNodes[0].id
       }
-      moveDirFile(parmData).then((res)=>{
-          this.$message.success('移动文件夹成功！')
-          this.enterFloderByQueryPath()
-          this.menu_tree_flag=false;
+      moveDirFile(parmData).then((res) => {
+        this.$message.success('移动文件夹成功！')
+        this.enterFloderByQueryPath()
+        this.menu_tree_flag = false
       })
     },
     // 移动到树
@@ -1438,9 +1476,9 @@ export default {
       }
       var that = this
       var nodeData = node.data
-      if (this.fileidListToMove.indexOf(nodeData.id)>-1) {
+      if (this.fileidListToMove.indexOf(nodeData.id) > -1) {
         this.$message({
-          message: '不能移动文件到该文件或者文件的子文件下面',
+          message: '不能移动文件到该文件或者文件的子文件下面！',
           type: 'warning'
         })
         return resolve([])
@@ -1481,9 +1519,9 @@ export default {
 
     // 节点被点击后触发方法
     moveTreeNodeClick(nodeData, node, tree) {
-      if (!('loadMore' in nodeData)&&this.fileidListToMove.indexOf(nodeData.id)>-1) {
+      if (!('loadMore' in nodeData) && this.fileidListToMove.indexOf(nodeData.id) > -1) {
         this.$message({
-          message: '不能移动文件到该文件或者文件的子文件下面',
+          message: '不能移动文件到该文件或者文件的子文件下面！',
           type: 'warning'
         })
         return
