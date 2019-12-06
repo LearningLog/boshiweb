@@ -845,9 +845,9 @@ export default {
     changePublishType(val) {
       this.isIndeterminate = false
       this.checkAll = true
-      this.checkedGroupIds2.length = 0
+      // this.checkedGroupIds2.length = 0
       this.checkedGroupIds2 = JSON.parse(JSON.stringify(this.group_inc_list))
-      this.checkedGroupIds.length = 0
+      // this.checkedGroupIds.length = 0
       if (val === 1) {
         this.checkedGroupIds = JSON.parse(JSON.stringify(this.group_inc_list))
       } else {
