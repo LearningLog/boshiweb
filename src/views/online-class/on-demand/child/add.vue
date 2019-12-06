@@ -136,13 +136,13 @@
         label-width="120px"
       >
         <!--   请选择小组     -->
-        <el-form-item class="required" label="发布方式" prop="sendSms">
+        <el-form-item  label="发布方式" prop="publish_type">
           <el-radio-group v-model="form.publish_type">
             <el-radio :label="1">发布到小组</el-radio>
             <el-radio :label="2">发布到个人</el-radio>
           </el-radio-group>
         </el-form-item>
-        <div v-if="form.publish_type === 1">
+        <div v-show="form.publish_type === 1" class="publishToGroups">
           <!--  全部小组-->
           <el-checkbox
             v-model="checkAll"
@@ -164,7 +164,7 @@
           </el-scrollbar>
         </div>
         <!--    个人小组-->
-        <div v-else>
+        <div v-show="form.publish_type === 2">
           <el-form-item class="informationMember">
             <div class="examiners">
               <div>
@@ -867,9 +867,12 @@ export default {
   width: 50%;
 }
 
-.step2 /deep/ .el-scrollbar {
-  height: calc(100vh - 375px);
+.step2 .publishToGroups /deep/ .el-scrollbar {
+  height: calc(100vh - 406px);
 }
+/*.step2 /deep/ .el-scrollbar {*/
+/*  height: calc(100vh - 375px);*/
+/*}*/
 
 /deep/ .el-cascader-menu:last-child {
   border-right: solid 0px #dfe4ed;
