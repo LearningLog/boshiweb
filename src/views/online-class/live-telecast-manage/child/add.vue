@@ -166,18 +166,19 @@
         label-width="120px"
       >
         <!--   请选择小组     -->
-        <el-form-item class="required" label="发布方式" prop="sendSms">
+        <el-form-item label="发布方式" prop="publish_type">
           <el-radio-group v-model="form.publish_type" @change="changePublishType">
             <el-radio :label="1">发布到小组</el-radio>
             <el-radio :label="2">发布到个人</el-radio>
           </el-radio-group>
         </el-form-item>
-        <div v-show="form.publish_type === 1">
+        <div v-show="form.publish_type === 1" class="publishToGroups">
           <!--  全部小组-->
           <el-checkbox
             v-model="checkAll"
             :indeterminate="isIndeterminate"
-            @change="handleCheckAllChange">全部小组</el-checkbox>
+            @change="handleCheckAllChange"
+          >全部小组</el-checkbox>
           <el-scrollbar wrap-class="scrollbar-wrapper">
             <el-checkbox-group
               v-model="checkedGroupIds2"
@@ -199,7 +200,7 @@
               <div>
                 <span class="group">选择小组</span><span class="member">选择人员</span>
               </div>
-              <el-cascader-panel v-model="groupsAndMembers" :options="list3" :props="props1" @change="handleChange" />
+              <el-cascader-panel v-model="step2GroupsAndMembers" :options="list3" :props="props1" @change="handleStep2MemersChange" />
             </div>
           </el-form-item>
         </div>
@@ -249,7 +250,7 @@
               <div>
                 <span class="group">选择小组</span><span class="member">选择人员</span>
               </div>
-              <el-cascader-panel v-model="groupsAndMembers" :options="list2" :props="props" @change="handleChangeMembers" />
+              <el-cascader-panel v-model="groupsAndMembers" :options="list2" :props="props" />
             </div>
           </el-form-item>
         </div>
@@ -477,6 +478,7 @@ export default {
       list: [],
       list2: [],
       list3: [],
+      step2GroupsAndMembers: [],
       groupsAndMembers: [],
       props: {
         multiple: true,
@@ -524,6 +526,9 @@ export default {
         ],
         can_discuss: [
           { required: true, message: '请选择发言控制', trigger: 'change' }
+        ],
+        publish_type: [
+          { required: true, message: '请选择发布方式', trigger: 'change' }
         ]
       }
     }
@@ -559,7 +564,7 @@ export default {
                   return false
                 }
                 this.active++
-                this.get_list()
+                this.getStep2GroupsAndMemers()
               }
             })
           }
@@ -572,10 +577,10 @@ export default {
         }
         if (!this.checkedGroupIds.length) {
           this.$message.warning('请选择小组！')
+          return false
         } else {
           this.active++
           this.getCheckedGroups()
-          this.get_list()
         }
         this.getEgroupAndUserinfo()
       }
@@ -714,25 +719,6 @@ export default {
     // 图片加载情况
     imgLoad(msg) {},
     // 处理第三步小组和成员的变化
-    handleChange(val) {
-      var obj = {}
-      this.checkedGroupIds.length = 0
-      val.forEach(item => {
-        if (!obj[item[0]]) {
-          obj[item[0]] = [item[1]]
-        } else {
-          obj[item[0]].push(item[1])
-        }
-        this.checkedGroupIds.push(item[0])
-      })
-      this.form.target_user = obj
-      var checkList = []
-      this.checkedGroupIds.forEach(item => {
-        checkList.push(item)
-      })
-      this.checkedGroupIds3 = [...new Set(checkList)]
-    },
-    handleChangeMembers(val) {},
     // 全选
     handleCheckAllChange(val) {
       this.checkedGroupIds2 = val ? this.group_inc_list : []
@@ -764,8 +750,8 @@ export default {
         }
       )
     },
-    // 获取小组和人员列表
-    get_list() {
+    // 获取第二步小组和人员列表
+    getStep2GroupsAndMemers() {
       getExamUserInfo({ selectCompanyId: this.selectCompanyId }).then(
         response => {
           this.list = response.data.groupList
@@ -793,44 +779,83 @@ export default {
         this.checkedGroups.push(this.groupIncs[item])
       })
     },
+
+    // 处理第二步个人数据变化
+    handleStep2MemersChange(val) {
+      var obj = {}
+      this.checkedGroupIds3.length = 0
+      var checkedGroupIds3 = []
+      val.forEach(item => {
+        if (!obj[item[0]]) {
+          obj[item[0]] = [item[1]]
+        } else {
+          obj[item[0]].push(item[1])
+        }
+        checkedGroupIds3.push(item[0])
+      })
+      this.form.target_user = obj
+      this.checkedGroupIds3 = [...new Set(checkedGroupIds3)]
+    },
+
     // 根据小组获取小组成员（用户）
     getEgroupAndUserinfo() {
-      this.list.length = 0
-      this.list2.length = 0
-      this.list3.length = 0
-      console.log('获取通知小组', this.checkedGroupIds)
+      this.groupsAndMembers.length = 0
       getEgroupAndUserinfo({
         egroup: this.checkedGroupIds,
         selectCompanyId: this.form.selectCompanyId
       }).then(res => {
-        this.list = res.data.groupList
-        this.list.forEach((item, index) => {
+        this.list = res.data.groupList || []
+        for (var i = this.list.length - 1; i >= 0; i--) {
+          var item = this.list[i]
           item.name = item.groupName
           item.id = item.inc
-          if (item.userinfo) {
-            item.userinfo.forEach(item2 => {
-              item2.name = item2.nickname
-              item2.id = item2._id
-            })
+          if (this.form.publish_type === 2) {
+            if (this.form.target_user[item.inc]) {
+              if (item.userinfo) {
+                for (var j = item.userinfo.length - 1; j >= 0; j--) {
+                  var item2 = item.userinfo[j]
+                  item2.name = item2.nickname
+                  item2.id = item2._id
+                  var index2 = this.form.target_user[item.inc].indexOf(item2._id)
+                  if (index2 > -1) {
+                    this.groupsAndMembers.push([item.inc, item2._id])
+                  } else {
+                    item.userinfo.splice(j, 1)
+                  }
+                }
+              }
+            } else {
+              this.list.splice(i, 1)
+            }
+          } else {
+            if (item.userinfo) {
+              item.userinfo.forEach(item2 => {
+                item2.name = item2.nickname
+                item2.id = item2._id
+              })
+            }
           }
-        })
+        }
         this.list2 = this.list
+        this.$nextTick(() => {
+          $('.examiners /deep/ .el-cascader-menu:first-child li:first-child').click()
+        })
       })
     },
-    changePublishType() {
-      // console.log('dddthis.checkedGroupIds', this.checkedGroupIds)
-      // console.log('dddthis.checkedGroupIds3', this.checkedGroupIds3)
-      // console.log('dddthis.checkedGroupIds2', this.checkedGroupIds2)
-      // if (this.form.publish_type === 1) {
-      //   this.checkedGroupIds3 = this.$route.query.selectCompanyId
-      //   this.get_list()
-      // } else if (this.form.publish_type === 2) {
-      //   this.checkedGroupIds2 = this.$route.query.selectCompanyId
-      //   this.getEgroups()
-      // }
-      // console.log('???this.checkedGroupIds', this.checkedGroupIds)
-      // console.log('??this.checkedGroupIds3', this.checkedGroupIds3)
-      // console.log('???this.checkedGroupIds2', this.checkedGroupIds2)
+    changePublishType(val) {
+      this.isIndeterminate = false
+      this.checkAll = true
+      this.checkedGroupIds2.length = 0
+      this.checkedGroupIds2 = JSON.parse(JSON.stringify(this.group_inc_list))
+      this.checkedGroupIds.length = 0
+      if (val === 1) {
+        this.checkedGroupIds = JSON.parse(JSON.stringify(this.group_inc_list))
+      } else {
+        this.$nextTick(() => {
+          $('.pushNumber /deep/ .el-cascader-menu:first-child li:first-child').click()
+        })
+      }
+      this.step2GroupsAndMembers = []
     },
     // 根据第二步选择的小组删除第三步之前选择的小组数据
     // 然后获取小组和成员
@@ -986,8 +1011,8 @@ export default {
   width: 50%;
 }
 
-.step2 /deep/ .el-scrollbar {
-  height: calc(100vh - 375px);
+.step2 .publishToGroups /deep/ .el-scrollbar {
+  height: calc(100vh - 406px);
 }
 
 /deep/ .el-cascader-menu:last-child {

@@ -14,7 +14,7 @@ const knowledgeBase = {
   name: 'knowledge-base',
   meta: {
     title: '知识库',
-    icon: 'iconxitongshezhi'
+    icon: 'iconzhishiku'
   },
   children: [
     {

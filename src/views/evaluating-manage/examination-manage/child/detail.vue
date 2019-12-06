@@ -193,25 +193,11 @@ export default {
 
     // 导出
     export_() {
-      exportExamResult({ _id: this.id }).then(res => {
-        // const headers = res.headers
-        // const contentDisposition = headers['content-disposition'].replace(/["|']/g, '')
-        // const matched = /filename=(.*)/g.exec(contentDisposition)
-        // const filename = decodeURI(matched[1])
-        const filename = parseTime(new Date(), '{y}-{m}-{d}') + '.xlsx'
-        const blob = res.data
-        const reader = new FileReader()
-        reader.readAsDataURL(blob)
-        reader.onload = (e) => {
-          // 创建a标签，插入到文档中并click，最后移除
-          const a = document.createElement('a')
-          a.download = filename
-          a.href = e.target.result
-          document.body.appendChild(a)
-          a.click()
-          document.body.removeChild(a)
-        }
-      })
+      const url = process.env.VUE_APP_BASE_API + '/api/evaluation/examination/export?_id=' + this.id
+      const elemIF = document.createElement('iframe')
+      elemIF.src = url
+      elemIF.style.display = 'none'
+      document.body.appendChild(elemIF)
     },
 
     // 切换
