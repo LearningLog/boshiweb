@@ -50,7 +50,7 @@ const systemManage = {
           name: 'menuList',
           hidden: true,
           component: () => import('@/views/systemManage/menuManage/child/list.vue'),
-          meta: { title: '菜单列表', icon: '', activeMenu: '/systemManage/menuManage' }
+          meta: { title: '菜单列表', icon: '', activeMenu: '/systemManage/menuManage', keepAlive: true }
         }
       ]
     },
@@ -87,7 +87,7 @@ const systemManage = {
           name: 'tenantList',
           hidden: true,
           component: () => import('@/views/systemManage/tenantManage/child/list.vue'),
-          meta: { title: '租户列表', icon: '', activeMenu: '/systemManage/tenantManage' }
+          meta: { title: '租户列表', icon: '', activeMenu: '/systemManage/tenantManage', keepAlive: true }
         }
       ]
     },
@@ -117,7 +117,7 @@ const systemManage = {
           name: 'sourceList',
           hidden: true,
           component: () => import('@/views/systemManage/sourceFile/child/list.vue'),
-          meta: { title: '文件来源列表', icon: '', activeMenu: '/systemManage/sourceFile' }
+          meta: { title: '文件来源列表', icon: '', activeMenu: '/systemManage/sourceFile', keepAlive: true }
         }
       ]
     },
@@ -154,7 +154,7 @@ const systemManage = {
           name: 'permissionList',
           hidden: true,
           component: () => import('@/views/systemManage/permissionManage/child/list.vue'),
-          meta: { title: '权限管理列表', icon: '', activeMenu: '/systemManage/permissionManage' }
+          meta: { title: '权限管理列表', icon: '', activeMenu: '/systemManage/permissionManage', keepAlive: true }
         }
       ]
     },
@@ -198,7 +198,7 @@ const systemManage = {
           name: 'newsCategoryList',
           hidden: true,
           component: () => import('@/views/systemManage/newsCategory/child/list.vue'),
-          meta: { title: '资讯类别列表', icon: '', activeMenu: '/systemManage/newsCategory' }
+          meta: { title: '资讯类别列表', icon: '', activeMenu: '/systemManage/newsCategory', keepAlive: true }
         }
       ]
     }

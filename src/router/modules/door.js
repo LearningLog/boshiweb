@@ -16,7 +16,7 @@ const door = {
     path: '/',
     name: '主页',
     component: () => import('@/views/door/index'),
-    meta: { title: '主页' }
+    meta: { title: '主页', keepAlive: true }
   },
   {
     path: 'exam',

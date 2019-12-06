@@ -29,7 +29,7 @@ const userCenter = {
           name: 'user-list',
           hidden: true,
           component: () => import('@/views/user-center/user-manage/child/list.vue'),
-          meta: { title: '用户列表', icon: '', activeMenu: '/user-center/user-manage' }
+          meta: { title: '用户列表', icon: '', activeMenu: '/user-center/user-manage', keepAlive: true }
         },
         {
           path: 'add',
@@ -66,7 +66,7 @@ const userCenter = {
           name: 'skilllist',
           hidden: true,
           component: () => import('@/views/user-center/skill-manager/child/list.vue'),
-          meta: { title: '技能管理列表', icon: '', activeMenu: '/user-center/skill-manager' }
+          meta: { title: '技能管理列表', icon: '', activeMenu: '/user-center/skill-manager', keepAlive: true }
         },
         {
           path: 'edit',
@@ -105,7 +105,7 @@ const userCenter = {
           name: 'grouplist',
           hidden: true,
           component: () => import('@/views/user-center/group-manage/child/list.vue'),
-          meta: { title: '分组管理列表', icon: '', activeMenu: '/user-center/group-manage' }
+          meta: { title: '分组管理列表', icon: '', activeMenu: '/user-center/group-manage', keepAlive: true }
         },
         {
           path: 'edit',
@@ -144,7 +144,7 @@ const userCenter = {
           name: 'roleList',
           hidden: true,
           component: () => import('@/views/user-center/role-manage/child/list.vue'),
-          meta: { title: '角色管理列表', icon: '', activeMenu: '/user-center/role-manage' }
+          meta: { title: '角色管理列表', icon: '', activeMenu: '/user-center/role-manage', keepAlive: true }
         },
         {
           path: 'add',

@@ -2,7 +2,12 @@
   <section class="app-main">
     <!--<el-scrollbar wrap-class="scrollbar-wrapper">-->
     <transition name="fade-transform" mode="out-in">
-      <router-view :key="key" />
+      <div>
+        <keep-alive :max="1">
+          <router-view v-if="isKeepAlive" :key="key" />
+        </keep-alive>
+        <router-view v-if="!isKeepAlive" :key="key" />
+      </div>
     </transition>
     <!--</el-scrollbar>-->
     <el-tooltip placement="top" content="返回顶部">
@@ -29,6 +34,9 @@ export default {
   computed: {
     key() { // 保证路由切换时都会重新渲染触发钩子了
       return this.$route.path
+    },
+    isKeepAlive() { // 是否需要被缓存的组件
+      return this.$route.meta.keepAlive
     }
   },
   mounted() {
