@@ -2,12 +2,7 @@
   <section class="app-main">
     <!--<el-scrollbar wrap-class="scrollbar-wrapper">-->
     <transition name="fade-transform" mode="out-in">
-      <div :key="key">
-        <keep-alive :max="1">
-          <router-view v-if="isKeepAlive" :key="key" />
-        </keep-alive>
-        <router-view v-if="!isKeepAlive" :key="key" />
-      </div>
+      <router-view :key="key" />
     </transition>
     <!--</el-scrollbar>-->
     <el-tooltip placement="top" content="返回顶部">

@@ -102,7 +102,6 @@ export default {
         this.form.desc = role.desc
         this.form.manageType = role.manageType || 3
         this.manageType = role.manageType || 3
-        this.permissionids = role.permissionids || []
         this.dataIsChange = -1
         this.getManageType()
       })
@@ -161,6 +160,7 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           const menuTree = this.$refs.menuTree.getCheckedNodes(false, true)
+          console.log(menuTree)
           this.getMenuidsAndPermissionids(JSON.parse(JSON.stringify(menuTree)))
           const param = {
             _id: this.id,
