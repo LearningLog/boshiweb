@@ -161,14 +161,3 @@ export function oneAnswerInfo(data) {
   })
 }
 
-// 导出单个试卷
-export function exportExamResult(data) {
-  var url = process.env.VUE_APP_BASE_API + '/evaluation/examination/export'
-  return service({
-    url,
-    method: 'post',
-    responseType: 'blob',
-    data
-  })
-}
-
