@@ -8,7 +8,12 @@
       height="60vh"
       @close="cancel"
     >
-      <div v-if="fileTypeCode === 3 || fileType === 'pic'" class="previewImg" :style="previewImg" />
+      <el-image
+        v-if="fileTypeCode === 3 || fileType === 'pic'"
+        style="width: 100%; height: 50vh;"
+        :src="fileUrl"
+        fit="contain"
+      />
       <div class="vadioPlay">
         <!--<video id="video_1" src="" class="video video-js vjs-big-play-centered" controls preload="auto" v-if="fileTypeCode === 1"></video>-->
         <!--<audio id="audio_1" src="" class="video video-js vjs-big-play-centered" controls preload="auto" v-if="fileTypeCode === 2"></audio>-->
@@ -206,11 +211,11 @@ export default {
 
 <style scoped>
   .previewImg {
-    width: 100%;
-    height: 50vh;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
+    /*width: 100%;*/
+    /*height: 50vh;*/
+    /*background-size: contain;*/
+    /*background-repeat: no-repeat;*/
+    /*background-position: center;*/
   }
 .img {
   width: 100%;
