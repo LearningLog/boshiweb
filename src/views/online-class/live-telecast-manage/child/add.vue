@@ -478,6 +478,8 @@ export default {
       list: [],
       list2: [],
       list3: [],
+      list2_: [],
+      list3_: [],
       step2GroupsAndMembers: [],
       groupsAndMembers: [],
       props: {
@@ -577,6 +579,7 @@ export default {
         }
         if (!this.checkedGroupIds.length) {
           this.$message.warning('请选择小组！')
+          return false
         } else {
           this.active++
           this.getCheckedGroups()
@@ -766,6 +769,7 @@ export default {
             }
           })
           this.list3 = this.list
+          this.list3_ = JSON.parse(JSON.stringify(this.list3))
           this.$nextTick(() => {
             $('.pushNumber /deep/ .el-cascader-menu:first-child li:first-child').click()
           })
@@ -841,13 +845,26 @@ export default {
           }
         }
         this.list2 = this.list
+        this.list2_ = JSON.parse(JSON.stringify(this.list2))
         this.$nextTick(() => {
           $('.examiners /deep/ .el-cascader-menu:first-child li:first-child').click()
         })
       })
     },
-    changePublishType() {
-      // this.form.target_user.lenght = 0
+    changePublishType(val) {
+      this.isIndeterminate = false
+      this.checkAll = true
+      this.checkedGroupIds2.length = 0
+      this.checkedGroupIds2 = JSON.parse(JSON.stringify(this.group_inc_list))
+      this.checkedGroupIds.length = 0
+      if (val === 1) {
+        this.checkedGroupIds = JSON.parse(JSON.stringify(this.group_inc_list))
+      } else {
+        this.$nextTick(() => {
+          $('.pushNumber /deep/ .el-cascader-menu:first-child li:first-child').click()
+        })
+      }
+      this.step2GroupsAndMembers = []
     },
     // 根据第二步选择的小组删除第三步之前选择的小组数据
     // 然后获取小组和成员
@@ -1004,7 +1021,7 @@ export default {
 }
 
 .step2 .publishToGroups /deep/ .el-scrollbar {
-  height: calc(100vh - 375px);
+  height: calc(100vh - 406px);
 }
 
 /deep/ .el-cascader-menu:last-child {
