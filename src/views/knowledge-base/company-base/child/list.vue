@@ -881,8 +881,8 @@ export default {
           if ((this.list.length - 1) === 0) { // 如果当前页数据已删完，则去往上一页
             this.listQuery.currentPage -= 1
           }
+          this.enterFloderByQueryPath()
         })
-        this.enterFloderByQueryPath()
       }).catch(() => {})
     },
     deleteDirFileSelected(row) {
@@ -904,11 +904,11 @@ export default {
             message: '删除文件成功！',
             type: 'success'
           })
-          if ((this.list.length - this.checkedDelList.length) === 0) { // 如果当前页数据已删完，则去往上一页
+          if ((this.list.length - this.selectedRow.length) === 0) { // 如果当前页数据已删完，则去往上一页
             this.listQuery.currentPage -= 1
           }
+          this.enterFloderByQueryPath()
         })
-        this.enterFloderByQueryPath()
       }).catch(() => {})
     },
     // 创建文件夹
