@@ -201,7 +201,7 @@
               <i class="iconfont icongengduo" />更多
             </el-button>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item @click.native="moveFile(scope.row)"><i class="iconfont " />移动</el-dropdown-item>
+              <el-dropdown-item @click.native="moveFile(scope.row)"><i class="iconfont iconyidong" />移动</el-dropdown-item>
               <el-dropdown-item @click.native="deleteDirFile(scope.row)"><i class="iconfont iconshanchu" />删除</el-dropdown-item>
               <el-dropdown-item @click.native="shareFileToWorkDesk(scope.row)"><i class="iconfont iconshoucang" />收藏</el-dropdown-item>
             </el-dropdown-menu>
@@ -213,7 +213,7 @@
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="getDirList" />
     <div id="bottomOperation">
       <el-button v-show="total>0" type="danger" plain @click="deleteDirFileSelected"><i class="iconfont iconshanchu" />批量删除</el-button>
-      <el-button v-show="total>0" type="primary" plain @click="moveFileSelected"><i class="iconfont iconfenpeijineng" />批量移动</el-button>
+      <el-button v-show="total>0" type="primary" plain @click="moveFileSelected"><i class="iconfont iconyidong" />批量移动</el-button>
       <el-button v-show="total>0" type="primary" plain @click="downloadFileSelected"><i class="iconfont iconxiazai" />批量下载</el-button>
       <el-button v-show="total>0" type="primary" plain @click="shareFileToWorkDeskSlected"><i class="iconfont iconshoucang" />批量收藏</el-button>
     </div>
@@ -804,17 +804,25 @@ export default {
     },
     // 重置
     reset() {
-      // this.isReset = true
-      // this.listQuery.content = ''// 技能名
-      // this.listQuery.startTime = ''// 开始时间
-      // this.listQuery.endTime = ''// 结束时间
-      // this.listQuery.selectCompanyId = ''// 企业名称
-      // // this.listQuery.egroup = ''// 分组
-      // // this.listQuery.roleId = ''// 角色
-
-      // this.time_range = []// 时间范围
-      // this.getDirList()
-
+      if (!this.$store.state.user.isSystemManage) {
+        // 不是系统管理员进来之后
+        this.navselctedCompanyName="企业知识库"
+        this.listQuery.parentId = this.$store.state.user.userPermission.groupId
+        this.listQuery.selectCompanyId = this.$store.state.user.userPermission.groupId
+      }
+      this.time_range = []// 时间范围
+      this.listQuery.userId =''
+      this.listQuery.selectCompanyId =''
+      this.pathNavData.length=0
+      this.pathQueryString = ''
+      if (!this.$store.state.user.isSystemManage) {
+      // 不是系统管理员进来之后
+        this.navselctedCompanyName="企业知识库"
+      }else{
+        this.navselctedCompanyName="全部"
+      }
+      this.$router.push({ path: '/knowledge-base/company-base/list', query: { path: this.pathQueryString, selectCompanyId: this.listQuery.selectCompanyId }})
+      this.enterFloderByQueryPath()
     },
     // 知识库列表
     async  getDirList() {
@@ -1075,6 +1083,13 @@ export default {
       if (row.fileAttributeDesc === 'dir') {
         this.$message({
           message: '只有文件才可以收藏！',
+          type: 'warning'
+        })
+        return
+      }
+      if (row.fileStatus === 4) {
+        this.$message({
+          message: '该文件不可以收藏！',
           type: 'warning'
         })
         return

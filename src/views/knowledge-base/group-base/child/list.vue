@@ -274,11 +274,11 @@
               <i class="iconfont icongengduo" />更多
             </el-button>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item @click.native="moveFile(scope.row)"><i class="iconfont " />移动</el-dropdown-item>
+              <el-dropdown-item @click.native="moveFile(scope.row)"><i class="iconfont iconyidong" />移动</el-dropdown-item>
               <el-dropdown-item @click.native="deleteDirFile(scope.row)">
                 <i class="iconfont iconshanchu" />删除
               </el-dropdown-item>
-              <el-dropdown-item @click.native="shareFileToWorkDesk(scope.row)">
+              <el-dropdown-item disabled @click.native="shareFileToWorkDesk(scope.row)">
                 <i class="iconfont iconshoucang" />收藏
               </el-dropdown-item>
             </el-dropdown-menu>
@@ -297,7 +297,7 @@
       <el-button v-show="total>0" type="danger" plain @click="deleteDirFileSelected">
         <i class="iconfont iconshanchu" />批量删除
       </el-button>
-      <el-button v-show="total>0" type="primary" plain @click="moveFileSelected"><i class="iconfont iconfenpeijineng" />批量移动</el-button>
+      <el-button v-show="total>0" type="primary" plain @click="moveFileSelected"><i class="iconfont iconyidong" />批量移动</el-button>
       <el-button v-show="total>0" type="primary" plain @click="downloadFileSelected">
         <i class="iconfont iconxiazai" />批量下载
       </el-button>
@@ -413,6 +413,7 @@
         <el-button type="primary" plain @click="menu_tree_flag=false">取消</el-button>
       </span>
     </el-dialog>
+    <FilePreview :is-file-preview="isFilePreview" :file-format="fileFormat" :file-type-code="fileTypeCode" :file-url="fileUrl" :title="fileName" @closePreview="closePreview" />
   </div>
 </template>
 
@@ -437,12 +438,13 @@ import {
 import { getFileShowSize, parseTime } from '@/utils/index'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
+import FilePreview from '@/components/FilePreview'
 import file_knowledge from '@/assets/images/file_knowledge.png'
 
 const $ = window.$
 export default {
   directives: { elDragDialog },
-  components: { Pagination },
+  components: { Pagination, FilePreview },
   data() {
     return {
       menu_tree_flag: false, // 是否显示收藏弹窗和树
@@ -1011,7 +1013,7 @@ export default {
       })
       this.navselctedCompanyName = selctedCompany[0].groupName
       this.pathQueryString = ''
-      this.listQuery.currentPage=1
+      this.listQuery.currentPage = 1
       this.pathNavData = []
       this.$router.push({
         path: '/knowledge-base/group-base/list',
@@ -1036,15 +1038,19 @@ export default {
     },
     // 重置
     reset() {
-      // this.isReset = true
-      // this.listQuery.content = ''// 技能名
-      // this.listQuery.startTime = ''// 开始时间
-      // this.listQuery.endTime = ''// 结束时间
-      // this.listQuery.ownerId = ''// 企业名称
-      // // this.listQuery.egroup = ''// 分组
-      // // this.listQuery.roleId = ''// 角色
-      // this.time_range = []// 时间范围
-      // this.getDirList()
+      this.time_range = []// 时间范围
+      this.listQuery.userId =''
+      this.listQuery.selectCompanyId =''
+      this.listQuery.ownerId =''
+      this.pathQueryString = ''
+      this.pathNavData = []
+      this.navselctedCompanyName='全部'
+      
+      this.$router.push({
+        path: '/knowledge-base/group-base/list',
+        query: { path: this.pathQueryString, ownerId: this.listQuery.ownerId }
+      })
+      this.enterFloderByQueryPath()
     },
     // 知识库列表
     async getDirList() {
@@ -1056,6 +1062,8 @@ export default {
       const { data } = await listDirFile(this.listQuery)
       this.listLoading = false
       this.userInfoForList = data.userInfo
+
+      this.filePackage = data.filePackage
       this.list = data.page.list.map(v => {
         this.$set(v, 'edit', false) // https://vuejs.org/v2/guide/reactivity.html
         v.originalTitle = v.fileName //  will be used when user click the cancel botton
@@ -1316,6 +1324,13 @@ export default {
         })
         return
       }
+      if (row.fileStatus === 4) {
+        this.$message({
+          message: '该文件不可以收藏！',
+          type: 'warning'
+        })
+        return
+      }
       this.$confirm('确定要收藏到工作台吗？', '收藏到工作台', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -1397,7 +1412,7 @@ export default {
       var selectNodes = this.$refs.tree.getCheckedNodes()
         console.log(selectNodes)
       if (selectNodes.length === 0) {
-        this.$message.warning('请选择移动到的文件夹！')
+        this.$message.success('请选择移动到的文件夹！')
         return
       }
       let parmData={
@@ -1405,7 +1420,7 @@ export default {
         parentId: selectNodes[0].id
       }
       moveDirFile(parmData).then((res)=>{
-          this.$message.warning('移动文件夹成功！')
+          this.$message.success('移动文件夹成功！')
           this.enterFloderByQueryPath()
           this.menu_tree_flag=false;
       })
@@ -1417,7 +1432,8 @@ export default {
       if (node.level === 0) {
         // 加载根节点
         var companyId = this.listQuery.selectCompanyId
-        const groupTree = { label: '小组知识库', id: companyId, type: 'company', ownerId: companyId, parentId: companyId, path: '小组知识库', data_type: 2 }
+        var ownerId = this.listQuery.ownerId
+        const groupTree = { label: '小组知识库', id: companyId, type: 'company', ownerId: ownerId, parentId: companyId, path: '小组知识库', data_type: 2 }
         return resolve([groupTree])
       }
       var that = this
