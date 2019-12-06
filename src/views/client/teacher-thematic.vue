@@ -229,7 +229,7 @@
                       :disabled="loginUser === scope.row.userId"
                       size="mini"
                       @click="isRemove(scope.row, 1)"
-                    ><i class="iconfont iconshanchu" />移出</el-button>
+                    ><i class="iconfont iconyichu" />移出</el-button>
                     <el-button
                       v-if="scope.row.forbid === 1"
                       :disabled="loginUser === scope.row.userId"
@@ -999,7 +999,7 @@ export default {
       padding: 0;
 
       .iconfont {
-        margin-left: 4px;
+        margin-left: 7px;
         font-size: 24px;
       }
     }

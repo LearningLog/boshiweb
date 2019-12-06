@@ -550,13 +550,12 @@ export default {
     initExamUserCountData(startTime, endTime) {
       getExamUserCount({ startTime: startTime, endTime: endTime }).then(response => {
         this.staffData.examUserCount = response.data.examUserCount
+        this.staffData.examQualified = !response.data.examQualified ? 0 : response.data.examQualified
       })
     },
     // 初始化考试合格率
     initExamQualifiedData(startTime, endTime) {
-      getExamQualified({ startTime: startTime, endTime: endTime }).then(response => {
-        this.staffData.examQualified = !response.data.examQualified ? 0 : response.data.examQualified
-      })
+      // 初始化考试员工数时一起初始化
     },
     // 监测日期选择器中的数据更改
     timeChange(value) {
