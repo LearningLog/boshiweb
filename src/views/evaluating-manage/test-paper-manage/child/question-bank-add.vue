@@ -18,9 +18,9 @@
         id="advancedSearchBtn"
         slot="reference"
         @click="popoverVisible = !popoverVisible"
-      >高级搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i
+      >高级搜索<i v-show="popoverVisible" class="advancedSearchIcon iconfont iconshousuoshangjiantou" /><i
         v-show="!popoverVisible"
-        class="el-icon-caret-top"
+        class="advancedSearchIcon iconfont iconshousuoxiajiantou"
       /></span>
       <transition name="fade-advanced-search">
         <el-row v-show="popoverVisible">

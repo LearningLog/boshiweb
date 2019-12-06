@@ -194,11 +194,11 @@ export default {
     // 导出
     export_() {
       exportExamResult({ _id: this.id }).then(res => {
-        const headers = res.headers
-        const contentDisposition = headers['content-disposition'].replace(/["|']/g, '')
+        // const headers = res.headers
+        // const contentDisposition = headers['content-disposition'].replace(/["|']/g, '')
         // const matched = /filename=(.*)/g.exec(contentDisposition)
         // const filename = decodeURI(matched[1])
-        const filename = contentDisposition.split(';')[1].split('=')[1] + '_' + parseTime(new Date(), '{y}-{m}-{d}') + '.xlsx'
+        const filename = parseTime(new Date(), '{y}-{m}-{d}') + '.xlsx'
         const blob = res.data
         const reader = new FileReader()
         reader.readAsDataURL(blob)
