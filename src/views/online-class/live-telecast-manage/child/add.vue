@@ -581,7 +581,6 @@ export default {
         } else {
           this.active++
           this.getCheckedGroups()
-          // this.getStep2GroupsAndMemers()
         }
         this.getEgroupAndUserinfo()
       }
@@ -795,10 +794,6 @@ export default {
         checkedGroupIds3.push(item[0])
       })
       this.form.target_user = obj
-      // var checkList = []
-      // this.checkedGroupIds.forEach(item => {
-      //   checkList.push(item)
-      // })
       this.checkedGroupIds3 = [...new Set(checkedGroupIds3)]
     },
 
