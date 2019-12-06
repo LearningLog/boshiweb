@@ -1,6 +1,6 @@
 <template>
   <div class="list-box">
-    <div id="topSearch">
+    <div id="topSearch"  :class="{topSearchClass:advancedVisible,classifyClass:!advancedVisible}">
 
       <el-input v-model="listQuery.keyword" placeholder="请输入文件名称" clearable @keyup.enter.native="topSearch">
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
@@ -33,7 +33,7 @@
 
       <transition name="fade-advanced-search">
         <el-row v-show="advancedVisible">
-          <el-card id="advancedSearchArea" shadow="never">
+          <el-card id="advancedSearchArea" class="search-more" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
               <el-form-item v-if="isSystemManage" label="所属租户">
                 <el-select
@@ -82,7 +82,7 @@
     <div id="topBtn">
       <el-button type="primary" @click="createFolder"><i class="iconfont iconzengjia" />创建文件夹</el-button>
       <el-button type="primary" @click="classifySelected"><i class="iconfont iconzengjia" />加入知识分类</el-button>
-      <el-button type="primary" @click="showUpload"><i class="iconfont iconzengjia" />上传资料</el-button>
+      <el-button type="primary" @click="showUpload"><i class="iconfont iconshangchuan" />上传资料</el-button>
     </div>
 
     <div class="pathNav">
@@ -129,7 +129,7 @@
             <el-button
               class="cancel-btn"
               size="mini"
-              icon="el-icon-refresh"
+              icon="iconfont iconzhongzhi"
               @click="cancelEdit(row)"
             >
               取消
@@ -201,7 +201,7 @@
               <i class="iconfont icongengduo" />更多
             </el-button>
             <el-dropdown-menu slot="dropdown">
-              <!-- <el-dropdown-item @click.native="moveFile(scope.row)"><i class="iconfont " />移动</el-dropdown-item> -->
+              <el-dropdown-item @click.native="moveFile(scope.row)"><i class="iconfont " />移动</el-dropdown-item>
               <el-dropdown-item @click.native="deleteDirFile(scope.row)"><i class="iconfont iconshanchu" />删除</el-dropdown-item>
               <el-dropdown-item @click.native="shareFileToWorkDesk(scope.row)"><i class="iconfont iconshoucang" />收藏</el-dropdown-item>
             </el-dropdown-menu>
@@ -213,7 +213,7 @@
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="getDirList" />
     <div id="bottomOperation">
       <el-button v-show="total>0" type="danger" plain @click="deleteDirFileSelected"><i class="iconfont iconshanchu" />批量删除</el-button>
-      <!--<el-button v-show="total>0" type="primary" plain @click="moveFileSelected"><i class="iconfont iconfenpeijineng" />批量移动</el-button>-->
+      <el-button v-show="total>0" type="primary" plain @click="moveFileSelected"><i class="iconfont iconfenpeijineng" />批量移动</el-button>
       <el-button v-show="total>0" type="primary" plain @click="downloadFileSelected"><i class="iconfont iconxiazai" />批量下载</el-button>
       <el-button v-show="total>0" type="primary" plain @click="shareFileToWorkDeskSlected"><i class="iconfont iconshoucang" />批量收藏</el-button>
     </div>
@@ -261,6 +261,35 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+
+    <el-dialog
+      v-el-drag-dialog
+      title="移动"
+      :visible.sync="menu_tree_flag"
+      width="650px"
+    >
+      <div class="menu_tree_box">
+        <el-scrollbar wrap-class="">
+          <el-tree
+            v-if="menu_tree_flag"
+            ref="tree"
+            :props="defaultProps"
+            :load="loadPushTreeSubNode"
+            lazy
+            node-key="id"
+            :check-strictly="true"
+            :expand-on-click-node="false"
+            :check-on-click-node="true"
+            highlight-current
+            @node-click="moveTreeNodeClick"
+          />
+        </el-scrollbar>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="moveTreeConfirm">确认</el-button>
+        <el-button type="primary" plain @click="menu_tree_flag=false">取消</el-button>
+      </span>
+    </el-dialog>
     <FilePreview :is-file-preview="isFilePreview" :file-format="fileFormat" :file-type-code="fileTypeCode" :file-url="fileUrl" :title="fileName" @closePreview="closePreview" />
   </div>
 </template>
@@ -268,7 +297,7 @@
 <script>
 import store from '@/store'
 import { mapGetters } from 'vuex'
-import { findUserListByGroupId, getCustomManageList, listDirFile, getCompanyAllTree, classifyFiles, updateDir, deleteDirFile, createDirFile, shareFileToWorkDesk, getDownloadToken, getCompanyAllTreeFloorByName } from '@/api/knowledge-base/company-base'
+import { findUserListByGroupId, getCustomManageList, listDirFile, getCompanyAllTree, classifyFiles, updateDir, deleteDirFile, createDirFile, shareFileToWorkDesk, getDownloadToken, getCompanyAllTreeFloorByName, moveDirFile } from '@/api/knowledge-base/company-base'
 import { getFileShowSize } from '@/utils/index'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
@@ -280,6 +309,14 @@ export default {
   components: { Pagination, FilePreview },
   data() {
     return {
+      menu_tree_flag: false, // 是否显示收藏弹窗和树
+      defaultProps: {
+        // 收藏弹窗和树的默认事件
+        label: 'label',
+        children: 'children',
+        isLeaf: 'leaf'
+      },
+      fileidListToMove:[],
       filePackage: {}, // 存储后台返回url
       file_knowledge,
       isFilePreview: false, // 是否打开预览
@@ -436,6 +473,7 @@ export default {
     console.log(this.$store.state.user)
     if (!this.$store.state.user.isSystemManage) {
       // 不是系统管理员进来之后
+      this.navselctedCompanyName="企业知识库"
       this.listQuery.parentId = this.$store.state.user.userPermission.groupId
       this.listQuery.selectCompanyId = this.$store.state.user.userPermission.groupId
     }
@@ -736,6 +774,7 @@ export default {
       })
       this.navselctedCompanyName = selctedCompany[0].customname
       this.pathQueryString = ''
+      this.listQuery.currentPage=1
       this.pathNavData = []
       this.$router.push({ path: '/knowledge-base/company-base/list', query: { path: this.pathQueryString, selectCompanyId: this.listQuery.selectCompanyId }})
       this.enterFloderByQueryPath()
@@ -1095,24 +1134,189 @@ export default {
 
       store.dispatch('fileUpload/isVisibility', 1)
     },
+    // ============================================移动===start=======================================
     // 移动
     moveFileSelected() {
       if (!this.selectedRow.length) {
         this.$message.warning('请选择文件！')
         return false
       }
-      this.$message.warning('待开发！')
+      this.fileidListToMove = []
+      console.log(this.selectedRow)
+      this.selectedRow.forEach((v,k,arr)=>{
+        this.fileidListToMove.push(v.fileId)
+      })
+      this.menu_tree_flag = true
     },
-    moveFile() {
-      this.$message.warning('待开发！')
+    moveFile(row) {
+      this.fileidListToMove = []
+      this.fileidListToMove = [row.fileId]
+      this.menu_tree_flag = true
+    },
+    moveTreeConfirm(){
+      var selectNodes = this.$refs.tree.getCheckedNodes()
+        console.log(selectNodes)
+      if (selectNodes.length === 0) {
+        this.$message.warning('请选择移动到的文件夹！')
+        return
+      }
+      let parmData={
+        fileIdList:  this.fileidListToMove,
+        parentId: selectNodes[0].id
+      }
+      moveDirFile(parmData).then((res)=>{
+          this.$message.warning('移动文件夹成功！')
+          this.enterFloderByQueryPath()
+          this.menu_tree_flag=false;
+      })
+    },
+    // 移动到树
+    // 加载节点子节点
+    loadPushTreeSubNode(node, resolve) {
+      console.log(node)
+      if (node.level === 0) {
+        // 加载根节点
+        var companyId = this.listQuery.selectCompanyId
+        const companyTree = { label: '企业知识库', id: companyId, type: 'company', ownerId: companyId, parentId: companyId, path: '企业知识库' }
+        const groupTree = { label: '小组知识库', id: 'allEgroup', type: 'egroup', companyId: companyId, disabled: true }
+        return resolve([companyTree])
+      }
+      var that = this
+      var nodeData = node.data
+      if (this.fileidListToMove.indexOf(nodeData.id)>-1) {
+        this.$message({
+          message: '不能移动文件到该文件或者文件的子文件下面',
+          type: 'warning'
+        })
+        return resolve([])
+      }
+
+      if (nodeData.type === 'egroup') {
+        // 如果是小组知识库节点
+        setTimeout(function() {
+          that.appendGroupToTree(node, nodeData.companyId)
+        })
+        return resolve([])
+      }
+
+      var currentPage = 1
+      var pageSize = this.knowledgeFilePageSize || 10
+      var ownerId = nodeData.ownerId
+      var parentId = nodeData.id
+
+      var requestData = { 'ownerId': ownerId, 'parentId': parentId, 'pageSize': pageSize, 'currentPage': currentPage, 'fileType': 'dir' }
+
+      setTimeout(function() {
+        listDirFile(requestData).then(response => {
+          var page = response.data.page
+          var fileList = page.list
+          var currentPage = page.currentPage
+          var totalPage = page.pageCount
+
+          var loadMoreData = { label: '点击加载更多', id: parentId + '_more', type: 'dir', ownerId: ownerId, parentId: parentId, currentPage: 2, pageSize: pageSize, leaf: true, loadMore: true, disabled: true }
+
+          that.appendDirectoryToTree(node, fileList)
+          if (currentPage < totalPage) {
+            that.appendLoadMoreNodeToTree(node, loadMoreData)
+          }
+        })
+      })
+      return resolve([])
+    },
+
+    // 节点被点击后触发方法
+    moveTreeNodeClick(nodeData, node, tree) {
+      if (!('loadMore' in nodeData)&&this.fileidListToMove.indexOf(nodeData.id)>-1) {
+        this.$message({
+          message: '不能移动文件到该文件或者文件的子文件下面',
+          type: 'warning'
+        })
+        return
+      }
+
+      if (!('loadMore' in nodeData)) {
+        // 不是加载更多节点被点击则直接返回
+        return
+      }
+      var currentPage = nodeData.currentPage || 1
+      var pageSize = this.knowledgeFilePageSize || 10
+      var ownerId = nodeData.ownerId
+      var parentId = nodeData.parentId
+
+      var requestData = { 'ownerId': ownerId, 'parentId': parentId, 'pageSize': pageSize, 'currentPage': currentPage, 'fileType': 'dir' }
+      var that = this
+      listDirFile(requestData).then(response => {
+        var page = response.data.page
+        var fileList = page.list
+        var currentPage = page.currentPage
+        var totalPage = page.pageCount
+
+        var loadMoreData = node.data
+        var parentNode = node.parent
+        // 删除加载更多节点
+        that.$refs.tree.remove(node)
+
+        that.appendDirectoryToTree(parentNode, fileList)
+        if (currentPage < totalPage) {
+          loadMoreData.currentPage = loadMoreData.currentPage + 1
+          that.appendLoadMoreNodeToTree(parentNode, loadMoreData)
+        }
+      })
+    },
+
+    // 加载小组到树
+    appendGroupToTree(parentNode, selectCompanyId) {
+      var that = this
+      getUserEgroupInfo({ selectCompanyId: selectCompanyId }).then(response => {
+        const groupList = response.data.egroupInfo
+
+        for (let i = 0; i < groupList.length; i++) {
+          var groupName = groupList[i].groupName
+          var groupInc = groupList[i].inc + ''
+
+          var groupNodeData = { label: groupName, id: groupInc, ownerId: groupInc, path: groupName }
+          that.$refs.tree.append(groupNodeData, parentNode)
+        }
+      })
+    },
+    // 添加文件夹到树，parentNode是要添加子节点的父节点
+    appendDirectoryToTree(parentNode, dirList) {
+      if (!(dirList && dirList.length > 0)) {
+        return
+      }
+      var parentNodeData = parentNode.data
+      var parentPath = parentNodeData.path
+
+      for (let i = 0; i < dirList.length; i++) {
+        var dir = dirList[i]
+        var fileName = dir.fileName
+        var filePath = parentPath + '/' + fileName
+        var ownerId = dir.ownerId
+        var id = dir.fileId
+
+        var subNodeData = { label: fileName, id: id, type: 'dir', ownerId: ownerId, path: filePath }
+        this.$refs.tree.append(subNodeData, parentNode)
+      }
+    },
+
+    // 添加加载更多节点到树
+    appendLoadMoreNodeToTree(parentNode, nodeData) {
+      this.$refs.tree.append(nodeData, parentNode)
     }
+    // ============================================移动=end=========================================
+
   }
 }
 </script>
 
 <style lang="scss" scoped>
   @import "~@/styles/theme.scss";
-
+    .topSearchClass > .el-row::before {
+      left: 356px !important;
+    }
+    .classifyClass > .el-row::before {
+      left: 256px !important;
+    }
   .edit-input {
   padding-right: 100px;
 }
@@ -1249,5 +1453,14 @@ export default {
       float: right;
       margin-right: 30px;
     }
-}
+
+    .menu_tree_box {
+      width: 60%;
+      margin: 0 auto;
+    }
+    .menu_tree_box /deep/ .el-scrollbar {
+      height: calc(60vh - 170px);
+    }
+
+  }
 </style>

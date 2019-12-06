@@ -106,3 +106,11 @@ export function getCompanyAllTreeFloorByName(data) {
     data
   })
 }
+// 移动文件到指定的文件夹
+export function moveDirFile(data) {
+  return request({
+    url: '/knowledgeDirFile/moveDirFile',
+    method: 'post',
+    data
+  })
+}
