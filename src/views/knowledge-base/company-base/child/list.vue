@@ -80,9 +80,9 @@
       </transition>
     </div>
     <div id="topBtn">
-      <el-button type="primary" @click="createFolder"><i class="iconfont iconzengjia" />创建文件夹</el-button>
-      <el-button type="primary" @click="classifySelected"><i class="iconfont iconzengjia" />加入知识分类</el-button>
-      <el-button type="primary" @click="showUpload"><i class="iconfont iconshangchuan" />上传资料</el-button>
+      <el-button v-if="hasThisBtnPermission('knowledge-company-createdir')" type="primary" @click="createFolder"><i class="iconfont iconzengjia" />创建文件夹</el-button>
+      <el-button v-if="hasThisBtnPermission('knowledge-company-classify')" type="primary" @click="classifySelected"><i class="iconfont iconzengjia" />加入知识分类</el-button>
+      <el-button v-if="hasThisBtnPermission('knowledge-company-upload')" type="primary" @click="showUpload"><i class="iconfont iconshangchuan" />上传资料</el-button>
     </div>
 
     <div class="pathNav">
@@ -188,6 +188,7 @@
           </el-button>
           <el-button
             v-else
+            :disabled="!hasThisBtnPermission('knowledge-company-rename')"
             size="mini"
             icon="iconfont iconxiugai"
             @click="scope.row.edit=!scope.row.edit"
@@ -195,15 +196,15 @@
             重命名
           </el-button>
 
-          <el-button size="mini" @click="download(scope.row)"><i class="iconfont iconxiazai" />下载</el-button>
+          <el-button size="mini" :disabled="!hasThisBtnPermission('knowledge-company-download')" @click="download(scope.row)"><i class="iconfont iconxiazai" />下载</el-button>
           <el-dropdown trigger="click">
             <el-button size="mini">
               <i class="iconfont icongengduo" />更多
             </el-button>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item @click.native="moveFile(scope.row)"><i class="iconfont iconyidong" />移动</el-dropdown-item>
-              <el-dropdown-item @click.native="deleteDirFile(scope.row)"><i class="iconfont iconshanchu" />删除</el-dropdown-item>
-              <el-dropdown-item @click.native="shareFileToWorkDesk(scope.row)"><i class="iconfont iconshoucang" />收藏</el-dropdown-item>
+              <el-dropdown-item :disabled="!hasThisBtnPermission('knowledge-company-move')" @click.native="moveFile(scope.row)"><i class="iconfont iconyidong" />移动</el-dropdown-item>
+              <el-dropdown-item :disabled="!hasThisBtnPermission('knowledge-company-delete')" @click.native="deleteDirFile(scope.row)"><i class="iconfont iconshanchu" />删除</el-dropdown-item>
+              <el-dropdown-item :disabled="!hasThisBtnPermission('knowledge-company-collect')" @click.native="shareFileToWorkDesk(scope.row)"><i class="iconfont iconshoucang" />收藏</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </template>
@@ -212,10 +213,10 @@
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="getDirList" />
     <div id="bottomOperation">
-      <el-button v-show="total>0" type="danger" plain @click="deleteDirFileSelected"><i class="iconfont iconshanchu" />批量删除</el-button>
-      <el-button v-show="total>0" type="primary" plain @click="moveFileSelected"><i class="iconfont iconyidong" />批量移动</el-button>
-      <el-button v-show="total>0" type="primary" plain @click="downloadFileSelected"><i class="iconfont iconxiazai" />批量下载</el-button>
-      <el-button v-show="total>0" type="primary" plain @click="shareFileToWorkDeskSlected"><i class="iconfont iconshoucang" />批量收藏</el-button>
+      <el-button v-if="hasThisBtnPermission('knowledge-company-delete')" v-show="total>0" type="danger" plain @click="deleteDirFileSelected"><i class="iconfont iconshanchu" />批量删除</el-button>
+      <el-button v-if="hasThisBtnPermission('knowledge-company-move')" v-show="total>0" type="primary" plain @click="moveFileSelected"><i class="iconfont iconyidong" />批量移动</el-button>
+      <el-button v-if="hasThisBtnPermission('knowledge-company-download')" v-show="total>0" type="primary" plain @click="downloadFileSelected"><i class="iconfont iconxiazai" />批量下载</el-button>
+      <el-button v-if="hasThisBtnPermission('knowledge-company-collect')" v-show="total>0" type="primary" plain @click="shareFileToWorkDeskSlected"><i class="iconfont iconshoucang" />批量收藏</el-button>
     </div>
     <el-dialog v-el-drag-dialog class="setInformationDialog" width="650px" height="650px" title="加入知识分类" :visible.sync="treeDialogVisible">
       <el-tree
@@ -303,6 +304,7 @@ import Pagination from '@/components/Pagination' // secondary package based on e
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import FilePreview from '@/components/FilePreview'
 import file_knowledge from '@/assets/images/file_knowledge.png'
+import { isCurrentEgroupManager, hasThisBtnPermission } from '@/utils/permission'
 const $ = window.$
 export default {
   directives: { elDragDialog },
@@ -487,6 +489,10 @@ export default {
     this.getAlluserList()// 创建人
   },
   methods: {
+    // 按钮权限
+    hasThisBtnPermission(code, egroup, rowUserId) {
+      return hasThisBtnPermission(code, isCurrentEgroupManager(egroup), rowUserId)
+    },
     // 图片预览
     preview(row) {
       console.log(row)
