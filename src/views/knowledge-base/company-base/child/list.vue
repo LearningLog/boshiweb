@@ -82,7 +82,7 @@
     <div id="topBtn">
       <el-button type="primary" @click="createFolder"><i class="iconfont iconzengjia" />创建文件夹</el-button>
       <el-button type="primary" @click="classifySelected"><i class="iconfont iconzengjia" />加入知识分类</el-button>
-      <el-button type="primary" @click="showUpload"><i class="iconfont iconzengjia" />上传资料</el-button>
+      <el-button type="primary" @click="showUpload"><i class="iconfont iconshangchuan" />上传资料</el-button>
     </div>
 
     <div class="pathNav">
@@ -1141,7 +1141,7 @@ export default {
       }
       this.fileidListToMove = []
       console.log(this.selectedRow)
-      this.selectedRow.forEach( (v,k,arr)=>{
+      this.selectedRow.forEach((v,k,arr)=>{
         this.fileidListToMove.push(v.fileId)
       })
       this.menu_tree_flag = true

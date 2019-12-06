@@ -139,7 +139,7 @@
         <i class="iconfont iconzengjia" />加入知识分类
       </el-button>
       <el-button type="primary" @click="showUpload">
-        <i class="iconfont iconzengjia" />上传资料
+        <i class="iconfont iconshangchuan" />上传资料
       </el-button>
     </div>
     <div class="pathNav">
@@ -431,7 +431,8 @@ import {
   createDirFile,
   shareFileToWorkDesk,
   getDownloadToken,
-  getCompanyAllTreeFloorByName
+  getCompanyAllTreeFloorByName,
+  moveDirFile
 } from '@/api/knowledge-base/group-base'
 import { getFileShowSize, parseTime } from '@/utils/index'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -857,9 +858,9 @@ export default {
         } else if (row.fileType === 7) {
           return '#iconpdf1'
         } else if (row.fileType === 8) {
-          return '#iconwendangguanli'
+          return '#iconyemian'
         } else if (row.fileType === 9) {
-          return '#iconwendangguanli'
+          return '#iconyemian'
         } else if (row.fileType === 10) {
           return '#iconex'
         } else if (row.fileType === 11) {
@@ -1157,6 +1158,10 @@ export default {
         .catch(() => {})
     },
     deleteDirFileSelected(row) {
+      if (!this.selectedRow.length) {
+        this.$message.warning('请选择文件！')
+        return false
+      }
       this.$confirm('确定要批量删除该文件吗？', '删除', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -1411,9 +1416,8 @@ export default {
       if (node.level === 0) {
         // 加载根节点
         var companyId = this.listQuery.selectCompanyId
-        const companyTree = { label: '企业知识库', id: companyId, type: 'company', ownerId: companyId, parentId: companyId, path: '企业知识库' }
-        const groupTree = { label: '小组知识库', id: 'allEgroup', type: 'egroup', companyId: companyId, disabled: true }
-        return resolve([companyTree])
+        const groupTree = { label: '小组知识库', id: companyId, type: 'company', ownerId: companyId, parentId: companyId, path: '小组知识库', data_type: 2 }
+        return resolve([groupTree])
       }
       var that = this
       var nodeData = node.data
@@ -1425,20 +1429,20 @@ export default {
         return resolve([])
       }
 
-      if (nodeData.type === 'egroup') {
-        // 如果是小组知识库节点
-        setTimeout(function() {
-          that.appendGroupToTree(node, nodeData.companyId)
-        })
-        return resolve([])
-      }
+      // if (nodeData.type === 'egroup') {
+      //   // 如果是小组知识库节点
+      //   setTimeout(function() {
+      //     that.appendGroupToTree(node, nodeData.companyId)
+      //   })
+      //   return resolve([])
+      // }
 
       var currentPage = 1
       var pageSize = this.knowledgeFilePageSize || 10
       var ownerId = nodeData.ownerId
       var parentId = nodeData.id
 
-      var requestData = { 'ownerId': ownerId, 'parentId': parentId, 'pageSize': pageSize, 'currentPage': currentPage, 'fileType': 'dir' }
+      var requestData = { 'ownerId': ownerId, 'parentId': parentId, 'pageSize': pageSize, 'currentPage': currentPage, 'fileType': 'dir', data_type: 2 }
 
       setTimeout(function() {
         listDirFile(requestData).then(response => {
@@ -1477,7 +1481,7 @@ export default {
       var ownerId = nodeData.ownerId
       var parentId = nodeData.parentId
 
-      var requestData = { 'ownerId': ownerId, 'parentId': parentId, 'pageSize': pageSize, 'currentPage': currentPage, 'fileType': 'dir' }
+      var requestData = { 'ownerId': ownerId, 'parentId': parentId, 'pageSize': pageSize, 'currentPage': currentPage, 'fileType': 'dir', data_type: 2 }
       var that = this
       listDirFile(requestData).then(response => {
         var page = response.data.page
@@ -1498,21 +1502,21 @@ export default {
       })
     },
 
-    // 加载小组到树
-    appendGroupToTree(parentNode, selectCompanyId) {
-      var that = this
-      getUserEgroupInfo({ selectCompanyId: selectCompanyId }).then(response => {
-        const groupList = response.data.egroupInfo
+    // // 加载小组到树
+    // appendGroupToTree(parentNode, selectCompanyId) {
+    //   var that = this
+    //   getUserEgroupInfo({ selectCompanyId: selectCompanyId }).then(response => {
+    //     const groupList = response.data.egroupInfo
 
-        for (let i = 0; i < groupList.length; i++) {
-          var groupName = groupList[i].groupName
-          var groupInc = groupList[i].inc + ''
+    //     for (let i = 0; i < groupList.length; i++) {
+    //       var groupName = groupList[i].groupName
+    //       var groupInc = groupList[i].inc + ''
 
-          var groupNodeData = { label: groupName, id: groupInc, ownerId: groupInc, path: groupName }
-          that.$refs.tree.append(groupNodeData, parentNode)
-        }
-      })
-    },
+    //       var groupNodeData = { label: groupName, id: groupInc, ownerId: groupInc, path: groupName }
+    //       that.$refs.tree.append(groupNodeData, parentNode)
+    //     }
+    //   })
+    // },
     // 添加文件夹到树，parentNode是要添加子节点的父节点
     appendDirectoryToTree(parentNode, dirList) {
       if (!(dirList && dirList.length > 0)) {
