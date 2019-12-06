@@ -166,7 +166,7 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/global-config/list',
     name: 'global-config',
-    meta: { title: 'global配置', icon: 'icongongzuotai' },
+    meta: { title: 'global配置', icon: 'iconglobal' },
     children: [
       {
         path: 'list',

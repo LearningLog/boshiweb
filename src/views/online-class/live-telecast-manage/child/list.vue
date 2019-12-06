@@ -132,8 +132,8 @@
       <el-table-column align="center" label="创建时间" width="140" prop="c_time" show-overflow-tooltip />
       <el-table-column class-name="status-col" label="操作" width="230" align="center" fixed="right">
         <template slot-scope="scope">
-          <el-button size="mini" :disabled="!hasThisBtnPermission('online-edit', scope.row.egroup) || (userId !== scope.row.user_id)" @click="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
-          <el-button size="mini" :disabled="!hasThisBtnPermission('online-delete', scope.row.egroup) || (userId !== scope.row.user_id)" @click="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
+          <el-button size="mini" :disabled="!hasThisBtnPermission('online-edit', scope.row.egroup, scope.row.user_id)" @click="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
+          <el-button size="mini" :disabled="!hasThisBtnPermission('online-delete', scope.row.egroup, scope.row.user_id)" @click="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
           <el-dropdown trigger="click">
             <el-button size="mini">
               <i class="iconfont icongengduo" />更多
@@ -230,8 +230,8 @@ export default {
   },
   methods: {
     // 按钮权限
-    hasThisBtnPermission(code, egroup) {
-      return hasThisBtnPermission(code, isCurrentEgroupManager(egroup))
+    hasThisBtnPermission(code, egroup, rowUserId) {
+      return hasThisBtnPermission(code, isCurrentEgroupManager(egroup), rowUserId)
     },
     // 获取初始化数据
     get_list() {

@@ -195,6 +195,10 @@
   cursor: not-allowed;
   pointer-events: auto;
 }
+// 修改 el-dropdown 中 图标 样式
+.el-dropdown-menu__item .iconfont {
+  font-size: 12px;
+}
 
 // 修改 el-checkbox disabled color
 .el-checkbox__input.is-disabled + span.el-checkbox__label {
