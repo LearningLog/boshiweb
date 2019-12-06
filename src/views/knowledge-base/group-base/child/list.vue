@@ -1,6 +1,6 @@
 <template>
   <div class="list-box">
-    <div id="topSearch">
+    <div id="topSearch" :class="{topSearchClass:advancedVisible,classifyClass:!advancedVisible}">
       <el-input
         v-model="listQuery.keyword"
         placeholder="请输入文件名称"
@@ -1011,6 +1011,7 @@ export default {
       })
       this.navselctedCompanyName = selctedCompany[0].groupName
       this.pathQueryString = ''
+      this.listQuery.currentPage=1
       this.pathNavData = []
       this.$router.push({
         path: '/knowledge-base/group-base/list',
@@ -1547,6 +1548,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.topSearchClass > .el-row::before {
+  left: 356px !important;
+}
+.classifyClass > .el-row::before {
+  left: 256px !important;
+}
 .edit-input {
   padding-right: 100px;
 }

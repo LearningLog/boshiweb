@@ -1,6 +1,6 @@
 <template>
   <div class="list-box">
-    <div id="topSearch">
+    <div id="topSearch"  :class="{topSearchClass:advancedVisible,classifyClass:!advancedVisible}">
 
       <el-input v-model="listQuery.keyword" placeholder="请输入文件名称" clearable @keyup.enter.native="topSearch">
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
@@ -33,7 +33,7 @@
 
       <transition name="fade-advanced-search">
         <el-row v-show="advancedVisible">
-          <el-card id="advancedSearchArea" shadow="never">
+          <el-card id="advancedSearchArea" class="search-more" shadow="never">
             <el-form ref="form" :model="listQuery" label-width="100px">
               <el-form-item v-if="isSystemManage" label="所属租户">
                 <el-select
@@ -473,6 +473,7 @@ export default {
     console.log(this.$store.state.user)
     if (!this.$store.state.user.isSystemManage) {
       // 不是系统管理员进来之后
+      this.navselctedCompanyName="企业知识库"
       this.listQuery.parentId = this.$store.state.user.userPermission.groupId
       this.listQuery.selectCompanyId = this.$store.state.user.userPermission.groupId
     }
@@ -773,6 +774,7 @@ export default {
       })
       this.navselctedCompanyName = selctedCompany[0].customname
       this.pathQueryString = ''
+      this.listQuery.currentPage=1
       this.pathNavData = []
       this.$router.push({ path: '/knowledge-base/company-base/list', query: { path: this.pathQueryString, selectCompanyId: this.listQuery.selectCompanyId }})
       this.enterFloderByQueryPath()
@@ -1309,7 +1311,12 @@ export default {
 
 <style lang="scss" scoped>
   @import "~@/styles/theme.scss";
-
+    .topSearchClass > .el-row::before {
+      left: 356px !important;
+    }
+    .classifyClass > .el-row::before {
+      left: 256px !important;
+    }
   .edit-input {
   padding-right: 100px;
 }
@@ -1454,5 +1461,6 @@ export default {
     .menu_tree_box /deep/ .el-scrollbar {
       height: calc(60vh - 170px);
     }
-}
+
+  }
 </style>
