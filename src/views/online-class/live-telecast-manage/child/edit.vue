@@ -537,7 +537,6 @@ export default {
   created() {
     this.form._id = this.$route.query._id
     this.getChapterDetail()
-    this.get_list()
   },
   methods: {
     // 获取直播详情

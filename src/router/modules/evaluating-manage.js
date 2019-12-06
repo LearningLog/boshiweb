@@ -19,7 +19,7 @@ const evaluatingManage = {
   children: [
     {
       path: 'question-bank-manage',
-      name: 'question-bank-manage',
+      name: 'question-bank-manage-list',
       component: () => import('@/views/evaluating-manage/question-bank-manage/index'),
       redirect: '/evaluating-manage/question-bank-manage/list',
       meta: { title: '题库管理', icon: '', activeMenu: '/evaluating-manage/question-bank-manage' },
@@ -29,7 +29,7 @@ const evaluatingManage = {
           name: 'question-bank-list',
           hidden: true,
           component: () => import('@/views/evaluating-manage/question-bank-manage/child/list.vue'),
-          meta: { title: '题库列表', icon: '', activeMenu: '/evaluating-manage/question-bank-manage' }
+          meta: { title: '题库列表', icon: '', activeMenu: '/evaluating-manage/question-bank-manage', keepAlive: true }
         },
         {
           path: 'add',
@@ -73,7 +73,7 @@ const evaluatingManage = {
           name: 'test-paper-list',
           hidden: true,
           component: () => import('@/views/evaluating-manage/test-paper-manage/child/list.vue'),
-          meta: { title: '试卷列表', icon: '', activeMenu: '/evaluating-manage/test-paper-manage' }
+          meta: { title: '试卷列表', icon: '', activeMenu: '/evaluating-manage/test-paper-manage', keepAlive: true }
         },
         {
           path: 'intelligent-add',
@@ -117,7 +117,7 @@ const evaluatingManage = {
           name: 'examination-list',
           hidden: true,
           component: () => import('@/views/evaluating-manage/examination-manage/child/list.vue'),
-          meta: { title: '考试列表', icon: '', activeMenu: '/evaluating-manage/examination-manage' }
+          meta: { title: '考试列表', icon: '', activeMenu: '/evaluating-manage/examination-manage', keepAlive: true }
         },
         {
           path: 'detail',
@@ -161,7 +161,7 @@ const evaluatingManage = {
           name: 'automatic-release-list',
           hidden: true,
           component: () => import('@/views/evaluating-manage/automatic-release-manage/child/list.vue'),
-          meta: { title: '自动发布列表', icon: '', activeMenu: '/evaluating-manage/automatic-release-manage' }
+          meta: { title: '自动发布列表', icon: '', activeMenu: '/evaluating-manage/automatic-release-manage', keepAlive: true }
         },
         {
           path: 'add',
@@ -205,7 +205,7 @@ const evaluatingManage = {
           name: 'skillList',
           hidden: true,
           component: () => import('@/views/evaluating-manage/skill-manage/child/list'),
-          meta: { title: '技能管理列表', icon: '', activeMenu: '/evaluating-manage/skill-manage' }
+          meta: { title: '技能管理列表', icon: '', activeMenu: '/evaluating-manage/skill-manage', keepAlive: true }
         }
       ]
     },

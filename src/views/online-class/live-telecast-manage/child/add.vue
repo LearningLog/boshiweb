@@ -167,12 +167,12 @@
       >
         <!--   请选择小组     -->
         <el-form-item class="required" label="发布方式" prop="sendSms">
-          <el-radio-group v-model="form.publish_type">
+          <el-radio-group v-model="form.publish_type" @change="changePublishType">
             <el-radio :label="1">发布到小组</el-radio>
             <el-radio :label="2">发布到个人</el-radio>
           </el-radio-group>
         </el-form-item>
-        <div v-if="form.publish_type === 1">
+        <div v-show="form.publish_type === 1">
           <!--  全部小组-->
           <el-checkbox
             v-model="checkAll"
@@ -180,7 +180,7 @@
             @change="handleCheckAllChange">全部小组</el-checkbox>
           <el-scrollbar wrap-class="scrollbar-wrapper">
             <el-checkbox-group
-              v-model="checkedGroupIds"
+              v-model="checkedGroupIds2"
               @change="handleCheckedGroupChange"
             >
               <el-checkbox
@@ -193,9 +193,9 @@
           </el-scrollbar>
         </div>
         <!--    个人小组-->
-        <div v-else>
-          <el-form-item v-show="informationTypeList.length" class="informationMember">
-            <div class="examiners">
+        <div v-show="form.publish_type === 2">
+          <el-form-item class="informationMember">
+            <div class="examiners pushNumber">
               <div>
                 <span class="group">选择小组</span><span class="member">选择人员</span>
               </div>
@@ -438,6 +438,8 @@ export default {
       groupIncs: {}, // 所有小组 inc obj
       checkedGroups: [], // 选择的小组
       checkedGroupIds: [], // 第二步已选中的小组
+      checkedGroupIds2: [], // 第二步已选中的（小组）
+      checkedGroupIds3: [], // 第二步已选中的（个人）
       isIndeterminate: false, // 状态，是否已半选择
       checkAll: true, // 是否已全选
       informationTypeList: [1], // 通知类型
@@ -541,7 +543,6 @@ export default {
     this.form.selectCompanyId = this.$route.query.selectCompanyId
     this.form.egroup = this.$route.query.egroup * 1
     this.getEgroups()
-    this.get_list()
   },
   methods: {
     // 下一步
@@ -558,11 +559,17 @@ export default {
                   return false
                 }
                 this.active++
+                this.get_list()
               }
             })
           }
         })
       } else if (this.active === 2) {
+        if (this.form.publish_type === 1) {
+          this.checkedGroupIds = this.checkedGroupIds2
+        } else if (this.form.publish_type === 2) {
+          this.checkedGroupIds = this.checkedGroupIds3
+        }
         if (!this.checkedGroupIds.length) {
           this.$message.warning('请选择小组！')
         } else {
@@ -709,19 +716,26 @@ export default {
     // 处理第三步小组和成员的变化
     handleChange(val) {
       var obj = {}
+      this.checkedGroupIds.length = 0
       val.forEach(item => {
         if (!obj[item[0]]) {
           obj[item[0]] = [item[1]]
         } else {
           obj[item[0]].push(item[1])
         }
+        this.checkedGroupIds.push(item[0])
       })
       this.form.target_user = obj
+      var checkList = []
+      this.checkedGroupIds.forEach(item => {
+        checkList.push(item)
+      })
+      this.checkedGroupIds3 = [...new Set(checkList)]
     },
     handleChangeMembers(val) {},
     // 全选
     handleCheckAllChange(val) {
-      this.checkedGroupIds = val ? this.group_inc_list : []
+      this.checkedGroupIds2 = val ? this.group_inc_list : []
       this.isIndeterminate = false
     },
     // 单选
@@ -730,13 +744,6 @@ export default {
       this.checkAll = checkedCount === this.group_list.length
       this.isIndeterminate =
         checkedCount > 0 && checkedCount < this.group_list.length
-    },
-    // 获取第二步选择小组
-    getCheckedGroups() {
-      this.checkedGroups.length = 0
-      this.checkedGroupIds.forEach(item => {
-        this.checkedGroups.push(this.groupIncs[item])
-      })
     },
     // 获取所有小组
     getEgroups() {
@@ -753,7 +760,7 @@ export default {
             this.group_groupName_list.push(item.groupName)
             this.groupIncs[item.inc] = item
           })
-          this.checkedGroupIds = this.group_inc_list
+          this.checkedGroupIds2 = this.group_inc_list
         }
       )
     },
@@ -773,13 +780,25 @@ export default {
             }
           })
           this.list3 = this.list
+          this.$nextTick(() => {
+            $('.pushNumber /deep/ .el-cascader-menu:first-child li:first-child').click()
+          })
         }
       )
+    },
+    // 获取第二步选择小组
+    getCheckedGroups() {
+      this.checkedGroups.length = 0
+      this.checkedGroupIds.forEach(item => {
+        this.checkedGroups.push(this.groupIncs[item])
+      })
     },
     // 根据小组获取小组成员（用户）
     getEgroupAndUserinfo() {
       this.list.length = 0
       this.list2.length = 0
+      this.list3.length = 0
+      console.log('获取通知小组', this.checkedGroupIds)
       getEgroupAndUserinfo({
         egroup: this.checkedGroupIds,
         selectCompanyId: this.form.selectCompanyId
@@ -797,6 +816,21 @@ export default {
         })
         this.list2 = this.list
       })
+    },
+    changePublishType() {
+      // console.log('dddthis.checkedGroupIds', this.checkedGroupIds)
+      // console.log('dddthis.checkedGroupIds3', this.checkedGroupIds3)
+      // console.log('dddthis.checkedGroupIds2', this.checkedGroupIds2)
+      // if (this.form.publish_type === 1) {
+      //   this.checkedGroupIds3 = this.$route.query.selectCompanyId
+      //   this.get_list()
+      // } else if (this.form.publish_type === 2) {
+      //   this.checkedGroupIds2 = this.$route.query.selectCompanyId
+      //   this.getEgroups()
+      // }
+      // console.log('???this.checkedGroupIds', this.checkedGroupIds)
+      // console.log('??this.checkedGroupIds3', this.checkedGroupIds3)
+      // console.log('???this.checkedGroupIds2', this.checkedGroupIds2)
     },
     // 根据第二步选择的小组删除第三步之前选择的小组数据
     // 然后获取小组和成员

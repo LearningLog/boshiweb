@@ -19,6 +19,10 @@
     & #advancedSearchArea {
         margin-top: 16px;
     }
+    .advancedSearchIcon {
+        font-size: 12px;
+        margin-left: 2px;
+    }
     & .el-row{
         clear: both;
         margin-top: 10px;
@@ -163,4 +167,8 @@ ul,li { padding:0;margin:0;list-style:none}
 // 修改直播端分享弹出层样式
 .el-popover.sharePopover {
     min-width: 114px!important;
+}
+
+#topBtn .iconfont.iconshangchuan {
+    font-size: 14px;
 }

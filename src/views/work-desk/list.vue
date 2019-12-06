@@ -4,7 +4,7 @@
       <el-input v-model="listQuery1.fileName" placeholder="请输入文件名" clearable @keyup.enter.native="topSearch">
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
       </el-input>
-      <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">高级搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
+      <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">高级搜索<i v-show="popoverVisible" class="advancedSearchIcon iconfont iconshousuoshangjiantou" /><i v-show="!popoverVisible" class="advancedSearchIcon iconfont iconshousuoxiajiantou" /></span>
       <transition name="fade-advanced-search">
         <el-row v-show="popoverVisible">
           <el-card id="advancedSearchArea" shadow="never">
@@ -121,16 +121,9 @@
           <el-tag v-else type="warning">{{ getFileStatusDesc(getFileListData(scope.row.mainFileId).file_status) }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="已推送至" min-width="140">
+      <el-table-column align="center" label="已推送至" min-width="140" show-overflow-tooltip>
         <template slot-scope="scope">
-          <div v-if="!(getFileListData(scope.row.mainFileId) === null || getFileListData(scope.row.mainFileId).length === 0)">
-            <div class="pushState">
-              <span>{{ getFilePushRecord(getFileListData(scope.row.mainFileId)) }}</span>
-            </div>
-          </div>
-          <div v-else>
-            <span class="stopPushState">暂无推送</span>
-          </div>
+          <span :class="{ stopPushState: !getFilePushRecord(getFileListData(scope.row.mainFileId)) }">{{ getFilePushRecord(getFileListData(scope.row.mainFileId)) || '暂未推送' }}</span>
         </template>
       </el-table-column>
       <el-table-column class-name="status-col" label="操作" width="220" align="center" fixed="right">
@@ -235,14 +228,15 @@ export default {
       },
       file_status: {
         0: '已提交',
-        1: '编码中',
-        3: '编码失败',
-        4: '编码成功'
+        1: '处理中',
+        3: '处理失败',
+        4: '处理成功'
       },
       file_encoding: [], // 编码中的文件
       manageType: 0, // 权限标识
       checkedDelList: [], // 选择删除的list
       list: [], // 表格数据
+      list2: [], // 用于比较的数据
       fileList: [], // 文件列表数据
       custom_list: [], // 租户列表
       user_list: [], // 用户列表
@@ -253,6 +247,7 @@ export default {
       menu_tree_flag: false, // 是否显示树
       treeData: [], // 推送的知识库菜单
       fileIdList: [], // 文件id数组
+      fileNameList: [], // 选中的文件名数组
       defaultProps: {
         label: 'label',
         children: 'children',
@@ -308,8 +303,8 @@ export default {
   },
   methods: {
     // 按钮权限
-    hasThisBtnPermission(code, egroup) {
-      return hasThisBtnPermission(code, isCurrentEgroupManager(egroup))
+    hasThisBtnPermission(code, egroup, rowUserId) {
+      return hasThisBtnPermission(code, isCurrentEgroupManager(egroup), rowUserId)
     },
     // 启动上传
     showUpload() {
@@ -358,6 +353,35 @@ export default {
         this.$message.success('无法获取权限信息！')
       }
     },
+    // 获取列表数据
+    get_list2() {
+      if (this.fileStatus !== '') {
+        this.listQuery.fileStatusList.push(this.fileStatus)
+        this.listQuery1.fileStatusList.push(this.fileStatus)
+      }
+      if (this.sourceSystem !== '') {
+        this.listQuery.sourceSystemList.push(this.sourceSystem)
+        this.listQuery1.sourceSystemList.push(this.sourceSystem)
+      }
+      getFileListManage(this.listQuery).then(response => {
+        this.list2 = response.data.page.list
+        const fileList2 = response.data.filePackageIdWorkDeskFile
+        // 判断是否有处理中的数据
+        var has_ecoding = false
+        for (let i = 0; i < this.list2.length; i++) {
+          const file_status = fileList2[this.list2[i].mainFileId].file_status
+          if (file_status === 1) {
+            has_ecoding = true
+          }
+        }
+        if (!has_ecoding) {
+          clearInterval(this.timer)
+          this.list = response.data.page.list
+          this.fileList = response.data.filePackageIdWorkDeskFile
+          this.total = response.data.page.totalCount
+        }
+      })
+    },
     // 获取编码中的文件
     have_encoding() {
       this.file_encoding.length = 0
@@ -384,7 +408,7 @@ export default {
     // 判断是否有编码中的数据需要刷新
     isNeedRefrssh() {
       this.timer = setInterval(() => {
-        this.get_list()
+        this.get_list2()
       }, 5000)
     },
     // 重置
@@ -424,7 +448,7 @@ export default {
     },
     // 获取推送记录
     getFilePushRecord(workDeskFile) {
-      var defaultDesc = '暂无推送'
+      var defaultDesc = ''
       if (!(workDeskFile)) {
         return defaultDesc
       }
@@ -546,7 +570,9 @@ export default {
     },
     // 推送至知识库
     pushToKnowledge(row) {
+      this.fileIdList = []
       this.fileId = row.mainFileId
+      this.fileName = row.fileName
       const groupId = this.getFileListData(row.mainFileId).groupId
       this.initializeTreeData(groupId)
       this.menu_tree_flag = true
@@ -557,8 +583,12 @@ export default {
         this.$message.warning('请选择文件！')
         return false
       }
+      this.fileId = ''
+      this.fileIdList = []
+      this.fileNameList = []
       this.checkedDelList.forEach(item => {
         this.fileIdList.push(this.getFileListData(item.mainFileId)._id)
+        this.fileNameList.push(item.fileName)
       })
       this.initializeTreeData(this.selectCompanyId)
       this.menu_tree_flag = true
@@ -719,7 +749,6 @@ export default {
     },
     // 开始推送
     save_menu() {
-
       var selectNodes = this.$refs.tree.getCheckedNodes()
       if (selectNodes.length === 0) {
         this.$message.warning('请选择推送路径！')
@@ -727,29 +756,46 @@ export default {
       }
 
       var knowledgeLibFileList = []
-      var path = ''
+      var pathArray = []
       for (let i = 0; i < selectNodes.length; i++) {
         var selectNode = selectNodes[i]
 
         var ownerId = selectNode.ownerId
         var parentId = selectNode.id
-        path = selectNode.path
+        pathArray.push(selectNode.path)
         knowledgeLibFileList.push({ ownerId: ownerId, parentId: parentId })
       }
 
       var fileId = null
       var fileIdList = this.fileIdList
-
-      if(!(fileIdList && fileIdList.length > 0) && this.fileId){
+      var fileName = ''
+      if (!(fileIdList && fileIdList.length > 0) && this.fileId) {
         fileId = this.getFileListData(this.fileId)._id
+        fileName = '【' + this.fileName + '】'
+      } else {
+        fileName = '【' + this.fileNameList[0] + '】 等' + this.fileIdList.length + '个文件'
       }
-
-      pushToMultiKnowledge({ fileId: fileId, knowledgeLibFileList: knowledgeLibFileList, fileIdList: fileIdList }).then(() => {
-        this.$message.success('推送成功！')
-        this.menu_tree_flag = false
-        this.get_list()
+      var path = ''
+      if (pathArray.length > 0) {
+        path = '【' + pathArray[0] + '】等' + pathArray.length + '个路径'
+      } else {
+        path = '【' + pathArray[0] + '】'
+      }
+      this.$confirm('确定要推送文件' + fileName + '到' + path + '吗？', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        pushToMultiKnowledge({
+          fileId: fileId,
+          knowledgeLibFileList: knowledgeLibFileList,
+          fileIdList: fileIdList
+        }).then(() => {
+          this.$message.success('推送成功！')
+          this.menu_tree_flag = false
+          this.get_list()
+        })
       })
-
     },
     // 查看详情
     detail(row) {
@@ -800,13 +846,6 @@ export default {
   }
   .menu_tree_box /deep/ .el-scrollbar {
     height: calc(60vh - 170px);
-  }
-  .pushState {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
   }
   .stopPushState {
     color: $yellow2;

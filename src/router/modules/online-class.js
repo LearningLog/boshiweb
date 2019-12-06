@@ -38,7 +38,7 @@ const onlineClass = {
           meta: {
             title: '课堂列表',
             icon: '',
-            activeMenu: '/online-class/live-telecast-manage'
+            activeMenu: '/online-class/live-telecast-manage', keepAlive: true
           }
         },
         {
@@ -100,7 +100,7 @@ const onlineClass = {
           meta: {
             title: '课堂列表',
             icon: '',
-            activeMenu: '/online-class/on-demand'
+            activeMenu: '/online-class/on-demand', keepAlive: true
           }
         },
         {
@@ -162,7 +162,7 @@ const onlineClass = {
           meta: {
             title: '专题列表',
             icon: '',
-            activeMenu: '/online-class/thematic-class'
+            activeMenu: '/online-class/thematic-class', keepAlive: true
           }
         },
         {
@@ -294,7 +294,7 @@ const onlineClass = {
           meta: {
             title: '标签列表',
             icon: '',
-            activeMenu: '/online-class/label-manage'
+            activeMenu: '/online-class/label-manage', keepAlive: true
           }
         },
         {

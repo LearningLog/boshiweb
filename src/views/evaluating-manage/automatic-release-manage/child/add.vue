@@ -482,7 +482,7 @@
               v-no-more-click
               type="primary"
               @click="publish('exam2')"
-            ><保存并发布</el-button>
+            >保存并发布</el-button>
           </div>
         </div>
       </div>

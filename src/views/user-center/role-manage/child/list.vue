@@ -4,7 +4,7 @@
       <el-input v-model="listQuery1.content" placeholder="请输入角色名称" clearable @keyup.enter.native="topSearch">
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
       </el-input>
-      <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">高级搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
+      <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">高级搜索<i v-show="popoverVisible" class="advancedSearchIcon iconfont iconshousuoshangjiantou" /><i v-show="!popoverVisible" class="advancedSearchIcon iconfont iconshousuoxiajiantou" /></span>
       <transition name="fade-advanced-search">
         <el-row v-show="popoverVisible">
           <el-card id="advancedSearchArea" shadow="never">
@@ -78,19 +78,19 @@
           <el-tag v-else type="danger">否</el-tag>
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="操作" width="300" align="center" fixed="right" show-overflow-tooltip>
+      <el-table-column class-name="status-col" label="操作" width="310" align="center" fixed="right" show-overflow-tooltip>
         <template slot-scope="scope">
           <div v-if="scope.row.auth">
             <el-button size="mini" :disabled="!hasThisBtnPermission('role-edit')" @click="go_edit_fn(scope.row)"><i class="iconfont iconxiugai" />修改</el-button>
             <el-button size="mini" :disabled="!hasThisBtnPermission('role-delete')" @click="delete_fn(scope.row)"><i class="iconfont iconshanchu" />删除</el-button>
             <el-button size="mini" :disabled="!hasThisBtnPermission('role-auth')" @click="authorize_fn(scope.row)"><i class="iconfont iconpingceguanli" />授权</el-button>
-            <el-button v-if="isAdmin" size="mini" @click="go_default_fn(scope.row)"><i class="iconfont icon-pass" />设置默认</el-button>
+            <el-button v-if="isAdmin" size="mini" @click="go_default_fn(scope.row)"><i class="iconfont iconshezhimoren" />设置默认</el-button>
           </div>
           <div v-else>
             <el-button size="mini" :disabled="true"><i class="iconfont iconxiugai" />修改</el-button>
             <el-button size="mini" :disabled="true"><i class="iconfont iconshanchu" />删除</el-button>
             <el-button size="mini" :disabled="true"><i class="iconfont iconpingceguanli" />授权</el-button>
-            <el-button v-if="isAdmin" size="mini" :disabled="true"><i class="iconfont icon-pass" />设置默认</el-button>
+            <el-button v-if="isAdmin" size="mini" :disabled="true"><i class="iconfont iconshezhimoren" />设置默认</el-button>
           </div>
         </template>
       </el-table-column>
@@ -149,8 +149,8 @@ export default {
   },
   methods: {
     // 按钮权限
-    hasThisBtnPermission(code, egroup) {
-      return hasThisBtnPermission(code, isCurrentEgroupManager(egroup))
+    hasThisBtnPermission(code, egroup, rowUserId) {
+      return hasThisBtnPermission(code, isCurrentEgroupManager(egroup), rowUserId)
     },
     // 搜索
     topSearch() {

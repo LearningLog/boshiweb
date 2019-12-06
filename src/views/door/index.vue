@@ -13,7 +13,7 @@
         <el-radio-button :label="4">小测试</el-radio-button>
       </el-radio-group>
       <div v-show="treeList1.floorList.length" id="topSearch">
-        <span id="advancedSearchBtn" slot="reference" class="classifyTree" @click="classifyTreeVisible = !classifyTreeVisible">知识分类<i v-show="classifyTreeVisible" class="el-icon-caret-top" /><i v-show="!classifyTreeVisible" class="el-icon-caret-bottom" /></span>
+        <span id="advancedSearchBtn" slot="reference" class="classifyTree" @click="classifyTreeVisible = !classifyTreeVisible">知识分类<i v-show="classifyTreeVisible" class="advancedSearchIcon iconfont iconshousuoshangjiantou" /><i v-show="!classifyTreeVisible" class="advancedSearchIcon iconfont iconshousuoxiajiantou" /></span>
         <transition name="fade-advanced-search">
           <div v-show="classifyTreeVisible" class="treeList">
             <div class="treeList1">
@@ -46,7 +46,7 @@
           {{ item.nodeName }}
         </el-tag>
       </div>
-      <div v-if="(type !== 4 && total) || (type === 4 && total2)">
+      <div v-loading="listLoading" v-if="(type !== 4 && total) || (type === 4 && total2)">
         <el-scrollbar class="fileList" wrap-class="scrollbar-wrapper">
           <el-backtop :bottom="100" :right="50" target=".fileList .el-scrollbar__wrap"></el-backtop>
           <div v-if="type !== 4">
@@ -119,11 +119,9 @@
               </li>
             </ul>
           </div>
-          <p v-if="loading" class="loading">加载中...</p>
-          <p v-if="noMore" class="noMore">没有更多了</p>
         </el-scrollbar>
       </div>
-      <div v-if="(type !== 4 && !total) || (type === 4 && !total2)" class="noData">
+      <div v-loading="listLoading" v-if="(type !== 4 && !total) || (type === 4 && !total2)" class="noData">
         <img class="nodataimg" :src="nodataimg" alt="暂无数据">
         <p class="sorry">很抱歉，没有找到相关结果</p>
         <p class="changeKey">请修改或尝试其他搜索词</p>
@@ -173,7 +171,6 @@ export default {
       fileType: '', // 文件类型
       fileUrl: '', // 文件地址
       fileName: '', // 文件名称（弹窗title）
-      loading: false,
       level: null, // 创建的主题级别 1，一级主题；2，子级主题
       // 知识树列表
       treeList1: {
@@ -200,13 +197,7 @@ export default {
     this.listQuery2._id = this.$store.state.user.userSystemInfo.userInfo._id
   },
   computed: {
-    ...mapGetters(['keyword']),
-    noMore() {
-      return this.list.length && this.list.length >= this.total
-    },
-    disabled() {
-      return this.loading || this.noMore
-    }
+    ...mapGetters(['keyword'])
   },
   watch: {
     keyword: function(val) {
@@ -241,10 +232,8 @@ export default {
     // 获取门户文件列表
     getKnowledgeSearchList() {
       this.listLoading = true
-      this.loading = true
       knowledgeSearch(this.listQuery).then(res => {
         this.listLoading = false
-        this.loading = false
         res.data.page.list = res.data.page.list || []
         res.data.page.list.forEach(item => {
           this.list.push(item)
@@ -256,10 +245,8 @@ export default {
     // 获取试题
     getExams() {
       this.listLoading = true
-      this.loading = true
       getExams(this.listQuery2).then(res => {
         this.listLoading = false
-        this.loading = false
         res.data.page.list = res.data.page.list || []
         res.data.page.list.forEach(item => {
           this.examsList.push(item)

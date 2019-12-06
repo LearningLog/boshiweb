@@ -6,6 +6,11 @@
  */
 import store from '@/store'
 
+const userPermission = store.state.permission.userPermission
+const allPermissionCodeSet = store.state.permission.allPermissionCodeSet
+const userPermissionDetai = store.state.permission.userPermissionDetai
+const userId = store.state.user.userSystemInfo.userInfo._id
+
 /**
  * 获取管理小组，判断是否为当前小组管理者
  * @param egroup     Number、String、Array、Array.ioin()   小组id
@@ -41,11 +46,8 @@ export function isCurrentEgroupManager(egroup) {
  * @param isCurrentEgroupManager   Boolean    是否是小组管理者
  * @returns {boolean}
  */
-export function hasThisBtnPermission(permissionCode, isCurrentEgroupManager) {
-  const userPermission = store.state.permission.userPermission
-  const allPermissionCodeSet = store.state.permission.allPermissionCodeSet
-  const userPermissionDetai = store.state.permission.userPermissionDetai
-  if (userPermission.isAdmin || isCurrentEgroupManager) {
+export function hasThisBtnPermission(permissionCode, isCurrentEgroupManager, rowUserId) {
+  if (userPermission.isAdmin || isCurrentEgroupManager || userId === rowUserId) {
     // 判断数据库是否设置了当前权限code，如果没有设置则表示当前按钮没有设置特定权限
     return true
   } else {

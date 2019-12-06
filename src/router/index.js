@@ -31,7 +31,8 @@ import client from './modules/client'
     title: 'title'               设置该路由在侧边栏和面包屑中展示的名字
     icon: 'iconfont'             设置该路由的图标
     breadcrumb: false            如果设置为false，则不会在breadcrumb面包屑中显示(default is true)
-    activeMenu: '/example/list'  if set path, the sidebar will highlight the path you set
+    activeMenu: '/example/list',  if set path, the sidebar will highlight the path you set
+    keepAlive: false             如果设置为true，则被缓存（最大缓存数量为1，只有在列表页，并且有子页面的情况下设置为true）
   }
  */
 
@@ -110,7 +111,7 @@ export const asyncRoutes = [
         name: 'enterpriseDataList',
         hidden: true,
         component: () => import('@/views/enterpriseData/list.vue'),
-        meta: { title: '企业数据列表', icon: '', activeMenu: '/enterpriseData' }
+        meta: { title: '企业数据列表', icon: '', activeMenu: '/enterpriseData', keepAlive: true }
       }
     ]
   },
@@ -165,7 +166,7 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/global-config/list',
     name: 'global-config',
-    meta: { title: 'global配置', icon: 'icongongzuotai' },
+    meta: { title: 'global配置', icon: 'iconglobal' },
     children: [
       {
         path: 'list',
@@ -196,14 +197,14 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/work-desk/list',
     name: 'work-desk',
-    meta: { title: '工作台', icon: 'iconglobal' },
+    meta: { title: '工作台', icon: 'icongongzuotai' },
     children: [
       {
         path: 'list',
         name: 'work-desk-list',
         hidden: true,
         component: () => import('@/views/work-desk/list.vue'),
-        meta: { title: '工作台列表', icon: '', activeMenu: '/work-desk' }
+        meta: { title: '工作台列表', icon: '', activeMenu: '/work-desk', keepAlive: true }
       },
       {
         path: 'detail',

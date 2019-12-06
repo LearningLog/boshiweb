@@ -4,7 +4,7 @@
       <el-input v-model="listQuery1.content" placeholder="请输入试题名称" clearable @keyup.enter.native="topSearch">
         <el-button slot="append" type="primary" icon="el-icon-search" @click="topSearch" />
       </el-input>
-      <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">高级搜索<i v-show="popoverVisible" class="el-icon-caret-bottom" /><i v-show="!popoverVisible" class="el-icon-caret-top" /></span>
+      <span id="advancedSearchBtn" slot="reference" @click="popoverVisible = !popoverVisible">高级搜索<i v-show="popoverVisible" class="advancedSearchIcon iconfont iconshousuoshangjiantou" /><i v-show="!popoverVisible" class="advancedSearchIcon iconfont iconshousuoxiajiantou" /></span>
       <transition name="fade-advanced-search">
         <el-row v-show="popoverVisible">
           <el-card id="advancedSearchArea" shadow="never">
@@ -148,8 +148,8 @@ export default {
   },
   methods: {
     // 按钮权限
-    hasThisBtnPermission(code, egroup) {
-      return hasThisBtnPermission(code, isCurrentEgroupManager(egroup))
+    hasThisBtnPermission(code, egroup, rowUserId) {
+      return hasThisBtnPermission(code, isCurrentEgroupManager(egroup), rowUserId)
     },
     // 获取初始化数据
     get_list() {
