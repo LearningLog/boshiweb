@@ -756,13 +756,13 @@ export default {
       }
 
       var knowledgeLibFileList = []
-      var path = ''
+      var pathArray = []
       for (let i = 0; i < selectNodes.length; i++) {
         var selectNode = selectNodes[i]
 
         var ownerId = selectNode.ownerId
         var parentId = selectNode.id
-        path = selectNode.path
+        pathArray.push(selectNode.path)
         knowledgeLibFileList.push({ ownerId: ownerId, parentId: parentId })
       }
 
@@ -771,11 +771,17 @@ export default {
       var fileName = ''
       if (!(fileIdList && fileIdList.length > 0) && this.fileId) {
         fileId = this.getFileListData(this.fileId)._id
-        fileName = this.fileName
+        fileName = '【' + this.fileName + '】'
       } else {
-        fileName = this.fileNameList[0] + ' 等' + this.fileIdList.length + '个文件'
+        fileName = '【' + this.fileNameList[0] + '】 等' + this.fileIdList.length + '个文件'
       }
-      this.$confirm('确定要推送文件【' + fileName + '】到【' + path + '】吗？', {
+      var path = ''
+      if (pathArray.length > 0) {
+        path = '【' + pathArray[0] + '】等' + pathArray.length + '个路径'
+      } else {
+        path = '【' + pathArray[0] + '】'
+      }
+      this.$confirm('确定要推送文件' + fileName + '到' + path + '吗？', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
