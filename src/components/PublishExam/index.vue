@@ -29,6 +29,8 @@
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             value-format="yyyy-MM-dd HH:mm:ss"
+            :picker-options="pickerOptions"
+            :default-time="[currentTime()]"
           />
         </el-form-item>
         <el-form-item label="及格分数" prop="passscore">
@@ -67,6 +69,7 @@
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import Examiners from '@/components/Examiners'
 import { validIntNum } from '@/utils/validate'
+import { parseTime } from '@/utils/index'
 const $ = window.$
 
 export default {
@@ -117,6 +120,13 @@ export default {
     }
     return {
       visible: false,
+      pickerOptions: {
+        disabledDate(time) {
+          // 在科学计数法中，为了使公式简便，可以用带“E”的格式表示。例如1.03乘10的8次方，可简写为“1.03e8”的形式
+          // 一天是24*60*60*1000 = 86400000 = 8.64e7
+          return time.getTime() < Date.now() - 8.64e7
+        }
+      },
       paparForm: {
         exampaper_id: '', // 试卷Id
         exam_name: '', // 考试名称
@@ -216,12 +226,19 @@ export default {
         this.paparForm.memer = ''
       }
     },
+
     // 取消
     cancel(formName) {
       this.visible = false
       this.$refs[formName].resetFields()
       this.$emit('visiblePublish', { visible: false })
     },
+
+    // 当前时间
+    currentTime() {
+      return parseTime(new Date().getTime(), '{h}:{i}:{s}')
+    },
+
     // 发布考试
     publish(formName) {
       this.$refs[formName].validate(valid => {
@@ -237,6 +254,7 @@ export default {
         }
       })
     },
+
     // 校验最大用户数为正整数
     intNum(val) {
       this.paparForm.passscore = validIntNum(val)

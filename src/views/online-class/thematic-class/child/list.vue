@@ -133,8 +133,8 @@
             </el-button>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item :disabled="!hasThisBtnPermission('lesson-detail', scope.row.egroup)" @click.native="detail(scope.row)"><i class="iconfont iconxiangqing" />专题详情</el-dropdown-item>
-              <el-dropdown-item :disabled="!hasThisBtnPermission('lesson-edit', scope.row.egroup) || (userId !== scope.row.user_id)" @click.native="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-dropdown-item>
-              <el-dropdown-item :disabled="!hasThisBtnPermission('lesson-delete', scope.row.egroup) || (userId !== scope.row.user_id)" @click="del(scope.row)" @click.native="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-dropdown-item>
+              <el-dropdown-item :disabled="!hasThisBtnPermission('lesson-edit', scope.row.egroup, scope.row.user_id)" @click.native="edit(scope.row)"><i class="iconfont iconxiugai" />修改</el-dropdown-item>
+              <el-dropdown-item :disabled="!hasThisBtnPermission('lesson-delete', scope.row.egroup, scope.row.user_id)" @click="del(scope.row)" @click.native="del(scope.row)"><i class="iconfont iconshanchu" />删除</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </template>
@@ -203,14 +203,10 @@ export default {
       listLoading: true, // 是否开启表格遮罩
       popoverVisible: false, // 是否开启高级搜索
       checkedDelList: [], // 选择的list
-      userId: '', // 当前登录用户id
-      userGroupId: '', // 当前登录用户 租户id
       isSystemManage: '' // 当前登录用户是否为租户管理员
     }
   },
   created() {
-    this.userId = this.$store.state.user.userSystemInfo.userInfo._id
-    this.userGroupId = this.$store.state.user.userSystemInfo.userInfo.groupId
     this.isSystemManage = this.$store.state.user.isSystemManage
     this.get_list()
     this.getCreater()
@@ -218,8 +214,8 @@ export default {
   },
   methods: {
     // 按钮权限
-    hasThisBtnPermission(code, egroup) {
-      return hasThisBtnPermission(code, isCurrentEgroupManager(egroup))
+    hasThisBtnPermission(code, egroup, rowUserId) {
+      return hasThisBtnPermission(code, isCurrentEgroupManager(egroup), rowUserId)
     },
     // 获取初始化数据
     get_list() {
