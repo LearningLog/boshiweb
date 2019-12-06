@@ -235,14 +235,15 @@ export default {
       },
       file_status: {
         0: '已提交',
-        1: '编码中',
-        3: '编码失败',
-        4: '编码成功'
+        1: '处理中',
+        3: '处理失败',
+        4: '处理成功'
       },
       file_encoding: [], // 编码中的文件
       manageType: 0, // 权限标识
       checkedDelList: [], // 选择删除的list
       list: [], // 表格数据
+      list2: [], // 用于比较的数据
       fileList: [], // 文件列表数据
       custom_list: [], // 租户列表
       user_list: [], // 用户列表
@@ -358,6 +359,35 @@ export default {
         this.$message.success('无法获取权限信息！')
       }
     },
+    // 获取列表数据
+    get_list2() {
+      if (this.fileStatus !== '') {
+        this.listQuery.fileStatusList.push(this.fileStatus)
+        this.listQuery1.fileStatusList.push(this.fileStatus)
+      }
+      if (this.sourceSystem !== '') {
+        this.listQuery.sourceSystemList.push(this.sourceSystem)
+        this.listQuery1.sourceSystemList.push(this.sourceSystem)
+      }
+      getFileListManage(this.listQuery).then(response => {
+        this.list2 = response.data.page.list
+        const fileList2 = response.data.filePackageIdWorkDeskFile
+        // 判断是否有处理中的数据
+        var has_ecoding = false
+        for (let i = 0; i < this.list2.length; i++) {
+          const file_status = fileList2[this.list2[i].mainFileId].file_status
+          if (file_status === 1) {
+            has_ecoding = true
+          }
+        }
+        if (!has_ecoding) {
+          clearInterval(this.timer)
+          this.list = response.data.page.list
+          this.fileList = response.data.filePackageIdWorkDeskFile
+          this.total = response.data.page.totalCount
+        }
+      })
+    },
     // 获取编码中的文件
     have_encoding() {
       this.file_encoding.length = 0
@@ -384,7 +414,7 @@ export default {
     // 判断是否有编码中的数据需要刷新
     isNeedRefrssh() {
       this.timer = setInterval(() => {
-        this.get_list()
+        this.get_list2()
       }, 5000)
     },
     // 重置
@@ -557,6 +587,7 @@ export default {
         this.$message.warning('请选择文件！')
         return false
       }
+      this.fileIdList = []
       this.checkedDelList.forEach(item => {
         this.fileIdList.push(this.getFileListData(item.mainFileId)._id)
       })
@@ -719,7 +750,6 @@ export default {
     },
     // 开始推送
     save_menu() {
-
       var selectNodes = this.$refs.tree.getCheckedNodes()
       if (selectNodes.length === 0) {
         this.$message.warning('请选择推送路径！')
@@ -740,7 +770,7 @@ export default {
       var fileId = null
       var fileIdList = this.fileIdList
 
-      if(!(fileIdList && fileIdList.length > 0) && this.fileId){
+      if (!(fileIdList && fileIdList.length > 0) && this.fileId) {
         fileId = this.getFileListData(this.fileId)._id
       }
 
@@ -749,7 +779,6 @@ export default {
         this.menu_tree_flag = false
         this.get_list()
       })
-
     },
     // 查看详情
     detail(row) {
