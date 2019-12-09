@@ -220,3 +220,14 @@ export function createFullUrl(subPath) {
 
   return prePath + midPath + '/' + subPath
 }
+
+/**
+ * 翻页序号
+ * @param index               Number 列表数据下标
+ * @param currentPage         Number 当前页码
+ * @param pageSize            Number 每页条数
+ * @returns {*}               Number 翻页序号
+ */
+export function getSerialNum(index, currentPage, pageSize) {
+  return (index + ((currentPage || 1) - 1) * pageSize + 1)
+}

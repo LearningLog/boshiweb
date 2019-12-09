@@ -1,4 +1,3 @@
-// import qs from 'qs'
 import { getToken } from '@/utils/auth'
 const myWebsocket = process.env.VUE_APP_WebSocket_BASE_API
 import store from '@/store'

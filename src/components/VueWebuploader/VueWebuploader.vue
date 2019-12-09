@@ -98,7 +98,7 @@ export default {
           'after-send-file': 'afterSendFile'
         },
         {
-          // // 上传文件开始触发
+          // // 上传文件开始前触发MD5校验，用了这个会很慢很慢，因此注掉
           // beforeSendFile: function(file) {
           //   if (that.publicOption.uploadProgress) {
           //     that.publicOption.beforeSendFile(file)
@@ -180,6 +180,7 @@ export default {
               const { data } = res
               if (data.path) {
                 file.path = data.path
+                // 最初的时候是在uploadSuccess发布的成功事件，后来发现有时取不到返回的file.path，因此换到了在merge文件碎片回调中发布上传成功事件
                 that.$emit('success', file, res)
               }
               task.resolve()
@@ -259,7 +260,10 @@ export default {
         this.$emit('progress', file, percentage)
       })
 
-      this.uploader.on('uploadSuccess', (file, response) => {})
+      this.uploader.on('uploadSuccess', (file, response) => {
+        // this.$emit('success', file, response)
+        // 最初的时候是在此处发布的成功事件，后来发现有时取不到返回的file.path，因此换到了在merge文件碎片回调中发布上传成功事件
+      })
 
       this.uploader.on('uploadError', (file, reason) => {
         this.$emit('uploadError', file, reason)
@@ -281,25 +285,6 @@ export default {
         this.$emit('complete', file, response)
       })
     },
-
-    // UploadComlate(file, md5) {
-    //   var path = file.path
-    //   var fileId = path.split('ZmlsZUlk=')[1]
-    //   file.fileId = fileId
-    //   if (typeof (file.onUploadFileSuccess) !== 'function') {
-    //     console.error('上传成功, 回调方法执行异常')
-    //   } else {
-    //     file.onUploadFileSuccess(file.callbackDate, file, md5)
-    //   }
-    // },
-    //
-    // UploadFail(file) {
-    //   if (typeof (file.onUploadFileErr) !== 'function') {
-    //     console.error('上传失败, 回调方法执行异常')
-    //   } else {
-    //     file.onUploadFileErr(file.callbackDate, file)
-    //   }
-    // },
 
     upload(file) {
       this.uploader.upload(file)
