@@ -1,11 +1,23 @@
 <template>
   <div :class="{'hidden':hidden}" class="pagination-container">
     <el-pagination
+      v-if="pageSizes.length > 1"
       :background="background"
       :current-page.sync="currentPage"
       :page-size.sync="pageSize"
       :layout="layout"
       :page-sizes="!pageSizes.length ? [10] : pageSizes"
+      :total="total"
+      v-bind="$attrs"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+    />
+    <el-pagination
+      v-else
+      :background="background"
+      :current-page.sync="currentPage"
+      :page-size.sync="pageSize"
+      :layout="layout"
       :total="total"
       v-bind="$attrs"
       @size-change="handleSizeChange"
